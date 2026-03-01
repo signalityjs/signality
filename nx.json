@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/src/test-setup.[jt]s",
+      "!{projectRoot}/test-setup.[jt]s"
+    ],
+    "sharedGlobals": []
+  },
+  "release": {
+    "projects": ["projects/*", "!web", "!demos"],
+    "version": {
+      "preVersionCommand": "pnpm build"
+    },
+    "releaseTagPattern": "v{version}",
+    "changelog": {
+      "automaticFromRef": true,
+      "workspaceChangelog": {
+        "renderOptions": {
+          "authors": false
+        },
+        "createRelease": "github"
+      }
+    }
+  },
+  "targetDefaults": {
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/projects/{projectName}"
+      }
+    }
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "eslint:lint"
+      }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
+    }
+  ]
+}

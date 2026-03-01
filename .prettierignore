@@ -1,0 +1,9 @@
+dist
+coverage
+nx
+angular
+*.md
+*.yml
+*.yaml
+*.html
+**/pages/**/examples/**

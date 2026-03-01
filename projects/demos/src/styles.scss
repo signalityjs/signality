@@ -1,0 +1,132 @@
+:root {
+  --demo-bg: #1a1a2e;
+  --demo-surface: #16213e;
+  --demo-border: #0f3460;
+  --demo-text: #e4e4e7;
+  --demo-text-muted: #a1a1aa;
+  --demo-primary: #6366f1;
+  --demo-success: #22c55e;
+  --demo-warning: #eab308;
+  --demo-danger: #ef4444;
+  --demo-radius: 8px;
+}
+
+.demo-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--demo-surface);
+  border: 1px solid var(--demo-border);
+  border-radius: var(--demo-radius);
+  padding: 1.5rem;
+  color: var(--demo-text);
+}
+
+.demo-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--demo-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.demo-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--demo-text);
+}
+
+.demo-label {
+  font-size: 0.875rem;
+  color: var(--demo-text-muted);
+}
+
+.demo-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.demo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--demo-success);
+  }
+
+  &.warning {
+    background: rgba(234, 179, 8, 0.15);
+    color: var(--demo-warning);
+  }
+
+  &.danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--demo-danger);
+  }
+
+  &.muted {
+    background: rgba(161, 161, 170, 0.15);
+    color: var(--demo-text-muted);
+  }
+}
+
+.demo-progress {
+  width: 100%;
+  height: 8px;
+  background: var(--demo-border);
+  border-radius: 4px;
+  overflow: hidden;
+
+  .demo-progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+}
+
+.demo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--demo-primary);
+  color: white;
+  border: none;
+  border-radius: var(--demo-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.demo-not-supported {
+  text-align: center;
+  padding: 2rem;
+  color: var(--demo-text-muted);
+
+  .demo-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+}

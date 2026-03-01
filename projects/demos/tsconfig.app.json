@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": ["web-bluetooth"],
+    "target": "ES2022",
+    "useDefineForClassFields": false
+  },
+  "files": ["src/main.ts", "src/main.server.ts", "src/server.ts", "src/main.elements.ts"],
+  "include": ["src/**/*.d.ts"],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts"]
+}

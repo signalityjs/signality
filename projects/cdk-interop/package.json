@@ -1,0 +1,25 @@
+{
+  "name": "@signality/cdk-interop",
+  "version": "0.0.1-alpha.1",
+  "license": "MIT",
+  "description": "Signal-based utilities for Angular CDK",
+  "keywords": [
+    "signality",
+    "angular",
+    "cdk",
+    "signals",
+    "reactive",
+    "accessibility",
+    "a11y"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/signalityjs/signality"
+  },
+  "homepage": "https://signality.dev",
+  "peerDependencies": {
+    "@angular/core": ">=20.0.0",
+    "@angular/cdk": ">=20.0.0",
+    "@signality/core": ">=0.0.1-alpha.1"
+  }
+}
