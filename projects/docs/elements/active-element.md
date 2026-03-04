@@ -42,19 +42,19 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 ## Parameters
 
-| Parameter | Type                  | Description                                                     |
-|-----------|-----------------------|-----------------------------------------------------------------|
-| `options`  | `ActiveElementOptions`| Optional configuration (see [Options](#options) below)         |
+| Parameter | Type                   | Description                                            |
+|-----------|------------------------|--------------------------------------------------------|
+| `options` | `ActiveElementOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `ActiveElementOptions` extends [`CreateSignalOptions<Element | null>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                      | Description                                    |
-|-------------|---------------------------|------------------------------------------------|
+| Option      | Type                                                                               | Description                                                                                        |
+|-------------|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `equal`     | [`ValueEqualityFn<Element \| null>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                  | Debug name for the signal (development only)   |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)              | Optional injector for DI context               |
+| `debugName` | `string`                                                                           | Debug name for the signal (development only)                                                       |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                | Optional injector for DI context                                                                   |
 
 ## Return Value
 

@@ -29,21 +29,21 @@ export class SizeDemo {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `target` | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to observe |
-| `options` | `ElementSizeOptions` | Optional configuration (see [Options](#options) below) |
+| Parameter | Type                                                                                        | Description                                            |
+|-----------|---------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to observe                              |
+| `options` | `ElementSizeOptions`                                                                        | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `ElementSizeOptions` extends [`CreateSignalOptions<ElementSizeValue>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                              | Default       | Description                                    |
-|-------------|-----------------------------------|---------------|------------------------------------------------|
-| [`box`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe#box)       | [`MaybeSignal<ResizeObserverBoxOptions>`](/reference/utility-types#maybesignal-lt-type-gt) | `'border-box'`| Which box model to observe |
-| `equal`     | [`ValueEqualityFn<ElementSizeValue>`](https://angular.dev/api/core/ValueEqualityFn)| -             | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                          | -             | Debug name for the signal (development only)   |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                        | -             | Optional injector for DI context               |
+| Option                                                                               | Type                                                                                       | Default        | Description                                                                                        |
+|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|----------------|----------------------------------------------------------------------------------------------------|
+| [`box`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe#box) | [`MaybeSignal<ResizeObserverBoxOptions>`](/reference/utility-types#maybesignal-lt-type-gt) | `'border-box'` | Which box model to observe                                                                         |
+| `equal`                                                                              | [`ValueEqualityFn<ElementSizeValue>`](https://angular.dev/api/core/ValueEqualityFn)        | -              | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName`                                                                          | `string`                                                                                   | -              | Debug name for the signal (development only)                                                       |
+| `injector`                                                                           | [`Injector`](https://angular.dev/api/core/Injector)                                        | -              | Optional injector for DI context                                                                   |
 
 ## Return Value
 
@@ -60,14 +60,14 @@ interface ElementSizeValue {
 }
 ```
 
-| Property | Description |
-|----------|-------------|
-| `width` | Element width (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`) |
-| `height` | Element height (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`) |
-| `contentWidth` | Content area width |
-| `contentHeight` | Content area height |
-| `borderBoxWidth` | Border-box width |
-| `borderBoxHeight` | Border-box height |
+| Property          | Description                                                                                                 |
+|-------------------|-------------------------------------------------------------------------------------------------------------|
+| `width`           | Element width (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`)  |
+| `height`          | Element height (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`) |
+| `contentWidth`    | Content area width                                                                                          |
+| `contentHeight`   | Content area height                                                                                         |
+| `borderBoxWidth`  | Border-box width                                                                                            |
+| `borderBoxHeight` | Border-box height                                                                                           |
 
 ## Examples
 

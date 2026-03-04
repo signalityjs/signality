@@ -29,20 +29,20 @@ export class HoverDemo {
 
 ## Parameters
 
-| Parameter | Type                              | Description                      |
-|-----------|-----------------------------------|----------------------------------|
-| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to track          |
-| `options` | `ElementHoverOptions`             | Optional configuration (see [Options](#options) below)           |
+| Parameter | Type                                                                                        | Description                                            |
+|-----------|---------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to track                                |
+| `options` | `ElementHoverOptions`                                                                       | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `ElementHoverOptions` extends [`CreateSignalOptions<boolean>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                      | Description                                    |
-|-------------|---------------------------|------------------------------------------------|
-| `equal`     | [`ValueEqualityFn<boolean>`](https://angular.dev/api/core/ValueEqualityFn)| Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                  | Debug name for the signal (development only)   |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                | Optional injector for DI context               |
+| Option      | Type                                                                       | Description                                                                                        |
+|-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| `equal`     | [`ValueEqualityFn<boolean>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName` | `string`                                                                   | Debug name for the signal (development only)                                                       |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                        | Optional injector for DI context                                                                   |
 
 ## Return Value
 

@@ -55,11 +55,11 @@ export class DropzoneDemo {
 
 The `dropzone()` function returns a `DropzoneRef`:
 
-| Property     | Type                   | Description                     |
-|--------------|------------------------|---------------------------------|
-| `isOver`     | `Signal<boolean>`     | Whether dragging over the zone  |
-| `files`      | `WritableSignal<File[]>` | Dropped files (writable)      |
-| `isDragging` | `Signal<boolean>`     | Whether any drag is in progress |
+| Property     | Type                     | Description                     |
+|--------------|--------------------------|---------------------------------|
+| `isOver`     | `Signal<boolean>`        | Whether dragging over the zone  |
+| `files`      | `WritableSignal<File[]>` | Dropped files (writable)        |
+| `isDragging` | `Signal<boolean>`        | Whether any drag is in progress |
 
 ## Examples
 

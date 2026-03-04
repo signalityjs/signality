@@ -40,16 +40,16 @@ export class FocusDemo {
 
 ## Parameters
 
-| Parameter | Type                             | Description               |
-|-----------|----------------------------------|---------------------------|
-| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to monitor |
-| `options` | `FocusMonitorOptions`            | Optional configuration (see [Options](#options) below)    |
+| Parameter | Type                                                                                        | Description                                            |
+|-----------|---------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to monitor                              |
+| `options` | `FocusMonitorOptions`                                                                       | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-| Option          | Type       | Default | Description                        |
-|-----------------|------------|---------|------------------------------------|
-| `checkChildren` | `boolean`  | `false` | Also monitor focus within children |
+| Option          | Type                                                | Default | Description                        |
+|-----------------|-----------------------------------------------------|---------|------------------------------------|
+| `checkChildren` | `boolean`                                           | `false` | Also monitor focus within children |
 | `injector`      | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context   |
 
 ## Return Value

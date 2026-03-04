@@ -43,7 +43,7 @@ import { Component, signal, effect } from '@angular/core';
 import { debounced } from '@signality/core';
 
 @Component({ /* ... */ })
-export class MyComponent {
+export class DebouncedInput {
   readonly rawValue = signal('');
   readonly debouncedValue = debounced(this.rawValue, 300); // [!code highlight]
 
@@ -57,21 +57,21 @@ export class MyComponent {
 
 ## Parameters
 
-| Parameter | Type                  | Description                                                     |
-|-----------|-----------------------|-----------------------------------------------------------------|
-| `source`  | `Signal<T>` or `T`    | Source signal to debounce, or initial value for writable signal |
-| `timeMs`  | [`MaybeSignal<number>`](/reference/utility-types#maybesignal-lt-type-gt) | Debounce delay in milliseconds                |
-| `options` | `DebouncedOptions<T>` | Optional configuration (see [Options](#options) below)          |
+| Parameter | Type                                                                     | Description                                                     |
+|-----------|--------------------------------------------------------------------------|-----------------------------------------------------------------|
+| `source`  | `Signal<T>` or `T`                                                       | Source signal to debounce, or initial value for writable signal |
+| `timeMs`  | [`MaybeSignal<number>`](/reference/utility-types#maybesignal-lt-type-gt) | Debounce delay in milliseconds                                  |
+| `options` | `DebouncedOptions<T>`                                                    | Optional configuration (see [Options](#options) below)          |
 
 ## Options
 
 The `DebouncedOptions<T>` extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                 | Description                                                                                                            |
-|-------------|----------------------|------------------------------------------------------------------------------------------------------------------------|
+| Option      | Type                                                                 | Description                                                                                        |
+|-------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`             | Debug name for the signal (development only)                                                                           |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)           | Optional injector for DI context                                                                                       |
+| `debugName` | `string`                                                             | Debug name for the signal (development only)                                                       |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                  | Optional injector for DI context                                                                   |
 
 ## Return Value
 
@@ -102,7 +102,7 @@ import { debounced } from '@signality/core';
     </ul>
   `,
 })
-export class SearchComponent {
+export class SearchInput {
   readonly query = debounced('', 400);
   readonly resource = httpResource(() => `/api/search?q=${this.query()}`);
 }
@@ -128,7 +128,7 @@ import { debounced } from '@signality/core';
     </label>
   `,
 })
-export class DynamicDelayComponent {
+export class WithDynamicDelay {
   readonly fastMode = signal(false);
   readonly delay = computed(() => this.fastMode() ? 100 : 500); // [!code highlight]
   readonly value = debounced('', this.delay); // [!code highlight]
