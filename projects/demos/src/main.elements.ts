@@ -39,7 +39,6 @@ import { InputModalityBrowserDemo } from './demos/input-modality-browser/input-m
 import { IntervalDemo } from './demos/interval/interval-demo';
 import { LongPressDemo } from './demos/long-press/long-press-demo';
 import { LiveAnnouncerDemo } from './demos/live-announcer/live-announcer-demo';
-import { ListenerDemo } from './demos/listener/listener-demo';
 import { IntersectionObserverDemo } from './demos/intersection-observer/intersection-observer-demo';
 import { MutationObserverDemo } from './demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from './demos/resize-observer/resize-observer-demo';
@@ -94,7 +93,6 @@ const DEMOS = [
   { component: IntervalDemo, name: 'signality-demo-interval' },
   { component: LiveAnnouncerDemo, name: 'signality-demo-live-announcer' },
   { component: LongPressDemo, name: 'signality-demo-long-press' },
-  { component: ListenerDemo, name: 'signality-demo-listener' },
   { component: IntersectionObserverDemo, name: 'signality-demo-intersection-observer' },
   { component: MutationObserverDemo, name: 'signality-demo-mutation-observer' },
   { component: ResizeObserverDemo, name: 'signality-demo-resize-observer' },

@@ -1,4 +1,4 @@
-import { isSignal, type Signal, signal } from '@angular/core';
+import { isSignal, type Signal, type WritableSignal, signal } from '@angular/core';
 import { constSignal, setupContext, toElement, toValue } from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
@@ -27,7 +27,7 @@ export interface DropzoneOptions extends WithInjector {
 
 export interface DropzoneRef {
   /** Dropped files */
-  readonly files: Signal<File[]>;
+  readonly files: WritableSignal<File[]>;
 
   /** Whether dragging over the zone */
   readonly isOver: Signal<boolean>;
@@ -78,7 +78,7 @@ export function dropzone(
   return runInContext(({ isServer }) => {
     if (isServer) {
       return {
-        files: constSignal([]),
+        files: signal([]),
         isOver: constSignal(false),
         isDragging: constSignal(false),
       };
@@ -222,7 +222,7 @@ export function dropzone(
     });
 
     return {
-      files: files.asReadonly(),
+      files,
       isOver: isOver.asReadonly(),
       isDragging: isDragging.asReadonly(),
     };

@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { elementHover } from '@signality/core/elements/element-hover';
 import { DemoBadge, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-element-hover',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge],
   template: `

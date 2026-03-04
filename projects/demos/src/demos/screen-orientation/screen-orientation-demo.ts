@@ -29,13 +29,6 @@ import { DemoBadge, DemoCard, Wrapper } from '../../common';
             </demo-badge>
           </div>
         </demo-card>
-
-        <demo-card>
-          <div class="info-row">
-            <span class="info-label">Type</span>
-            <span class="info-value">{{ isLandscape() ? 'Landscape' : 'Portrait' }}</span>
-          </div>
-        </demo-card>
       </div>
     </ng-demo-wrapper>
   `,

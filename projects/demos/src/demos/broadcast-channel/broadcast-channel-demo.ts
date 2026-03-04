@@ -37,10 +37,7 @@ interface Message {
         <demo-card>
           <div class="messages-section">
             <div class="messages-header">
-              <span class="messages-label">Messages</span>
-              @if (messages().length > 0) {
-              <span class="messages-count">{{ messages().length }}</span>
-              }
+              <span class="messages-label">Messages ({{ messages().length }})</span>
             </div>
             <div class="messages-list">
               @if (messages().length === 0) {
@@ -93,19 +90,10 @@ interface Message {
       letter-spacing: 0.025em;
     }
 
-    .messages-count {
-      font-size: 0.75rem;
-      color: #a1a1aa;
-      background: #232125;
-      padding: 0.125rem 0.5rem;
-      border-radius: 999px;
-    }
-
     .messages-list {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      min-height: 3rem;
       max-height: 12rem;
       overflow-y: auto;
     }

@@ -86,7 +86,7 @@ import { DemoCard, Wrapper } from '../../common';
 
     .breakpoint-item {
       display: grid;
-      grid-template-columns: 1fr 2fr auto;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 1rem;
       align-items: center;
       padding: 0.5rem 0.75rem;
@@ -106,12 +106,14 @@ import { DemoCard, Wrapper } from '../../common';
     }
 
     .bp-query {
-      font-size: 0.75rem;
+      font-size: 0.815rem;
       color: #71717a;
-      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      text-align: center;
     }
 
     .bp-status {
+      inline-size: fit-content;
+      margin-left: auto;
       font-size: 0.75rem;
       color: #71717a;
       padding: 0.125rem 0.5rem;

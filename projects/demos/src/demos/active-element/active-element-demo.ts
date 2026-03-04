@@ -23,19 +23,6 @@ import { DemoBadge, DemoButton, DemoCard, DemoInput, Wrapper } from '../../commo
             </demo-badge>
           </div>
         </demo-card>
-
-        @if (activeEl()) {
-        <demo-card>
-          <div class="info-row">
-            <span class="info-label">ID</span>
-            <span class="info-value">{{ activeEl()?.id || '-' }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Class</span>
-            <span class="info-value">{{ activeEl()?.className || '-' }}</span>
-          </div>
-        </demo-card>
-        }
       </div>
     </ng-demo-wrapper>
   `,
@@ -65,27 +52,6 @@ import { DemoBadge, DemoButton, DemoCard, DemoInput, Wrapper } from '../../commo
       font-size: 0.875rem;
       font-weight: 500;
       color: #a1a1aa;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .info-row + .info-row {
-      margin-top: 0.5rem;
-    }
-
-    .info-label {
-      font-size: 0.75rem;
-      color: #71717a;
-    }
-
-    .info-value {
-      font-size: 0.75rem;
-      color: #e4e4e7;
-      font-family: monospace;
     }
   `,
 })

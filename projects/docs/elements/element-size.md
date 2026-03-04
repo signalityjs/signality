@@ -151,15 +151,15 @@ export class AutoCanvas {
       canvasEl.width = width * dpr;
       canvasEl.height = height * dpr;
       canvasEl.style.width = `${width}px`;
-      canvasEl.style.height = `${height}px`; // [!code highlight]
+      canvasEl.style.height = `${height}px`;
       
-      // Redraw canvas content
+      // redraw canvas content
       this.redraw(canvasEl.getContext('2d')!);
     });
   }
   
   private redraw(ctx: CanvasRenderingContext2D) {
-    // Drawing logic
+    // drawing logic
   }
 }
 ```
@@ -196,30 +196,6 @@ export class OverflowDetector {
   showMore() {
     // Expand container
   }
-}
-```
-
-### Reactive box option
-
-The `box` option can be a reactive signal:
-
-```angular-ts
-import { Component, viewChild, ElementRef, signal } from '@angular/core';
-import { elementSize } from '@signality/core';
-
-@Component({
-  template: `
-    <div #box>Resize me!</div>
-    <button (click)="boxType.set(boxType() === 'border-box' ? 'content-box' : 'border-box')">
-      Toggle Box Type
-    </button>
-  `,
-})
-export class ReactiveBox {
-  readonly box = viewChild<ElementRef>('box');
-  readonly boxType = signal<ResizeObserverBoxOptions>('border-box'); // [!code highlight]
-  
-  readonly size = elementSize(this.box, { box: this.boxType }); // [!code highlight]
 }
 ```
 

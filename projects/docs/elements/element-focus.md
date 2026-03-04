@@ -65,67 +65,31 @@ import { elementFocus } from '@signality/core';
 })
 export class FocusRing {
   readonly btn = viewChild<ElementRef>('btn');
-  readonly focused = elementFocus(this.btn, { focusVisible: true }); // [!code highlight]
+  readonly focused = elementFocus(this.btn, { focusVisible: true });
 }
 ```
 
 ### Form field with label animation
 
 ```angular-ts
-import { Component, viewChild, ElementRef, computed } from '@angular/core';
+import { Component, viewChild, ElementRef, signal, computed } from '@angular/core';
 import { elementFocus } from '@signality/core';
 
 @Component({
   template: `
     <div class="form-field" [class.active]="isActive()">
       <label [class.floating]="isActive()">Email</label>
-      <input #input [value]="value" (input)="value = $any($event.target).value" />
+      <input #input [(ngModel)]="value" />
     </div>
   `,
 })
 export class FloatingLabel {
   readonly input = viewChild<ElementRef>('input');
   readonly isFocused = elementFocus(this.input);
-  
-  value = '';
+  readonly value = signal('');
   
   readonly isActive = computed(() => 
-    this.isFocused() || this.value.length > 0 // [!code highlight]
-  );
-}
-```
-
-### Search with focus state
-
-```angular-ts
-import { Component, viewChild, ElementRef, computed } from '@angular/core';
-import { elementFocus } from '@signality/core';
-
-@Component({
-  template: `
-    <div class="search-container" [class.expanded]="isExpanded()">
-      <input 
-        #searchInput 
-        placeholder="Search..." 
-        [value]="query"
-        (input)="query = $any($event.target).value"
-      />
-      @if (isExpanded()) {
-        <div class="search-suggestions">
-          <!-- Suggestions here -->
-        </div>
-      }
-    </div>
-  `,
-})
-export class ExpandingSearch {
-  readonly searchInput = viewChild<ElementRef>('searchInput');
-  readonly isFocused = elementFocus(this.searchInput);
-  
-  query = '';
-  
-  readonly isExpanded = computed(() => 
-    this.isFocused() || this.query.length > 0
+    this.isFocused() || this.value().length > 0
   );
 }
 ```

@@ -10,16 +10,11 @@ import { DemoCard, DemoToggle, Wrapper } from '../../common';
   template: `
     <ng-demo-wrapper [code]="importCode">
       <div class="mouse-card">
-        <demo-card>
-          <div class="type-row">
-            <span class="type-label">Coordinate Type</span>
-            <demo-toggle [options]="coordinateOptions" [value]="coordinateType" />
-          </div>
-        </demo-card>
-
-        <div class="tracking-area">
-          <span class="tracking-hint">Move your mouse here</span>
-        </div>
+        <div
+          class="cursor-follower"
+          [style.left.px]="position().x"
+          [style.top.px]="position().y"
+        ></div>
 
         <demo-card>
           <div class="coords-grid">
@@ -41,36 +36,7 @@ import { DemoCard, DemoToggle, Wrapper } from '../../common';
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-    }
-
-    .type-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .type-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
-    }
-
-    .tracking-area {
       position: relative;
-      height: 120px;
-      background: #161618;
-      border: 1px dashed #3f3f46;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: crosshair;
-    }
-
-    .tracking-hint {
-      font-size: 0.875rem;
-      color: #71717a;
     }
 
     .coords-grid {
@@ -99,17 +65,23 @@ import { DemoCard, DemoToggle, Wrapper } from '../../common';
       color: #e4e4e7;
       font-variant-numeric: tabular-nums;
     }
+
+    .cursor-follower {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #DEB3EB;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      opacity: 1;
+      box-shadow: 0 0 10px #DEB3EB, 0 0 20px rgba(222, 179, 235, 0.5);
+      z-index: 10;
+    }
   `,
 })
 export class MouseDemo {
-  readonly coordinateType = signal<MouseCoordinateType>('page');
-  readonly position = mouse({ type: 'page' });
-
-  readonly coordinateOptions = [
-    { label: 'page', value: 'page' as MouseCoordinateType },
-    { label: 'client', value: 'client' as MouseCoordinateType },
-    { label: 'screen', value: 'screen' as MouseCoordinateType },
-  ];
+  readonly position = mouse({ type: 'client' });
 
   readonly importCode = `import { mouse } from '@signality/core'`;
 }
