@@ -36,6 +36,10 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
     }
 
     .dropdown {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 80px;
       padding: 1rem;
       background: #161618;
       border: 1px dashed #3f3f46;
@@ -73,7 +77,7 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 })
 export class OnClickOutsideDemo {
   readonly dropdown = viewChild<ElementRef>('dropdown');
-  readonly btn = viewChild<ElementRef>('trigger');
+  readonly btn = viewChild('trigger', { read: ElementRef });
   readonly isOpen = signal(false);
   readonly clickedOutside = signal(false);
 
