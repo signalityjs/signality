@@ -54,7 +54,6 @@ import { DemoButton, DemoCard, Wrapper } from '../../common';
     }
 
     .mutation-container {
-      min-height: 120px;
       background: #161618;
       border: 1px solid #3f3f46;
       border-radius: 8px;

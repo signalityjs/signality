@@ -33,8 +33,6 @@ import { DemoButton, DemoCard, Wrapper } from '../../common';
             </div>
           </div>
         </demo-card>
-
-        <demo-button variant="ghost" (click)="clearSelection()"> Clear Selection </demo-button>
       </div>
     </ng-demo-wrapper>
   `,
@@ -99,8 +97,4 @@ export class TextSelectionDemo {
   readonly selection = textSelection();
 
   readonly importCode = `import { textSelection } from '@signality/core'`;
-
-  clearSelection(): void {
-    this.selection.clear();
-  }
 }

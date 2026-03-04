@@ -6,7 +6,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/forms/c
 
 Reactive wrapper around Angular's Control Value Accessor (CVA) pattern. Provides signals for form control state (value, touched, disabled, invalid, etc.) and integrates seamlessly with both template-driven and reactive forms.
 
-::: warning Signal Forms Migration
+::: warning Signal Forms migration
 This utility is particularly useful if you haven't migrated to [Signal Forms](https://angular.dev/guide/forms/signals/overview#why-signal-forms) yet and want to make building custom controls easier for template-driven or reactive forms. If you're already using Signal Forms, you may not need this utility.
 :::
 
@@ -208,7 +208,7 @@ The `cva()` utility automatically integrates with Angular's form system:
 
 - **Reactive Forms**: Works with `FormControl`, `FormControlName`, and `FormGroup`
 - **Template-Driven Forms**: Works with `ngModel` and `NgModel`
-- **Validators**: Automatically syncs with `Validators.required` and custom validators
+- **Validators**: Automatically syncs with `Validators.required`
 - **State Management**: Automatically syncs touched, disabled, invalid, pending, dirty, and errors states
 
 ## Type Definitions

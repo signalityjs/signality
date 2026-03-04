@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+  signal,
+  computed,
+} from '@angular/core';
 import { mouse, type MouseCoordinateType } from '@signality/core/elements/mouse';
 import { DemoCard, DemoToggle, Wrapper } from '../../common';
 
@@ -12,6 +18,7 @@ import { DemoCard, DemoToggle, Wrapper } from '../../common';
       <div class="mouse-card">
         <div
           class="cursor-follower"
+          [class.visible]="isVisible()"
           [style.left.px]="position().x"
           [style.top.px]="position().y"
         ></div>
@@ -74,14 +81,21 @@ import { DemoCard, DemoToggle, Wrapper } from '../../common';
       border-radius: 50%;
       pointer-events: none;
       transform: translate(-50%, -50%);
-      opacity: 1;
+      transition: opacity 0.2s ease;
+      opacity: 0;
       box-shadow: 0 0 10px #DEB3EB, 0 0 20px rgba(222, 179, 235, 0.5);
       z-index: 10;
+
+      &.visible {
+        opacity: 1;
+      }
     }
   `,
 })
 export class MouseDemo {
   readonly position = mouse({ type: 'client' });
+
+  readonly isVisible = computed(() => this.position().x !== 0 && this.position().y !== 0);
 
   readonly importCode = `import { mouse } from '@signality/core'`;
 }

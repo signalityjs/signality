@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+  viewChild,
+  ElementRef,
+  inject,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { pictureInPicture } from '@signality/core/browser/picture-in-picture';
 import { DemoBadge, DemoButton, Wrapper } from '../../common';
 
@@ -9,12 +19,12 @@ import { DemoBadge, DemoButton, Wrapper } from '../../common';
   imports: [Wrapper, DemoBadge, DemoButton],
   template: `
     <ng-demo-wrapper [code]="importCode">
-      @if (!pip.isSupported()) {
+      @if (!isBrowser) {
       <div class="not-supported">
         <demo-badge type="error">Picture-in-Picture not supported</demo-badge>
         <p class="not-supported-text">Use a Chromium-based browser to test PiP.</p>
       </div>
-      } @if (pip.isSupported()) {
+      } @else {
       <div class="pip-card">
         <div class="video-container">
           <video
@@ -24,11 +34,12 @@ import { DemoBadge, DemoButton, Wrapper } from '../../common';
             muted
             loop
             playsinline
+            (loadedmetadata)="onVideoLoaded()"
           ></video>
         </div>
 
         <div class="controls">
-          <demo-button variant="primary" (click)="handleToggle()">
+          <demo-button variant="primary" (click)="handleToggle()" [disabled]="!videoLoaded()">
             @if (pip.isActive()) {
             <span>Exit PiP</span>
             } @else {
@@ -89,16 +100,26 @@ import { DemoBadge, DemoButton, Wrapper } from '../../common';
   `,
 })
 export class PictureInPictureDemo {
-  readonly video = viewChild<HTMLVideoElement>('video');
+  readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  readonly video = viewChild<ElementRef<HTMLVideoElement>>('video');
   readonly pip = pictureInPicture(this.video);
+  readonly videoLoaded = signal(false);
 
   readonly importCode = `import { pictureInPicture } from '@signality/core'`;
 
+  onVideoLoaded(): void {
+    this.videoLoaded.set(true);
+  }
+
   async handleToggle(): Promise<void> {
-    const video = this.video();
+    const video = this.video()?.nativeElement;
     if (video) {
       if (video.paused) {
-        await video.play();
+        try {
+          await video.play();
+        } catch (e) {
+          console.error('Failed to play video:', e);
+        }
       }
       await this.pip.toggle();
     }

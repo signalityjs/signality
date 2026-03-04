@@ -45,7 +45,7 @@ import { DemoCard, DemoButton, Wrapper } from '../../common';
     }
 
     .scroll-container {
-      height: 150px;
+      height: 125px;
       overflow-y: auto;
       background: #161618;
       border: 1px solid #3f3f46;

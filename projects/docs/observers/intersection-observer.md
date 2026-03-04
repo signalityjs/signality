@@ -6,6 +6,10 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/observe
 
 Low-level utility for observing element intersection with viewport using the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver). Provides fine-grained control over observation lifecycle.
 
+::: warning Stateless utility
+`intersectionObserver` is a stateless utility that only subscribes to intersection changes and invokes a callback. For cases where you need to manage reactive visibility **state**, consider using the [`elementVisibility`](/elements/element-visibility) utility instead.
+:::
+
 <Demo name="intersection-observer" />
 
 ## Usage
@@ -127,14 +131,14 @@ export class ManualCleanup {
 
 The `IntersectionObserverInitOptions` extends [`Omit<CreateEffectOptions, 'allowSignalWrites'>`](https://angular.dev/api/core/CreateEffectOptions):
 
-| Option                                                                                                | Type                                                                                                  | Default | Description                                                                                                                                    |
-|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| Option                                                                                                | Type                                                                                                            | Default | Description                                                                                                                                    |
+|-------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`root`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#root)             | [`MaybeElementSignal<Element>`](/reference/utility-types#maybeelementsignal-lt-type-gt) \| `Document` \| `null` | -       | The element that is used as the viewport for checking visibility                                                                               |
-| [`rootMargin`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#rootmargin) | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)                              | -       | Margin around the root element                                                                                                                 |
-| [`threshold`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#threshold)   | [`MaybeSignal<number \| number[]>`](/reference/utility-types#maybesignal-lt-type-gt)                  | -       | Threshold(s) for intersection                                                                                                                  |
-| `manualCleanup`                                                                                       | `boolean`                                                                                             | `false` | If `true`, the effect requires manual cleanup. By default, the effect automatically registers itself for cleanup with the current `DestroyRef` |
-| `debugName`                                                                                           | `string`                                                                                              | -       | Debug name for the effect (used in Angular DevTools)                                                                                           |
-| `injector`                                                                                            | [`Injector`](https://angular.dev/api/core/Injector)                                                   | -       | Optional injector for DI context                                                                                                               |
+| [`rootMargin`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#rootmargin) | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)                                        | -       | Margin around the root element                                                                                                                 |
+| [`threshold`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#threshold)   | [`MaybeSignal<number \| number[]>`](/reference/utility-types#maybesignal-lt-type-gt)                            | -       | Threshold(s) for intersection                                                                                                                  |
+| `manualCleanup`                                                                                       | `boolean`                                                                                                       | `false` | If `true`, the effect requires manual cleanup. By default, the effect automatically registers itself for cleanup with the current `DestroyRef` |
+| `debugName`                                                                                           | `string`                                                                                                        | -       | Debug name for the effect (used in Angular DevTools)                                                                                           |
+| `injector`                                                                                            | [`Injector`](https://angular.dev/api/core/Injector)                                                             | -       | Optional injector for DI context                                                                                                               |
 
 ## Return Value
 

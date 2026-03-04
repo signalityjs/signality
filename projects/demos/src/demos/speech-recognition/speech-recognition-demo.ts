@@ -33,15 +33,6 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
           }
         </div>
 
-        <demo-card>
-          <div class="status-row">
-            <span class="status-label">Status</span>
-            <demo-badge [type]="sr.isListening() ? 'warning' : 'neutral'">
-              {{ sr.isListening() ? 'Listening' : 'Idle' }}
-            </demo-badge>
-          </div>
-        </demo-card>
-
         @if (sr.error()) {
         <demo-card>
           <demo-badge type="error">{{ sr.error() }}</demo-badge>
@@ -59,7 +50,7 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
     .speech-card {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
     .not-supported {
@@ -128,18 +119,6 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
     .transcript-hint {
       font-size: 0.875rem;
       color: #71717a;
-    }
-
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .status-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
     }
   `,
 })
