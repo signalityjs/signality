@@ -6,10 +6,6 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/observe
 
 Low-level utility for observing element intersection with viewport using the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver). Provides fine-grained control over observation lifecycle.
 
-::: warning Stateless utility
-`intersectionObserver` is a stateless utility that only subscribes to intersection changes and invokes a callback. For cases where you need to manage reactive visibility **state**, consider using the [`elementVisibility`](/elements/element-visibility) utility instead.
-:::
-
 <Demo name="intersection-observer" />
 
 ## Usage

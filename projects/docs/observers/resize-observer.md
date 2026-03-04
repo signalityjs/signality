@@ -6,10 +6,6 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/observe
 
 Low-level utility for observing element size changes using the [ResizeObserver API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver). Provides fine-grained control over observation lifecycle.
 
-::: warning Stateless utility
-`resizeObserver` is a stateless utility that only subscribes to element resize events and invokes a callback. For cases where you need to manage reactive size **state**, consider using the [`elementSize`](/elements/element-size) utility instead, which provides a reactive signal that tracks width and height changes.
-:::
-
 <Demo name="resize-observer" />
 
 ## Usage
