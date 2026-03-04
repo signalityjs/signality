@@ -20,6 +20,7 @@ import { BroadcastChannelDemo } from './demos/broadcast-channel/broadcast-channe
 import { BrowserLanguageDemo } from './demos/browser-language/browser-language-demo';
 import { ClipboardDemo } from './demos/clipboard/clipboard-demo';
 import { DebouncedDemo } from './demos/debounced/debounced-demo';
+import { DevicePostureDemo } from './demos/device-posture/device-posture-demo';
 import { DisplayMediaDemo } from './demos/display-media/display-media-demo';
 import { DropzoneDemo } from './demos/dropzone/dropzone-demo';
 import { EyeDropperDemo } from './demos/eye-dropper/eye-dropper-demo';
@@ -63,6 +64,7 @@ import { WakeLockDemo } from './demos/wake-lock/wake-lock-demo';
 import { WebNotificationDemo } from './demos/web-notification/web-notification-demo';
 import { WebWorkerDemo } from './demos/web-worker/web-worker-demo';
 import { WindowSizeDemo } from './demos/window-size/window-size-demo';
+import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
 
 const DEMOS = [
   { component: ActiveElementDemo, name: 'signality-demo-active-element' },
@@ -73,6 +75,7 @@ const DEMOS = [
   { component: BrowserLanguageDemo, name: 'signality-demo-browser-language' },
   { component: ClipboardDemo, name: 'signality-demo-clipboard' },
   { component: DebouncedDemo, name: 'signality-demo-debounced' },
+  { component: DevicePostureDemo, name: 'signality-demo-device-posture' },
   { component: DisplayMediaDemo, name: 'signality-demo-display-media' },
   { component: DropzoneDemo, name: 'signality-demo-dropzone' },
   { component: EyeDropperDemo, name: 'signality-demo-eye-dropper' },
@@ -98,6 +101,7 @@ const DEMOS = [
   { component: MediaQueryDemo, name: 'signality-demo-media-query' },
   { component: MouseDemo, name: 'signality-demo-mouse' },
   { component: NetworkDemo, name: 'signality-demo-network' },
+  { component: ScreenOrientationDemo, name: 'signality-demo-screen-orientation' },
   { component: OnClickOutsideDemo, name: 'signality-demo-on-click-outside' },
   { component: OnlineDemo, name: 'signality-demo-online' },
   { component: PageVisibilityDemo, name: 'signality-demo-page-visibility' },

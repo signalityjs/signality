@@ -26,12 +26,12 @@ import { webShare, title, url } from '@signality/core';
   `,
 })
 export class WebShareDemo {
-  readonly shareApi = webShare(); // [!code highlight]
+  readonly webShare = webShare(); // [!code highlight]
   readonly title = title();
   readonly url = url({ absolute: true });
   
   async shareContent() {
-    await this.shareApi.share({
+    await this.webShare.share({
       title: this.title() ?? 'Check this out!',
       text: 'Amazing content from our app',
       url: this.url(),
@@ -63,13 +63,13 @@ import { webShare } from '@signality/core';
   template: `
     <input type="file" (change)="onFileSelect($event)" accept="image/*" />
     
-    @if (selectedFile() && shareApi.canShare({ files: [selectedFile()!] })) {
+    @if (selectedFile() && webShare.canShare({ files: [selectedFile()!] })) {
       <button (click)="shareImage()">Share Image</button>
     }
   `,
 })
 export class ImageShare {
-  readonly shareApi = webShare();
+  readonly webShare = webShare();
   readonly selectedFile = signal<File | null>(null);
   
   onFileSelect(event: Event) {
@@ -81,7 +81,7 @@ export class ImageShare {
     const file = this.selectedFile();
     if (!file) return;
     
-    await this.shareApi.share({
+    await this.webShare.share({
       files: [file], // [!code highlight]
       title: 'Check out this image!',
     });
@@ -98,7 +98,7 @@ import { webShare, title, url } from '@signality/core';
 @Component({
   selector: 'social-share',
   template: `
-    @if (shareApi.isSupported()) {
+    @if (webShare.isSupported()) {
       <button (click)="nativeShare()">Share</button>
     } @else {
       <div class="social-buttons">
@@ -110,12 +110,12 @@ import { webShare, title, url } from '@signality/core';
   `,
 })
 export class SocialShare {
-  readonly shareApi = webShare();
+  readonly webShare = webShare();
   readonly title = title();
   readonly url = url({ absolute: true });
 
   async nativeShare() {
-    await this.shareApi.share({
+    await this.webShare.share({
       title: this.title() ?? '', // [!code highlight]
       url: this.url(), // [!code highlight]
     });
@@ -148,8 +148,8 @@ On the server, signals initialize with safe defaults:
 The Web Share API has limited browser support, primarily on mobile devices. Always check `isSupported()` before using the share functionality (see [Browser API support detection](/guide/key-concepts#browser-api-support-detection)):
 
 ```angular-html
-@if (shareApi.isSupported()) {
-  <button (click)="shareApi.share({ title: 'Title', text: 'Text' })">Share</button>
+@if (webShare.isSupported()) {
+  <button (click)="webShare.share({ title: 'Title', text: 'Text' })">Share</button>
 } @else {
   <p>Sharing is not available in this browser</p>
 }

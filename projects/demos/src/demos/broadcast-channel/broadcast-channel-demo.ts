@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  signal,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { broadcastChannel } from '@signality/core/browser/broadcast-channel';
 import { DemoButton, DemoCard, DemoInput, Wrapper } from '../../common';
@@ -17,7 +23,12 @@ interface Message {
     <ng-demo-wrapper [code]="importCode">
       <div class="channel-card">
         <div class="send-row">
-          <demo-input class="input-flex" placeholder="Enter message..." [(ngModel)]="messageText" />
+          <demo-input
+            class="input-flex"
+            placeholder="Enter message..."
+            [(ngModel)]="messageText"
+            (keydown.enter)="sendMessage()"
+          />
           <demo-button variant="primary" (click)="sendMessage()" [disabled]="channel.isClosed()">
             Send
           </demo-button>
@@ -27,14 +38,14 @@ interface Message {
           <div class="messages-section">
             <div class="messages-header">
               <span class="messages-label">Messages</span>
-              @if (messages.length > 0) {
-              <span class="messages-count">{{ messages.length }}</span>
+              @if (messages().length > 0) {
+              <span class="messages-count">{{ messages().length }}</span>
               }
             </div>
             <div class="messages-list">
-              @if (messages.length === 0) {
+              @if (messages().length === 0) {
               <span class="messages-empty">No messages yet. Open another tab to test.</span>
-              } @for (msg of messages; track msg.time) {
+              } @for (msg of messages(); track msg.time) {
               <div class="message-item">
                 <span class="message-text">{{ msg.text }}</span>
                 <span class="message-time">{{ msg.time.toLocaleTimeString() }}</span>
@@ -133,13 +144,14 @@ export class BroadcastChannelDemo {
   readonly importCode = `import { broadcastChannel } from '@signality/core'`;
 
   messageText = '';
-  messages: Message[] = [];
+  readonly messages = signal<Message[]>([]);
 
   constructor() {
     effect(() => {
       const data = this.channel.data();
+
       if (data) {
-        this.messages = [...this.messages, { text: data.text, time: data.time }];
+        this.messages.update(msgs => [...msgs, { text: data.text, time: data.time }]);
       }
     });
   }

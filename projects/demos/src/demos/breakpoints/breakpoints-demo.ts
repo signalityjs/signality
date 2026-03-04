@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { breakpoints } from '@signality/core/browser/breakpoints';
 import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-breakpoints',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
@@ -40,7 +39,7 @@ import { DemoCard, Wrapper } from '../../common';
     .breakpoints-card {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     .current-breakpoint {

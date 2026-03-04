@@ -12,29 +12,39 @@ import { DemoButton, DemoCard, Wrapper } from '../../common';
       <div class="favicon-card">
         <div class="favicon-preview">
           @if (faviconRef.current()) {
-          <img [src]="faviconRef.current()" alt="Current favicon" class="favicon-img" />
+          <img [src]="faviconRef.current()" alt="Favicon" class="favicon-img" />
           } @else {
-          <span class="favicon-placeholder">No favicon</span>
+          <div class="favicon-placeholder">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4l2 2" />
+            </svg>
+          </div>
           }
         </div>
 
         <demo-card>
-          <div class="emoji-buttons">
-            <span class="section-label">Quick Presets</span>
-            <div class="emoji-row">
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('🔴')">🔴</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('🟢')">🟢</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('🔵')">🔵</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('⭐')">⭐</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('🔥')">🔥</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('💀')">💀</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('👻')">👻</demo-button>
-              <demo-button variant="secondary" size="sm" (click)="setEmoji('🎉')">🎉</demo-button>
+          <div class="preset-section">
+            <span class="preset-label">Presets</span>
+            <div class="preset-grid">
+              <button class="preset-btn" (click)="setEmoji('🔴')">🔴</button>
+              <button class="preset-btn" (click)="setEmoji('🟢')">🟢</button>
+              <button class="preset-btn" (click)="setEmoji('🔵')">🔵</button>
+              <button class="preset-btn" (click)="setEmoji('⭐')">⭐</button>
+              <button class="preset-btn" (click)="setEmoji('🔥')">🔥</button>
+              <button class="preset-btn" (click)="setEmoji('💀')">💀</button>
             </div>
           </div>
         </demo-card>
 
-        <demo-button variant="ghost" (click)="reset()"> Reset to Original </demo-button>
+        <demo-button variant="ghost" size="sm" (click)="reset()">Reset</demo-button>
       </div>
     </ng-demo-wrapper>
   `,
@@ -42,20 +52,20 @@ import { DemoButton, DemoCard, Wrapper } from '../../common';
     .favicon-card {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
       align-items: center;
+      gap: 1rem;
     }
 
     .favicon-preview {
-      width: 5rem;
-      height: 5rem;
-      border-radius: 12px;
-      border: 1px solid #3f3f46;
-      background: #161618;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: #0f0f11;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      border: 1px solid #27272a;
     }
 
     .favicon-img {
@@ -65,30 +75,46 @@ import { DemoButton, DemoCard, Wrapper } from '../../common';
     }
 
     .favicon-placeholder {
-      font-size: 0.625rem;
-      color: #71717a;
-      text-align: center;
+      color: #3f3f46;
     }
 
-    .emoji-buttons {
+    .preset-section {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      width: 100%;
     }
 
-    .section-label {
+    .preset-label {
       font-size: 0.75rem;
       font-weight: 500;
-      color: #a1a1aa;
+      color: #71717a;
       text-transform: uppercase;
-      letter-spacing: 0.025em;
+      letter-spacing: 0.05em;
     }
 
-    .emoji-row {
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.375rem;
+    }
+
+    .preset-btn {
+      width: 32px;
+      height: 32px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      background: #27272a;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .preset-btn:hover {
+      background: #3f3f46;
+      transform: scale(1.1);
     }
   `,
 })

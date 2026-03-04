@@ -6,6 +6,8 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 Reactive wrapper around the [Device Posture API](https://developer.mozilla.org/en-US/docs/Web/API/Device_Posture_API). Track device posture state for foldable devices with Angular signals.
 
+<Demo name="device-posture" />
+
 ## Usage
 
 ```angular-ts

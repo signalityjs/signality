@@ -145,7 +145,7 @@ import { DemoBadge, DemoCard, Wrapper } from '../../common';
     .network-card {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     .connection-type {
