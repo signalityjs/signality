@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { dropzone } from '@signality/core/elements/dropzone';
 import { DemoBadge, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-dropzone',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge],
   template: `

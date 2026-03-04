@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { clipboard } from '@signality/core/browser/clipboard';
-import { DemoButton, DemoCard, DemoBadge, DemoInput, Wrapper } from '../../common';
+import { DemoBadge, DemoButton, DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-clipboard',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoButton, DemoCard, DemoBadge, DemoInput, FormsModule],
   template: `

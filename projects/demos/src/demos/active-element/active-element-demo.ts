@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { activeElement } from '@signality/core/elements/active-element';
 import { DemoBadge, DemoButton, DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-active-element',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge, DemoInput],
   template: `

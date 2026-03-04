@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  signal,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { broadcastChannel } from '@signality/core/browser/broadcast-channel';
 import { DemoButton, DemoCard, DemoInput, Wrapper } from '../../common';
@@ -16,7 +10,6 @@ interface Message {
 
 @Component({
   selector: 'demo-broadcast-channel',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoButton, DemoCard, DemoInput, FormsModule],
   template: `

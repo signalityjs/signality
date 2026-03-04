@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { devicePosture } from '@signality/core/browser/device-posture';
 import { DemoBadge, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-device-posture',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoBadge],
   template: `

@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { bluetooth } from '@signality/core/browser/bluetooth';
 import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-bluetooth',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge],
   template: `

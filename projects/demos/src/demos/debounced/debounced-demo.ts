@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { debounced } from '@signality/core/reactivity/debounced';
 import { DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-debounced',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoInput, FormsModule],
   template: `
