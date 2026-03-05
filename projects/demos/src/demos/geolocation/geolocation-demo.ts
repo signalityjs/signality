@@ -121,7 +121,7 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
   `,
 })
 export class GeolocationDemo {
-  readonly geo = geolocation({ immediate: false });
+  readonly geo = geolocation();
 
   readonly importCode = `import { geolocation } from '@signality/core'`;
 

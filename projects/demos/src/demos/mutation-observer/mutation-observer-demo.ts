@@ -1,17 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-  signal,
-  viewChild,
-  ElementRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, signal, viewChild } from '@angular/core';
 import { mutationObserver } from '@signality/core/observers/mutation-observer';
 import { DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-mutation-observer',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton],
   template: `

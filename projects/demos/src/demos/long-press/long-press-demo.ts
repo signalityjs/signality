@@ -1,16 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  signal,
-  viewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { onLongPress } from '@signality/core/elements/on-long-press';
 import { DemoBadge, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-on-long-press',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge],
   template: `

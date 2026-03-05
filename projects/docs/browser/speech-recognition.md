@@ -44,34 +44,34 @@ export class VoiceInput {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type                       | Description                                            |
+|-----------|----------------------------|--------------------------------------------------------|
 | `options` | `SpeechRecognitionOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `lang` | `string` | `'en-US'` | Language for speech recognition |
-| `interimResults` | `boolean` | `false` | Whether to return interim results |
-| `continuous` | `boolean` | `false` | Whether to continue recognition after speech ends |
-| `maxAlternatives` | `number` | `1` | Maximum number of alternative transcripts |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | - | Optional injector for DI context |
+| Option            | Type                                                | Default   | Description                                       |
+|-------------------|-----------------------------------------------------|-----------|---------------------------------------------------|
+| `lang`            | `string`                                            | `'en-US'` | Language for speech recognition                   |
+| `interimResults`  | `boolean`                                           | `false`   | Whether to return interim results                 |
+| `continuous`      | `boolean`                                           | `false`   | Whether to continue recognition after speech ends |
+| `maxAlternatives` | `number`                                            | `1`       | Maximum number of alternative transcripts         |
+| `injector`        | [`Injector`](https://angular.dev/api/core/Injector) | -         | Optional injector for DI context                  |
 
 ## Return Value
 
 The `speechRecognition()` function returns a `SpeechRecognitionRef`:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `isSupported` | `Signal<boolean>` | Whether Speech Recognition API is supported |
-| `isListening` | `Signal<boolean>` | Whether recognition is currently active |
-| `text` | `Signal<string>` | Final transcript text |
-| `interimText` | `Signal<string>` | Interim transcript text |
-| `error` | `Signal<string \| null>` | Error message if recognition failed |
-| `start` | `() => void` | Start speech recognition |
-| `stop` | `() => void` | Stop speech recognition |
-| `abort` | `() => void` | Abort speech recognition |
+| Property      | Type                     | Description                                 |
+|---------------|--------------------------|---------------------------------------------|
+| `isSupported` | `Signal<boolean>`        | Whether Speech Recognition API is supported |
+| `isListening` | `Signal<boolean>`        | Whether recognition is currently active     |
+| `text`        | `Signal<string>`         | Final transcript text                       |
+| `interimText` | `Signal<string>`         | Interim transcript text                     |
+| `error`       | `Signal<string \| null>` | Error message if recognition failed         |
+| `start`       | `() => void`             | Start speech recognition                    |
+| `stop`        | `() => void`             | Stop speech recognition                     |
+| `abort`       | `() => void`             | Abort speech recognition                    |
 
 ## Examples
 
@@ -90,7 +90,7 @@ import { speechRecognition } from '@signality/core';
   `,
 })
 export class VoiceSearch {
-  readonly recognition = speechRecognition({ continuous: true }); // [!code highlight]
+  readonly recognition = speechRecognition({ continuous: true });
   readonly searchQuery = signal('');
   
   constructor() {

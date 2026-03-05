@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { textSelection } from '@signality/core/elements/text-selection';
 import { DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-text-selection',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton],
   template: `

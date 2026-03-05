@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { interval } from '@signality/core/scheduling/interval';
 import { DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-interval',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton],
   template: `

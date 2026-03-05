@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { screenOrientation } from '@signality/core/browser/screen-orientation';
 import { DemoBadge, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-screen-orientation',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge],
   template: `

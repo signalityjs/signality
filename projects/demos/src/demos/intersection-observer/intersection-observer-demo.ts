@@ -1,17 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-  signal,
-  viewChild,
-  ElementRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, signal, viewChild } from '@angular/core';
 import { intersectionObserver } from '@signality/core/observers/intersection-observer';
-import { DemoCard, DemoButton, Wrapper } from '../../common';
+import { DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-intersection-observer',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton],
   template: `

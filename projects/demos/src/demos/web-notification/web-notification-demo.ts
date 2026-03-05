@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { webNotification } from '@signality/core/browser/web-notification';
 import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-web-notification',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge],
   template: `

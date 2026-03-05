@@ -26,21 +26,21 @@ export class ThemeDetector {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `query` | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt) | CSS media query string (see [Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries)) |
-| `options` | `MediaQueryOptions` | Optional configuration (see [Options](#options) below) |
+| Parameter | Type                                                                     | Description                                                                                                                            |
+|-----------|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `query`   | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt) | CSS media query string (see [Using media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries)) |
+| `options` | `MediaQueryOptions`                                                      | Optional configuration (see [Options](#options) below)                                                                                 |
 
 ## Options
 
 The `MediaQueryOptions` extends Angular's [`CreateSignalOptions<boolean>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                      | Description                                    |
-|-------------|---------------------------|------------------------------------------------|
-| `initialValue` | `boolean` | Initial value for SSR (default: `false`) |
-| `equal`     | `ValueEqualityFn<boolean>`      | Custom equality function. See [Signal equality functions](https://angular.dev/guide/signals#signal-equality-functions) |
-| `debugName` | `string`                  | Debug name for the signal (development only)   |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                | Optional injector for DI context               |
+| Option         | Type                                                | Description                                                                                                            |
+|----------------|-----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| `initialValue` | `boolean`                                           | Initial value for SSR (default: `false`)                                                                               |
+| `equal`        | `ValueEqualityFn<boolean>`                          | Custom equality function. See [Signal equality functions](https://angular.dev/guide/signals#signal-equality-functions) |
+| `debugName`    | `string`                                            | Debug name for the signal (development only)                                                                           |
+| `injector`     | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context                                                                                       |
 
 ## Return Value
 
@@ -139,8 +139,8 @@ import { mediaQuery } from '@signality/core';
 })
 export class DynamicBreakpoint {
   readonly breakpoint = signal(768);
-  readonly query = computed(() => `(min-width: ${this.breakpoint()}px)`);
-  readonly matches = mediaQuery(this.query); // [!code highlight]
+  readonly query = computed(() => `(min-width: ${this.breakpoint()}px)`); // [!code highlight]
+  readonly matches = mediaQuery(this.query);
 }
 ```
 
@@ -149,8 +149,8 @@ export class DynamicBreakpoint {
 On the server, the signal initializes with `false` by default. You can provide an initial value:
 
 ```typescript
-const isDark = mediaQuery('(prefers-color-scheme: dark)', { 
-  initialValue: true 
+const isDark = mediaQuery('(prefers-color-scheme: dark)', {
+  initialValue: true
 });
 ```
 

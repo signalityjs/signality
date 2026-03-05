@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { fps } from '@signality/core/browser/fps';
 import { DemoButton, DemoCard, DemoProgress, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-fps',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoProgress],
   template: `

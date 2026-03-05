@@ -140,7 +140,7 @@ export default defineConfig({
     },
 
     nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'Guide', link: '/' },
       { text: 'API', link: '/api-reference' },
       {
         text: 'Links',
@@ -159,7 +159,7 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
-          { text: 'Getting Started', link: '/guide/getting-started' },
+          { text: 'Getting Started', link: '/' },
           { text: 'Key Concepts', link: '/guide/key-concepts' },
           { text: 'AI Development', link: '/guide/ai-development' },
         ],

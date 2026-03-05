@@ -82,7 +82,7 @@ export class ImageShare {
     if (!file) return;
     
     await this.webShare.share({
-      files: [file], // [!code highlight]
+      files: [file],
       title: 'Check out this image!',
     });
   }
@@ -116,8 +116,8 @@ export class SocialShare {
 
   async nativeShare() {
     await this.webShare.share({
-      title: this.title() ?? '', // [!code highlight]
-      url: this.url(), // [!code highlight]
+      title: this.title() ?? '',
+      url: this.url(),
     });
   }
 }

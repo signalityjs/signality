@@ -144,7 +144,7 @@ export class CustomSettings {
   
   speakWithSettings() {
     this.synthesis.speak(this.text(), {
-      lang: 'en-US',
+      lang: 'en-US', // [!code highlight]
       rate: 1.5, // [!code highlight]
       pitch: 1.2, // [!code highlight]
       volume: 0.8, // [!code highlight]

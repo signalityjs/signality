@@ -1,16 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-  signal,
-  computed,
-} from '@angular/core';
-import { mouse, type MouseCoordinateType } from '@signality/core/elements/mouse';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { mouse } from '@signality/core/elements/mouse';
 import { DemoCard, DemoToggle, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-mouse',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoToggle],
   template: `

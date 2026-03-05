@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { favicon } from '@signality/core/browser/favicon';
 import { DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-favicon',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoButton, DemoCard],
   template: `

@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { vibrate } from '@signality/core/browser/vibrate';
 import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-vibrate',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge],
   template: `

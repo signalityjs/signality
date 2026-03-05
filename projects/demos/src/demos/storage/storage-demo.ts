@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { storage } from '@signality/core/browser/storage';
 import { DemoButton, DemoCard, DemoInput, DemoToggle, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-storage',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoButton, DemoCard, DemoInput, DemoToggle, FormsModule],
   template: `

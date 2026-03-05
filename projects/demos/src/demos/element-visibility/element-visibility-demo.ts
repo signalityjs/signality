@@ -1,16 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewEncapsulation,
-  viewChild,
-  ElementRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angular/core';
 import { elementVisibility } from '@signality/core/elements/element-visibility';
-import { DemoCard, DemoButton, Wrapper } from '../../common';
+import { DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-element-visibility',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton],
   template: `
@@ -45,12 +38,12 @@ import { DemoCard, DemoButton, Wrapper } from '../../common';
     }
 
     .scroll-container {
-      height: 125px;
+      height: 136px;
       overflow-y: auto;
       background: #161618;
       border: 1px solid #3f3f46;
       border-radius: 8px;
-      padding: 1rem;
+      padding: 1rem 1.5rem;
     }
 
     .target-box {
@@ -63,7 +56,7 @@ import { DemoCard, DemoButton, Wrapper } from '../../common';
       justify-content: center;
       transition: all 0.2s ease;
       margin-bottom: 200px;
-      margin-top: 20px;
+      margin-top: 0.75rem;
     }
 
     .target-box.visible {

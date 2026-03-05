@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { elementFocusWithin } from '@signality/core/elements/element-focus-within';
 import { DemoBadge, DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-element-focus-within',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge, DemoInput],
   template: `

@@ -5,7 +5,6 @@ import SourceLink from './SourceLink.vue';
 
 const { frontmatter } = useData();
 
-const title = computed(() => frontmatter.value.title as string | undefined);
 const hasSource = computed(() => !!frontmatter.value.source);
 </script>
 

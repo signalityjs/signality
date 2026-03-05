@@ -186,7 +186,7 @@ import { storage, speechSynthesis, favicon } from '@signality/core';
   `,
 })
 export class Demo {
-  readonly value = storage('key', ''); // Web Storage API
+  readonly value = storage('key', 'Hi, Angular!'); // Web Storage API
   readonly synthesis = speechSynthesis(); // Web Speech API
   readonly fav = favicon(); // Favicon API
 

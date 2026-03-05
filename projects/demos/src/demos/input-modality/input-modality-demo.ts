@@ -4,7 +4,6 @@ import { DemoBadge, DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-input-modality',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge, DemoInput],
   template: `

@@ -92,7 +92,7 @@ export class ResponsiveContainer {
     const width = this.size().width;
     if (width < 400) return 'layout-compact';
     if (width < 800) return 'layout-medium';
-    return 'layout-wide'; // [!code highlight]
+    return 'layout-wide';
   });
 }
 ```
@@ -224,8 +224,8 @@ interface ElementSizeValue {
 
 type ElementSizeOptions = CreateSignalOptions<ElementSizeValue> &
   WithInjector & {
-    readonly box?: MaybeSignal<ResizeObserverBoxOptions>;
-  };
+  readonly box?: MaybeSignal<ResizeObserverBoxOptions>;
+};
 
 function elementSize(
   target: MaybeElementSignal<HTMLElement>,

@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { speechSynthesis } from '@signality/core/browser/speech-synthesis';
 import { DemoBadge, DemoButton, DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-speech-synthesis',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge, DemoInput, FormsModule],
   template: `

@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewEncapsulation,
-  viewChild,
   ElementRef,
   inject,
   PLATFORM_ID,
   signal,
+  viewChild,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { pictureInPicture } from '@signality/core/browser/picture-in-picture';
@@ -14,7 +13,6 @@ import { DemoBadge, DemoButton, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-picture-in-picture',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoBadge, DemoButton],
   template: `

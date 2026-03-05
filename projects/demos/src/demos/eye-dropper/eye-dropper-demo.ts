@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { eyeDropper } from '@signality/core/browser/eye-dropper';
-import { DemoButton, DemoCard, DemoBadge, Wrapper } from '../../common';
+import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-eye-dropper',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoButton, DemoCard, DemoBadge],
   template: `

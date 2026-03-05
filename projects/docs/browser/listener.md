@@ -269,6 +269,14 @@ function listener<T extends HTMLElement, E extends keyof HTMLElementEventMap>(
   options?: ListenerOptions
 ): ListenerRef;
 
+// SVGElement events
+function listener<T extends SVGElement, E extends keyof SVGElementEventMap>(
+  target: MaybeElementSignal<T>,
+  event: MaybeSignal<E>,
+  handler: (e: SVGElementEventMap[E]) => any,
+  options?: ListenerOptions
+): ListenerRef;
+
 // Generic events
 function listener<EventType = Event>(
   target: MaybeElementSignal<HTMLElement>,

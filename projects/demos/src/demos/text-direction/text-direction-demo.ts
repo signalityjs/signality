@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { textDirection } from '@signality/core/browser/text-direction';
 import { DemoCard, DemoToggle, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-text-direction',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoToggle],
   template: `

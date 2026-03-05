@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { webShare } from '@signality/core/browser/web-share';
 import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-web-share',
-  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge],
   template: `
@@ -18,15 +17,6 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
           </div>
         </demo-card>
         } @else {
-        <demo-card>
-          <div class="status-row">
-            <span class="status-label">Status</span>
-            <demo-badge [type]="shareAPI.isSharing() ? 'warning' : 'neutral'">
-              {{ shareAPI.isSharing() ? 'Sharing...' : 'Ready' }}
-            </demo-badge>
-          </div>
-        </demo-card>
-
         <demo-button variant="primary" (click)="share()" [disabled]="shareAPI.isSharing()">
           {{ shareAPI.isSharing() ? 'Sharing...' : 'Share' }}
         </demo-button>
