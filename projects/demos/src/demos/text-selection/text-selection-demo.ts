@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { textSelection } from '@signality/core/elements/text-selection';
-import { DemoButton, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-text-selection',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton],
+  imports: [Wrapper, DemoCard],
   template: `
     <ng-demo-wrapper [code]="importCode">
       <div class="text-selection-card">

@@ -7,7 +7,6 @@ import './website.css';
 export default {
   Layout,
   enhanceApp({ app }) {
-    // Register Demo component globally for use in markdown
     app.component('Demo', Demo);
   },
 } satisfies Theme;

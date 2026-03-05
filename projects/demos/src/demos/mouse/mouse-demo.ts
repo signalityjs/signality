@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { mouse } from '@signality/core/elements/mouse';
-import { DemoCard, DemoToggle, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-mouse',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoToggle],
+  imports: [Wrapper, DemoCard],
   template: `
     <ng-demo-wrapper [code]="importCode">
       <div class="mouse-card">
