@@ -30,39 +30,39 @@ export class LongPressDemo {
 
 ## Parameters
 
-| Parameter | Type                              | Description                                          |
-|-----------|-----------------------------------|------------------------------------------------------|
-| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to detect long presses on             |
-| `handler` | `(event: PointerEvent) => void`   | Callback invoked when a long press is detected       |
-| `options` | `OnLongPressOptions`                | Optional configuration (see [Options](#options) below) |
+| Parameter | Type                                                                                        | Description                                            |
+|-----------|---------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Target element to detect long presses on               |
+| `handler` | `(event: PointerEvent) => void`                                                             | Callback invoked when a long press is detected         |
+| `options` | `OnLongPressOptions`                                                                        | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `OnLongPressOptions` extends `WithInjector`:
 
-| Option              | Type                    | Default | Description                                                        |
-|---------------------|-------------------------|---------|--------------------------------------------------------------------|
-| `delay`             | `MaybeSignal<number>`   | `500`   | Time in ms before the callback is triggered                        |
-| `distanceThreshold` | `number \| false`       | `10`    | Max distance (px) the pointer can move before cancelling. Set to `false` to disable |
-| `modifiers`         | `OnLongPressModifiers`    | -       | Keyboard modifiers required during the press                       |
-| `injector`          | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                   |
+| Option              | Type                                                | Default | Description                                                                         |
+|---------------------|-----------------------------------------------------|---------|-------------------------------------------------------------------------------------|
+| `delay`             | `MaybeSignal<number>`                               | `500`   | Time in ms before the callback is triggered                                         |
+| `distanceThreshold` | `number \| false`                                   | `10`    | Max distance (px) the pointer can move before cancelling. Set to `false` to disable |
+| `modifiers`         | `OnLongPressModifiers`                              | -       | Keyboard modifiers required during the press                                        |
+| `injector`          | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                                    |
 
 ### OnLongPressModifiers
 
-| Property | Type      | Description                        |
-|----------|-----------|------------------------------------|
-| `ctrl`   | `boolean` | Require Ctrl key to be held        |
-| `shift`  | `boolean` | Require Shift key to be held       |
-| `alt`    | `boolean` | Require Alt key to be held         |
+| Property | Type      | Description                           |
+|----------|-----------|---------------------------------------|
+| `ctrl`   | `boolean` | Require Ctrl key to be held           |
+| `shift`  | `boolean` | Require Shift key to be held          |
+| `alt`    | `boolean` | Require Alt key to be held            |
 | `meta`   | `boolean` | Require Meta (Cmd/Win) key to be held |
 
 ## Return Value
 
 Returns a `OnLongPressRef` with a `destroy` method to stop detection:
 
-| Property  | Type         | Description                      |
-|-----------|--------------|----------------------------------|
-| `destroy` | `() => void` | Stops long press detection       |
+| Property  | Type         | Description                |
+|-----------|--------------|----------------------------|
+| `destroy` | `() => void` | Stops long press detection |
 
 ## Examples
 

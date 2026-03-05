@@ -1,132 +1,10 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
 import { useData } from 'vitepress';
 import { VPNavBarSearch } from 'vitepress/theme';
 import SidebarGroup from './SidebarGroup.vue';
 
 const { site } = useData();
 const sidebar = site.value.themeConfig.sidebar || [];
-const base = site.value.base || '/';
-
-// Determine current version based on base path
-const getCurrentVersionFromBase = (basePath: string): string => {
-  if (basePath === '/next/') return 'next';
-
-  const match = basePath.match(/^\/v(\d+)\//);
-
-  if (match) {
-    return `v${match[1]}`;
-  }
-
-  return 'latest';
-};
-
-interface VersionOption {
-  version: string;
-  path: string;
-  label: string;
-  isLatest?: boolean;
-  isNext?: boolean;
-}
-
-const versions = ref<VersionOption[]>([]);
-const currentVersionLabel = ref('v0.0'); // Default fallback
-
-const loadVersions = async () => {
-  try {
-    const response = await fetch(`${base}versions.json`);
-    if (response.ok) {
-      const versionsData = await response.json();
-
-      if (Array.isArray(versionsData)) {
-        versions.value = versionsData;
-
-        // Find current version
-        const currentVersionPath = getCurrentVersionFromBase(base);
-        const currentVersionOption = versions.value.find(
-          v => v.version === currentVersionPath || v.path === base
-        );
-
-        if (currentVersionOption) {
-          // For latest version, use format v{major}.{minor} from label
-          if (currentVersionOption.isLatest && currentVersionOption.label) {
-            // Extract version from label like "v1.0.0" -> "v1.0"
-            const versionMatch = currentVersionOption.label.match(/v(\d+)\.(\d+)/);
-            if (versionMatch) {
-              currentVersionLabel.value = `v${versionMatch[1]}.${versionMatch[2]}`;
-            } else {
-              currentVersionLabel.value = currentVersionOption.label;
-            }
-          } else {
-            currentVersionLabel.value = currentVersionOption.label;
-          }
-        } else {
-          // Fallback: determine from base path
-          if (base === '/next/') {
-            currentVersionLabel.value = 'Next';
-          } else if (base.match(/^\/v\d+\//)) {
-            const match = base.match(/^\/v(\d+)\//);
-            currentVersionLabel.value = match ? `v${match[1]}` : 'v0.0';
-          } else {
-            // Fallback: try to extract from versions.json label or use default
-            const latestVersion = versions.value.find(v => v.isLatest);
-            if (latestVersion && latestVersion.label) {
-              const versionMatch = latestVersion.label.match(/v(\d+)\.(\d+)/);
-              if (versionMatch) {
-                currentVersionLabel.value = `v${versionMatch[1]}.${versionMatch[2]}`;
-              } else {
-                currentVersionLabel.value = 'v0.0';
-              }
-            } else {
-              currentVersionLabel.value = 'v0.0';
-            }
-          }
-        }
-      }
-    }
-  } catch {}
-};
-
-const versionDropdownOpen = ref(false);
-
-const toggleVersionDropdown = () => {
-  versionDropdownOpen.value = !versionDropdownOpen.value;
-};
-
-const selectVersion = (versionOption: VersionOption) => {
-  versionDropdownOpen.value = false;
-
-  const targetPath = versionOption.path;
-  const currentPath = window.location.pathname;
-
-  // Remove current base path and add new base path
-  const pathWithoutBase = currentPath.replace(base, '/');
-  const newPath =
-    targetPath === '/' ? pathWithoutBase : targetPath + pathWithoutBase.replace(/^\//, '');
-
-  // Navigate to new path
-  window.location.href = newPath;
-};
-
-let clickOutsideHandler: ((event: MouseEvent) => void) | null = null;
-
-onMounted(async () => {
-  await loadVersions();
-
-  clickOutsideHandler = (event: MouseEvent) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.version-selector')) {
-      versionDropdownOpen.value = false;
-    }
-  };
-  document.addEventListener('click', clickOutsideHandler);
-});
-
-onUnmounted(() => {
-  if (clickOutsideHandler) {
-    document.removeEventListener('click', clickOutsideHandler);
-  }
-});
 
 let isSwapped = false;
 let isAnimating = false;
@@ -235,16 +113,16 @@ function handleMouseLeave() {
 //   }, 3000);
 // });
 
-onUnmounted(() => {
-  const logoContainer = document.querySelector('.sidebar-logo');
-  if (logoContainer) {
-    logoContainer.removeEventListener('mouseenter', handleMouseEnter);
-    logoContainer.removeEventListener('mouseleave', handleMouseLeave);
-  }
-  if (autoInterval) {
-    clearInterval(autoInterval);
-  }
-});
+// onUnmounted(() => {
+//   const logoContainer = document.querySelector('.sidebar-logo');
+//   if (logoContainer) {
+//     logoContainer.removeEventListener('mouseenter', handleMouseEnter);
+//     logoContainer.removeEventListener('mouseleave', handleMouseLeave);
+//   }
+//   if (autoInterval) {
+//     clearInterval(autoInterval);
+//   }
+// });
 </script>
 
 <template>
@@ -300,67 +178,6 @@ onUnmounted(() => {
             </svg>
             <span class="logo-text" id="logoText">signality</span>
           </a>
-
-          <!--          <div class="flex items-center gap-1">-->
-          <!--            <div-->
-          <!--              class="border border-[#2E2E32] flex items-center justify-center rounded-md text-xs w-[30px] h-[30px]"-->
-          <!--            >-->
-          <!--              &lt;!&ndash;              v1.0&ndash;&gt;-->
-          <!--              <svg-->
-          <!--                xmlns="http://www.w3.org/2000/svg"-->
-          <!--                width="20"-->
-          <!--                height="20"-->
-          <!--                viewBox="0 0 24 24"-->
-          <!--                fill="none"-->
-          <!--              >-->
-          <!--                <path-->
-          <!--                  d="M12 2C10.6868 2 9.38642 2.25866 8.17317 2.7612C6.95991 3.26375 5.85752 4.00035 4.92893 4.92893C3.05357 6.8043 2 9.34784 2 12C2 16.42 4.87 20.17 8.84 21.5C9.34 21.58 9.5 21.27 9.5 21V19.31C6.73 19.91 6.14 17.97 6.14 17.97C5.68 16.81 5.03 16.5 5.03 16.5C4.12 15.88 5.1 15.9 5.1 15.9C6.1 15.97 6.63 16.93 6.63 16.93C7.5 18.45 8.97 18 9.54 17.76C9.63 17.11 9.89 16.67 10.17 16.42C7.95 16.17 5.62 15.31 5.62 11.5C5.62 10.39 6 9.5 6.65 8.79C6.55 8.54 6.2 7.5 6.75 6.15C6.75 6.15 7.59 5.88 9.5 7.17C10.29 6.95 11.15 6.84 12 6.84C12.85 6.84 13.71 6.95 14.5 7.17C16.41 5.88 17.25 6.15 17.25 6.15C17.8 7.5 17.45 8.54 17.35 8.79C18 9.5 18.38 10.39 18.38 11.5C18.38 15.32 16.04 16.16 13.81 16.41C14.17 16.72 14.5 17.33 14.5 18.26V21C14.5 21.27 14.66 21.59 15.17 21.5C19.14 20.16 22 16.42 22 12C22 10.6868 21.7413 9.38642 21.2388 8.17317C20.7362 6.95991 19.9997 5.85752 19.0711 4.92893C18.1425 4.00035 17.0401 3.26375 15.8268 2.7612C14.6136 2.25866 13.3132 2 12 2Z"-->
-          <!--                  fill="#E1E1E1"-->
-          <!--                />-->
-          <!--              </svg>-->
-          <!--            </div>-->
-          <!--          </div>-->
-
-          <!--          <div class="version-selector">-->
-          <!--            <button-->
-          <!--              class="version-button"-->
-          <!--              @click.stop="toggleVersionDropdown"-->
-          <!--              :aria-expanded="versionDropdownOpen"-->
-          <!--              aria-label="Select version"-->
-          <!--            >-->
-          <!--              <span class="version-text">{{ currentVersionLabel }}</span>-->
-          <!--              <svg-->
-          <!--                class="version-arrow"-->
-          <!--                :class="{ 'version-arrow-open': versionDropdownOpen }"-->
-          <!--                width="12"-->
-          <!--                height="12"-->
-          <!--                viewBox="0 0 12 12"-->
-          <!--                fill="none"-->
-          <!--                xmlns="http://www.w3.org/2000/svg"-->
-          <!--              >-->
-          <!--                <path-->
-          <!--                  d="M3 4.5L6 7.5L9 4.5"-->
-          <!--                  stroke="currentColor"-->
-          <!--                  stroke-width="1.5"-->
-          <!--                  stroke-linecap="round"-->
-          <!--                  stroke-linejoin="round"-->
-          <!--                />-->
-          <!--              </svg>-->
-          <!--            </button>-->
-
-          <!--            <div v-if="versionDropdownOpen && versions.length > 0" class="version-dropdown">-->
-          <!--              <button-->
-          <!--                v-for="versionOption in versions"-->
-          <!--                :key="versionOption.version"-->
-          <!--                class="version-option"-->
-          <!--                :class="{ 'version-option-active': versionOption.path === base }"-->
-          <!--                @click.stop="selectVersion(versionOption)"-->
-          <!--              >-->
-          <!--                {{ versionOption.label }}-->
-          <!--                <span v-if="versionOption.path === base" class="version-check">✓</span>-->
-          <!--              </button>-->
-          <!--            </div>-->
-          <!--          </div>-->
         </div>
 
         <VPNavBarSearch />

@@ -41,16 +41,16 @@ export class WakeLockDemo {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type              | Description                                            |
+|-----------|-------------------|--------------------------------------------------------|
 | `options` | `WakeLockOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `autoReacquire` | `boolean` | `true` | Whether to automatically reacquire wake lock when document becomes visible |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | - | Optional injector for DI context |
+| Option          | Type                                                | Default | Description                                                                |
+|-----------------|-----------------------------------------------------|---------|----------------------------------------------------------------------------|
+| `autoReacquire` | `boolean`                                           | `true`  | Whether to automatically reacquire wake lock when document becomes visible |
+| `injector`      | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                           |
 
 ## Examples
 
@@ -105,13 +105,13 @@ export class QRCodeScanner {
 
   async displayQRCode() {
     this.showQRCode.set(true);
-    // Keep screen awake while QR code is displayed
+    // keep screen awake while QR code is displayed
     await this.wakeLock.request(); // [!code highlight]
   }
 
   async hideQRCode() {
     this.showQRCode.set(false);
-    await this.wakeLock.release();
+    await this.wakeLock.release(); // [!code highlight]
   }
 }
 ```
@@ -128,7 +128,7 @@ import { wakeLock } from '@signality/core';
   `,
 })
 export class AutoReacquire {
-  // Automatically reacquires wake lock when document becomes visible again
+  // automatically reacquires wake lock when document becomes visible again
   readonly wakeLock = wakeLock({ autoReacquire: true }); // [!code highlight]
 }
 ```

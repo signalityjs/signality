@@ -23,7 +23,7 @@ import { watcher } from '@signality/core';
 @Component({
   template: `<p>Count: {{ count() }}</p>`,
 })
-export class CounterComponent {
+export class Counter {
   readonly count = signal(0);
 
   constructor() {
@@ -48,7 +48,7 @@ import { watcher } from '@signality/core';
     <p>Age: {{ age() }}</p>
   `,
 })
-export class UserComponent {
+export class User {
   readonly name = signal('John');
   readonly age = signal(25);
 
@@ -71,22 +71,22 @@ Unlike the built-in [`effect()`](https://angular.dev/api/core/effect) function, 
 
 ## Parameters
 
-| Parameter         | Type                                                                   | Description                                                                           |
-|-------------------|------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| `sourceOrSources` | `Signal<V>` or `readonly Signal<any>[]`                                | Single signal or array of signals to watch                                            |
+| Parameter         | Type                                                                                                                                                             | Description                                                                           |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| `sourceOrSources` | `Signal<V>` or `readonly Signal<any>[]`                                                                                                                          | Single signal or array of signals to watch                                            |
 | `fn`              | `(curr: V, prev: V, onCleanup: EffectCleanupRegisterFn) => void` or `(curr: SignalValues<T>, prev: SignalValues<T>, onCleanup: EffectCleanupRegisterFn) => void` | Callback function called when signal(s) change. Receives current and previous values. |
-| `options`         | `CreateWatcherOptions`                                                  | Optional configuration (see [Options](#options) below)                                |
+| `options`         | `CreateWatcherOptions`                                                                                                                                           | Optional configuration (see [Options](#options) below)                                |
 
 ## Options
 
 The `CreateWatcherOptions` extends [`CreateEffectOptions`](https://angular.dev/api/core/CreateEffectOptions):
 
-| Option     | Type       | Default | Description                                                                 |
-|------------|------------|---------|-----------------------------------------------------------------------------|
-| `once`     | `boolean`  | `false` | If `true`, the watcher will automatically destroy itself after the first change |
-| `manualCleanup` | `boolean` | `false` | If `true`, the effect requires manual cleanup. By default, the effect automatically registers itself for cleanup with the current `DestroyRef` |
-| `debugName` | `string` | - | Debug name for the effect (used in Angular DevTools) |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                           |
+| Option          | Type                                                | Default | Description                                                                                                                                    |
+|-----------------|-----------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| `once`          | `boolean`                                           | `false` | If `true`, the watcher will automatically destroy itself after the first change                                                                |
+| `manualCleanup` | `boolean`                                           | `false` | If `true`, the effect requires manual cleanup. By default, the effect automatically registers itself for cleanup with the current `DestroyRef` |
+| `debugName`     | `string`                                            | -       | Debug name for the effect (used in Angular DevTools)                                                                                           |
+| `injector`      | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                                                                                               |
 
 ## Return Value
 
@@ -111,7 +111,7 @@ import { watcher } from '@signality/core';
 @Component({
   template: `<p>Status: {{ status() }}</p>`,
 })
-export class StatusComponent {
+export class Status {
   readonly status = signal<'idle' | 'loading' | 'success'>('idle');
 
   constructor() {
@@ -137,7 +137,7 @@ import { watcher } from '@signality/core';
 @Component({
   template: `<p>Status: {{ status() }}</p>`,
 })
-export class StatusComponent {
+export class Status {
   readonly status = signal<'idle' | 'loading' | 'success'>('idle');
 
   constructor() {
@@ -162,6 +162,7 @@ interface CreateWatcherOptions extends Omit<CreateEffectOptions, 'allowSignalWri
    */
   readonly once?: boolean;
 }
+
 type WatcherRef = EffectRef;
 
 // Single source overload

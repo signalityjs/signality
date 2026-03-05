@@ -6,7 +6,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   template: `
     <div class="progress-wrapper">
       <div class="progress-track">
-        <div class="progress-fill" [style.width.%]="value()" [style.background]="color()"></div>
+        <div
+          class="progress-fill"
+          [style.width.%]="(value() / max()) * 100"
+          [style.background]="color()"
+        ></div>
       </div>
       @if (showValue()) {
       <span class="progress-value">{{ value().toFixed(0) }}%</span>
@@ -49,6 +53,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class DemoProgress {
   readonly value = input(0);
+  readonly max = input(100);
   readonly color = input('#DEB3EB');
   readonly showValue = input(true);
 }

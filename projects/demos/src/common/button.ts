@@ -17,6 +17,11 @@ export type DemoButtonSize = 'sm' | 'md';
     </button>
   `,
   styles: `
+    :host {
+      display: inline-block;
+      inline-size: fit-content;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;

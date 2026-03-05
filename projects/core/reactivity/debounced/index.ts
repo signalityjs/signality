@@ -29,7 +29,7 @@ export type DebouncedOptions<T> = CreateSignalOptions<T> & WithInjector;
  *     <p>Debounced value: {{ debouncedQuery() }}</p>
  *   `
  * })
- * class SearchComponent {
+ * class SearchInput {
  *   readonly query = signal('');
  *   readonly debouncedQuery = debounced(this.query, 300);
  * }
@@ -58,7 +58,7 @@ export function debounced<S extends Signal<any>>(
  *     <p>Search results for: {{ query() }}</p>
  *   `
  * })
- * class SearchComponent {
+ * class SearchInput {
  *   readonly query = debounced('', 300);
  * }
  * ```

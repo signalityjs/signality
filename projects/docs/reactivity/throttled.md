@@ -43,7 +43,7 @@ import { Component, signal, effect } from '@angular/core';
 import { throttled } from '@signality/core';
 
 @Component({ /* ... */ })
-export class MyComponent {
+export class ThrottledInput {
   readonly rawValue = signal(0);
   readonly throttledValue = throttled(this.rawValue, 200); // [!code highlight]
 
@@ -65,21 +65,21 @@ export class MyComponent {
 
 ## Parameters
 
-| Parameter | Type                  | Description                                                     |
-|-----------|-----------------------|-----------------------------------------------------------------|
-| `source`  | `Signal<T>` or `T`    | Source signal to throttle, or initial value for writable signal |
-| `timeMs`  | [`MaybeSignal<number>`](/reference/utility-types#maybesignal-lt-type-gt) | Throttle interval in milliseconds             |
-| `options` | `ThrottledOptions<T>` | Optional configuration (see [Options](#options) below)          |
+| Parameter | Type                                                                     | Description                                                     |
+|-----------|--------------------------------------------------------------------------|-----------------------------------------------------------------|
+| `source`  | `Signal<T>` or `T`                                                       | Source signal to throttle, or initial value for writable signal |
+| `timeMs`  | [`MaybeSignal<number>`](/reference/utility-types#maybesignal-lt-type-gt) | Throttle interval in milliseconds                               |
+| `options` | `ThrottledOptions<T>`                                                    | Optional configuration (see [Options](#options) below)          |
 
 ## Options
 
 The `ThrottledOptions<T>` extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                      | Description                                    |
-|-------------|---------------------------|------------------------------------------------|
+| Option      | Type                                                                 | Description                                                                                        |
+|-------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                  | Debug name for the signal (development only)   |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                | Optional injector for DI context               |
+| `debugName` | `string`                                                             | Debug name for the signal (development only)                                                       |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                  | Optional injector for DI context                                                                   |
 
 ## Return Value
 

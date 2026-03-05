@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 # Listener
 
-Reactive event listener with automatic cleanup. Attach event handlers to DOM elements, `window`, or `document` with full type-safety and automatic removal on component destroy.
+Reactive event listener with automatic cleanup. Attach event handlers to DOM elements, `window`, or `document` with automatic removal on component destroy.
 
 ::: warning Prefer Angular's built-in [event listeners](https://angular.dev/guide/templates/event-listeners)
 For most event handling scenarios, Angular's built-in event binding syntax is recommended:
@@ -22,9 +22,6 @@ export class MyComponent {
 ```
 
 :::
-
-
-<Demo name="listener" />
 
 ## Usage
 
@@ -269,6 +266,14 @@ function listener<T extends HTMLElement, E extends keyof HTMLElementEventMap>(
   target: MaybeElementSignal<T>,
   event: MaybeSignal<E>,
   handler: (e: HTMLElementEventMap[E]) => any,
+  options?: ListenerOptions
+): ListenerRef;
+
+// SVGElement events
+function listener<T extends SVGElement, E extends keyof SVGElementEventMap>(
+  target: MaybeElementSignal<T>,
+  event: MaybeSignal<E>,
+  handler: (e: SVGElementEventMap[E]) => any,
   options?: ListenerOptions
 ): ListenerRef;
 

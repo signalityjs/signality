@@ -80,18 +80,16 @@ import { pageVisibility } from '@signality/core';
   template: `<video #video src="video.mp4" autoplay></video>`,
 })
 export class SmartVideo {
-  readonly video = viewChild<ElementRef<HTMLVideoElement>>('video');
+  readonly video = viewChild.required<ElementRef<HTMLVideoElement>>('video');
   readonly visibility = pageVisibility();
   
   constructor() {
     effect(() => {
-      const videoEl = this.video()?.nativeElement;
-      if (!videoEl) return;
-      
+      const videoEl = this.video().nativeElement;
       if (this.visibility() === 'visible') {
-        videoEl.play(); // [!code highlight]
+        videoEl.play();
       } else {
-        videoEl.pause(); // [!code highlight]
+        videoEl.pause();
       }
     });
   }

@@ -30,30 +30,30 @@ export class SwipeDemo {
 
 ## Parameters
 
-| Parameter | Type                              | Description                                          |
-|-----------|-----------------------------------|------------------------------------------------------|
-| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Element to detect swipe gestures on                  |
-| `options` | `SwipeOptions`                    | Optional configuration (see [Options](#options) below) |
+| Parameter | Type                                                                                        | Description                                            |
+|-----------|---------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| `target`  | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) | Element to detect swipe gestures on                    |
+| `options` | `SwipeOptions`                                                                              | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `SwipeOptions` extends `WithInjector`:
 
-| Option      | Type       | Default | Description                                      |
-|-------------|------------|---------|--------------------------------------------------|
-| `threshold` | `number`   | `50`    | Minimum distance in pixels before a swipe is recognized |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                 |
+| Option      | Type                                                | Default | Description                                             |
+|-------------|-----------------------------------------------------|---------|---------------------------------------------------------|
+| `threshold` | `number`                                            | `50`    | Minimum distance in pixels before a swipe is recognized |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                        |
 
 ## Return Value
 
 Returns a `SwipeRef`:
 
-| Property    | Type                       | Description                                              |
-|-------------|----------------------------|----------------------------------------------------------|
-| `isSwiping` | `Signal<boolean>`          | Whether a swipe gesture is currently in progress         |
-| `direction` | `Signal<SwipeDirection>`   | Current swipe direction (`'up'`, `'down'`, `'left'`, `'right'`, or `'none'`) |
-| `distanceX` | `Signal<number>`           | Horizontal distance from start (positive = swiped left)  |
-| `distanceY` | `Signal<number>`           | Vertical distance from start (positive = swiped up)      |
+| Property    | Type                     | Description                                                                  |
+|-------------|--------------------------|------------------------------------------------------------------------------|
+| `isSwiping` | `Signal<boolean>`        | Whether a swipe gesture is currently in progress                             |
+| `direction` | `Signal<SwipeDirection>` | Current swipe direction (`'up'`, `'down'`, `'left'`, `'right'`, or `'none'`) |
+| `distanceX` | `Signal<number>`         | Horizontal distance from start (positive = swiped left)                      |
+| `distanceY` | `Signal<number>`         | Vertical distance from start (positive = swiped up)                          |
 
 ## Examples
 

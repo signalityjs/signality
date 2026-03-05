@@ -29,6 +29,9 @@ export interface GeolocationOptions extends WithInjector {
 }
 
 export interface GeolocationRef {
+  /** Whether Geolocation is supported */
+  readonly isSupported: Signal<boolean>;
+
   /** Current coordinates */
   readonly coords: Signal<GeolocationCoordinates | null>;
 
@@ -37,9 +40,6 @@ export interface GeolocationRef {
 
   /** Last error */
   readonly error: Signal<GeolocationPositionError | null>;
-
-  /** Whether Geolocation is supported */
-  readonly isSupported: Signal<boolean>;
 
   /** Whether currently fetching location */
   readonly isLoading: Signal<boolean>;
@@ -116,7 +116,9 @@ export function geolocation(options?: GeolocationOptions): GeolocationRef {
     };
 
     const resume = () => {
-      if (watchId !== undefined) return;
+      if (watchId !== undefined) {
+        return;
+      }
 
       isLoading.set(true);
 

@@ -27,7 +27,7 @@ import { mutationObserver } from '@signality/core';
 })
 export class Mutation {
   readonly el = inject(ElementRef);
-  readonly observer = mutationObserver(this.el, console.log, { childList: true }); // [!code highlight]
+  readonly mo = mutationObserver(this.el, console.log, { childList: true }); // [!code highlight]
 }
 ```
 
@@ -49,7 +49,7 @@ export class MultipleMutation {
   readonly child1 = viewChild<ElementRef>('child1');
   readonly child2 = viewChild<ElementRef>('child2');
   
-  readonly observer = mutationObserver(
+  readonly mo = mutationObserver(
     [this.child1, this.child2], // [!code highlight]
     mutations => {
       for (const mutation of mutations) {
@@ -76,7 +76,7 @@ export class ReactiveOptionsMutation {
   readonly box = viewChild<ElementRef>('box');
   readonly watchChildren = input(true); // [!code highlight]
   
-  readonly observer = mutationObserver(
+  readonly mo = mutationObserver(
     this.box,
     mutations => {
       console.log('Mutations:', mutations);
@@ -99,11 +99,11 @@ import { mutationObserver } from '@signality/core';
 })
 export class ManualCleanup {
   readonly box = viewChild<ElementRef>('box');
-  readonly observer = mutationObserver(this.box, console.log, { childList: true });
+  readonly mo = mutationObserver(this.box, console.log, { childList: true });
 
   manualCleanup() {
     // stop observing
-    this.observer.destroy();
+    this.mo.destroy();
   }
 }
 ```

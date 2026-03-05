@@ -31,7 +31,7 @@ export type ThrottledOptions<T> = CreateSignalOptions<T> & WithInjector;
  *     </div>
  *   `
  * })
- * class ScrollComponent {
+ * class ScrollTracker {
  *   readonly scrollY = signal(0);
  *   readonly throttledScrollY = throttled(this.scrollY, 100);
  * }
@@ -61,7 +61,7 @@ export function throttled<S extends Signal<any>>(
  *     </div>
  *   `
  * })
- * class MouseTrackerComponent {
+ * class MouseTracker {
  *   readonly mousePosition = throttled({ x: 0, y: 0 }, 16);
  * }
  * ```

@@ -23,6 +23,7 @@ This utility requires the `@signality/cdk-interop` and `@angular/cdk` packages t
 ```bash
 npm install @signality/cdk-interop @angular/cdk
 ```
+
 :::
 
 <Demo name="input-modality" />
@@ -49,19 +50,19 @@ export class InputDemo {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type                   | Description                                            |
+|-----------|------------------------|--------------------------------------------------------|
 | `options` | `InputModalityOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `InputModalityOptions` extends [`CreateSignalOptions<InputModality>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option     | Type      | Description                                    |
-|------------|-----------|------------------------------------------------|
-| `equal` | [`ValueEqualityFn<InputModality>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string` | Debug name for the signal (development only) |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector)| Optional injector for DI context               |
+| Option      | Type                                                                             | Description                                                                                        |
+|-------------|----------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| `equal`     | [`ValueEqualityFn<InputModality>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName` | `string`                                                                         | Debug name for the signal (development only)                                                       |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                              | Optional injector for DI context                                                                   |
 
 ## Return Value
 

@@ -87,7 +87,7 @@ import { elementVisibility } from '@signality/core';
 export class ScrollFadeIn {
   readonly section = viewChild<ElementRef>('section');
   readonly visibility = elementVisibility(this.section, {
-    threshold: [0, 0.25, 0.5, 0.75, 1] // [!code highlight]
+    threshold: [0, 0.25, 0.5, 0.75, 1]
   });
   
   readonly opacity = computed(() => this.visibility().ratio);

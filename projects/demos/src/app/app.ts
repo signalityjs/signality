@@ -24,7 +24,6 @@ import { InputModalityBrowserDemo } from '../demos/input-modality-browser/input-
 import { IntervalDemo } from '../demos/interval/interval-demo';
 import { LongPressDemo } from '../demos/long-press/long-press-demo';
 import { LiveAnnouncerDemo } from '../demos/live-announcer/live-announcer-demo';
-import { ListenerDemo } from '../demos/listener/listener-demo';
 import { IntersectionObserverDemo } from '../demos/intersection-observer/intersection-observer-demo';
 import { MutationObserverDemo } from '../demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from '../demos/resize-observer/resize-observer-demo';
@@ -86,7 +85,6 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     IntervalDemo,
     LiveAnnouncerDemo,
     LongPressDemo,
-    ListenerDemo,
     IntersectionObserverDemo,
     MutationObserverDemo,
     ResizeObserverDemo,
@@ -245,11 +243,6 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Live Announcer Demo</h2>
         <demo-live-announcer />
-      </section>
-
-      <section>
-        <h2>Listen Demo</h2>
-        <demo-listener />
       </section>
 
       <section>

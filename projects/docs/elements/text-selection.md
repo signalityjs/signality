@@ -49,21 +49,21 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 The `TextSelectionOptions` extends `WithInjector`:
 
-| Option     | Type       | Description                      |
-|------------|------------|----------------------------------|
+| Option     | Type                                                | Description                      |
+|------------|-----------------------------------------------------|----------------------------------|
 | `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context |
 
 ## Return Value
 
 The `textSelection()` function returns a `TextSelectionRef` object:
 
-| Property    | Type                        | Description                      |
-|-------------|-----------------------------|----------------------------------|
-| `text`      | `Signal<string>`            | The selected text content        |
-| `ranges`    | `Signal<Range[]>`           | Array of [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) objects           |
+| Property    | Type                        | Description                                                                                                |
+|-------------|-----------------------------|------------------------------------------------------------------------------------------------------------|
+| `text`      | `Signal<string>`            | The selected text content                                                                                  |
+| `ranges`    | `Signal<Range[]>`           | Array of [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) objects                           |
 | `rects`     | `Signal<DOMRect[]>`         | Bounding rectangles of selection (see [DOMRect](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect)) |
-| `selection` | `Signal<Selection \| null>` | The raw [Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection) object         |
-| `clear`     | `() => void`                | Clear the current text selection |
+| `selection` | `Signal<Selection \| null>` | The raw [Selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection) object                     |
+| `clear`     | `() => void`                | Clear the current text selection                                                                           |
 
 ## Examples
 

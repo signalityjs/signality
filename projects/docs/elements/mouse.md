@@ -16,11 +16,11 @@ import { mouse } from '@signality/core';
 
 @Component({
   template: `
-    <p>Mouse: {{ position().x }}, {{ position().y }}</p>
+    <p>Mouse: {{ mousePos().x }}, {{ mousePos().y }}</p>
   `,
 })
 export class MouseDemo {
-  readonly position = mouse(); // [!code highlight]
+  readonly mousePos = mouse(); // [!code highlight]
 }
 ```
 

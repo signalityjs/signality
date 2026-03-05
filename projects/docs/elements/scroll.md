@@ -16,11 +16,11 @@ import { scroll } from '@signality/core';
 
 @Component({
   template: `
-    <p>Scroll Y: {{ position.y() }}px</p>
+    <p>Scroll Y: {{ scrollPosition.y() }}px</p>
   `,
 })
 export class ScrollDemo {
-  readonly position = scroll(); // [!code highlight]
+  readonly scrollPosition = scroll(); // [!code highlight]
 }
 ```
 

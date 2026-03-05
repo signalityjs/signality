@@ -34,24 +34,25 @@ export class OrientationDemo {
 
 ## Parameters
 
-| Parameter | Type                      | Description                                            |
-|-----------|---------------------------|--------------------------------------------------------|
-| `options` | `ScreenOrientationOptions`| Optional configuration (see [Options](#options) below) |
+| Parameter | Type                       | Description                                            |
+|-----------|----------------------------|--------------------------------------------------------|
+| `options` | `ScreenOrientationOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-The `ScreenOrientationOptions` extends Angular's [`CreateSignalOptions<OrientationType>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`, where [`OrientationType`](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/type) is the Web API type:
+The `ScreenOrientationOptions` extends Angular's [`CreateSignalOptions<OrientationType>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option        | Type                      | Default            | Description                                    |
-|---------------|---------------------------|--------------------|------------------------------------------------|
-| `initialValue`| [`OrientationType`](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/type)         | `'portrait-primary'`| Initial orientation value for SSR              |
-| `equal`       | [`ValueEqualityFn<OrientationType>`](https://angular.dev/api/core/ValueEqualityFn) | -                  | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName`   | `string`                  | -                  | Debug name for the signal (development only)   |
-| `injector`    | [`Injector`](https://angular.dev/api/core/Injector)                | -                  | Optional injector for DI context               |
+| Option         | Type                                                                                         | Default              | Description                                                                                        |
+|----------------|----------------------------------------------------------------------------------------------|----------------------|----------------------------------------------------------------------------------------------------|
+| `initialValue` | [`OrientationType`](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/type) | `'portrait-primary'` | Initial orientation value for SSR                                                                  |
+| `equal`        | [`ValueEqualityFn<OrientationType>`](https://angular.dev/api/core/ValueEqualityFn)           | -                    | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName`    | `string`                                                                                     | -                    | Debug name for the signal (development only)                                                       |
+| `injector`     | [`Injector`](https://angular.dev/api/core/Injector)                                          | -                    | Optional injector for DI context                                                                   |
 
 ## Return Value
 
-Returns a `Signal<OrientationType>` containing the current screen orientation, where [`OrientationType`](https://developer.mozilla.org/en-US/docs/Web/API/ScreenOrientation/type) is the Web API type. Possible values:
+Returns a `Signal<OrientationType>` containing the current screen orientation. Possible values:
+
 - `'portrait-primary'` - Device is in primary portrait orientation
 - `'portrait-secondary'` - Device is in secondary portrait orientation (rotated 180°)
 - `'landscape-primary'` - Device is in primary landscape orientation
