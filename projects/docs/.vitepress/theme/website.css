@@ -20,7 +20,7 @@ body {
   button {
     --docsearch-search-button-background: #18181B !important;
 
-    width: -webkit-fill-available !important;
+    inline-size: -webkit-fill-available !important;
     color: #A39FA8 !important;
     border-radius: 6px !important;
 
@@ -98,7 +98,6 @@ div[class*="language-"] .lang {
   }
 }
 
-/* Code blocks - keep within content wrapper on mobile */
 @media (max-width: 768px) {
   .vp-doc div[class*="language-"] {
     margin-left: 0 !important;
@@ -120,5 +119,18 @@ div[class*="language-"] .lang {
     margin-right: 0 !important;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
+  }
+
+  .DocSearch-Button {
+    --docsearch-search-button-background: #18181B !important;
+
+    inline-size: -webkit-fill-available !important;
+    color: #A39FA8 !important;
+    border-radius: 6px !important;
+  }
+
+  .DocSearch-Button-Keys, .DocSearch-Button-Placeholder {
+    display: inline-flex !important;
+    font-size: 13px !important;
   }
 }

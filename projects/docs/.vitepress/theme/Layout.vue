@@ -24,20 +24,19 @@ const closeSidebar = () => {
   sidebarOpen.value = false;
 };
 
-// Force dark theme
 onMounted(() => {
   // Force dark theme on html element
   document.documentElement.classList.add('dark');
   document.documentElement.setAttribute('data-theme', 'dark');
   document.documentElement.style.colorScheme = 'dark';
-  
+
   // Remove light theme class if present
   document.documentElement.classList.remove('light');
-  
+
   // Force dark theme on body
   document.body.classList.add('dark');
   document.body.style.colorScheme = 'dark';
-  
+
   // Watch for any theme changes and force dark
   const observer = new MutationObserver(() => {
     if (!document.documentElement.classList.contains('dark')) {
@@ -49,7 +48,7 @@ onMounted(() => {
       document.documentElement.classList.remove('light');
     }
   });
-  
+
   observer.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class', 'data-theme'],
@@ -71,7 +70,7 @@ watch(
     <MobileHeader :sidebar-open="sidebarOpen" @toggle="toggleSidebar" />
 
     <!-- Overlay for mobile -->
-    <div v-if="sidebarOpen" class="sidebar-overlay" @click="closeSidebar"></div>
+    <div v-if="sidebarOpen" @click="closeSidebar" class="sidebar-overlay"></div>
 
     <!-- Sidebar Component -->
     <Sidebar :class="{ 'sidebar-open': sidebarOpen }" @navigate="closeSidebar" />

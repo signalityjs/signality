@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-const props = defineProps<{
-  name: string;
-}>();
+const props = defineProps<{ name: string }>();
 
 const loaded = ref(false);
 const error = ref<string | null>(null);
