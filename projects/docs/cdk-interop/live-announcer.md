@@ -14,8 +14,6 @@ npm install @signality/cdk-interop @angular/cdk
 ```
 :::
 
-<Demo name="live-announcer" />
-
 ## Usage
 
 ```angular-ts

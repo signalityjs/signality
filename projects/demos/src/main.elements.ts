@@ -30,15 +30,11 @@ import { ElementHoverDemo } from './demos/element-hover/element-hover-demo';
 import { ElementSizeDemo } from './demos/element-size/element-size-demo';
 import { ElementVisibilityDemo } from './demos/element-visibility/element-visibility-demo';
 import { FaviconDemo } from './demos/favicon/favicon-demo';
-import { FocusMonitorDemo } from './demos/focus-monitor/focus-monitor-demo';
 import { FpsDemo } from './demos/fps/fps-demo';
 import { GamepadDemo } from './demos/gamepad/gamepad-demo';
 import { GeolocationDemo } from './demos/geolocation/geolocation-demo';
-import { InputModalityDemo } from './demos/input-modality/input-modality-demo';
-import { InputModalityBrowserDemo } from './demos/input-modality-browser/input-modality-browser-demo';
 import { IntervalDemo } from './demos/interval/interval-demo';
 import { LongPressDemo } from './demos/long-press/long-press-demo';
-import { LiveAnnouncerDemo } from './demos/live-announcer/live-announcer-demo';
 import { IntersectionObserverDemo } from './demos/intersection-observer/intersection-observer-demo';
 import { MutationObserverDemo } from './demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from './demos/resize-observer/resize-observer-demo';
@@ -84,14 +80,10 @@ const DEMOS = [
   { component: ElementSizeDemo, name: 'signality-demo-element-size' },
   { component: ElementVisibilityDemo, name: 'signality-demo-element-visibility' },
   { component: FaviconDemo, name: 'signality-demo-favicon' },
-  { component: FocusMonitorDemo, name: 'signality-demo-focus-monitor' },
   { component: FpsDemo, name: 'signality-demo-fps' },
   { component: GamepadDemo, name: 'signality-demo-gamepad' },
   { component: GeolocationDemo, name: 'signality-demo-geolocation' },
-  { component: InputModalityDemo, name: 'signality-demo-input-modality' },
-  { component: InputModalityBrowserDemo, name: 'signality-demo-input-modality-browser' },
   { component: IntervalDemo, name: 'signality-demo-interval' },
-  { component: LiveAnnouncerDemo, name: 'signality-demo-live-announcer' },
   { component: LongPressDemo, name: 'signality-demo-long-press' },
   { component: IntersectionObserverDemo, name: 'signality-demo-intersection-observer' },
   { component: MutationObserverDemo, name: 'signality-demo-mutation-observer' },

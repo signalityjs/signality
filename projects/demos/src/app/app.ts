@@ -15,15 +15,11 @@ import { ElementHoverDemo } from '../demos/element-hover/element-hover-demo';
 import { ElementSizeDemo } from '../demos/element-size/element-size-demo';
 import { ElementVisibilityDemo } from '../demos/element-visibility/element-visibility-demo';
 import { FaviconDemo } from '../demos/favicon/favicon-demo';
-import { FocusMonitorDemo } from '../demos/focus-monitor/focus-monitor-demo';
 import { FpsDemo } from '../demos/fps/fps-demo';
 import { GamepadDemo } from '../demos/gamepad/gamepad-demo';
 import { GeolocationDemo } from '../demos/geolocation/geolocation-demo';
-import { InputModalityDemo } from '../demos/input-modality/input-modality-demo';
-import { InputModalityBrowserDemo } from '../demos/input-modality-browser/input-modality-browser-demo';
 import { IntervalDemo } from '../demos/interval/interval-demo';
 import { LongPressDemo } from '../demos/long-press/long-press-demo';
-import { LiveAnnouncerDemo } from '../demos/live-announcer/live-announcer-demo';
 import { IntersectionObserverDemo } from '../demos/intersection-observer/intersection-observer-demo';
 import { MutationObserverDemo } from '../demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from '../demos/resize-observer/resize-observer-demo';
@@ -76,14 +72,10 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     ElementSizeDemo,
     ElementVisibilityDemo,
     FaviconDemo,
-    FocusMonitorDemo,
     FpsDemo,
     GamepadDemo,
     GeolocationDemo,
-    InputModalityDemo,
-    InputModalityBrowserDemo,
     IntervalDemo,
-    LiveAnnouncerDemo,
     LongPressDemo,
     IntersectionObserverDemo,
     MutationObserverDemo,
@@ -166,11 +158,6 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
-        <h2>Focus Monitor Demo</h2>
-        <demo-focus-monitor />
-      </section>
-
-      <section>
         <h2>FPS Demo</h2>
         <demo-fps />
       </section>
@@ -226,23 +213,8 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
-        <h2>Input Modality Demo</h2>
-        <demo-input-modality />
-      </section>
-
-      <section>
-        <h2>Input Modality Browser Demo</h2>
-        <demo-input-modality-browser />
-      </section>
-
-      <section>
         <h2>Interval Demo</h2>
         <demo-interval />
-      </section>
-
-      <section>
-        <h2>Live Announcer Demo</h2>
-        <demo-live-announcer />
       </section>
 
       <section>

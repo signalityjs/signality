@@ -26,8 +26,6 @@ npm install @signality/cdk-interop @angular/cdk
 
 :::
 
-<Demo name="input-modality" />
-
 ## Usage
 
 ```angular-ts

@@ -7,7 +7,6 @@ import PageNav from './PageNav.vue';
 import PageMeta from './PageMeta.vue';
 import DocHeader from './DocHeader.vue';
 import MobileHeader from './MobileHeader.vue';
-import Landing from './Landing.vue';
 
 const route = useRoute();
 const { frontmatter } = useData();
@@ -80,7 +79,6 @@ watch(
       <!-- Landing Page -->
       <template v-if="isLanding">
         <div class="landing-wrapper">
-          <Landing />
         </div>
       </template>
 
@@ -165,7 +163,7 @@ watch(
 
   .main-content {
     width: 100%;
-    padding-top: 56px; /* Height of mobile header */
+    padding-top: 56px;
   }
 
   .main-content.landing-content {
@@ -173,14 +171,14 @@ watch(
   }
 
   .content-wrapper {
-    padding: 2rem 1.5rem 2rem; /* Top: 2rem (32px), Left/Right: 1.5rem (24px) */
+    padding: 2rem 1.5rem 2rem;
   }
 }
 
 /* Extra small devices */
 @media (max-width: 480px) {
   .content-wrapper {
-    padding: 2rem 1.5rem 2rem; /* Top: 2rem (32px), Left/Right: 1.5rem (24px) */
+    padding: 2rem 1.5rem 2rem;
   }
 }
 </style>
