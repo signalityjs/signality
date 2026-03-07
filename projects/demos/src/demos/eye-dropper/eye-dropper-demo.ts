@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { eyeDropper } from '@signality/core/browser/eye-dropper';
-import { DemoBadge, DemoButton, Wrapper } from '../../common';
+import { Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-eye-dropper',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoButton, DemoBadge],
+  imports: [Wrapper],
   template: ` <ng-demo-wrapper> </ng-demo-wrapper> `,
   styles: ``,
 })

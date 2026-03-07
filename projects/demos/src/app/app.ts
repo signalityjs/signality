@@ -30,7 +30,7 @@ import { OnClickOutsideDemo } from '../demos/on-click-outside/on-click-outside-d
 import { OnlineDemo } from '../demos/online/online-demo';
 import { PageVisibilityDemo } from '../demos/page-visibility/page-visibility-demo';
 import { PictureInPictureDemo } from '../demos/picture-in-picture/picture-in-picture-demo';
-import { ScrollDemo } from '../demos/scroll/scroll-demo';
+import { ScrollPositionDemo } from '../demos/scroll/scroll-position-demo';
 import { WebShareDemo } from '../demos/web-share/web-share-demo';
 import { SpeechRecognitionDemo } from '../demos/speech-recognition/speech-recognition-demo';
 import { SpeechSynthesisDemo } from '../demos/speech-synthesis/speech-synthesis-demo';
@@ -87,7 +87,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     OnlineDemo,
     PageVisibilityDemo,
     PictureInPictureDemo,
-    ScrollDemo,
+    ScrollPositionDemo,
     WebShareDemo,
     SpeechRecognitionDemo,
     SpeechSynthesisDemo,
@@ -163,13 +163,13 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
-        <h2>Mouse Demo</h2>
+        <h2>Mouse Position Demo</h2>
         <demo-mouse-position />
       </section>
 
       <section>
-        <h2>Scroll Demo</h2>
-        <demo-scroll />
+        <h2>Scroll Position Demo</h2>
+        <demo-scroll-position />
       </section>
 
       <section>

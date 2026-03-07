@@ -25,7 +25,7 @@ npm install @signality/core
 - **`elementVisibility()`** — Reactive Intersection Observer
 - **`dropzone()`** — Reactive drag & drop zone
 - **`windowSize()`** — Reactive window dimensions
-- **`scroll()`** — Reactive scroll position
+- **`scrollPosition()`** — Reactive scroll position
 - And [many more...](https://signality.dev/elements/active-element)
 
 ### Utils

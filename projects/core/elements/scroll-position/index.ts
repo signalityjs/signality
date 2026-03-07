@@ -22,7 +22,7 @@ export interface ArrivedState {
 }
 
 /**
- * Current scroll directions.
+ * Current scrollPosition directions.
  */
 export interface ScrollDirections {
   readonly top: boolean;
@@ -31,15 +31,15 @@ export interface ScrollDirections {
   readonly right: boolean;
 }
 
-export interface ScrollOptions extends WithInjector {
+export interface ScrollPositionOptions extends WithInjector {
   /**
-   * Element or window to track scroll on.
+   * Element or window to track scrollPosition on.
    * @default window
    */
   readonly target?: MaybeElementSignal<Element> | Window;
 
   /**
-   * Throttle scroll events in milliseconds.
+   * Throttle scrollPosition events in milliseconds.
    * @default 0
    */
   readonly throttle?: number;
@@ -55,26 +55,26 @@ export interface ScrollOptions extends WithInjector {
   };
 }
 
-export interface ScrollRef {
-  /** Horizontal scroll position */
+export interface ScrollPositionRef {
+  /** Horizontal scrollPosition position */
   readonly x: Signal<number>;
 
-  /** Vertical scroll position */
+  /** Vertical scrollPosition position */
   readonly y: Signal<number>;
 
-  /** Whether currently scrolling */
+  /** Whether currently scrollPositioning */
   readonly isScrolling: Signal<boolean>;
 
   /** Which edges have been reached */
   readonly arrivedState: Signal<ArrivedState>;
 
-  /** Current scroll direction */
+  /** Current scrollPosition direction */
   readonly directions: Signal<ScrollDirections>;
 }
 
 /**
  * Reactive tracking of scroll position.
- * Track scroll offset of window or any scrollable element.
+ * Track scrollPosition offset of window or any scrollable element.
  *
  * @param options - Optional configuration
  * @returns An object with x, y, isScrolling, arrivedState, and directions signals
@@ -92,14 +92,14 @@ export interface ScrollRef {
  *     }
  *   `
  * })
- * class ScrollComponent {
- *   readonly scrollPos = scroll();
+ * class ScrollTracker {
+ *   readonly scrollPos = scrollPosition();
  * }
  * ```
  *
  * @example
  * ```typescript
- * // Track scroll on a specific element
+ * // Track scrolling on a specific element
  * @Component({
  *   template: `
  *     <div #scrollable style="overflow: auto; height: 200px;">
@@ -109,13 +109,13 @@ export interface ScrollRef {
  *   `
  * })
  * class ScrollableComponent {
- *   readonly scrollable = viewChild<ElementRef>('scrollable');
- *   readonly pos = scroll({ target: this.scrollable });
+ *   readonly scrollableEl = viewChild<ElementRef>('scrollable');
+ *   readonly pos = scrollPosition({ target: this.scrollableEl });
  * }
  * ```
  */
-export function scroll(options?: ScrollOptions): ScrollRef {
-  const { runInContext } = setupContext(options?.injector, scroll);
+export function scrollPosition(options?: ScrollPositionOptions): ScrollPositionRef {
+  const { runInContext } = setupContext(options?.injector, scrollPosition);
 
   return runInContext(({ isServer, onCleanup }) => {
     if (isServer) {
@@ -149,7 +149,10 @@ export function scroll(options?: ScrollOptions): ScrollRef {
       }
 
       const el = toElement(target);
-      return { scrollX: el?.scrollLeft || 0, scrollY: el?.scrollTop || 0 };
+      return {
+        scrollX: el?.scrollLeft || 0,
+        scrollY: el?.scrollTop || 0,
+      };
     };
 
     const getScrollSize = (): {

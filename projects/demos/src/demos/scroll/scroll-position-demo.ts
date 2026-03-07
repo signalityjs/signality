@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { scroll } from '@signality/core/elements/scroll';
+import { scrollPosition } from '@signality/core';
 import { DemoCard, Wrapper } from '../../common';
 
 @Component({
-  selector: 'demo-scroll',
+  selector: 'demo-scroll-position',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
     <ng-demo-wrapper [code]="importCode">
-      <div class="scroll-demo">
+      <div class="scrollPosition-demo">
         <demo-card>
           <div class="coords-grid">
             <div class="coord-item">
@@ -25,7 +25,7 @@ import { DemoCard, Wrapper } from '../../common';
     </ng-demo-wrapper>
   `,
   styles: `
-    .scroll-demo {
+    .scrollPosition-demo {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
@@ -58,8 +58,8 @@ import { DemoCard, Wrapper } from '../../common';
     }
   `,
 })
-export class ScrollDemo {
-  readonly scrollPos = scroll();
+export class ScrollPositionDemo {
+  readonly scrollPos = scrollPosition();
 
-  readonly importCode = `import { scroll } from '@signality/core'`;
+  readonly importCode = `import { scrollPosition } from '@signality/core'`;
 }

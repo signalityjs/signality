@@ -9,7 +9,7 @@ export * from '@signality/core/elements/on-click-outside';
 export * from '@signality/core/elements/on-long-press';
 export * from '@signality/core/elements/mouse-position';
 export * from '@signality/core/elements/on-disconnect';
-export * from '@signality/core/elements/scroll';
+export * from '@signality/core/elements/scroll-position';
 export * from '@signality/core/elements/swipe';
 export * from '@signality/core/elements/text-selection';
 export * from '@signality/core/elements/window-size';
