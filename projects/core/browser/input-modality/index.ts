@@ -10,10 +10,10 @@ const TOUCH_BUFFER_MS = 650;
 const MODIFIER_KEYS = ['Shift', 'Control', 'Alt', 'Meta', 'ContextMenu'];
 
 /**
- * Reactively track the user's current input method (keyboard, mouse-position-position, or touch).
+ * Reactively track the user's current input method (keyboard, mouse, or touch).
  *
  * @param options - Optional configuration including injector
- * @returns A signal containing the current input modality: `'keyboard'`, `'mouse-position-position'`, `'touch'`, or `null`
+ * @returns A signal containing the current input modality: `'keyboard'`, `'mouse'`, `'touch'`, or `null`
  *
  * @example
  * ```typescript

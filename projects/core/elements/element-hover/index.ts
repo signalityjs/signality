@@ -8,7 +8,7 @@ export type ElementHoverOptions = CreateSignalOptions<boolean> & WithInjector;
 
 /**
  * Reactive tracking of the hover state on an element.
- * Detects when the mouse-position-position enters or leaves an element.
+ * Detects when the mouse enters or leaves an element.
  *
  * @param target - The element to track hover state on
  * @param options - Optional configuration including signal options and injector

@@ -13,7 +13,7 @@ export type MouseCoordinateType = 'page' | 'client' | 'screen';
 
 export interface MousePositionOptions extends WithInjector {
   /**
-   * Element or window to track mouse-position-position on.
+   * Element or window to track mouse position on.
    * @default window
    */
   readonly target?: MaybeElementSignal<Element> | Window;
