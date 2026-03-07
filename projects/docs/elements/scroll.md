@@ -257,5 +257,5 @@ function scroll(options?: ScrollOptions): ScrollRef;
 
 ## Related
 
-- [Mouse](/elements/mouse) — Track mouse position
+- [MousePosition](/elements/mouse-position) — Track mouse position
 - [WindowSize](/elements/window-size) — Track window dimensions

@@ -133,6 +133,6 @@ function pointerLockElement(options?: PointerLockElementOptions): Signal<Element
 
 ## Related
 
-- [Mouse](/elements/mouse) — Mouse position tracking
+- [MousePosition](/elements/mouse-position) — Mouse position tracking
 - [ElementFocus](/elements/element-focus) — Element focus tracking
 

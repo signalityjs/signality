@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { mouse } from '@signality/core/elements/mouse';
+import { mousePosition } from '@signality/core';
 import { DemoCard, Wrapper } from '../../common';
 
 @Component({
-  selector: 'demo-mouse',
+  selector: 'demo-mouse-position',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
     <ng-demo-wrapper [code]="importCode">
-      <div class="mouse-card">
+      <div class="mouse-position-card">
         <div
           class="cursor-follower"
           [class.visible]="isVisible()"
@@ -32,7 +32,7 @@ import { DemoCard, Wrapper } from '../../common';
     </ng-demo-wrapper>
   `,
   styles: `
-    .mouse-card {
+    .mouse-position-card {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
@@ -85,10 +85,10 @@ import { DemoCard, Wrapper } from '../../common';
     }
   `,
 })
-export class MouseDemo {
-  readonly position = mouse({ type: 'client' });
+export class MousePositionDemo {
+  readonly position = mousePosition({ type: 'client' });
 
   readonly isVisible = computed(() => this.position().x !== 0 && this.position().y !== 0);
 
-  readonly importCode = `import { mouse } from '@signality/core'`;
+  readonly importCode = `import { mousePosition } from '@signality/core'`;
 }
