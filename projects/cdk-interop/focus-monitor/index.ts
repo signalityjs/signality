@@ -1,15 +1,14 @@
-import { afterRenderEffect, type EffectCleanupRegisterFn, inject, type Signal, signal } from '@angular/core';
+import {
+  afterRenderEffect,
+  type EffectCleanupRegisterFn,
+  inject,
+  type Signal,
+  signal,
+} from '@angular/core';
 import { FocusMonitor, type FocusOrigin } from '@angular/cdk/a11y';
 import type { Subscription } from 'rxjs';
-import {
-  constSignal,
-  MaybeElementSignal,
-  NOOP_FN,
-  onDisconnect,
-  setupContext,
-  toElement,
-  WithInjector,
-} from '@signality/core';
+import { MaybeElementSignal, onDisconnect, WithInjector } from '@signality/core';
+import { constSignal, NOOP_FN, setupContext, toElement } from '@signality/core/internal';
 
 export interface FocusMonitorOptions extends WithInjector {
   /**
@@ -58,7 +57,7 @@ export interface FocusMonitorRef {
  */
 export function focusMonitor(
   target: MaybeElementSignal<HTMLElement>,
-  options?: FocusMonitorOptions,
+  options?: FocusMonitorOptions
 ): FocusMonitorRef {
   const { runInContext } = setupContext(options?.injector, focusMonitor);
 
