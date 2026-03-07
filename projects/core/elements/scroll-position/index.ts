@@ -99,7 +99,7 @@ export interface ScrollPositionRef {
  *
  * @example
  * ```typescript
- * // Track scrolling on a specific element
+ * // Track scroll on a specific element
  * @Component({
  *   template: `
  *     <div #scrollable style="overflow: auto; height: 200px;">
