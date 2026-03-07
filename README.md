@@ -40,7 +40,7 @@ Signality requires the following minimum versions:
 
 | Tool        | Minimum Version |
 |-------------|-----------------|
-| **Angular** | `v19.0.0`       |
+| **Angular** | `v19.2.0`       |
 
 ## Installation
 

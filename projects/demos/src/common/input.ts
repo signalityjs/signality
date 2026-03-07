@@ -75,8 +75,12 @@ export class DemoInput implements ControlValueAccessor {
 
   value = '';
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (value: string) => void = () => {
+    /* empty */
+  };
+  private onTouched: () => void = () => {
+    /* empty */
+  };
 
   writeValue(value: string): void {
     this.value = value ?? '';
