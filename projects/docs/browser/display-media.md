@@ -32,7 +32,7 @@ export class ScreenCaptureDemo {
 
   async startCapture() {
     const stream = await this.screen.start();
-    // stream is automatically set in screen.stream()
+    // Stream is automatically set in screen.stream()
   }
 }
 ```

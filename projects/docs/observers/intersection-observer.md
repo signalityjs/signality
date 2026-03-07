@@ -109,7 +109,7 @@ export class ManualCleanup {
   readonly observer = intersectionObserver(this.box, console.log);
 
   manualCleanup() {
-    // stop observing
+    // Stop observing
     this.observer.destroy();
   }
 }

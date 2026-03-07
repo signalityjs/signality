@@ -1,5 +1,5 @@
 import { type Signal, signal, untracked } from '@angular/core';
-import { NOOP_ASYNC_FN, constSignal, setupContext } from '@signality/core/internal';
+import { constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
 export interface WebShareRef {
@@ -49,19 +49,20 @@ export function webShare(options?: WithInjector): WebShareRef {
   const { runInContext } = setupContext(options?.injector, webShare);
 
   return runInContext(({ isBrowser }) => {
-    const isSharing = signal(false);
     const isSupported = constSignal(isBrowser && 'share' in navigator);
 
     if (!isSupported()) {
       return {
         isSupported,
-        isSharing: isSharing.asReadonly(),
-        share: NOOP_ASYNC_FN,
+        isSharing: constSignal(false),
         canShare: () => false,
+        share: NOOP_ASYNC_FN,
       };
     }
 
-    const shareContent = async (data: ShareData): Promise<void> => {
+    const isSharing = signal(false);
+
+    const share = async (data: ShareData): Promise<void> => {
       if (untracked(isSharing)) {
         return;
       }
@@ -96,8 +97,8 @@ export function webShare(options?: WithInjector): WebShareRef {
     return {
       isSupported,
       isSharing: isSharing.asReadonly(),
-      share: shareContent,
       canShare,
+      share,
     };
   });
 }

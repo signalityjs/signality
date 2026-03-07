@@ -115,13 +115,13 @@ const timestamp = storage('timestamp', new Date(), {
   serializer: dateSerializer,
 });
 
-// custom serializer with validation and defaults
+// Custom serializer with validation and defaults
 const userSerializer: Serializer<User> = {
   write: (user) => JSON.stringify(user),
   read: (str) => {
     try {
       const data = JSON.parse(str);
-      return { ...defaultUser, ...data }; // merge with defaults
+      return { ...defaultUser, ...data }; // Merge with defaults
     } catch {
       return defaultUser;
     }
@@ -150,7 +150,7 @@ type Theme = 'light' | 'dark' | 'system';
 })
 export class ThemeSelector {
   readonly theme = storage<Theme>('theme', 'system', {
-    writeInitial: true, // save default theme on first load
+    writeInitial: true, // Save default theme on first load
   });
   
   constructor() {
@@ -228,15 +228,15 @@ const defaultSettings: UserSettings = {
 
 @Component({ /* ... */ })
 export class SettingsComponent {
-  // shallow merge: adds new properties from defaults
+  // Shallow merge: adds new properties from defaults
   readonly settings = storage('settings', defaultSettings, {
     mergeWithInitial: true, // [!code highlight]
   });
   
-  // or use custom merge for deep merging
+  // Or use custom merge for deep merging
   readonly advancedSettings = storage('advSettings', defaultSettings, {
     mergeWithInitial: (stored, initial) => { // [!code highlight]
-      // custom deep merge logic
+      // Custom deep merge logic
       return deepMerge(initial, stored);
     },
   });
@@ -254,7 +254,7 @@ export class UserPreferences {
   readonly userId = signal('user-123');
   readonly storageKey = computed(() => `prefs:${this.userId()}`); // [!code highlight]
   
-  // storage key changes when userId changes
+  // Storage key changes when userId changes
   readonly preferences = storage(
     this.storageKey,
     { theme: 'light', lang: 'en' }
@@ -270,15 +270,15 @@ import { storage } from '@signality/core';
 
 @Component({ /* ... */ })
 export class SessionDemo {
-  // session storage: cleared when tab closes
+  // Session storage: cleared when tab closes
   readonly tempData = storage('temp', '', {
     type: 'session', // [!code highlight]
   });
   
-  // form draft saved in session
+  // Form draft saved in session
   readonly formDraft = storage('formDraft', {}, {
     type: 'session',
-    writeInitial: false, // don't overwrite existing draft
+    writeInitial: false, // Don't overwrite existing draft
   });
 }
 ```

@@ -97,7 +97,7 @@ export class ManualCleanup {
   readonly observer = resizeObserver(this.box, console.log);
 
   manualCleanup() {
-    // stop observing
+    // Stop observing
     this.observer.destroy();
   }
 }

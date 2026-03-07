@@ -69,7 +69,7 @@ export class App {
 import { Component } from '@angular/core';
 import { title } from '@signality/core';
 
-// route configuration:
+// Route configuration:
 // {
 //   path: 'product/:id',
 //   component: ProductPage,
@@ -82,7 +82,7 @@ import { title } from '@signality/core';
   `,
 })
 export class ProductPage {
-  readonly pageTitle = title(); // will be "Product 123" for /product/123
+  readonly pageTitle = title(); // Will be "Product 123" for /product/123
 }
 ```
 

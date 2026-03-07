@@ -30,6 +30,9 @@ module.exports = {
       [
         // Projects
         'core',
+        'demos',
+        'cdk-interop',
+        'docs',
 
         // Release
         'release',

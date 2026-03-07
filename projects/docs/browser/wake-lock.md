@@ -105,7 +105,7 @@ export class QRCodeScanner {
 
   async displayQRCode() {
     this.showQRCode.set(true);
-    // keep screen awake while QR code is displayed
+    // Keep screen awake while QR code is displayed
     await this.wakeLock.request(); // [!code highlight]
   }
 
@@ -128,7 +128,7 @@ import { wakeLock } from '@signality/core';
   `,
 })
 export class AutoReacquire {
-  // automatically reacquires wake lock when document becomes visible again
+  // Automatically reacquires wake lock when document becomes visible again
   readonly wakeLock = wakeLock({ autoReacquire: true }); // [!code highlight]
 }
 ```

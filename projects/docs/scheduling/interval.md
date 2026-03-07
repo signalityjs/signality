@@ -27,7 +27,7 @@ export class PeriodicTask {
   }, 5000);
   
   async checkStatus() {
-    // async operation
+    // Async operation
   }
 }
 ```

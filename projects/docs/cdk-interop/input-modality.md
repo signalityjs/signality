@@ -86,7 +86,7 @@ export class AdaptiveNav {
   readonly modality = inputModality();
   readonly isTouch = computed(() => this.modality() === 'touch');
   
-  // larger touch targets for touch input
+  // Larger touch targets for touch input
   readonly buttonPadding = computed(() => 
     this.isTouch() ? '1rem 2rem' : '0.5rem 1rem' // [!code highlight]
   );

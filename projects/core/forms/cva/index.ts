@@ -60,7 +60,7 @@ export interface CvaRef<T> {
  *   readonly value = model(0);
  *   readonly cva = cva({ value: this.value });
  *
- *   displayValue = computed(() => {
+ *   readonly displayValue = computed(() => {
  *     return this.value()
  *       .toFixed(2)
  *       .replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Shows "1,234.56"

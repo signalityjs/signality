@@ -98,7 +98,7 @@ export class App {
       this.isLoading.set(true);
     });
 
-    // using array of events
+    // Using array of events
     routerListener(['navigationend', 'navigationerror'], () => {
       this.isLoading.set(false);
     });
@@ -204,7 +204,7 @@ import { routerListener } from '@signality/core';
 @Component({ /* ... */ })
 export class App {
   constructor() {
-    // automatically unsubscribe after first navigation
+    // Automatically unsubscribe after first navigation
     routerListener('navigationstart', event => {
       console.log('First navigation:', event.url);
     }, { once: true }); // [!code highlight]

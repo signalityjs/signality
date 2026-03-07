@@ -124,7 +124,7 @@ import { elementVisibility } from '@signality/core';
 export class InfiniteScroll {
   readonly trigger = viewChild<ElementRef>('trigger');
   readonly visibility = elementVisibility(this.trigger, {
-    rootMargin: '100px' // load before reaching bottom
+    rootMargin: '100px' // Load before reaching bottom
   });
   
   readonly items = signal<any[]>([]);
@@ -196,7 +196,7 @@ export class ScrollableContainer {
   readonly container = viewChild<ElementRef>('container');
   readonly section = viewChild<ElementRef>('section');
   
-  // root element updates reactively when container becomes available
+  // Root element updates reactively when container becomes available
   readonly visibility = elementVisibility(this.section, {
     root: this.container, // [!code highlight]
     rootMargin: '50px',

@@ -57,11 +57,11 @@ import { elementSize } from '@signality/core';
 
 @Component({ /* ... */ })
 export class Demo {
-  readonly host = inject(ElementRef); // non-reactive element [!code highlight]
+  readonly host = inject(ElementRef); // Non-reactive element [!code highlight]
   readonly hostSize = elementSize(this.host);
 
-  readonly child = viewChild<ElementRef>('child'); // reactive element [!code highlight]
-  readonly childSize = elementSize(this.child); // also works
+  readonly child = viewChild<ElementRef>('child'); // Reactive element [!code highlight]
+  readonly childSize = elementSize(this.child); // Also works
 }
 ```
 
@@ -87,7 +87,7 @@ import { resizeObserver, routerListener } from '@signality/core';
 export class Demo {
   readonly el = inject(ElementRef);
 
-  // all resources are automatically released
+  // All resources are automatically released
   readonly observer = resizeObserver(this.el, console.log); // [!code highlight]
   readonly listener = routerListener('navigationend', console.log); // [!code highlight]
 }
@@ -101,13 +101,13 @@ Some utilities track **global browser or document state** that is shared across 
 
 ```typescript
 // Component 1
-const active1 = activeElement(); // creates signal + window listeners
+const active1 = activeElement(); // Creates signal + window listeners
 
 // Component 2
-const active2 = activeElement(); // creates next signal + next set of listeners
+const active2 = activeElement(); // Creates next signal + next set of listeners
 
 // Component 3
-const active3 = activeElement(); // and another one...
+const active3 = activeElement(); // And another one...
 ```
 
 **The solution: [InjectionToken](https://angular.dev/api/core/InjectionToken)**
@@ -125,7 +125,7 @@ export class HeaderComponent {
 
 @Component({ /* ... */ })
 export class SidebarComponent {
-  // same signal - shared across all components
+  // Same signal - shared across all components
   readonly activeEl = inject(ACTIVE_ELEMENT);
 }
 ```
@@ -136,10 +136,10 @@ export class SidebarComponent {
 - Use the function directly when you need an isolated instance with custom options
 
 ```typescript
-// implies singleton usage
+// Implies singleton usage
 const global = inject(ACTIVE_ELEMENT);
 
-// isolated instance with custom options
+// Isolated instance with custom options
 const local = activeElement({ debugName: 'MyActiveElement' });
 ```
 
@@ -154,7 +154,7 @@ Signality preserves native Angular signal and effect options. When a utility ret
 ```typescript
 import { queryParams } from '@signality/core';
 
-// custom equality function for query params
+// Custom equality function for query params
 const routeParams = queryParams<{ id: string }>({
   equal: (a, b) => a.id === b.id,
   debugName: 'UserParams'
@@ -177,10 +177,10 @@ import { battery } from '@signality/core';
 
 @Component({ /* ... */ })
 export class Demo {
-  // works on both server and client automatically
+  // Works on both server and client automatically
   readonly batteryInfo = battery();
-  // on server: returns safe defaults
-  // on client: returns actual battery status
+  // On server: returns safe defaults
+  // On client: returns actual battery status
 }
 ```
 
@@ -232,7 +232,7 @@ export class Demo {
 
   constructor() {
     effect(() => {
-      // safe to call - no hidden dependencies created
+      // Safe to call - no hidden dependencies created
       this.intervalRef.pause();
       this.intervalRef.resume();
     });
