@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { onLongPress } from './index';
 
-// PointerEvent is not available in jsdom, polyfill it
+// PointerEvent is not available in jsdom
 if (typeof PointerEvent === 'undefined') {
   (globalThis as any).PointerEvent = class PointerEvent extends MouseEvent {
     readonly pointerId: number;
@@ -52,7 +52,9 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
 
       jest.advanceTimersByTime(499);
       expect(handler).not.toHaveBeenCalled();
@@ -75,7 +77,9 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
 
       jest.advanceTimersByTime(999);
       expect(handler).not.toHaveBeenCalled();
@@ -98,7 +102,9 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(200);
 
       button.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
@@ -121,7 +127,9 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(200);
 
       button.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
@@ -144,11 +152,15 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(100);
 
       // Move 15px — exceeds threshold of 10
-      button.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 15, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointermove', { bubbles: true, clientX: 15, clientY: 0 })
+      );
       jest.advanceTimersByTime(500);
 
       expect(handler).not.toHaveBeenCalled();
@@ -168,11 +180,15 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(100);
 
       // Move 5px — within threshold of 10
-      button.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 3, clientY: 4 }));
+      button.dispatchEvent(
+        new PointerEvent('pointermove', { bubbles: true, clientX: 3, clientY: 4 })
+      );
       jest.advanceTimersByTime(400);
 
       expect(handler).toHaveBeenCalledTimes(1);
@@ -192,11 +208,15 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(100);
 
       // Large movement — should be ignored
-      button.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: 100, clientY: 100 }));
+      button.dispatchEvent(
+        new PointerEvent('pointermove', { bubbles: true, clientX: 100, clientY: 100 })
+      );
       jest.advanceTimersByTime(400);
 
       expect(handler).toHaveBeenCalledTimes(1);
@@ -264,7 +284,9 @@ describe(onLongPress.name, () => {
 
       const element = fixture.nativeElement as HTMLElement;
 
-      element.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      element.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(500);
 
       expect(handler).toHaveBeenCalledTimes(1);
@@ -286,7 +308,9 @@ describe(onLongPress.name, () => {
 
       const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
 
-      button.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 }));
+      button.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0 })
+      );
       jest.advanceTimersByTime(200);
 
       fixture.destroy();

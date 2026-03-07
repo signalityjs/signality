@@ -105,8 +105,9 @@ describe(bluetooth.name, () => {
 
     await component.bt.request();
 
-    const disconnectHandler = mockDevice.addEventListener.mock.calls
-      .find(([event]) => event === 'gattserverdisconnected')?.[1];
+    const disconnectHandler = mockDevice.addEventListener.mock.calls.find(
+      ([event]) => event === 'gattserverdisconnected'
+    )?.[1];
 
     expect(disconnectHandler).toBeDefined();
 

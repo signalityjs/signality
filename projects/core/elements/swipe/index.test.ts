@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { swipe } from './index';
 
-// TouchEvent is not available in jsdom, polyfill it
+// TouchEvent is not available in jsdom
 if (typeof TouchEvent === 'undefined') {
   (globalThis as any).TouchEvent = class TouchEvent extends UIEvent {
     readonly touches: Touch[];
@@ -23,15 +23,11 @@ function createTouch(x: number, y: number): Touch {
 }
 
 function touchStart(el: HTMLElement, x: number, y: number) {
-  el.dispatchEvent(
-    new TouchEvent('touchstart', { touches: [createTouch(x, y)] } as any)
-  );
+  el.dispatchEvent(new TouchEvent('touchstart', { touches: [createTouch(x, y)] } as any));
 }
 
 function touchMove(el: HTMLElement, x: number, y: number) {
-  el.dispatchEvent(
-    new TouchEvent('touchmove', { touches: [createTouch(x, y)] } as any)
-  );
+  el.dispatchEvent(new TouchEvent('touchmove', { touches: [createTouch(x, y)] } as any));
 }
 
 function touchEnd(el: HTMLElement) {
