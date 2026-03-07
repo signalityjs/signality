@@ -153,13 +153,13 @@ export class AutoCanvas {
       canvasEl.style.width = `${width}px`;
       canvasEl.style.height = `${height}px`;
       
-      // redraw canvas content
+      // Redraw canvas content
       this.redraw(canvasEl.getContext('2d')!);
     });
   }
   
   private redraw(ctx: CanvasRenderingContext2D) {
-    // drawing logic
+    // Drawing logic
   }
 }
 ```

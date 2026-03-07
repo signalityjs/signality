@@ -20,9 +20,6 @@ export interface BluetoothOptions extends WithInjector {
   readonly optionalServices?: BluetoothServiceUUID[];
 }
 
-/**
- * Ref returned by bluetooth utility.
- */
 export interface BluetoothRef {
   /** Whether Web Bluetooth API is supported */
   readonly isSupported: Signal<boolean>;
@@ -50,18 +47,24 @@ export interface BluetoothRef {
 }
 
 /**
- * Signal-based wrapper around the Web Bluetooth API.
- * Connect to Bluetooth devices and track connection state with Angular signals.
+ * Signal-based wrapper around the [Web Bluetooth API](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth).
  *
  * @param options - Optional configuration
  * @returns A BluetoothRef with connection state and control methods
  *
  * @example
  * ```typescript
- * const bt = bluetooth();
- *
- * await bt.request();
- * console.log(bt.device()?.name);
+ * @Component({
+ *   template: `
+ *     <button (click)="bt.request()">Connect</button>
+ *     @if (bt.isConnected()) {
+ *       <p>{{ bt.device()?.name }}</p>
+ *     }
+ *   `
+ * })
+ * class BluetoothComponent {
+ *   readonly bt = bluetooth();
+ * }
  * ```
  */
 export function bluetooth(options?: BluetoothOptions): BluetoothRef {

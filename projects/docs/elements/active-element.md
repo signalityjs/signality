@@ -121,7 +121,7 @@ export class FocusTrapModal {
       const activeEl = this.activeEl();
       
       if (modalEl && activeEl && !modalEl.contains(activeEl)) {
-        // focus escaped modal, bring it back
+        // Focus escaped modal, bring it back
         this.firstEl()?.nativeElement.focus();
       }
     });

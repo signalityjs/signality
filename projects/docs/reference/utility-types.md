@@ -21,13 +21,13 @@ import { signal, computed } from '@angular/core';
 import type { SignalValue } from '@signality/core'; // [!code ++]
 
 const count = signal(0);
-type A = SignalValue<typeof count>; // number
+type A = SignalValue<typeof count>; // Number
 
 const user = signal({ id: 1, name: 'John' });
 type B = SignalValue<typeof user>; // { id: number; name: string }
 
 const fullName = computed(() => `${user().name} Doe`);
-type C = SignalValue<typeof fullName>; // string
+type C = SignalValue<typeof fullName>; // String
 ```
 
 ## MaybeSignal&lt;Type&gt;
@@ -45,17 +45,17 @@ import { signal } from '@angular/core';
 import type { MaybeSignal } from '@signality/core'; // [!code ++]
 
 function processValue(value: MaybeSignal<number>): void {
-  // value can be number | Signal<number>
+  // Value can be number | Signal<number>
 }
 
 processValue(42); // [!code highlight]
 processValue(signal(42)); // [!code highlight]
 
 type A = MaybeSignal<number>;
-// type A = number | Signal<number>
+// Type A = number | Signal<number>
 
 type B = MaybeSignal<string | undefined>;
-// type B = string | undefined | Signal<string | undefined>
+// Type B = string | undefined | Signal<string | undefined>
 ```
 
 ## MaybeElementSignal&lt;Type&gt;
@@ -78,7 +78,7 @@ import { ElementRef, signal } from '@angular/core';
 import type { MaybeElementSignal } from '@signality/core'; // [!code ++]
 
 function trackElement(element: MaybeElementSignal<HTMLElement>): void {
-  // element can be:
+  // Element can be:
   // | HTMLElement 
   // | ElementRef<HTMLElement> 
   // | Signal<HTMLElement | ElementRef<HTMLElement> | null | undefined>
@@ -90,7 +90,7 @@ trackElement(signal(document.body)); // [!code highlight]
 trackElement(signal(null)); // [!code highlight]
 
 type A = MaybeElementSignal<HTMLDivElement>;
-// type A = 
+// Type A = 
 // | HTMLDivElement 
 // | ElementRef<HTMLDivElement> 
 // | Signal<HTMLDivElement | ElementRef<HTMLDivElement> | null | undefined>
@@ -111,10 +111,10 @@ import { ElementRef } from '@angular/core';
 import type { UnrefElement } from '@signality/core'; // [!code ++]
 
 type A = UnrefElement<ElementRef<HTMLDivElement>>; // [!code highlight]
-// type A = HTMLDivElement
+// Type A = HTMLDivElement
 
 type B = UnrefElement<HTMLElement>; // [!code highlight]
-// type B = HTMLElement
+// Type B = HTMLElement
 
 function getElement<T extends ElementRef<any>>(ref: T): UnrefElement<T> {
   return ref.nativeElement;
@@ -122,7 +122,7 @@ function getElement<T extends ElementRef<any>>(ref: T): UnrefElement<T> {
 
 const divRef = new ElementRef<HTMLDivElement>(document.createElement('div'));
 const element = getElement(divRef); // [!code highlight]
-// const element: HTMLDivElement
+// Const element: HTMLDivElement
 ```
 
 ## Related

@@ -102,7 +102,7 @@ export class ManualCleanup {
   readonly mo = mutationObserver(this.box, console.log, { childList: true });
 
   manualCleanup() {
-    // stop observing
+    // Stop observing
     this.mo.destroy();
   }
 }

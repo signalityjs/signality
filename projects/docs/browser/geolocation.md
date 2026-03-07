@@ -142,7 +142,7 @@ export class DistanceCalculator {
   });
   
   private haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // km
+    const R = 6371; // Km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = 
@@ -195,7 +195,7 @@ export class LocationTracker {
   
   startTracking() {
     this.tracking.set(true);
-    this.geo.resume(); // [!code highlight]
+    this.geo.resume();
   }
   
   stopTracking() {

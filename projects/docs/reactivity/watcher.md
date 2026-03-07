@@ -94,7 +94,7 @@ Returns a `WatcherRef` (alias for `EffectRef`) that can be used to manually dest
 
 ```typescript
 const watcherRef = watcher(source, callback);
-// later, if needed:
+// Later, if needed:
 watcherRef.destroy();
 ```
 

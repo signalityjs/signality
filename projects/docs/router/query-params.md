@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/router/
 
 # QueryParams
 
-Reactive wrapper around Angular Router's [query parameters](https://angular.dev/api/router/ActivatedRoute#queryParams). Access query parameters as signals with full type-safety. Optionally validate parameters at runtime using schema validators for type checking, type coercion, and error handling.
+Reactive wrapper around Angular Router's [query parameters](https://angular.dev/api/router/ActivatedRoute#queryParams). Optionally validate parameters at runtime using schema validators for type checking, type coercion, and error handling.
 
 ## Usage
 
@@ -50,20 +50,20 @@ export class SearchPage {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type                                                         | Description                                                                                                                            |
+|-----------|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | `options` | `QueryParamsOptions<T>` \| `QueryParamsWithSchemaOptions<T>` | Optional configuration (see [Options](#options) below). When `schema` is provided, enables validation and returns `QueryParamsRef<T>`. |
 
 ## Options
 
 The options object extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option     | Type                      | Default | Description                                    |
-|------------|---------------------------|---------|------------------------------------------------|
-| `equal` | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | - | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string` | - | Debug name for the signal (development only) |
-| `schema` | `QueryParamsValidator<T>` | - | **Optional.** Validator schema for runtime validation. When provided, returns `QueryParamsRef<T>` instead of `Signal<T>`. See [Schema validation](#schema-validation) for details. |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | - | Optional injector for DI context |
+| Option      | Type                                                                 | Default | Description                                                                                                                                                                        |
+|-------------|----------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))                                                                                 |
+| `debugName` | `string`                                                             | -       | Debug name for the signal (development only)                                                                                                                                       |
+| `schema`    | `QueryParamsValidator<T>`                                            | -       | **Optional.** Validator schema for runtime validation. When provided, returns `QueryParamsRef<T>` instead of `Signal<T>`. See [Schema validation](#schema-validation) for details. |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                  | -       | Optional injector for DI context                                                                                                                                                   |
 
 ## Return Value
 
@@ -77,11 +77,11 @@ Returns `Signal<T>` containing the current query parameters, where `T` is an obj
 
 Returns `QueryParamsRef<T>` — an object with the following properties:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `value` | `Signal<T>` | Signal containing validated and transformed query parameters. **Reading this signal throws an error if validation failed.** Use `isValid()` to check before reading. |
-| `isValid` | `Signal<boolean>` | Signal indicating whether the current query parameters are valid according to the schema. `true` when valid, `false` when validation fails. |
-| `error` | `Signal<unknown \| null>` | Signal containing the validation error object, or `null` if the parameters are valid. |
+| Property  | Type                      | Description                                                                                                                                                          |
+|-----------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `value`   | `Signal<T>`               | Signal containing validated and transformed query parameters. **Reading this signal throws an error if validation failed.** Use `isValid()` to check before reading. |
+| `isValid` | `Signal<boolean>`         | Signal indicating whether the current query parameters are valid according to the schema. `true` when valid, `false` when validation fails.                          |
+| `error`   | `Signal<unknown \| null>` | Signal containing the validation error object, or `null` if the parameters are valid.                                                                                |
 
 ## Examples
 

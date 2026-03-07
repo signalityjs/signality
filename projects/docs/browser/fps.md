@@ -111,7 +111,7 @@ export class AdaptiveRenderer {
     effect(() => {
       const currentFps = this.fpsMonitor.fps();
       
-      // automatically adjust quality based on FPS
+      // Automatically adjust quality based on FPS
       if (currentFps < 25 && this.quality() !== 'low') {
         this.quality.set('low');
       } else if (currentFps < 45 && this.quality() === 'high') {

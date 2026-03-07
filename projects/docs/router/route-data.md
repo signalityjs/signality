@@ -78,13 +78,13 @@ import { Component, computed, inject } from '@angular/core';
 import { routeData } from '@signality/core';
 import { UserService } from './user.service';
 
-// route resolver
+// Route resolver
 export const userResolver: ResolveFn<User> = (route, state) => {
   const userService = inject(UserService);
   return userService.getUser(route.params['id']);
 };
 
-// route configuration
+// Route configuration
 export const routes: Routes = [
   {
     path: 'user/:id',
@@ -93,7 +93,7 @@ export const routes: Routes = [
   },
 ];
 
-// component
+// Component
 @Component({
   template: `
     @if (user(); as user) {
@@ -114,7 +114,7 @@ export class UserProfile {
 import { Component } from '@angular/core';
 import { routeData } from '@signality/core';
 
-// route configuration
+// Route configuration
 export const routes: Routes = [
   {
     path: 'about',
@@ -123,7 +123,7 @@ export const routes: Routes = [
   },
 ];
 
-// component
+// Component
 @Component({
   template: `
     @if (pageData().showBreadcrumbs) {

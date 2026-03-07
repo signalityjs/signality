@@ -106,7 +106,7 @@ export class ScrollTracker {
     });
 
     effect(() => {
-      // updates at most every 50ms during scroll
+      // Updates at most every 50ms during scroll
       console.log('Scroll position:', this.scrollY());
     });
   }

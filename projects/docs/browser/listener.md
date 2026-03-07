@@ -49,14 +49,14 @@ The `listener` utility is primarily designed for **internal composition** within
 1. **[Event modifiers](#modifiers) not available in templates**: When you need declarative modifiers like `capture`, `passive`, `once`, `stop`, `prevent`, or `self` that aren't supported by Angular's template syntax:
 
 ```angular-ts
-// passive listener for better performance
+// Passive listener for better performance
 listener.passive(window, 'wheel', () => {
-  // smooth scrolling without blocking
+  // Smooth scrolling without blocking
 });
 
-// capture phase listener + once option
+// Capture phase listener + once option
 listener.capture.once(element, 'click', () => {
-  // handles click in capture phase and once
+  // Handles click in capture phase and once
 });
 ```
 
@@ -64,7 +64,7 @@ listener.capture.once(element, 'click', () => {
 
 ```angular-ts
 const eventType = signal<'click' | 'mouseenter'>('click');
-listener(element, eventType, handler); // re-attaches when eventType changes
+listener(element, eventType, handler); // Re-attaches when eventType changes
 ```
 
 3. **Manual lifecycle management**: When you need to optimize performance by conditionally registering listeners or destroying them when they're no longer needed:
@@ -73,12 +73,12 @@ listener(element, eventType, handler); // re-attaches when eventType changes
 let listenerRef: ListenerRef | null = null;
 
 startListening() {
-  // register listener only when needed
+  // Register listener only when needed
   listenerRef = listener(window, 'resize', handleResize);
 }
 
 stopListening() {
-  // destroy listener when not needed
+  // Destroy listener when not needed
   listenerRef?.destroy();
   listenerRef = null;
 }
@@ -156,7 +156,7 @@ export class DynamicEvent {
   readonly count = signal(0);
   
   constructor() {
-    // re-attaches when eventName changes
+    // Re-attaches when eventName changes
     listener(this.target, this.eventName, () => { // [!code highlight]
       this.count.update(c => c + 1);
     });
@@ -185,22 +185,22 @@ export class ModifiersExample {
   readonly form = viewChild<ElementRef>('form');
   
   constructor() {
-    // stop event propagation
+    // Stop event propagation
     listener.stop(this.form, 'click', e => {
       console.log('Form clicked, propagation stopped');
     });
     
-    // prevent default and stop propagation
+    // Prevent default and stop propagation
     listener.prevent.stop(this.form, 'submit', e => {
       console.log('Form submit prevented');
     });
     
-    // only trigger if clicked directly on form (not children)
+    // Only trigger if clicked directly on form (not children)
     listener.self(this.form, 'click', e => {
       console.log('Form itself was clicked');
     });
     
-    // chain multiple modifiers
+    // Chain multiple modifiers
     listener.capture.passive.once(this.form, 'wheel', e => {
       console.log('Wheel captured once');
     });

@@ -81,7 +81,7 @@ export class AuthService {
   }
   
   logout() {
-    // notify all tabs
+    // Notify all tabs
     this.logoutChannel.post(true);
     this.router.navigate(['/login']);
   }
