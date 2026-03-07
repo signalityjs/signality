@@ -6,8 +6,6 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 Reactive wrapper around the [Window Management API](https://developer.mozilla.org/en-US/docs/Web/API/Window_Management_API). Track multiple screens and their properties with Angular signals.
 
-<Demo name="screen-details" />
-
 ## Usage
 
 ```angular-ts

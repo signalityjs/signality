@@ -76,7 +76,7 @@ import { eyeDropper } from '@signality/core';
       </button>
 
       @if (eyeDropper.sRGBHex()) {
-        <div class="color-preview" [style.background-color]="eyeDropper.sRGBHex()">
+        <div [style.background-color]="eyeDropper.sRGBHex()">
           {{ eyeDropper.sRGBHex() }}
         </div>
       }
@@ -88,27 +88,6 @@ export class ColorPicker {
 
   async pickColor() {
     await this.eyeDropper.open();
-  }
-}
-```
-
-### Cancel picking
-
-```angular-ts
-import { Component } from '@angular/core';
-import { eyeDropper } from '@signality/core';
-
-@Component({
-  template: `
-    <button (click)="startPicking()">Start Picking</button>
-    <button (click)="eyeDropper.close()">Cancel</button>
-  `,
-})
-export class CancelablePicker {
-  readonly eyeDropper = eyeDropper();
-
-  async startPicking() {
-    await this.eyeDropper.open(); // [!code highlight]
   }
 }
 ```

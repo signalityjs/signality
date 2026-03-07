@@ -7,7 +7,6 @@ import PageNav from './PageNav.vue';
 import PageMeta from './PageMeta.vue';
 import DocHeader from './DocHeader.vue';
 import MobileHeader from './MobileHeader.vue';
-import Landing from './Landing.vue';
 
 const route = useRoute();
 const { frontmatter } = useData();
@@ -24,20 +23,19 @@ const closeSidebar = () => {
   sidebarOpen.value = false;
 };
 
-// Force dark theme
 onMounted(() => {
   // Force dark theme on html element
   document.documentElement.classList.add('dark');
   document.documentElement.setAttribute('data-theme', 'dark');
   document.documentElement.style.colorScheme = 'dark';
-  
+
   // Remove light theme class if present
   document.documentElement.classList.remove('light');
-  
+
   // Force dark theme on body
   document.body.classList.add('dark');
   document.body.style.colorScheme = 'dark';
-  
+
   // Watch for any theme changes and force dark
   const observer = new MutationObserver(() => {
     if (!document.documentElement.classList.contains('dark')) {
@@ -49,7 +47,7 @@ onMounted(() => {
       document.documentElement.classList.remove('light');
     }
   });
-  
+
   observer.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class', 'data-theme'],
@@ -71,7 +69,7 @@ watch(
     <MobileHeader :sidebar-open="sidebarOpen" @toggle="toggleSidebar" />
 
     <!-- Overlay for mobile -->
-    <div v-if="sidebarOpen" class="sidebar-overlay" @click="closeSidebar"></div>
+    <div v-if="sidebarOpen" @click="closeSidebar" class="sidebar-overlay"></div>
 
     <!-- Sidebar Component -->
     <Sidebar :class="{ 'sidebar-open': sidebarOpen }" @navigate="closeSidebar" />
@@ -81,7 +79,6 @@ watch(
       <!-- Landing Page -->
       <template v-if="isLanding">
         <div class="landing-wrapper">
-          <Landing />
         </div>
       </template>
 
@@ -166,7 +163,7 @@ watch(
 
   .main-content {
     width: 100%;
-    padding-top: 56px; /* Height of mobile header */
+    padding-top: 56px;
   }
 
   .main-content.landing-content {
@@ -174,14 +171,14 @@ watch(
   }
 
   .content-wrapper {
-    padding: 2rem 1.5rem 2rem; /* Top: 2rem (32px), Left/Right: 1.5rem (24px) */
+    padding: 2rem 1.5rem 2rem;
   }
 }
 
 /* Extra small devices */
 @media (max-width: 480px) {
   .content-wrapper {
-    padding: 2rem 1.5rem 2rem; /* Top: 2rem (32px), Left/Right: 1.5rem (24px) */
+    padding: 2rem 1.5rem 2rem;
   }
 }
 </style>

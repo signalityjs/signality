@@ -6,8 +6,6 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 Reactive wrapper around the [Pointer Lock API](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API). Returns a signal that tracks the element that currently has pointer lock.
 
-<Demo name="pointer-lock-element" />
-
 ## Usage
 
 ```angular-ts
