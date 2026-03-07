@@ -1,6 +1,7 @@
 import { type CreateSignalOptions, inject, type Signal, signal } from '@angular/core';
 import { type InputModality, InputModalityDetector } from '@angular/cdk/a11y';
-import { constSignal, setupContext, WithInjector } from '@signality/core';
+import { WithInjector } from '@signality/core';
+import { constSignal, setupContext } from '@signality/core/internal';
 
 export type InputModalityOptions = CreateSignalOptions<InputModality> & WithInjector;
 

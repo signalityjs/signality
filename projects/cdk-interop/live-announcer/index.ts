@@ -1,6 +1,7 @@
 import { inject, signal, type Signal } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { constSignal, NOOP_FN, setupContext, WithInjector } from '@signality/core';
+import { WithInjector } from '@signality/core';
+import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
 
 export type AriaLivePoliteness = 'polite' | 'assertive' | 'off';
 

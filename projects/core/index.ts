@@ -5,5 +5,4 @@ export * from '@signality/core/browser';
 export * from '@signality/core/elements';
 export * from '@signality/core/router';
 export * from '@signality/core/forms';
-export * from '@signality/core/internal';
 export * from '@signality/core/types';
