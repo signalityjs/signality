@@ -18,8 +18,9 @@
   },
   "homepage": "https://signality.dev",
   "peerDependencies": {
-    "@angular/core": ">=20.0.0",
-    "@angular/cdk": ">=20.0.0",
-    "@signality/core": ">=0.0.1-alpha.1"
+    "@angular/core": ">=19.2.0",
+    "@angular/cdk": ">=19.2.0",
+    "@signality/core": ">=0.0.1-alpha.1",
+    "rxjs": ">=7.8.1"
   }
 }

@@ -217,7 +217,9 @@ describe(listener.name, () => {
         parentClicked = false;
 
         constructor() {
-          listener.stop(this.child, 'click', () => {});
+          listener.stop(this.child, 'click', () => {
+            /* empty */
+          });
           listener(this.parent, 'click', () => {
             this.parentClicked = true;
           });

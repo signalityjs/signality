@@ -92,7 +92,13 @@ import { DemoButton, DemoCard, Wrapper } from '../../common';
   `,
 })
 export class IntervalDemo {
-  readonly timer = interval(() => {}, 1000, { immediate: true });
+  readonly timer = interval(
+    () => {
+      /* empty */
+    },
+    1000,
+    { immediate: true }
+  );
 
   readonly importCode = `import { interval } from '@signality/core'`;
 }
