@@ -17,6 +17,7 @@ export interface ToElementBase {
     | undefined;
 }
 
+// @TODO: Consider moving it out of internal
 export const toElement: ToElementFn = (() => {
   const fn = toElementFn as ToElementFn;
   fn.untracked = v => toElementFn(v, true);
