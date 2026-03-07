@@ -31,7 +31,7 @@ export interface ScrollDirections {
   readonly right: boolean;
 }
 
-export interface ScrollOptions extends WithInjector {
+export interface ScrollPositionOptions extends WithInjector {
   /**
    * Element or window to track scroll on.
    * @default window
@@ -55,7 +55,7 @@ export interface ScrollOptions extends WithInjector {
   };
 }
 
-export interface ScrollRef {
+export interface ScrollPositionRef {
   /** Horizontal scroll position */
   readonly x: Signal<number>;
 
@@ -92,8 +92,8 @@ export interface ScrollRef {
  *     }
  *   `
  * })
- * class ScrollComponent {
- *   readonly scrollPos = scroll();
+ * class ScrollTracker {
+ *   readonly scrollPos = scrollPosition();
  * }
  * ```
  *
@@ -109,13 +109,13 @@ export interface ScrollRef {
  *   `
  * })
  * class ScrollableComponent {
- *   readonly scrollable = viewChild<ElementRef>('scrollable');
- *   readonly pos = scroll({ target: this.scrollable });
+ *   readonly scrollableEl = viewChild<ElementRef>('scrollable');
+ *   readonly pos = scrollPosition({ target: this.scrollableEl });
  * }
  * ```
  */
-export function scroll(options?: ScrollOptions): ScrollRef {
-  const { runInContext } = setupContext(options?.injector, scroll);
+export function scrollPosition(options?: ScrollPositionOptions): ScrollPositionRef {
+  const { runInContext } = setupContext(options?.injector, scrollPosition);
 
   return runInContext(({ isServer, onCleanup }) => {
     if (isServer) {
@@ -149,7 +149,10 @@ export function scroll(options?: ScrollOptions): ScrollRef {
       }
 
       const el = toElement(target);
-      return { scrollX: el?.scrollLeft || 0, scrollY: el?.scrollTop || 0 };
+      return {
+        scrollX: el?.scrollLeft || 0,
+        scrollY: el?.scrollTop || 0,
+      };
     };
 
     const getScrollSize = (): {

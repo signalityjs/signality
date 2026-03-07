@@ -249,4 +249,4 @@ function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue>;
 ## Related
 
 - [ElementSize](/elements/element-size) — Track element dimensions
-- [Scroll](/elements/scroll) — Track scroll position
+- [ScrollPosition](/elements/scroll-position) — Track scroll position

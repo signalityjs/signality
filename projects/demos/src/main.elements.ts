@@ -45,7 +45,7 @@ import { OnClickOutsideDemo } from './demos/on-click-outside/on-click-outside-de
 import { OnlineDemo } from './demos/online/online-demo';
 import { PageVisibilityDemo } from './demos/page-visibility/page-visibility-demo';
 import { PictureInPictureDemo } from './demos/picture-in-picture/picture-in-picture-demo';
-import { ScrollDemo } from './demos/scroll/scroll-demo';
+import { ScrollPositionDemo } from './demos/scroll/scroll-position-demo';
 import { WebShareDemo } from './demos/web-share/web-share-demo';
 import { SpeechRecognitionDemo } from './demos/speech-recognition/speech-recognition-demo';
 import { SpeechSynthesisDemo } from './demos/speech-synthesis/speech-synthesis-demo';
@@ -96,7 +96,7 @@ const DEMOS = [
   { component: OnlineDemo, name: 'signality-demo-online' },
   { component: PageVisibilityDemo, name: 'signality-demo-page-visibility' },
   { component: PictureInPictureDemo, name: 'signality-demo-picture-in-picture' },
-  { component: ScrollDemo, name: 'signality-demo-scroll' },
+  { component: ScrollPositionDemo, name: 'signality-demo-scroll-position' },
   { component: WebShareDemo, name: 'signality-demo-web-share' },
   { component: SpeechRecognitionDemo, name: 'signality-demo-speech-recognition' },
   { component: SpeechSynthesisDemo, name: 'signality-demo-speech-synthesis' },

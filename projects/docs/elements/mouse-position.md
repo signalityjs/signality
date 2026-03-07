@@ -132,4 +132,4 @@ function mousePosition(options?: MousePositionOptions): Signal<MousePosition>;
 ## Related
 
 - [ElementHover](/elements/element-hover) — Track hover state
-- [Scroll](/elements/scroll) — Track scroll position
+- [ScrollPosition](/elements/scroll-position) — Track scroll position

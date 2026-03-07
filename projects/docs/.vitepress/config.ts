@@ -218,7 +218,7 @@ export default defineConfig({
           { text: 'OnClickOutside', link: '/elements/on-click-outside' },
           { text: 'OnDisconnect', link: '/elements/on-disconnect' },
           { text: 'OnLongPress', link: '/elements/on-long-press' },
-          { text: 'Scroll', link: '/elements/scroll' },
+          { text: 'ScrollPosition', link: '/elements/scroll-position' },
           { text: 'Swipe', link: '/elements/swipe' },
           { text: 'TextSelection', link: '/elements/text-selection' },
           { text: 'WindowSize', link: '/elements/window-size' },

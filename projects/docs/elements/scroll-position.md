@@ -2,25 +2,25 @@
 source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/scroll/index.ts
 ---
 
-# Scroll
+# ScrollPosition
 
 Reactive tracking of scroll position. Track scroll offset of window or any scrollable element.
 
-<Demo name="scroll" />
+<Demo name="scroll-position" />
 
 ## Usage
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { scroll } from '@signality/core';
+import { scrollPosition } from '@signality/core';
 
 @Component({
   template: `
-    <p>Scroll Y: {{ scrollPosition.y() }}px</p>
+    <p>Scroll Y: {{ scrollPos.y() }}px</p>
   `,
 })
 export class ScrollDemo {
-  readonly scrollPosition = scroll(); // [!code highlight]
+  readonly scrollPos = scrollPosition(); // [!code highlight]
 }
 ```
 
@@ -35,7 +35,7 @@ export class ScrollDemo {
 
 ## Return Value
 
-The `scroll()` function returns a `ScrollRef`:
+The `scrollPosition()` function returns a `ScrollPositionRef`:
 
 | Property       | Type                       | Description                   |
 |----------------|----------------------------|-------------------------------|
@@ -67,7 +67,7 @@ interface ScrollDirections {
 
 ```angular-ts
 import { Component, computed } from '@angular/core';
-import { scroll } from '@signality/core';
+import { scrollPosition } from '@signality/core';
 
 @Component({
   template: `
@@ -86,8 +86,8 @@ import { scroll } from '@signality/core';
   `,
 })
 export class StickyHeader {
-  readonly scroll = scroll();
-  readonly isSticky = computed(() => this.scroll.y() > 100);
+  readonly scrollPos = scrollPosition();
+  readonly isSticky = computed(() => this.scrollPos.y() > 100);
 }
 ```
 
@@ -95,7 +95,7 @@ export class StickyHeader {
 
 ```angular-ts
 import { Component, computed } from '@angular/core';
-import { scroll } from '@signality/core';
+import { scrollPosition } from '@signality/core';
 
 @Component({
   template: `
@@ -107,8 +107,8 @@ import { scroll } from '@signality/core';
   `,
 })
 export class BackToTop {
-  readonly scroll = scroll();
-  readonly showButton = computed(() => this.scroll.y() > 500);
+  readonly scrollPos = scrollPosition();
+  readonly showButton = computed(() => this.scrollPos.y() > 500);
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -120,7 +120,7 @@ export class BackToTop {
 
 ```angular-ts
 import { Component, computed } from '@angular/core';
-import { scroll } from '@signality/core';
+import { scrollPosition } from '@signality/core';
 
 @Component({
   template: `
@@ -130,14 +130,14 @@ import { scroll } from '@signality/core';
   `,
 })
 export class ScrollProgress {
-  readonly scroll = scroll();
+  readonly scrollPos = scrollPosition();
 
   readonly progress = computed(() => {
     if (!window) return 0;
     const docEl = document.documentElement;
     const scrollHeight = docEl.scrollHeight - window.innerHeight;
     if (scrollHeight <= 0) return 0;
-    return (this.scroll.y() / scrollHeight) * 100;
+    return (this.scrollPos.y() / scrollHeight) * 100;
   });
 }
 ```
@@ -146,7 +146,7 @@ export class ScrollProgress {
 
 ```angular-ts
 import { Component, effect, signal } from '@angular/core';
-import { scroll } from '@signality/core';
+import { scrollPosition } from '@signality/core';
 
 @Component({
   template: `
@@ -161,7 +161,7 @@ import { scroll } from '@signality/core';
   `,
 })
 export class InfiniteList {
-  readonly scrollPos = scroll({ offset: { bottom: 200 } });
+  readonly scrollPos = scrollPosition({ offset: { bottom: 200 } });
   readonly items = signal<any[]>([]);
   readonly loading = signal(false);
 
@@ -186,7 +186,7 @@ export class InfiniteList {
 
 ```angular-ts
 import { Component, viewChild, ElementRef } from '@angular/core';
-import { scroll } from '@signality/core';
+import { scrollPosition } from '@signality/core';
 
 @Component({
   template: `
@@ -194,7 +194,7 @@ import { scroll } from '@signality/core';
       <div class="content">Long content...</div>
     </div>
     <div class="scroll-indicator">
-      @if (!scroll.arrivedState().bottom) {
+      @if (!scrollPos.arrivedState().bottom) {
         <span>↓ Scroll for more</span>
       }
     </div>
@@ -202,7 +202,7 @@ import { scroll } from '@signality/core';
 })
 export class ScrollContainer {
   readonly container = viewChild<ElementRef>('container');
-  readonly scroll = scroll({ target: this.container }); // [!code highlight]
+  readonly scrollPos = scrollPosition({ target: this.container }); // [!code highlight]
 }
 ```
 
@@ -220,20 +220,20 @@ On the server, signals initialize with safe defaults:
 
 ```typescript
 interface ArrivedState {
-  top: boolean;
-  bottom: boolean;
-  left: boolean;
-  right: boolean;
+  readonly top: boolean;
+  readonly bottom: boolean;
+  readonly left: boolean;
+  readonly right: boolean;
 }
 
 interface ScrollDirections {
-  top: boolean;
-  bottom: boolean;
-  left: boolean;
-  right: boolean;
+  readonly top: boolean;
+  readonly bottom: boolean;
+  readonly left: boolean;
+  readonly right: boolean;
 }
 
-interface ScrollOptions extends WithInjector {
+interface ScrollPositionOptions extends WithInjector {
   readonly target?: MaybeElementSignal<Element> | Window;
   readonly throttle?: number;
   readonly offset?: {
@@ -244,7 +244,7 @@ interface ScrollOptions extends WithInjector {
   };
 }
 
-interface ScrollRef {
+interface ScrollPositionRef {
   readonly x: Signal<number>;
   readonly y: Signal<number>;
   readonly isScrolling: Signal<boolean>;
@@ -252,7 +252,7 @@ interface ScrollRef {
   readonly directions: Signal<ScrollDirections>;
 }
 
-function scroll(options?: ScrollOptions): ScrollRef;
+function scrollPosition(options?: ScrollPositionOptions): ScrollPositionRef;
 ```
 
 ## Related
