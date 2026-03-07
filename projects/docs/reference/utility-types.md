@@ -38,26 +38,6 @@ Union type that accepts either a static value or a reactive `Signal`.
 type MaybeSignal<T> = T | Signal<T>;
 ```
 
-##### Example
-
-```typescript
-import { signal } from '@angular/core';
-import type { MaybeSignal } from '@signality/core'; // [!code ++]
-
-function processValue(value: MaybeSignal<number>): void {
-  // Value can be number | Signal<number>
-}
-
-processValue(42); // [!code highlight]
-processValue(signal(42)); // [!code highlight]
-
-type A = MaybeSignal<number>;
-// Type A = number | Signal<number>
-
-type B = MaybeSignal<string | undefined>;
-// Type B = string | undefined | Signal<string | undefined>
-```
-
 ## MaybeElementSignal&lt;Type&gt;
 
 Union type for element references that can be an element, `ElementRef`, or a `Signal` containing either of these (including `null` or `undefined`).
@@ -71,58 +51,12 @@ type MaybeElementSignal<T extends Element> =
 
 > **Note:** The signal variant includes `null` and `undefined` because elements may dynamically change in reactive scenarios, particularly with conditional rendering where elements can appear or disappear based on signal values.
 
-##### Example
-
-```typescript
-import { ElementRef, signal } from '@angular/core';
-import type { MaybeElementSignal } from '@signality/core'; // [!code ++]
-
-function trackElement(element: MaybeElementSignal<HTMLElement>): void {
-  // Element can be:
-  // | HTMLElement 
-  // | ElementRef<HTMLElement> 
-  // | Signal<HTMLElement | ElementRef<HTMLElement> | null | undefined>
-}
-
-trackElement(document.body); // [!code highlight]
-trackElement(new ElementRef(document.body)); // [!code highlight]
-trackElement(signal(document.body)); // [!code highlight]
-trackElement(signal(null)); // [!code highlight]
-
-type A = MaybeElementSignal<HTMLDivElement>;
-// Type A = 
-// | HTMLDivElement 
-// | ElementRef<HTMLDivElement> 
-// | Signal<HTMLDivElement | ElementRef<HTMLDivElement> | null | undefined>
-```
-
 ## UnrefElement&lt;Type&gt;
 
 Extracts the element type from `ElementRef` or returns the type as-is.
 
 ```typescript
 type UnrefElement<T> = T extends ElementRef<infer E> ? E : T;
-```
-
-##### Example
-
-```typescript
-import { ElementRef } from '@angular/core';
-import type { UnrefElement } from '@signality/core'; // [!code ++]
-
-type A = UnrefElement<ElementRef<HTMLDivElement>>; // [!code highlight]
-// Type A = HTMLDivElement
-
-type B = UnrefElement<HTMLElement>; // [!code highlight]
-// Type B = HTMLElement
-
-function getElement<T extends ElementRef<any>>(ref: T): UnrefElement<T> {
-  return ref.nativeElement;
-}
-
-const divRef = new ElementRef<HTMLDivElement>(document.createElement('div'));
-const element = getElement(divRef); // [!code highlight]
-// Const element: HTMLDivElement
 ```
 
 ## Related
