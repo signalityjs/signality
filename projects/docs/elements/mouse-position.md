@@ -2,41 +2,41 @@
 source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/mouse/index.ts
 ---
 
-# Mouse
+# MousePosition
 
 Reactive tracking of mouse position. Track cursor coordinates globally or relative to an element.
 
-<Demo name="mouse" />
+<Demo name="mouse-position" />
 
 ## Usage
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { mouse } from '@signality/core';
+import { mousePosition } from '@signality/core';
 
 @Component({
   template: `
     <p>Mouse: {{ mousePos().x }}, {{ mousePos().y }}</p>
   `,
 })
-export class MouseDemo {
-  readonly mousePos = mouse(); // [!code highlight]
+export class MousePositionDemo {
+  readonly mousePos = mousePosition(); // [!code highlight]
 }
 ```
 
 ## Options
 
-| Option         | Type                                                                                                | Default          | Description                         |
-|----------------|-----------------------------------------------------------------------------------------------------|------------------|-------------------------------------|
-| `target`       | [`MaybeElementSignal<Element>`](/reference/utility-types#maybeelementsignal-lt-type-gt) \| `Window` | `window`         | Element or window to track mouse on |
-| `type`         | `'page' \| 'client' \| 'screen'`                                                                    | `'page'`         | Coordinate type                     |
-| `touch`        | `boolean`                                                                                           | `true`           | Track touch events too              |
-| `initialValue` | `{ x: number, y: number }`                                                                          | `{ x: 0, y: 0 }` | Initial position                    |
-| `injector`     | [`Injector`](https://angular.dev/api/core/Injector)                                                 | -                | Optional injector for DI context    |
+| Option         | Type                                                                                                | Default          | Description                                 |
+|----------------|-----------------------------------------------------------------------------------------------------|------------------|---------------------------------------------|
+| `target`       | [`MaybeElementSignal<Element>`](/reference/utility-types#maybeelementsignal-lt-type-gt) \| `Window` | `window`         | Element or window to track mousePosition on |
+| `type`         | `'page' \| 'client' \| 'screen'`                                                                    | `'page'`         | Coordinate type                             |
+| `touch`        | `boolean`                                                                                           | `true`           | Track touch events too                      |
+| `initialValue` | `{ x: number, y: number }`                                                                          | `{ x: 0, y: 0 }` | Initial position                            |
+| `injector`     | [`Injector`](https://angular.dev/api/core/Injector)                                                 | -                | Optional injector for DI context            |
 
 ## Return Value
 
-The `mouse()` function returns a `Signal<MousePosition>`:
+The `mousePosition()` function returns a `Signal<MousePosition>`:
 
 ```typescript
 interface MousePosition {
@@ -56,7 +56,7 @@ interface MousePosition {
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { mouse } from '@signality/core';
+import { mousePosition } from '@signality/core';
 
 @Component({
   template: `
@@ -79,15 +79,15 @@ import { mouse } from '@signality/core';
   `,
 })
 export class CursorFollower {
-  readonly position = mouse({ type: 'client' });
+  readonly position = mousePosition({ type: 'client' });
 }
 ```
 
-### Track mouse on a specific element
+### Track mousePosition on a specific element
 
 ```angular-ts
 import { Component, viewChild, ElementRef } from '@angular/core';
-import { mouse } from '@signality/core';
+import { mousePosition } from '@signality/core';
 
 @Component({
   template: `
@@ -98,7 +98,7 @@ import { mouse } from '@signality/core';
 })
 export class ElementMouseTracker {
   readonly area = viewChild<ElementRef>('area');
-  readonly position = mouse({ target: this.area });
+  readonly position = mousePosition({ target: this.area });
 }
 ```
 
@@ -113,20 +113,20 @@ On the server, the signal returns the initial value:
 
 ```typescript
 interface MousePosition {
-  x: number;
-  y: number;
+  readonly x: number;
+  readonly y: number;
 }
 
 type MouseCoordinateType = 'page' | 'client' | 'screen';
 
-interface MouseOptions extends WithInjector {
+interface MousePositionOptions extends WithInjector {
   readonly target?: MaybeElementSignal<Element> | Window;
   readonly type?: MouseCoordinateType;
   readonly touch?: boolean;
   readonly initialValue?: MousePosition;
 }
 
-function mouse(options?: MouseOptions): Signal<MousePosition>;
+function mousePosition(options?: MousePositionOptions): Signal<MousePosition>;
 ```
 
 ## Related

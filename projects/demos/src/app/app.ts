@@ -24,7 +24,7 @@ import { IntersectionObserverDemo } from '../demos/intersection-observer/interse
 import { MutationObserverDemo } from '../demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from '../demos/resize-observer/resize-observer-demo';
 import { MediaQueryDemo } from '../demos/media-query/media-query-demo';
-import { MouseDemo } from '../demos/mouse/mouse-demo';
+import { MousePositionDemo } from '../demos/mouse-position/mouse-position-demo';
 import { NetworkDemo } from '../demos/network/network-demo';
 import { OnClickOutsideDemo } from '../demos/on-click-outside/on-click-outside-demo';
 import { OnlineDemo } from '../demos/online/online-demo';
@@ -81,7 +81,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     MutationObserverDemo,
     ResizeObserverDemo,
     MediaQueryDemo,
-    MouseDemo,
+    MousePositionDemo,
     NetworkDemo,
     OnClickOutsideDemo,
     OnlineDemo,
@@ -164,7 +164,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
 
       <section>
         <h2>Mouse Demo</h2>
-        <demo-mouse />
+        <demo-mouse-position />
       </section>
 
       <section>

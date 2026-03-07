@@ -11,9 +11,9 @@ export interface MousePosition {
 
 export type MouseCoordinateType = 'page' | 'client' | 'screen';
 
-export interface MouseOptions extends WithInjector {
+export interface MousePositionOptions extends WithInjector {
   /**
-   * Element or window to track mouse on.
+   * Element or window to track mouse-position-position on.
    * @default window
    */
   readonly target?: MaybeElementSignal<Element> | Window;
@@ -51,13 +51,13 @@ export interface MouseOptions extends WithInjector {
  *   `
  * })
  * class MouseTrackerComponent {
- *   readonly position = mouse();
+ *   readonly position = mousePosition();
  * }
  * ```
  *
  * @example
  * ```typescript
- * // Track mouse on a specific element
+ * // Track mouse position on a specific element
  * @Component({
  *   template: `
  *     <div #box>
@@ -67,12 +67,12 @@ export interface MouseOptions extends WithInjector {
  * })
  * class MouseElementComponent {
  *   readonly box = viewChild<ElementRef>('box');
- *   readonly position = mouse({ target: this.box });
+ *   readonly position = mousePosition({ target: this.box });
  * }
  * ```
  */
-export function mouse(options?: MouseOptions): Signal<MousePosition> {
-  const { runInContext } = setupContext(options?.injector, mouse);
+export function mousePosition(options?: MousePositionOptions): Signal<MousePosition> {
+  const { runInContext } = setupContext(options?.injector, mousePosition);
 
   return runInContext(({ isServer }) => {
     const initialValue = options?.initialValue ?? DEFAULT_POSITION;

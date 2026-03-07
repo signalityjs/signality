@@ -214,7 +214,7 @@ export default defineConfig({
           { text: 'ElementHover', link: '/elements/element-hover' },
           { text: 'ElementSize', link: '/elements/element-size' },
           { text: 'ElementVisibility', link: '/elements/element-visibility' },
-          { text: 'Mouse', link: '/elements/mouse' },
+          { text: 'MousePosition', link: '/elements/mouse-position' },
           { text: 'OnClickOutside', link: '/elements/on-click-outside' },
           { text: 'OnDisconnect', link: '/elements/on-disconnect' },
           { text: 'OnLongPress', link: '/elements/on-long-press' },

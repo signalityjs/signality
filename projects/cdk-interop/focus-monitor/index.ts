@@ -22,7 +22,7 @@ export interface FocusMonitorRef {
   /** Whether element is focused */
   readonly isFocused: Signal<boolean>;
 
-  /** Focus origin: 'keyboard', 'mouse', 'touch', 'program', or null */
+  /** Focus origin: 'keyboard', 'mouse-position-position', 'touch', 'program', or null */
   readonly origin: Signal<FocusOrigin>;
 
   /** Focus element with specific origin */

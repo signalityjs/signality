@@ -290,4 +290,4 @@ function listener<EventType = Event>(
 
 - [elementHover](/elements/element-hover) — Track hover state
 - [elementFocus](/elements/element-focus) — Track focus state
-- [mouse](/elements/mouse) — Track mouse position
+- [MousePosition](/elements/mouse-position) — Track mouse position

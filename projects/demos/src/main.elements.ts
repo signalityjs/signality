@@ -39,7 +39,7 @@ import { IntersectionObserverDemo } from './demos/intersection-observer/intersec
 import { MutationObserverDemo } from './demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from './demos/resize-observer/resize-observer-demo';
 import { MediaQueryDemo } from './demos/media-query/media-query-demo';
-import { MouseDemo } from './demos/mouse/mouse-demo';
+import { MousePositionDemo } from './demos/mouse-position/mouse-position-demo';
 import { NetworkDemo } from './demos/network/network-demo';
 import { OnClickOutsideDemo } from './demos/on-click-outside/on-click-outside-demo';
 import { OnlineDemo } from './demos/online/online-demo';
@@ -89,7 +89,7 @@ const DEMOS = [
   { component: MutationObserverDemo, name: 'signality-demo-mutation-observer' },
   { component: ResizeObserverDemo, name: 'signality-demo-resize-observer' },
   { component: MediaQueryDemo, name: 'signality-demo-media-query' },
-  { component: MouseDemo, name: 'signality-demo-mouse' },
+  { component: MousePositionDemo, name: 'signality-demo-mouse-position' },
   { component: NetworkDemo, name: 'signality-demo-network' },
   { component: ScreenOrientationDemo, name: 'signality-demo-screen-orientation' },
   { component: OnClickOutsideDemo, name: 'signality-demo-on-click-outside' },

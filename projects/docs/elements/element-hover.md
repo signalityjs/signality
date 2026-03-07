@@ -68,4 +68,4 @@ function elementHover(
 ## Related
 
 - [ElementFocus](/elements/element-focus) — Track focus state instead of hover
-- [Mouse](/elements/mouse) — Track mouse position
+- [MousePosition](/elements/mouse-position) — Track mouse position

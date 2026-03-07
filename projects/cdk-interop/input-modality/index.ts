@@ -9,7 +9,7 @@ export type InputModalityOptions = CreateSignalOptions<InputModality> & WithInje
  * Signal-based wrapper around the [Angular CDK](https://material.angular.io/cdk/a11y/overview) InputModalityDetector.
  *
  * @param options - Optional configuration including signal options and injector
- * @returns A signal containing the current input modality: `'keyboard'`, `'mouse'`, `'touch'`, or `null`
+ * @returns A signal containing the current input modality: `'keyboard'`, `'mouse-position-position'`, `'touch'`, or `null`
  *
  * @example
  * ```typescript

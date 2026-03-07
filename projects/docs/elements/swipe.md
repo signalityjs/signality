@@ -156,4 +156,4 @@ function swipe(
 ## Related
 
 - [OnLongPress](/elements/on-long-press) — Detect long press gestures on an element
-- [Mouse](/elements/mouse) — Track mouse position on an element
+- [MousePosition](/elements/mouse-position) — Track mouse position on an element
