@@ -8,7 +8,7 @@ import { DemoCard, Wrapper } from '../../common';
   imports: [Wrapper, DemoCard],
   template: `
     <ng-demo-wrapper [code]="importCode">
-      <div class="scrollPosition-demo">
+      <div class="scroll-position-demo">
         <demo-card>
           <div class="coords-grid">
             <div class="coord-item">
@@ -25,7 +25,7 @@ import { DemoCard, Wrapper } from '../../common';
     </ng-demo-wrapper>
   `,
   styles: `
-    .scrollPosition-demo {
+    .scroll-position-demo {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
