@@ -23,7 +23,6 @@ describe(textDirection.name, () => {
       return fixture.componentInstance;
     };
 
-
     it('should return initial value when no dir attribute', () => {
       const component = createComponent();
 

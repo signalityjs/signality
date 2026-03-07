@@ -378,7 +378,6 @@ describe(storage.name, () => {
 
       expect(component.shared()).toBe('updated');
     });
-
   });
 
   describe('custom serializer', () => {

@@ -33,10 +33,16 @@ describe(geolocation.name, () => {
         speed: null,
       },
       timestamp: Date.now(),
-    }) as GeolocationPosition;
+    } as GeolocationPosition);
 
   const mockError = (code: number, message: string): GeolocationPositionError =>
-    ({ code, message, PERMISSION_DENIED: 1, POSITION_UNAVAILABLE: 2, TIMEOUT: 3 }) as GeolocationPositionError;
+    ({
+      code,
+      message,
+      PERMISSION_DENIED: 1,
+      POSITION_UNAVAILABLE: 2,
+      TIMEOUT: 3,
+    } as GeolocationPositionError);
 
   @Component({ template: '{{ geo.coords()?.latitude }}' })
   class TestComponent {

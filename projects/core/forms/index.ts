@@ -1,1 +1,1 @@
-export * from "@signality/core/forms/cva";
+export * from '@signality/core/forms/cva';

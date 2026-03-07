@@ -6,14 +6,8 @@ import { DemoBadge, DemoButton, Wrapper } from '../../common';
   selector: 'demo-eye-dropper',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoButton, DemoBadge],
-  template: `
-    <ng-demo-wrapper>
-
-    </ng-demo-wrapper>
-  `,
-  styles: `
-
-  `,
+  template: ` <ng-demo-wrapper> </ng-demo-wrapper> `,
+  styles: ``,
 })
 export class EyeDropperDemo {
   readonly eyeDropper = eyeDropper();

@@ -34,9 +34,9 @@ describe(mediaQuery.name, () => {
 
   const triggerChange = (query: string, matches: boolean) => {
     mediaQueryState.set(query, matches);
-    listeners.get(query)?.forEach(handler =>
-      handler({ matches, media: query } as MediaQueryListEvent)
-    );
+    listeners
+      .get(query)
+      ?.forEach(handler => handler({ matches, media: query } as MediaQueryListEvent));
   };
 
   @Component({ template: '{{ matches() }}' })

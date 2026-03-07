@@ -76,9 +76,7 @@ describe(elementFocusWithin.name, () => {
         input.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
         expect(component.isFocusedWithin()).toBe(true);
 
-        container.dispatchEvent(
-          new FocusEvent('focusout', { bubbles: true, relatedTarget: null })
-        );
+        container.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
         expect(component.isFocusedWithin()).toBe(false);
       });
     });
@@ -88,9 +86,9 @@ describe(elementFocusWithin.name, () => {
         @Component({
           template: `
             @if (show()) {
-              <div #container>
-                <input />
-              </div>
+            <div #container>
+              <input />
+            </div>
             }
           `,
         })
