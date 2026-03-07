@@ -15,6 +15,14 @@ Signality is a comprehensive library of signal-first utilities for Angular. SSR-
   overflow: visible;
   filter: saturate(1.5) brightness(1.1);
 }
+
+.inspiration-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 1rem 0;
+}
 </style>
 
 <div align="center" style="overflow: visible;">
@@ -126,6 +134,11 @@ export class Demo {
 ```
 
 ## Inspiration
+
+<div class="inspiration-badge">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 1000 1000"><path d="M735.07,67.05V531.58c0,129.83-105.24,235.07-235.07,235.07S264.93,661.41,264.93,531.58V67.05h166.3V531.58a68.77,68.77,0,1,0,137.54,0V67.05Z" fill="#35495e"/><path d="M901.36,67.05V531.58C901.36,753.25,721.67,933,500,933S98.64,753.25,98.64,531.58V67.05H264.93V531.58c0,129.83,105.25,235.07,235.07,235.07S735.07,661.41,735.07,531.58V67.05Z" fill="#41b883"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"><defs><linearGradient id="heart_gradient_inspiration" x1="0%" y1="100%" x2="100%" y2="0%" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#E40035"/><stop offset="0.24" stop-color="#F60A48"/><stop offset="0.494" stop-color="#DC087D"/><stop offset="0.745" stop-color="#9717E7"/><stop offset="1" stop-color="#6C00F5"/></linearGradient></defs><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="url(#heart_gradient_inspiration)"/></svg>
+</div>
 
 Signality was inspired by [VueUse](https://vueuse.org/) — a collection of essential Vue utilities. We follow the same philosophy of composable, reactive utilities for Angular's signal-based reactivity system.
 

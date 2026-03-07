@@ -40,6 +40,10 @@ const flatItems = computed<FlatItem[]>(() => {
   }
 
   for (const group of sidebar.value) {
+    if (group.text === 'Resources') {
+      continue;
+    }
+
     if (group.items) {
       flatten(group.items);
     }

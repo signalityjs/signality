@@ -90,35 +90,6 @@ export class CTAButton {
 }
 ```
 
-### Programmatic focus
-
-```angular-ts
-import { Component, viewChild, ElementRef } from '@angular/core';
-import { focusMonitor } from '@signality/cdk-interop';
-
-@Component({
-  template: `
-    <input #input placeholder="Enter name" />
-    <button (click)="focusInput()">Focus Input</button>
-    <p>Input origin: {{ inputFocus.origin() }}</p>
-  `,
-})
-export class FocusControl {
-  readonly input = viewChild<ElementRef>('input');
-  readonly inputFocus = focusMonitor(this.input);
-  
-  focusInput() {
-    // Focus with program origin (won't show focus ring in some styles)
-    this.inputFocus.focusVia('program'); // [!code highlight]
-  }
-  
-  focusInputAsKeyboard() {
-    // Focus with keyboard origin (will show focus ring)
-    this.inputFocus.focusVia('keyboard');
-  }
-}
-```
-
 ### Dialog focus management
 
 ```angular-ts
@@ -150,26 +121,6 @@ export class ConfirmDialog {
   close() {
     this.dialog()?.nativeElement.close();
   }
-}
-```
-
-### Dynamic element tracking
-
-```angular-ts
-import { Component, signal } from '@angular/core';
-import { focusMonitor } from '@signality/cdk-interop';
-
-@Component({
-  template: `
-    <button #btn1 (focus)="activeBtn.set(btn1)">Button 1</button>
-    <button #btn2 (focus)="activeBtn.set(btn2)">Button 2</button>
-    
-    <p>Active button origin: {{ activeFocus.origin() }}</p>
-  `,
-})
-export class DynamicFocus {
-  readonly activeBtn = signal<HTMLButtonElement | undefined>(undefined);
-  readonly activeFocus = focusMonitor(this.activeBtn); // [!code highlight]
 }
 ```
 

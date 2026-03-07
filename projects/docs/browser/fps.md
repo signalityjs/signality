@@ -181,26 +181,6 @@ export class DevFpsPanel {
 }
 ```
 
-### Conditional monitoring
-
-```angular-ts
-import { Component } from '@angular/core';
-import { fps } from '@signality/core';
-import { environment } from '../environments/environment';
-
-@Component({
-  template: `
-    @if (fpsMonitor.isRunning()) {
-      <div class="fps-badge">{{ fpsMonitor.fps() }} FPS</div>
-    }
-  `,
-})
-export class AppComponent {
-  readonly environment = environment;
-  readonly fpsMonitor = fps({ immediate: !environment.production }); // [!code highlight]
-}
-```
-
 ## SSR Compatibility
 
 On the server, signals initialize with safe defaults:
