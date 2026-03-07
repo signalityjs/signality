@@ -22,7 +22,7 @@ export interface ArrivedState {
 }
 
 /**
- * Current scrollPosition directions.
+ * Current scroll directions.
  */
 export interface ScrollDirections {
   readonly top: boolean;
@@ -33,13 +33,13 @@ export interface ScrollDirections {
 
 export interface ScrollPositionOptions extends WithInjector {
   /**
-   * Element or window to track scrollPosition on.
+   * Element or window to track scroll on.
    * @default window
    */
   readonly target?: MaybeElementSignal<Element> | Window;
 
   /**
-   * Throttle scrollPosition events in milliseconds.
+   * Throttle scroll events in milliseconds.
    * @default 0
    */
   readonly throttle?: number;
@@ -56,25 +56,25 @@ export interface ScrollPositionOptions extends WithInjector {
 }
 
 export interface ScrollPositionRef {
-  /** Horizontal scrollPosition position */
+  /** Horizontal scroll position */
   readonly x: Signal<number>;
 
-  /** Vertical scrollPosition position */
+  /** Vertical scroll position */
   readonly y: Signal<number>;
 
-  /** Whether currently scrollPositioning */
+  /** Whether currently scrolling */
   readonly isScrolling: Signal<boolean>;
 
   /** Which edges have been reached */
   readonly arrivedState: Signal<ArrivedState>;
 
-  /** Current scrollPosition direction */
+  /** Current scroll direction */
   readonly directions: Signal<ScrollDirections>;
 }
 
 /**
  * Reactive tracking of scroll position.
- * Track scrollPosition offset of window or any scrollable element.
+ * Track scroll offset of window or any scrollable element.
  *
  * @param options - Optional configuration
  * @returns An object with x, y, isScrolling, arrivedState, and directions signals
