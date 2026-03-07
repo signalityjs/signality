@@ -6,8 +6,6 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 Reactively track the user's current input method (keyboard, mouse, or touch).
 
-<Demo name="input-modality-browser" />
-
 ## Usage
 
 ```angular-ts
@@ -52,8 +50,8 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 The `WithInjector` interface provides:
 
-| Option     | Type       | Description                      |
-|------------|------------|----------------------------------|
+| Option     | Type                                                | Description                      |
+|------------|-----------------------------------------------------|----------------------------------|
 | `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context |
 
 ## Return Value
@@ -85,7 +83,7 @@ export class AdaptiveNav {
   readonly modality = inputModality();
   readonly isTouch = computed(() => this.modality() === 'touch');
   
-  // larger touch targets for touch input
+  // Larger touch targets for touch input
   readonly buttonPadding = computed(() => 
     this.isTouch() ? '1rem 2rem' : '0.5rem 1rem'
   );
