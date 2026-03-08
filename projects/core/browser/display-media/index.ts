@@ -1,6 +1,7 @@
-import { computed, type Signal, signal } from '@angular/core';
+import { computed, type Signal, signal, untracked } from '@angular/core';
 import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
+import { listener } from '@signality/core/browser/listener';
 
 export interface DisplayMediaOptions extends WithInjector {
   /**
@@ -30,7 +31,7 @@ export interface DisplayMediaRef {
   readonly error: Signal<Error | null>;
 
   /** Start screen capture */
-  readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | undefined>;
+  readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | null>;
 
   /** Stop screen capture */
   readonly stop: () => void;
@@ -90,7 +91,7 @@ export interface DisplayMediaRef {
 export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
   const { runInContext } = setupContext(options?.injector, displayMedia);
 
-  return runInContext(({ onCleanup, isBrowser }) => {
+  return runInContext(({ isBrowser, injector, onCleanup }) => {
     const isSupported = constSignal(
       isBrowser &&
         'mediaDevices' in navigator &&
@@ -103,88 +104,51 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
         isActive: constSignal(false),
         stream: constSignal(null),
         error: constSignal(null),
-        start: () => Promise.resolve(undefined),
+        start: () => Promise.resolve(null),
         stop: NOOP_FN,
       };
     }
+
+    const defaults: DisplayMediaOptions = {
+      video: options?.video ?? true,
+      audio: options?.audio ?? false,
+    };
 
     const stream = signal<MediaStream | null>(null);
     const error = signal<Error | null>(null);
     const isActive = computed(() => stream() !== null);
 
-    const defaultOptions: DisplayMediaOptions = {
-      video: options?.video ?? true,
-      audio: options?.audio ?? false,
-    };
-
-    const start = async (startOptions?: DisplayMediaOptions): Promise<MediaStream | undefined> => {
+    const start = async (overrides?: DisplayMediaOptions): Promise<MediaStream | null> => {
       try {
-        // Stop existing stream
         stop();
 
-        const opts = { ...defaultOptions, ...startOptions };
-
-        const mediaStream = await navigator.mediaDevices.getDisplayMedia({
-          video: opts.video,
-          audio: opts.audio,
-        });
+        const mergedOptions = { ...defaults, ...overrides };
+        const mediaStream = await navigator.mediaDevices.getDisplayMedia(mergedOptions);
 
         stream.set(mediaStream);
         error.set(null);
 
-        // Stop stream when any track ends (user stops sharing)
-        const tracks = mediaStream.getTracks();
-        for (const track of tracks) {
-          track.addEventListener('ended', () => {
-            stop();
-          });
-        }
+        mediaStream
+          .getTracks()
+          .forEach(track => listener(track, 'ended', () => stop(), { injector }));
 
         return mediaStream;
       } catch (err) {
-        let errorObj: Error;
-
-        if (err instanceof Error) {
-          if (err.name === 'NotAllowedError') {
-            errorObj = new Error('Screen capture permission denied');
-          } else if (err.name === 'AbortError') {
-            errorObj = new Error('Screen capture cancelled by user');
-          } else if (err.name === 'NotFoundError') {
-            errorObj = new Error('No screen capture source available');
-          } else if (err.name === 'NotReadableError') {
-            errorObj = new Error('Screen capture source is not readable');
-          } else {
-            errorObj = err;
-          }
-        } else {
-          errorObj = new Error('Failed to start screen capture');
-        }
-
-        error.set(errorObj);
-
-        if (ngDevMode) {
-          console.warn('[displayMedia]', errorObj.message);
-        }
-
-        return undefined;
+        error.set(err as DOMException | TypeError);
+        return null;
       }
     };
 
     const stop = () => {
-      const currentStream = stream();
-      if (currentStream) {
-        const tracks = currentStream.getTracks();
-        for (const track of tracks) {
-          track.stop();
-        }
+      const currStream = untracked(stream);
+      if (currStream) {
+        currStream.getTracks().forEach(track => track.stop());
         stream.set(null);
       }
       error.set(null);
     };
 
-    onCleanup(() => {
-      stop();
-    });
+    onCleanup(stop);
 
     return {
       isSupported,

@@ -20,20 +20,19 @@ import { displayMedia } from '@signality/core';
 
 @Component({
   template: `
-    @if (screen.isSupported()) {
-      <button (click)="startCapture()" [disabled]="screen.stream()">Start Capture</button>
-      <button (click)="screen.stop()" [disabled]="!screen.stream()">Stop Capture</button>
-      <video [srcObject]="screen.stream()" autoplay></video>
+    @if (dm.isSupported()) {
+      <button (click)="dm.start()" [disabled]="dm.stream()">
+        Start Capture
+      </button>
+      <button (click)="dm.stop()" [disabled]="!dm.stream()">
+        Stop Capture
+      </button>
+      <video [srcObject]="dm.stream()" autoplay></video>
     }
   `,
 })
 export class ScreenCaptureDemo {
-  readonly screen = displayMedia(); // [!code highlight]
-
-  async startCapture() {
-    const stream = await this.screen.start();
-    // Stream is automatically set in screen.stream()
-  }
+  readonly dm = displayMedia(); // [!code highlight]
 }
 ```
 
@@ -53,14 +52,14 @@ export class ScreenCaptureDemo {
 
 ## Return Value
 
-| Property      | Type                                              | Description                             |
-|---------------|---------------------------------------------------|-----------------------------------------|
-| `isSupported` | `Signal<boolean>`                                 | Whether Screen Capture API is supported |
-| `isActive`    | `Signal<boolean>`                                 | Whether currently capturing             |
-| `stream`      | `Signal<MediaStream \| null>`                     | Current media stream                    |
-| `error`       | `Signal<Error \| null>`                           | Last error occurred                     |
-| `start`       | `(options?) => Promise<MediaStream \| undefined>` | Start screen capture                    |
-| `stop`        | `() => void`                                      | Stop screen capture                     |
+| Property      | Type                                         | Description                             |
+|---------------|----------------------------------------------|-----------------------------------------|
+| `isSupported` | `Signal<boolean>`                            | Whether Screen Capture API is supported |
+| `isActive`    | `Signal<boolean>`                            | Whether currently capturing             |
+| `stream`      | `Signal<MediaStream \| null>`                | Current media stream                    |
+| `error`       | `Signal<Error \| null>`                      | Last error occurred                     |
+| `start`       | `(options?) => Promise<MediaStream \| null>` | Start screen capture                    |
+| `stop`        | `() => void`                                 | Stop screen capture                     |
 
 ## Browser Compatibility
 
@@ -99,7 +98,7 @@ interface DisplayMediaRef {
   readonly isActive: Signal<boolean>;
   readonly stream: Signal<MediaStream | null>;
   readonly error: Signal<Error | null>;
-  readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | undefined>;
+  readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | null>;
   readonly stop: () => void;
 }
 
