@@ -8,6 +8,7 @@ export * from '@signality/core/elements/element-visibility';
 export * from '@signality/core/elements/on-click-outside';
 export * from '@signality/core/elements/on-long-press';
 export * from '@signality/core/elements/mouse-position';
+export * from '@signality/core/elements/pointer-swipe';
 export * from '@signality/core/elements/on-disconnect';
 export * from '@signality/core/elements/scroll-position';
 export * from '@signality/core/elements/swipe';
