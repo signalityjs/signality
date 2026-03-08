@@ -50,6 +50,7 @@ import { WebShareDemo } from './demos/web-share/web-share-demo';
 import { SpeechRecognitionDemo } from './demos/speech-recognition/speech-recognition-demo';
 import { SpeechSynthesisDemo } from './demos/speech-synthesis/speech-synthesis-demo';
 import { StorageDemo } from './demos/storage/storage-demo';
+import { PointerSwipeDemo } from './demos/pointer-swipe/pointer-swipe-demo';
 import { SwipeDemo } from './demos/swipe/swipe-demo';
 import { TextDirectionDemo } from './demos/text-direction/text-direction-demo';
 import { TextSelectionDemo } from './demos/text-selection/text-selection-demo';
@@ -101,6 +102,7 @@ const DEMOS = [
   { component: SpeechRecognitionDemo, name: 'signality-demo-speech-recognition' },
   { component: SpeechSynthesisDemo, name: 'signality-demo-speech-synthesis' },
   { component: StorageDemo, name: 'signality-demo-storage' },
+  { component: PointerSwipeDemo, name: 'signality-demo-pointer-swipe' },
   { component: SwipeDemo, name: 'signality-demo-swipe' },
   { component: TextDirectionDemo, name: 'signality-demo-text-direction' },
   { component: TextSelectionDemo, name: 'signality-demo-text-selection' },
