@@ -14,6 +14,8 @@ This feature is available only in [secure contexts](https://developer.mozilla.or
 
 ## Usage
 
+On supported platforms, showing a system notification requires the user to grant permission via `requestPermission()`. This method must be called during a user gesture (e.g., click). Permission states: `default` (not requested), `granted`, or `denied`.
+
 ```angular-ts
 import { Component } from '@angular/core';
 import { webNotification } from '@signality/core';
@@ -21,10 +23,14 @@ import { webNotification } from '@signality/core';
 @Component({
   template: `
     @if (notif.isSupported()) {
-      @if (notif.permission() === 'granted') {
-        <button (click)="showNotification()">Send Notification</button>
-      } @else {
-        <button (click)="notif.requestPermission()">Enable Notifications</button>
+      @if (notif.permission() === 'default') { <!-- [!code warning] -->
+        <button (click)="requestPermission()">
+          Enable Notifications
+        </button>
+      } @else if (notif.notification() === 'granted') {
+        <button (click)="showNotification()">
+          Show Notification
+        </button>
       }
     }
   `,
@@ -32,10 +38,13 @@ import { webNotification } from '@signality/core';
 export class NotificationDemo {
   readonly notif = webNotification(); // [!code highlight]
   
+  async requestPermission() {
+    await this.notif.requestPermission();
+  }
+  
   showNotification() {
     this.notif.show('Hello!', {
       body: 'This is a notification from Signality',
-      icon: '/icon.png',
     });
   }
 }
@@ -49,84 +58,40 @@ export class NotificationDemo {
 
 ## Options
 
-| Option      | Type                                                                     | Default | Description                                           |
-|-------------|--------------------------------------------------------------------------|---------|-------------------------------------------------------|
-| `autoClose` | [`MaybeSignal<number>`](/reference/utility-types#maybesignal-lt-type-gt) | -       | Auto-close notifications after specified milliseconds |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                      | -       | Optional injector for DI context                      |
+Extends standard [`NotificationOptions`](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification) — any option set here becomes the default for every `show()` call.
+
+| Option               | Type                       | Default  | Description                                                                  |
+|----------------------|----------------------------|----------|------------------------------------------------------------------------------|
+| `autoClose`          | `MaybeSignal<number>`      | -        | Auto-close notification after specified milliseconds                         |
+| `injector`           | `Injector`                 | -        | Optional injector for DI context                                             |
+| `badge`              | `string`                   | -        | URL of image shown when there isn't enough space to display the notification |
+| `body`               | `string`                   | -        | Default body text                                                            |
+| `data`               | `any`                      | -        | Arbitrary data to associate with the notification                            |
+| `dir`                | `'ltr' \| 'rtl' \| 'auto'` | `'auto'` | Text direction                                                               |
+| `icon`               | `string`                   | -        | Default icon URL                                                             |
+| `image`              | `string`                   | -        | URL of image to display in the notification                                  |
+| `lang`               | `string`                   | `''`     | Language code (BCP 47)                                                       |
+| `renotify`           | `boolean`                  | `false`  | Notify when replacing an existing notification                               |
+| `requireInteraction` | `boolean`                  | `false`  | Keep notification visible until user interacts                               |
+| `silent`             | `boolean`                  | `false`  | Suppress sound and vibration                                                 |
+| `tag`                | `string`                   | -        | Default tag for replacing notifications                                      |
+| `timestamp`          | `number`                   | -        | Timestamp (Unix time in milliseconds)                                        |
+| `vibrate`            | `number[]`                 | -        | Vibration pattern for device vibration hardware                              |
 
 ## Return Value
 
 The `webNotification()` function returns a `WebNotificationRef` object:
 
-| Property            | Type                                             | Description                            |
-|---------------------|--------------------------------------------------|----------------------------------------|
-| `isSupported`       | `Signal<boolean>`                                | Whether Notifications API is supported |
-| `permission`        | `Signal<NotificationPermission>`                 | Current permission state               |
-| `requestPermission` | `() => Promise<NotificationPermission>`          | Request notification permission        |
-| `show`              | `(title, options?) => Notification \| undefined` | Show a notification                    |
-| `close`             | `(notification: Notification) => void`           | Close a notification                   |
+| Property            | Type                                             | Description                                |
+|---------------------|--------------------------------------------------|--------------------------------------------|
+| `isSupported`       | `Signal<boolean>`                                | Whether Notifications API is supported     |
+| `permission`        | `Signal<NotificationPermission>`                 | Current permission state                   |
+| `notification`      | `Signal<Notification \| null>`                   | Current active notification instance       |
+| `requestPermission` | `() => Promise<NotificationPermission>`          | Request notification permission            |
+| `show`              | `(title, options?) => Notification \| undefined` | Show a notification (auto-closes previous) |
+| `close`             | `() => void`                                     | Close the current notification             |
 
 ## Examples
-
-### New message notification
-
-```angular-ts
-import { Component, effect, signal } from '@angular/core';
-import { webNotification } from '@signality/core';
-
-interface Message {
-  from: string;
-  text: string;
-}
-
-@Component({ /* ... */ })
-export class ChatNotifications {
-  readonly notif = webNotification();
-  readonly lastMessage = signal<Message | null>(null);
-  
-  constructor() {
-    effect(() => {
-      const msg = this.lastMessage();
-      if (msg && document.hidden) {
-        this.notif.show(`New message from ${msg.from}`, {
-          body: msg.text,
-          icon: '/avatar.png',
-          tag: 'new-message', // Replaces previous with same tag // [!code highlight]
-        });
-      }
-    });
-  }
-}
-```
-
-### Notification with actions
-
-```angular-ts
-import { Component } from '@angular/core';
-import { webNotification } from '@signality/core';
-
-@Component({
-  template: `<button (click)="showActionNotification()">Notify</button>`,
-})
-export class ActionNotification {
-  readonly notif = webNotification();
-  
-  showActionNotification() {
-    const notification = this.notif.show('Meeting in 5 minutes', {
-      body: 'Team standup starting soon',
-      icon: '/calendar.png',
-      requireInteraction: true,
-    });
-    
-    if (notification) {
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
-    }
-  }
-}
-```
 
 ### Auto-close notification
 
@@ -149,66 +114,6 @@ export class TempNotification {
 }
 ```
 
-### Reactive auto-close
-
-```angular-ts
-import { Component, signal } from '@angular/core';
-import { webNotification } from '@signality/core';
-
-@Component({
-  template: `
-    <button (click)="showTempNotification()">Show Temp</button>
-    <input type="number" [value]="closeDelay()" (input)="closeDelay.set(+$any($event.target).value)" />
-  `,
-})
-export class ReactiveTempNotification {
-  readonly closeDelay = signal(3000);
-  readonly notif = webNotification({ autoClose: this.closeDelay }); // [!code highlight]
-  
-  showTempNotification() {
-    // Auto-closes after delay specified in signal
-    this.notif.show('Quick update', {
-      body: `This will disappear in ${this.closeDelay()}ms`,
-    });
-  }
-}
-```
-
-### Notification sound
-
-```angular-ts
-import { Component } from '@angular/core';
-import { webNotification } from '@signality/core';
-
-@Component({ /* ... */ })
-export class SoundNotification {
-  readonly notif = webNotification();
-  
-  notifyWithSound() {
-    const notification = this.notif.show('Alert!', {
-      body: 'Something important happened',
-      silent: false, // Allow sound
-    });
-    
-    // Play custom sound
-    new Audio('/notification.mp3').play();
-  }
-}
-```
-
-## Notification Options
-
-Standard [NotificationOptions](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification):
-
-| Option               | Type      | Description                         |
-|----------------------|-----------|-------------------------------------|
-| `body`               | `string`  | Notification body text              |
-| `icon`               | `string`  | URL of icon to display              |
-| `badge`              | `string`  | URL of badge image                  |
-| `tag`                | `string`  | ID for replacing notifications      |
-| `silent`             | `boolean` | Suppress sound                      |
-| `requireInteraction` | `boolean` | Keep visible until user interaction |
-
 ## Browser Compatibility
 
 The Notifications API has limited browser support, especially on mobile devices. Always check `isSupported()` before using notifications (see [Browser API support detection](/guide/key-concepts#browser-api-support-detection)):
@@ -229,6 +134,7 @@ On the server, signals initialize with safe defaults:
 
 - `isSupported` → `false`
 - `permission` → `'denied'`
+- `notification` → `null`
 - `requestPermission` → returns `'denied'`
 - `show` → returns `undefined`
 - `close` → no-op function
@@ -236,16 +142,17 @@ On the server, signals initialize with safe defaults:
 ## Type Definitions
 
 ```typescript
-interface WebNotificationOptions extends WithInjector {
+interface WebNotificationOptions extends NotificationOptions, WithInjector {
   readonly autoClose?: MaybeSignal<number>;
 }
 
 interface WebNotificationRef {
   readonly isSupported: Signal<boolean>;
   readonly permission: Signal<NotificationPermission>;
+  readonly notification: Signal<Notification | null>;
   readonly requestPermission: () => Promise<NotificationPermission>;
   readonly show: (title: string, options?: NotificationOptions) => Notification | undefined;
-  readonly close: (notification: Notification) => void;
+  readonly close: () => void;
 }
 
 function webNotification(options?: WebNotificationOptions): WebNotificationRef;

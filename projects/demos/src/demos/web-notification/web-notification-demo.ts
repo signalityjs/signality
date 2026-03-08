@@ -27,11 +27,11 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
         </demo-card>
 
         <div class="controls">
-          @if (notif.permission() !== 'granted') {
+          @if (notif.permission() === 'default') {
           <demo-button variant="primary" (click)="requestPermission()">
             Request Permission
           </demo-button>
-          } @else {
+          } @else if (notif.permission() === 'granted') {
           <demo-button variant="primary" (click)="showNotification()">
             Show Notification
           </demo-button>
@@ -78,6 +78,10 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
     .controls {
       display: flex;
       justify-content: center;
+
+      &:empty {
+        display: none;
+      }
     }
   `,
 })
