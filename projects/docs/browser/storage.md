@@ -8,22 +8,6 @@ Signal-based wrapper around [Web Storage API](https://developer.mozilla.org/en-U
 
 <Demo name="storage" />
 
-[//]: # (## Features)
-
-[//]: # ()
-
-[//]: # (- 🔄 Automatic type-aware serialization for common types)
-
-[//]: # (- 🌐 Cross-tab synchronization for localStorage)
-
-[//]: # (- 📦 Support for complex types &#40;Date, Map, Set, BigInt&#41;)
-
-[//]: # (- 🔀 Schema migration support via `mergeWithInitial`)
-
-[//]: # (- ⚡ Reactive key support)
-
-[//]: # (- 🛡️ SSR-safe &#40;returns regular signal on server&#41;)
-
 ## Usage
 
 ```angular-ts
@@ -53,14 +37,13 @@ export class StorageDemo {
 
 The `StorageOptions` extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option             | Type                                                                 | Default   | Description                                                                                        |
-|--------------------|----------------------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------|
-| `type`             | `'local' \| 'session'`                                               | `'local'` | Storage type to use                                                                                |
-| `serializer`       | `Serializer<T>`                                                      | Auto      | Custom serializer (see [Serialization](#serialization))                                            |
-| `writeInitial`     | `boolean`                                                            | `false`   | Write initial value to storage if key doesn't exist                                                |
-| `mergeWithInitial` | `boolean \| (stored: T, initial: T) => T`                            | `false`   | Merge strategy when reading from storage (see [Schema Migration](#schema-migration))               |
-| `equal`            | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -         | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `injector`         | [`Injector`](https://angular.dev/api/core/Injector)                  | -         | Optional injector for DI context                                                                   |
+| Option          | Type                                                                 | Default   | Description                                                                                        |
+|-----------------|----------------------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------|
+| `type`          | `'local' \| 'session'`                                               | `'local'` | Storage type to use                                                                                |
+| `serializer`    | `Serializer<T>`                                                      | Auto      | Custom serializer (see [Serialization](#serialization))                                            |
+| `mergeResolver` | `(storedValue: T, initialValue: T) => T`                             | -         | Merge resolver when reading from storage (see [Schema migration](#schema-migration))               |
+| `equal`         | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -         | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `injector`      | [`Injector`](https://angular.dev/api/core/Injector)                  | -         | Optional injector for DI context                                                                   |
 
 ## Serialization
 
@@ -131,7 +114,7 @@ const userSerializer: Serializer<User> = {
 
 ## Examples
 
-### Theme Preference
+### Theme preference
 
 ```angular-ts
 import { Component, effect } from '@angular/core';
@@ -149,9 +132,7 @@ type Theme = 'light' | 'dark' | 'system';
   `,
 })
 export class ThemeSelector {
-  readonly theme = storage<Theme>('theme', 'system', {
-    writeInitial: true, // Save default theme on first load
-  });
+  readonly theme = storage<Theme>('theme', 'system');
   
   constructor() {
     effect(() => {
@@ -161,7 +142,7 @@ export class ThemeSelector {
 }
 ```
 
-### Shopping Cart with Complex Types
+### Shopping cart with complex types
 
 ```angular-ts
 import { Component, computed } from '@angular/core';
@@ -177,13 +158,11 @@ interface CartItem {
 @Component({
   template: `
     <p>Cart: {{ cart().length }} items ({{ total() | currency }})</p>
-    <p>Last updated: {{ lastUpdated() | date }}</p>
     <button (click)="clearCart()">Clear Cart</button>
   `,
 })
 export class ShoppingCart {
-  readonly cart = storage<CartItem[]>('cart', []);
-  readonly lastUpdated = storage('cartUpdated', new Date());
+  readonly cart = storage<CartItem[]>('cart', []); // [!code highlight]
   
   readonly total = computed(() => 
     this.cart().reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -199,17 +178,15 @@ export class ShoppingCart {
       }
       return [...cart, item];
     });
-    this.lastUpdated.set(new Date());
   }
   
   clearCart() {
     this.cart.set([]);
-    this.lastUpdated.set(new Date());
   }
 }
 ```
 
-### Schema Migration
+### Schema migration
 
 Handle schema changes when your data structure evolves:
 
@@ -229,21 +206,20 @@ const defaultSettings: UserSettings = {
 @Component({ /* ... */ })
 export class SettingsComponent {
   // Shallow merge: adds new properties from defaults
-  readonly settings = storage('settings', defaultSettings, {
-    mergeWithInitial: true, // [!code highlight]
-  });
+  // (default behavior for objects)
+  readonly settings = storage('settings', defaultSettings);
   
   // Or use custom merge for deep merging
   readonly advancedSettings = storage('advSettings', defaultSettings, {
-    mergeWithInitial: (stored, initial) => { // [!code highlight]
+    mergeResolver: (storedValue, initialValue) => { // [!code highlight]
       // Custom deep merge logic
-      return deepMerge(initial, stored);
+      return deepMerge(initialValue, storedValue);
     },
   });
 }
 ```
 
-### Dynamic Storage Keys
+### Reactive key
 
 ```angular-ts
 import { Component, computed, signal } from '@angular/core';
@@ -262,7 +238,7 @@ export class UserPreferences {
 }
 ```
 
-### Session Storage
+### Session storage
 
 ```angular-ts
 import { Component } from '@angular/core';
@@ -271,14 +247,8 @@ import { storage } from '@signality/core';
 @Component({ /* ... */ })
 export class SessionDemo {
   // Session storage: cleared when tab closes
-  readonly tempData = storage('temp', '', {
-    type: 'session', // [!code highlight]
-  });
-  
-  // Form draft saved in session
   readonly formDraft = storage('formDraft', {}, {
-    type: 'session',
-    writeInitial: false, // Don't overwrite existing draft
+    type: 'session', // [!code highlight]
   });
 }
 ```
@@ -293,8 +263,7 @@ On the server, the utility uses an in-memory store that doesn't persist. The ini
 interface StorageOptions<T> extends CreateSignalOptions<T>, WithInjector {
   readonly type?: 'local' | 'session';
   readonly serializer?: Serializer<T>;
-  readonly writeInitial?: boolean;
-  readonly mergeWithInitial?: boolean | ((storedValue: T, initialValue: T) => T);
+  readonly mergeResolver?: (storedValue: T, initialValue: T) => T;
 }
 
 interface Serializer<T> {

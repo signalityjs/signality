@@ -1,5 +1,5 @@
 import { type CreateSignalOptions, isSignal, signal, type WritableSignal } from '@angular/core';
-import { proxySignal, setupContext, toValue } from '@signality/core/internal';
+import { isPlainObject, proxySignal, setupContext, toValue } from '@signality/core/internal';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 import { watcher } from '@signality/core/reactivity/watcher';
@@ -45,35 +45,26 @@ export interface StorageOptions<T> extends CreateSignalOptions<T>, WithInjector 
   readonly serializer?: Serializer<T>;
 
   /**
-   * Write the initial value to storage if the key doesn't exist.
-   * @default false
-   */
-  readonly writeInitial?: boolean;
-
-  /**
-   * Merge strategy when reading from storage.
+   * Merge resolver function when reading from storage.
    *
-   * - `false`: Use stored value as-is (default)
-   * - `true`: Shallow merge with initial value (for objects)
-   * - `function`: Custom merge function
+   * Receives stored value and default value, returns the final value.
+   * Default: shallow merge for objects ({ ...initialValue, ...stored })
    *
-   * Useful for handling schema migrations when initial value has new properties.
-   *
-   * @default false
+   * Useful for handling schema migrations when default has new properties.
    *
    * @example
    * ```typescript
    * const settings = storage('settings', { theme: 'dark', fontSize: 14 }, {
-   *   mergeWithInitial: true, // shallow merge
+   *   mergeResolver: (stored, initial) => ({ ...initial, ...stored }),
    * });
    *
    * // Or with custom merge
    * const settings = storage('settings', defaultSettings, {
-   *   mergeWithInitial: (stored, initial) => deepMerge(initial, stored),
+   *   mergeResolver: (stored, initial) => deepMerge(stored, initial),
    * });
    * ```
    */
-  readonly mergeWithInitial?: boolean | ((storedValue: T, initialValue: T) => T);
+  readonly mergeResolver?: (storedValue: T, initialValue: T) => T;
 }
 
 /**
@@ -115,7 +106,6 @@ export interface Serializer<T> {
  * const preferences = storage('prefs', defaultPrefs, {
  *   type: 'session',
  *   mergeWithInitial: true,
- *   writeInitial: true,
  * });
  * ```
  */
@@ -132,8 +122,6 @@ export function storage<T>(
     }
 
     const storageType = options?.type ?? 'local';
-    const writeInitial = options?.writeInitial ?? false;
-    const mergeWithInitial = options?.mergeWithInitial ?? false;
     const serializer = resolveSerializer(initialValue, options);
 
     const getStorage = (): Storage | null => {
@@ -149,13 +137,9 @@ export function storage<T>(
       return window[type];
     };
 
-    const mergeWithInitialValue = (storedValue: T): T => {
-      if (!mergeWithInitial) {
-        return storedValue;
-      }
-
-      if (typeof mergeWithInitial === 'function') {
-        return mergeWithInitial(storedValue, initialValue);
+    const mergeWithInitial = (storedValue: T) => {
+      if (options?.mergeResolver) {
+        return options.mergeResolver(storedValue, initialValue);
       }
 
       if (isPlainObject(initialValue)) {
@@ -168,20 +152,22 @@ export function storage<T>(
     const readValue = (storageKey: string): T => {
       const storage = getStorage();
 
-      if (storage === null) return initialValue;
+      if (storage === null) {
+        return initialValue;
+      }
 
       try {
         const raw = storage.getItem(storageKey);
 
         if (raw === null) {
-          if (writeInitial && initialValue != null) {
+          if (initialValue != null) {
             writeValue(initialValue);
           }
           return initialValue;
         }
 
         const parsed = serializer.read(raw);
-        return mergeWithInitialValue(parsed);
+        return mergeWithInitial(parsed);
       } catch (error) {
         if (ngDevMode) {
           console.warn(`[storage] Failed to deserialize value for key "${key}"`, error);
@@ -229,7 +215,8 @@ export function storage<T>(
               const newValue =
                 event.newValue === null
                   ? initialValue
-                  : mergeWithInitialValue(serializer.read(event.newValue));
+                  : mergeWithInitial(serializer.read(event.newValue));
+
               state.set(newValue);
             } catch (error) {
               if (ngDevMode) {
@@ -321,7 +308,9 @@ export const Serializers = {
 } as const;
 
 function resolveSerializer<T>(initialValue: T, options?: StorageOptions<T>): Serializer<T> {
-  if (options?.serializer) return options.serializer;
+  if (options?.serializer) {
+    return options.serializer;
+  }
   const type = inferSerializerType(initialValue);
   return Serializers[type] as Serializer<T>;
 }
@@ -357,15 +346,6 @@ function inferSerializerType<T>(value: T): keyof typeof Serializers {
     default:
       return 'any';
   }
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-
-  const prototype = Object.getPrototypeOf(value);
-  return prototype === null || prototype === Object.prototype;
 }
 
 function storageAvailable(type: 'localStorage' | 'sessionStorage'): boolean {
