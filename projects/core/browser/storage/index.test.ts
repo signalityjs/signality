@@ -271,41 +271,14 @@ describe(storage.name, () => {
     });
   });
 
-  describe('writeInitial option', () => {
-    @Component({ template: '' })
-    class TestComponent {
-      readonly pref = storage('pref', 'default', { writeInitial: true });
-    }
-
-    const createComponent = () => {
-      const fixture = TestBed.createComponent(TestComponent);
-      fixture.detectChanges();
-      return fixture.componentInstance;
-    };
-
-    it('should write initial value to storage if key does not exist', () => {
-      createComponent();
-
-      expect(mockLocalStorage['pref']).toBe('default');
-    });
-
-    it('should not overwrite existing value', () => {
-      mockLocalStorage['pref'] = 'existing';
-      const component = createComponent();
-
-      expect(component.pref()).toBe('existing');
-      expect(mockLocalStorage['pref']).toBe('existing');
-    });
-  });
-
-  describe('mergeWithInitial option', () => {
+  describe('mergeResolver option', () => {
     @Component({ template: '' })
     class TestComponent {
       readonly settings = storage(
         'settings',
         { theme: 'dark', fontSize: 14, newProp: true },
         {
-          mergeWithInitial: true,
+          mergeResolver: (stored, initial) => ({ ...initial, ...stored }),
         }
       );
     }
