@@ -28,7 +28,7 @@ import { DemoCard, Wrapper } from '../../common';
     .demo-lang-content {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.375rem;
     }
 
     .demo-lang-label {

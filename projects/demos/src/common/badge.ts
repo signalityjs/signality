@@ -14,7 +14,7 @@ export type DemoBadgeType = 'success' | 'warning' | 'error' | 'info' | 'neutral'
     .badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.25rem 0.75rem;
+      padding: 0.25rem 0.825rem;
       font-size: 0.75rem;
       font-weight: 500;
       border-radius: 9999px;

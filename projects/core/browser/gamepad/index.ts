@@ -4,11 +4,11 @@ import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
 export interface GamepadRef {
-  /** Array of connected gamepads */
-  readonly gamepads: Signal<(Gamepad | null)[]>;
-
   /** Whether Gamepad API is supported */
   readonly isSupported: Signal<boolean>;
+
+  /** Array of connected gamepads */
+  readonly gamepads: Signal<(Gamepad | null)[]>;
 
   /** First connected gamepad */
   readonly activeGamepad: Signal<Gamepad | undefined>;
