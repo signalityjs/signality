@@ -17,14 +17,14 @@ export interface ClipboardOptions extends WithInjector {
 }
 
 export interface ClipboardRef {
+  /** Whether Clipboard API is supported */
+  readonly isSupported: Signal<boolean>;
+
   /** Current clipboard text content */
   readonly text: Signal<string>;
 
   /** Whether content was recently copied (resets after timeout) */
   readonly copied: Signal<boolean>;
-
-  /** Whether Clipboard API is supported */
-  readonly isSupported: Signal<boolean>;
 
   /** Copy text to clipboard */
   readonly copy: (text: string) => Promise<void>;

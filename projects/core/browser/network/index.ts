@@ -17,11 +17,11 @@ export type ConnectionType =
   | 'unknown';
 
 export interface NetworkRef {
-  /** Whether the browser is online */
-  readonly isOnline: Signal<boolean>;
-
   /** Whether Network Information API is supported */
   readonly isSupported: Signal<boolean>;
+
+  /** Whether the browser is online */
+  readonly isOnline: Signal<boolean>;
 
   /** Effective connection type */
   readonly effectiveType: Signal<EffectiveConnectionType | undefined>;

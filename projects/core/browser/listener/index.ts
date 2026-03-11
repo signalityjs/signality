@@ -9,8 +9,6 @@ import { type BaseEffectNode, SIGNAL } from '@angular/core/primitives/signals';
 import { NOOP_EFFECT_REF, setupContext, toElement, toValue } from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 
-let isSyncSetupRequired = false;
-
 export type ListenerOptions = WithInjector;
 
 export interface ListenerRef {
@@ -101,6 +99,8 @@ export interface ListenerFunction {
  * ```
  */
 export const listener: ListenerFunction = createModifier({});
+
+let isSyncSetupRequired = false;
 
 /**
  * By default, `listener()` registers event listeners after the render cycle completes

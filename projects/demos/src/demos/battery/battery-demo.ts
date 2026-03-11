@@ -32,7 +32,7 @@ import { DemoBadge, DemoCard, DemoProgress, Wrapper } from '../../common';
               <span class="detail-label">Charging Time</span>
               <span class="detail-value">
                 @if (isInfinity(batteryStatus.chargingTime())) {
-                <span class="detail-muted">.inf</span>
+                <span class="detail-muted">N/A</span>
                 } @else {
                 {{ formatTime(batteryStatus.chargingTime()) }}
                 }
@@ -42,7 +42,7 @@ import { DemoBadge, DemoCard, DemoProgress, Wrapper } from '../../common';
               <span class="detail-label">Discharging Time</span>
               <span class="detail-value">
                 @if (isInfinity(batteryStatus.dischargingTime())) {
-                <span class="detail-muted">.inf</span>
+                <span class="detail-muted">N/A</span>
                 } @else {
                 {{ formatTime(batteryStatus.dischargingTime()) }}
                 }
@@ -125,7 +125,6 @@ import { DemoBadge, DemoCard, DemoProgress, Wrapper } from '../../common';
 
     .detail-muted {
       color: #71717a;
-      font-style: italic;
     }
   `,
 })

@@ -120,44 +120,6 @@ export class SyncedSettings {
 }
 ```
 
-### Real-time collaboration indicator
-
-```angular-ts
-import { Component, computed, effect } from '@angular/core';
-import { broadcastChannel, interval } from '@signality/core';
-
-interface PresenceData {
-  tabId: string;
-  userName: string;
-  lastSeen: number;
-}
-
-@Component({
-  template: `
-    <p>{{ activeUsers().length }} user(s) viewing this page</p>
-  `,
-})
-export class PresenceIndicator {
-  readonly tabId = crypto.randomUUID();
-  readonly presence = broadcastChannel<PresenceData>('presence');
-  
-  readonly activeUsers = computed(() => {
-    const data = this.presence.data();
-    return data ? [data] : [];
-  });
-  
-  constructor() {
-    interval(() => {
-      this.presence.post({
-        tabId: this.tabId,
-        userName: 'User',
-        lastSeen: Date.now(),
-      });
-    }, 2000);
-  }
-}
-```
-
 ## SSR Compatibility
 
 On the server, signals initialize with safe defaults:

@@ -70,7 +70,7 @@ export interface BluetoothRef {
 export function bluetooth(options?: BluetoothOptions): BluetoothRef {
   const { runInContext } = setupContext(options?.injector, bluetooth);
 
-  return runInContext(({ isBrowser, injector }) => {
+  return runInContext(({ isBrowser, injector, onCleanup }) => {
     const isSupported = constSignal(isBrowser && 'bluetooth' in navigator);
 
     if (!isSupported()) {
@@ -95,7 +95,9 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
     const error = signal<Error | null>(null);
 
     const request = async (requestOptions?: RequestDeviceOptions): Promise<void> => {
-      if (untracked(isConnecting)) return;
+      if (untracked(isConnecting)) {
+        return;
+      }
 
       isConnecting.set(true);
       error.set(null);
@@ -150,6 +152,8 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
       server.set(null);
       isConnected.set(false);
     };
+
+    onCleanup(disconnect);
 
     return {
       isSupported,
