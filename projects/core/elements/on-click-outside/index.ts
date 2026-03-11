@@ -85,7 +85,7 @@ export function onClickOutside(
     );
 
     const clickListener = setupSync(() =>
-      listener.capture(window, 'click', (e: PointerEvent) => {
+      listener.capture(window, 'pointerup', (e: PointerEvent) => {
         if (!shouldFire) {
           return;
         }
