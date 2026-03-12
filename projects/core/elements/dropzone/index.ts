@@ -1,4 +1,4 @@
-import { isSignal, type Signal, type WritableSignal, signal } from '@angular/core';
+import { isSignal, type Signal, signal, type WritableSignal } from '@angular/core';
 import { constSignal, setupContext, toElement, toValue } from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';

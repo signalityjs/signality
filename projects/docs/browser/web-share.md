@@ -20,7 +20,7 @@ import { webShare, title, url } from '@signality/core';
 
 @Component({
   template: `
-    @if (shareApi.isSupported()) {
+    @if (webShare.isSupported()) {
       <button (click)="shareContent()">Share</button>
     }
   `,
@@ -51,6 +51,10 @@ The `webShare()` function returns a `WebShareRef` object:
 | `share`       | `(data: ShareData) => Promise<void>` | Open native share dialog               |
 | `canShare`    | `(data?: ShareData) => boolean`      | Check if data can be shared            |
 
+::: tip canShare
+The [`canShare()`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare) method validates whether the browser can share the provided data. Returns `true` if `share()` would succeed, otherwise `false`.
+:::
+
 ## Examples
 
 ### Share with files
@@ -61,9 +65,9 @@ import { webShare } from '@signality/core';
 
 @Component({
   template: `
-    <input type="file" (change)="onFileSelect($event)" accept="image/*" />
+    <input type="file" accept="image/*" (change)="onFileSelect($event)" />
     
-    @if (selectedFile() && webShare.canShare({ files: [selectedFile()!] })) {
+    @if (selectedFile()) {
       <button (click)="shareImage()">Share Image</button>
     }
   `,
@@ -79,8 +83,17 @@ export class ImageShare {
   
   async shareImage() {
     const file = this.selectedFile();
-    if (!file) return;
-    
+
+    if (!file) {
+      return;
+    };
+
+    // Some browsers don't support sharing files // [!code warning]
+    if (!this.webShare.canShare({ files: [file] })) { // [!code warning]
+      alert('Cannot share files in this browser'); // [!code warning]
+      return; // [!code warning]
+    } // [!code warning]
+
     await this.webShare.share({
       files: [file],
       title: 'Check out this image!',
