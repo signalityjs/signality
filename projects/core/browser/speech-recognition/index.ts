@@ -1,13 +1,14 @@
-import { type Signal, signal, untracked } from '@angular/core';
-import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
-import type { WithInjector } from '@signality/core/types';
+import { isSignal, type Signal, signal, untracked } from '@angular/core';
+import { constSignal, NOOP_FN, setupContext, toValue } from '@signality/core/internal';
+import type { MaybeSignal, WithInjector } from '@signality/core/types';
+import { watcher } from '@signality/core/reactivity/watcher';
 
 export interface SpeechRecognitionOptions extends WithInjector {
   /**
    * Language for speech recognition.
    * @default 'en-US'
    */
-  readonly lang?: string;
+  readonly lang?: MaybeSignal<string>;
 
   /**
    * Whether to return interim results.
@@ -41,8 +42,8 @@ export interface SpeechRecognitionRef {
   /** Interim transcript text */
   readonly interimText: Signal<string>;
 
-  /** Error message if recognition failed */
-  readonly error: Signal<string | null>;
+  /** Error if recognition failed */
+  readonly error: Signal<SpeechRecognitionErrorEvent | Error | null>;
 
   /** Start speech recognition */
   readonly start: () => void;
@@ -109,8 +110,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       };
     }
 
-    const SpeechRecognitionClass =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     const recognition = new SpeechRecognitionClass();
 
@@ -121,7 +121,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       maxAlternatives = 1,
     } = options ?? {};
 
-    recognition.lang = lang;
+    recognition.lang = toValue(lang);
     recognition.continuous = continuous;
     recognition.interimResults = interimResults;
     recognition.maxAlternatives = maxAlternatives;
@@ -129,7 +129,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
     const isListening = signal(false);
     const text = signal('');
     const interimText = signal('');
-    const error = signal<string | null>(null);
+    const error = signal<SpeechRecognitionErrorEvent | Error | null>(null);
 
     const handleResult = (event: SpeechRecognitionEvent) => {
       let finalTranscript = '';
@@ -155,7 +155,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
     };
 
     const handleError = (event: SpeechRecognitionErrorEvent) => {
-      error.set(event.error || event.message || 'Unknown error');
+      error.set(event);
       isListening.set(false);
     };
 
@@ -171,12 +171,8 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
 
     const handleEnd = () => {
       isListening.set(false);
+      recognition.lang = toValue(lang);
     };
-
-    recognition.onstart = handleStart;
-    recognition.onend = handleEnd;
-    recognition.onerror = handleError;
-    recognition.onresult = handleResult;
 
     const start = () => {
       try {
@@ -184,7 +180,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
           recognition.start();
         }
       } catch (err) {
-        error.set(err instanceof Error ? err.message : 'Failed to start recognition');
+        error.set(err as Error);
       }
     };
 
@@ -202,6 +198,19 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
 
     onCleanup(abort);
 
+    recognition.onstart = handleStart;
+    recognition.onend = handleEnd;
+    recognition.onerror = handleError;
+    recognition.onresult = handleResult;
+
+    if (isSignal(lang)) {
+      watcher(lang, newLang => {
+        if (!isListening()) {
+          recognition.lang = newLang;
+        }
+      });
+    }
+
     return {
       isSupported,
       isListening: isListening.asReadonly(),
@@ -213,55 +222,4 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       abort,
     };
   });
-}
-
-interface SpeechRecognition extends EventTarget {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  maxAlternatives: number;
-  onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onend: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
-  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-  readonly start: () => void;
-  readonly stop: () => void;
-  readonly abort: () => void;
-}
-
-interface SpeechRecognitionEvent extends Event {
-  readonly resultIndex: number;
-  readonly results: SpeechRecognitionResultList;
-}
-
-interface SpeechRecognitionErrorEvent extends Event {
-  readonly error: string;
-  readonly message: string;
-}
-
-interface SpeechRecognitionResultList {
-  readonly length: number;
-  item(index: number): SpeechRecognitionResult;
-  readonly [index: number]: SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-  readonly length: number;
-  item(index: number): SpeechRecognitionAlternative;
-  readonly [index: number]: SpeechRecognitionAlternative;
-  readonly isFinal: boolean;
-}
-
-interface SpeechRecognitionAlternative {
-  readonly transcript: string;
-  readonly confidence: number;
-}
-
-interface WindowWithSpeechRecognition extends Window {
-  SpeechRecognition: {
-    new (): SpeechRecognition;
-  };
-  webkitSpeechRecognition: {
-    new (): SpeechRecognition;
-  };
 }
