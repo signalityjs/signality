@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["web-bluetooth"],
+    "types": ["web-bluetooth", "dom-speech-recognition"],
     "target": "ES2022",
     "useDefineForClassFields": false
   },

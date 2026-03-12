@@ -11,34 +11,28 @@ Reactive wrapper around the [Speech Recognition API](https://developer.mozilla.o
 ## Usage
 
 ```angular-ts
-import { Component } from '@angular/core';
+import { Component, linkedSignal } from '@angular/core';
 import { speechRecognition } from '@signality/core';
 
 @Component({
   template: `
-    <button 
-      (click)="recognition.start()" 
-      [disabled]="recognition.isListening()"
-    >
-      Start Listening
+    <button (click)="toggleListening()">
+      {{ recognition.isListening() ? 'Stop' : 'Start' }} Listening
     </button>
-    
-    <button 
-      (click)="recognition.stop()" 
-      [disabled]="!recognition.isListening()"
-    >
-      Stop
-    </button>
-    
-    <p>Text: {{ recognition.text() }}</p>
-    
-    @if (recognition.interimText()) {
-      <p class="interim">{{ recognition.interimText() }}</p>
-    }
+    <input [(ngModel)]="searchQuery" />
   `,
 })
-export class VoiceInput {
-  readonly recognition = speechRecognition(); // [!code highlight]
+export class VoiceSearch {
+  readonly recognition = speechRecognition({ continuous: true }); // [!code highlight]
+  readonly searchQuery = linkedSignal(() => this.recognition.text());
+  
+  toggleListening() {
+    if (this.recognition.isListening()) {
+      this.recognition.stop();
+    } else {
+      this.recognition.start();
+    }
+  }
 }
 ```
 
@@ -52,7 +46,7 @@ export class VoiceInput {
 
 | Option            | Type                                                | Default   | Description                                       |
 |-------------------|-----------------------------------------------------|-----------|---------------------------------------------------|
-| `lang`            | `string`                                            | `'en-US'` | Language for speech recognition                   |
+| `lang`            | `MaybeSignal<string>`                               | `'en-US'` | Language for speech recognition                   |
 | `interimResults`  | `boolean`                                           | `false`   | Whether to return interim results                 |
 | `continuous`      | `boolean`                                           | `false`   | Whether to continue recognition after speech ends |
 | `maxAlternatives` | `number`                                            | `1`       | Maximum number of alternative transcripts         |
@@ -62,55 +56,18 @@ export class VoiceInput {
 
 The `speechRecognition()` function returns a `SpeechRecognitionRef`:
 
-| Property      | Type                     | Description                                 |
-|---------------|--------------------------|---------------------------------------------|
-| `isSupported` | `Signal<boolean>`        | Whether Speech Recognition API is supported |
-| `isListening` | `Signal<boolean>`        | Whether recognition is currently active     |
-| `text`        | `Signal<string>`         | Final transcript text                       |
-| `interimText` | `Signal<string>`         | Interim transcript text                     |
-| `error`       | `Signal<string \| null>` | Error message if recognition failed         |
-| `start`       | `() => void`             | Start speech recognition                    |
-| `stop`        | `() => void`             | Stop speech recognition                     |
-| `abort`       | `() => void`             | Abort speech recognition                    |
+| Property      | Type                                                   | Description                                 |
+|---------------|--------------------------------------------------------|---------------------------------------------|
+| `isSupported` | `Signal<boolean>`                                      | Whether Speech Recognition API is supported |
+| `isListening` | `Signal<boolean>`                                      | Whether recognition is currently active     |
+| `text`        | `Signal<string>`                                       | Final transcript text                       |
+| `interimText` | `Signal<string>`                                       | Interim transcript text                     |
+| `error`       | `Signal<SpeechRecognitionErrorEvent \| Error \| null>` | Error object if recognition failed          |
+| `start`       | `() => void`                                           | Start speech recognition                    |
+| `stop`        | `() => void`                                           | Stop speech recognition                     |
+| `abort`       | `() => void`                                           | Abort speech recognition                    |
 
 ## Examples
-
-### Voice search
-
-```angular-ts
-import { Component, effect } from '@angular/core';
-import { speechRecognition } from '@signality/core';
-
-@Component({
-  template: `
-    <button (click)="toggleListening()">
-      {{ recognition.isListening() ? 'Stop' : 'Start' }} Listening
-    </button>
-    <input [(ngModel)]="searchQuery" />
-  `,
-})
-export class VoiceSearch {
-  readonly recognition = speechRecognition({ continuous: true });
-  readonly searchQuery = signal('');
-  
-  constructor() {
-    effect(() => {
-      const text = this.recognition.text();
-      if (text) {
-        this.searchQuery.set(text);
-      }
-    });
-  }
-  
-  toggleListening() {
-    if (this.recognition.isListening()) {
-      this.recognition.stop();
-    } else {
-      this.recognition.start();
-    }
-  }
-}
-```
 
 ### Real-time transcription
 
@@ -130,7 +87,7 @@ import { speechRecognition } from '@signality/core';
 })
 export class Transcription {
   readonly recognition = speechRecognition({
-    interimResults: true, // [!code highlight]
+    interimResults: true,
     continuous: true,
   });
   
@@ -149,7 +106,7 @@ import { speechRecognition } from '@signality/core';
 @Component({
   template: `
     @if (recognition.error()) {
-      <div class="error">{{ recognition.error() }}</div>
+      <div class="error">{{ recognition.error()?.message }}</div>
     }
     <button (click)="recognition.start()">Try Again</button>
   `,
@@ -188,7 +145,7 @@ On the server, signals initialize with safe defaults:
 
 ```typescript
 interface SpeechRecognitionOptions extends WithInjector {
-  readonly lang?: string;
+  readonly lang?: MaybeSignal<string>;
   readonly interimResults?: boolean;
   readonly continuous?: boolean;
   readonly maxAlternatives?: number;
@@ -199,7 +156,7 @@ interface SpeechRecognitionRef {
   readonly isListening: Signal<boolean>;
   readonly text: Signal<string>;
   readonly interimText: Signal<string>;
-  readonly error: Signal<string | null>;
+  readonly error: Signal<SpeechRecognitionErrorEvent | Error | null>;
   readonly start: () => void;
   readonly stop: () => void;
   readonly abort: () => void;
