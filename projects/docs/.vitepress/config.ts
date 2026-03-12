@@ -198,7 +198,7 @@ export default defineConfig({
           { text: 'SpeechSynthesis', link: '/browser/speech-synthesis' },
           { text: 'Storage', link: '/browser/storage' },
           { text: 'TextDirection', link: '/browser/text-direction' },
-          { text: 'Vibrate', link: '/browser/vibrate' },
+          { text: 'Vibration', link: '/browser/vibration' },
           { text: 'WakeLock', link: '/browser/wake-lock' },
           { text: 'WebNotification', link: '/browser/web-notification' },
           { text: 'WebWorker', link: '/browser/web-worker' },

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { vibrate } from '@signality/core/browser/vibrate';
+import { vibration } from '@signality/core/browser/vibration';
 import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
 @Component({
-  selector: 'demo-vibrate',
+  selector: 'demo-vibration',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoButton, DemoBadge],
   template: `
@@ -78,10 +78,10 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
     }
   `,
 })
-export class VibrateDemo {
-  readonly vib = vibrate();
+export class VibrationDemo {
+  readonly vib = vibration({ pattern: 200 });
 
-  readonly importCode = `import { vibrate } from '@signality/core'`;
+  readonly importCode = `import { vibration } from '@signality/core'`;
 
   vibrate(): void {
     this.vib.vibrate(200);
