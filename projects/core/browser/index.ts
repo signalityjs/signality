@@ -23,7 +23,7 @@ export * from '@signality/core/browser/speech-recognition';
 export * from '@signality/core/browser/speech-synthesis';
 export * from '@signality/core/browser/storage';
 export * from '@signality/core/browser/text-direction';
-export * from '@signality/core/browser/vibrate';
+export * from '@signality/core/browser/vibration';
 export * from '@signality/core/browser/wake-lock';
 export * from '@signality/core/browser/web-notification';
 export * from '@signality/core/browser/web-worker';
