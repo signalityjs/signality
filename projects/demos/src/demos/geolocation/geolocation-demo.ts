@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { geolocation } from '@signality/core/browser/geolocation';
 import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
 
@@ -27,16 +28,20 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
           </div>
         </demo-card>
 
-        @if (geo.coords()) {
+        @if (geo.isActive() && mapUrl) {
+        <demo-card>
+          <iframe [src]="mapUrl" loading="lazy" title="Location map" class="map-iframe"></iframe>
+        </demo-card>
+        } @if (geo.isActive() && geo.position()?.coords) {
         <demo-card>
           <div class="coords-grid">
             <div class="coord-item">
               <span class="coord-label">Latitude</span>
-              <span class="coord-value">{{ geo.coords()?.latitude?.toFixed(6) }}</span>
+              <span class="coord-value">{{ geo.position()?.coords?.latitude?.toFixed(6) }}</span>
             </div>
             <div class="coord-item">
               <span class="coord-label">Longitude</span>
-              <span class="coord-value">{{ geo.coords()?.longitude?.toFixed(6) }}</span>
+              <span class="coord-value">{{ geo.position()?.coords?.longitude?.toFixed(6) }}</span>
             </div>
           </div>
         </demo-card>
@@ -49,7 +54,7 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
         }
 
         <demo-button variant="primary" (click)="toggleTracking()">
-          {{ geo.isLoading() ? 'Loading...' : geo.position() ? 'Stop' : 'Get Location' }}
+          {{ geo.isLoading() ? 'Loading...' : geo.isActive() ? 'Stop' : 'Get Location' }}
         </demo-button>
         }
       </div>
@@ -118,32 +123,54 @@ import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
       display: flex;
       justify-content: center;
     }
+
+    .map-iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      border-radius: 0.5rem;
+    }
   `,
 })
 export class GeolocationDemo {
   readonly geo = geolocation();
+
+  constructor(private readonly domSanitizer: DomSanitizer) {}
+
+  get mapUrl(): SafeResourceUrl | null {
+    const coords = this.geo.position()?.coords;
+    if (!coords) return null;
+
+    const { latitude, longitude } = coords;
+    const bbox = `${longitude - 0.005},${latitude - 0.005},${longitude + 0.005},${
+      latitude + 0.005
+    }`;
+    const url = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&marker=${latitude},${longitude}`;
+
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(url);
+  }
 
   readonly importCode = `import { geolocation } from '@signality/core'`;
 
   getStatusType(): 'success' | 'warning' | 'error' | 'neutral' {
     if (this.geo.error()) return 'error';
     if (this.geo.isLoading()) return 'warning';
-    if (this.geo.position()) return 'success';
+    if (this.geo.isActive()) return 'success';
     return 'neutral';
   }
 
   getStatusText(): string {
     if (this.geo.error()) return 'Error';
     if (this.geo.isLoading()) return 'Loading...';
-    if (this.geo.position()) return 'Located';
-    return 'Idle';
+    if (this.geo.isActive()) return 'Active';
+    return 'Inactive';
   }
 
   toggleTracking(): void {
-    if (this.geo.position()) {
-      this.geo.pause();
+    if (this.geo.isActive()) {
+      this.geo.stop();
     } else {
-      this.geo.resume();
+      this.geo.start();
     }
   }
 }

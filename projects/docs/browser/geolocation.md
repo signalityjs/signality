@@ -20,49 +20,47 @@ import { geolocation } from '@signality/core';
 
 @Component({
   template: `
-    @if (geo.isSupported()) {
-      @if (geo.coords()) {
-        <p>📍 {{ geo.coords()?.latitude }}, {{ geo.coords()?.longitude }}</p>
-      } @else {
-        <button (click)="geo.resume()">Get Location</button>
-      }
+    @if (geo.position()?.coords; as coords) {
+      <p>📍 {{ coords.latitude }}, {{ coords.longitude }}</p>
+    } @else {
+      <button (click)="geo.start()">Get Location</button>
     }
   `,
 })
 export class LocationDemo {
-  readonly geo = geolocation({ immediate: false }); // [!code highlight]
+  readonly geo = geolocation(); // [!code highlight]
 }
 ```
 
 ## Parameters
 
-| Parameter | Type                 | Description           |
-|-----------|----------------------|-----------------------|
+| Parameter | Type                 | Description                                           |
+|-----------|----------------------|-------------------------------------------------------|
 | `options` | `GeolocationOptions` | Configuration options (see [Options](#options) below) |
 
 ## Options
 
-| Option               | Type       | Default    | Description                      |
-|----------------------|------------|------------|----------------------------------|
-| `immediate`          | `boolean`  | `true`     | Start tracking immediately       |
-| `enableHighAccuracy` | `boolean`  | `true`     | Use GPS for better accuracy      |
-| `maximumAge`         | `number`   | `0`        | Max age of cached position (ms)  |
-| `timeout`            | `number`   | `Infinity` | Request timeout (ms)             |
+| Option               | Type                                                | Default    | Description                      |
+|----------------------|-----------------------------------------------------|------------|----------------------------------|
+| `immediate`          | `boolean`                                           | `true`     | Start tracking immediately       |
+| `enableHighAccuracy` | `boolean`                                           | `true`     | Use GPS for better accuracy      |
+| `maximumAge`         | `number`                                            | `0`        | Max age of cached position (ms)  |
+| `timeout`            | `number`                                            | `Infinity` | Request timeout (ms)             |
 | `injector`           | [`Injector`](https://angular.dev/api/core/Injector) | -          | Optional injector for DI context |
 
 ## Return Value
 
 Returns a `GeolocationRef`:
 
-| Property      | Type                                    | Description                        |
-|---------------|-----------------------------------------|------------------------------------|
-| `coords`      | `Signal<GeolocationCoordinates \| null>` | Current coordinates                |
-| `position`    | `Signal<GeolocationPosition \| null>`    | Full position object with timestamp |
-| `error`       | `Signal<GeolocationPositionError \| null>` | Last error                        |
-| `isSupported` | `Signal<boolean>`                        | Whether Geolocation API is supported |
-| `isLoading`   | `Signal<boolean>`                        | Whether currently fetching location |
-| `pause`       | `() => void`                             | Stop watching position             |
-| `resume`      | `() => void`                             | Start/resume watching position     |
+| Property      | Type                                       | Description                          |
+|---------------|--------------------------------------------|--------------------------------------|
+| `position`    | `Signal<GeolocationPosition \| null>`      | Full position object with timestamp  |
+| `error`       | `Signal<GeolocationPositionError \| null>` | Last error                           |
+| `isSupported` | `Signal<boolean>`                          | Whether Geolocation API is supported |
+| `isActive`    | `Signal<boolean>`                          | Whether location tracking is active  |
+| `isLoading`   | `Signal<boolean>`                          | Whether currently fetching location  |
+| `stop`        | `() => void`                               | Stop watching position               |
+| `start`       | `() => void`                               | Start/resume watching position       |
 
 ## Examples
 
@@ -85,15 +83,12 @@ import { geolocation } from '@signality/core';
 })
 export class MapComponent {
   readonly mapEl = viewChild<ElementRef>('map');
-  readonly geo = geolocation(); // [!code highlight]
-  
-  private map: any;
-  private marker: any;
+  readonly geo = geolocation();
   
   constructor() {
     effect(() => {
-      const coords = this.geo.coords();
-      if (coords && this.map) {
+      const coords = this.geo.position()?.coords;
+      if (coords) {
         this.updateMarker(coords.latitude, coords.longitude);
       }
     });
@@ -122,13 +117,13 @@ export class DistanceCalculator {
   readonly destination = signal({ lat: 40.7128, lng: -74.0060 }); // NYC
   
   readonly formattedCoords = computed(() => {
-    const coords = this.geo.coords();
+    const coords = this.geo.position()?.coords;
     if (!coords) return 'Loading...';
     return `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`;
   });
   
   readonly distanceKm = computed(() => {
-    const coords = this.geo.coords();
+    const coords = this.geo.position()?.coords;
     if (!coords) return '...';
     
     const distance = this.haversineDistance(
@@ -155,64 +150,14 @@ export class DistanceCalculator {
 }
 ```
 
-### Location tracking with history
-
-```angular-ts
-import { Component, signal, effect } from '@angular/core';
-import { geolocation } from '@signality/core';
-
-interface LocationPoint {
-  lat: number;
-  lng: number;
-  timestamp: number;
-}
-
-@Component({
-  template: `
-    <button (click)="tracking() ? geo.pause() : geo.resume()">
-      {{ tracking() ? 'Stop Tracking' : 'Start Tracking' }}
-    </button>
-    <p>Points recorded: {{ history().length }}</p>
-  `,
-})
-export class LocationTracker {
-  readonly geo = geolocation({ immediate: false });
-  readonly history = signal<LocationPoint[]>([]);
-  readonly tracking = signal(false);
-  
-  constructor() {
-    effect(() => {
-      const position = this.geo.position();
-      if (position && this.tracking()) {
-        this.history.update(h => [...h, {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          timestamp: position.timestamp,
-        }]);
-      }
-    });
-  }
-  
-  startTracking() {
-    this.tracking.set(true);
-    this.geo.resume();
-  }
-  
-  stopTracking() {
-    this.tracking.set(false);
-    this.geo.pause();
-  }
-}
-```
-
 ## SSR Compatibility
 
 On the server, signals initialize with safe defaults:
 
-- `coords`, `position`, `error` → `null`
+- `position`, `error` → `null`
 - `isSupported` → `false`
-- `isLoading` → `false`
-- `pause`, `resume` → no-op functions
+- `isActive`, `isLoading` → `false`
+- `stop`, `start` → no-op functions
 
 ## Type Definitions
 
@@ -225,13 +170,13 @@ interface GeolocationOptions extends WithInjector {
 }
 
 interface GeolocationRef {
-  readonly coords: Signal<GeolocationCoordinates | null>;
   readonly position: Signal<GeolocationPosition | null>;
   readonly error: Signal<GeolocationPositionError | null>;
   readonly isSupported: Signal<boolean>;
+  readonly isActive: Signal<boolean>;
   readonly isLoading: Signal<boolean>;
-  readonly pause: () => void;
-  readonly resume: () => void;
+  readonly stop: () => void;
+  readonly start: () => void;
 }
 
 function geolocation(options?: GeolocationOptions): GeolocationRef;

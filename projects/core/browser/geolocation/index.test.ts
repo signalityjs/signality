@@ -44,7 +44,7 @@ describe(geolocation.name, () => {
       TIMEOUT: 3,
     } as GeolocationPositionError);
 
-  @Component({ template: '{{ geo.coords()?.latitude }}' })
+  @Component({ template: '{{ geo.position()?.coords?.latitude }}' })
   class TestComponent {
     readonly geo = geolocation();
   }
@@ -69,8 +69,8 @@ describe(geolocation.name, () => {
 
     watchCallbacks.success(pos);
 
-    expect(component.geo.coords()?.latitude).toBe(48.8566);
-    expect(component.geo.coords()?.longitude).toBe(2.3522);
+    expect(component.geo.position()?.coords?.latitude).toBe(48.8566);
+    expect(component.geo.position()?.coords?.longitude).toBe(2.3522);
     expect(component.geo.position()).toBe(pos);
     expect(component.geo.error()).toBeNull();
     expect(component.geo.isLoading()).toBe(false);
@@ -89,11 +89,11 @@ describe(geolocation.name, () => {
   it('should pause and resume watching', () => {
     const component = createComponent();
 
-    component.geo.pause();
+    component.geo.stop();
     expect(navigator.geolocation.clearWatch).toHaveBeenCalledWith(1);
     expect(component.geo.isLoading()).toBe(false);
 
-    component.geo.resume();
+    component.geo.start();
     expect(navigator.geolocation.watchPosition).toHaveBeenCalledTimes(2);
     expect(component.geo.isLoading()).toBe(true);
   });
