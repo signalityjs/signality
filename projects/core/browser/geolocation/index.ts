@@ -1,4 +1,4 @@
-import { type Signal, signal } from '@angular/core';
+import { computed, type Signal, signal, untracked } from '@angular/core';
 import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
@@ -32,23 +32,23 @@ export interface GeolocationRef {
   /** Whether Geolocation is supported */
   readonly isSupported: Signal<boolean>;
 
-  /** Current coordinates */
-  readonly coords: Signal<GeolocationCoordinates | null>;
-
   /** Full position object with timestamp */
   readonly position: Signal<GeolocationPosition | null>;
 
   /** Last error */
   readonly error: Signal<GeolocationPositionError | null>;
 
+  /** Whether location tracking is currently active */
+  readonly isActive: Signal<boolean>;
+
   /** Whether currently fetching location */
   readonly isLoading: Signal<boolean>;
 
-  /** Stop watching position */
-  readonly pause: () => void;
-
   /** Start/resume watching position */
-  readonly resume: () => void;
+  readonly start: () => void;
+
+  /** Stop watching position */
+  readonly stop: () => void;
 }
 
 /**
@@ -63,10 +63,11 @@ export interface GeolocationRef {
  *   template: `
  *     @if (geo.isLoading()) {
  *       <p>Getting your location...</p>
- *     } @else if (geo.coords(); as coords) {
+ *     } @else if (geo.position()?.coords; as coords) {
  *       <p>{{ coords.latitude }}, {{ coords.longitude }}</p>
  *     }
- *   `
+ *     <button (click)="geo.stop()">Stop</button>
+ *     <button (click)="geo.start()">Start</button>
  * })
  * class LocationComponent {
  *   readonly geo = geolocation();
@@ -82,76 +83,101 @@ export function geolocation(options?: GeolocationOptions): GeolocationRef {
     if (!isSupported()) {
       return {
         isSupported,
-        coords: constSignal(null),
         position: constSignal(null),
         error: constSignal(null),
         isLoading: constSignal(false),
-        pause: NOOP_FN,
-        resume: NOOP_FN,
+        isActive: constSignal(false),
+        start: NOOP_FN,
+        stop: NOOP_FN,
       };
     }
 
     const immediate = options?.immediate ?? true;
-    const enableHighAccuracy = options?.enableHighAccuracy ?? true;
-    const maximumAge = options?.maximumAge ?? 0;
-    const timeout = options?.timeout ?? Infinity;
 
-    const coords = signal<GeolocationCoordinates | null>(null);
+    const positionOptions: PositionOptions = {
+      enableHighAccuracy: options?.enableHighAccuracy ?? true,
+      maximumAge: options?.maximumAge ?? 0,
+      timeout: options?.timeout ?? Infinity,
+    };
+
     const position = signal<GeolocationPosition | null>(null);
     const error = signal<GeolocationPositionError | null>(null);
     const isLoading = signal(false);
+    const watchId = signal<number | undefined>(undefined);
 
-    let watchId: number | undefined;
-
-    const onSuccess = (pos: GeolocationPosition) => {
+    const handleSuccess = (pos: GeolocationPosition) => {
       position.set(pos);
-      coords.set(pos.coords);
       error.set(null);
       isLoading.set(false);
     };
 
-    const onError = (err: GeolocationPositionError) => {
+    const handleError = (err: GeolocationPositionError) => {
       error.set(err);
       isLoading.set(false);
     };
 
-    const resume = () => {
-      if (watchId !== undefined) {
-        return;
-      }
+    const start = () => {
+      untracked(() => {
+        if (watchId() !== undefined) {
+          return;
+        }
 
-      isLoading.set(true);
-
-      watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
-        enableHighAccuracy,
-        maximumAge,
-        timeout,
+        isLoading.set(true);
+        const id = navigator.geolocation.watchPosition(handleSuccess, handleError, positionOptions);
+        watchId.set(id);
       });
     };
 
-    const pause = () => {
-      if (watchId === undefined) return;
+    const stop = () => {
+      untracked(() => {
+        const currentId = watchId();
 
-      navigator.geolocation.clearWatch(watchId);
-      watchId = undefined;
+        if (currentId !== undefined) {
+          navigator.geolocation.clearWatch(currentId);
+          watchId.set(undefined);
+        }
 
-      isLoading.set(false);
+        isLoading.set(false);
+      });
     };
 
-    if (immediate) {
-      resume();
-    }
+    const abortController = new AbortController();
 
-    onCleanup(pause);
+    onCleanup(() => {
+      abortController.abort();
+      stop();
+    });
+
+    navigator.permissions.query({ name: 'geolocation' }).then(status => {
+      if (abortController.signal.aborted) {
+        return;
+      }
+
+      const check = () => {
+        if (status.state === 'denied') {
+          stop();
+        }
+      };
+
+      check();
+
+      status.addEventListener('change', check, {
+        signal: abortController.signal,
+      });
+    });
+
+    if (immediate) {
+      start();
+    }
 
     return {
       isSupported,
-      coords: coords.asReadonly(),
       position: position.asReadonly(),
       error: error.asReadonly(),
       isLoading: isLoading.asReadonly(),
-      pause,
-      resume,
+      isActive: computed(() => watchId() !== undefined),
+      start,
+      stop,
     };
   });
 }
