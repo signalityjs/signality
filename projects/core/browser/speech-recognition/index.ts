@@ -113,6 +113,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
     const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     const recognition = new SpeechRecognitionClass();
+    const abortController = new AbortController();
 
     const {
       lang = 'en-US',
@@ -174,6 +175,11 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       recognition.lang = toValue(lang);
     };
 
+    recognition.onstart = handleStart;
+    recognition.onend = handleEnd;
+    recognition.onerror = handleError;
+    recognition.onresult = handleResult;
+
     const start = () => {
       try {
         if (!untracked(isListening)) {
@@ -196,12 +202,10 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       }
     };
 
-    onCleanup(abort);
-
-    recognition.onstart = handleStart;
-    recognition.onend = handleEnd;
-    recognition.onerror = handleError;
-    recognition.onresult = handleResult;
+    onCleanup(() => {
+      abortController.abort();
+      abort();
+    });
 
     if (isSignal(lang)) {
       watcher(lang, newLang => {
@@ -210,6 +214,24 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
         }
       });
     }
+
+    navigator.permissions.query({ name: 'microphone' }).then(result => {
+      if (abortController.signal.aborted) {
+        return;
+      }
+
+      const check = () => {
+        if (result.state === 'denied') {
+          abort();
+        }
+      };
+
+      check();
+
+      result.addEventListener('change', check, {
+        signal: abortController.signal,
+      });
+    });
 
     return {
       isSupported,
