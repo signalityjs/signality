@@ -24,6 +24,12 @@ export interface ElementVisibilityOptions
    * @default '0px'
    */
   readonly rootMargin?: MaybeSignal<string>;
+
+  /**
+   * Initial value for SSR.
+   * @default { isVisible: true, ratio: 1 }
+   */
+  readonly initialValue?: ElementVisibilityValue;
 }
 
 export interface ElementVisibilityValue {
@@ -38,7 +44,7 @@ export interface ElementVisibilityValue {
  * Signal-based wrapper around the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
  *
  * @param target - The element to observe
- * @param options - Optional configuration including signal options (equal, debugName), observer options, and injector
+ * @param options - Optional configuration including signal options (equal, debugName), observer options (threshold, root, rootMargin, initialValue), and injector
  * @returns A signal containing the current visibility state
  *
  * @example
@@ -61,13 +67,14 @@ export function elementVisibility(
   options?: ElementVisibilityOptions
 ): Signal<ElementVisibilityValue> {
   const { runInContext } = setupContext(options?.injector, elementVisibility);
+  const initialValue = options?.initialValue ?? DEFAULT_VISIBILITY;
 
   return runInContext(({ isServer }) => {
     if (isServer) {
-      return constSignal(DEFAULT_VISIBILITY);
+      return constSignal(initialValue);
     }
 
-    const visibility = signal<ElementVisibilityValue>(DEFAULT_VISIBILITY, options);
+    const visibility = signal(initialValue, options);
 
     const threshold = options?.threshold ?? 0;
     const root = options?.root ?? undefined;
@@ -101,13 +108,13 @@ export function elementVisibility(
 
     intersectionObserver(target, update, { threshold, root, rootMargin });
 
-    onDisconnect(target, () => visibility.set(DEFAULT_VISIBILITY));
+    onDisconnect(target, () => visibility.set(initialValue));
 
     return visibility;
   });
 }
 
 const DEFAULT_VISIBILITY: ElementVisibilityValue = {
-  isVisible: false,
-  ratio: 0,
+  isVisible: true,
+  ratio: 1,
 };
