@@ -38,14 +38,15 @@ export class VisibilityDemo {
 
 The `ElementVisibilityOptions` extends [`CreateSignalOptions<ElementVisibilityValue>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option                                                                                                | Type                                                                                                  | Default     | Description                                                                                        |
-|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|-------------|----------------------------------------------------------------------------------------------------|
-| [`threshold`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#threshold)   | [`MaybeSignal<number \| number[]>`](/reference/utility-types#maybesignal-lt-type-gt)                  | `0`         | Visibility threshold(s)                                                                            |
-| [`root`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#root)             | [`MaybeElementSignal<Element>`](/reference/utility-types#maybeelementsignal-lt-type-gt) \| `Document` | `undefined` | Scrollable ancestor (null = viewport)                                                              |
-| [`rootMargin`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#rootmargin) | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)                              | `'0px'`     | Margin around root                                                                                 |
-| `equal`                                                                                               | [`ValueEqualityFn<ElementVisibilityValue>`](https://angular.dev/api/core/ValueEqualityFn)             | -           | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName`                                                                                           | `string`                                                                                              | -           | Debug name for the signal (development only)                                                       |
-| `injector`                                                                                            | [`Injector`](https://angular.dev/api/core/Injector)                                                   | -           | Optional injector for DI context                                                                   |
+| Option                                                                                                | Type                                                                                                  | Default                      | Description                                                                                        |
+|-------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|-----------------------------|----------------------------------------------------------------------------------------------------|
+| [`threshold`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#threshold)   | [`MaybeSignal<number \| number[]>`](/reference/utility-types#maybesignal-lt-type-gt)                  | `0`                         | Visibility threshold(s)                                                                            |
+| [`root`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#root)             | [`MaybeElementSignal<Element>`](/reference/utility-types#maybeelementsignal-lt-type-gt) \| `Document` | `undefined`                 | Scrollable ancestor (null = viewport)                                                              |
+| [`rootMargin`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#rootmargin) | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)                              | `'0px'`                     | Margin around root                                                                                 |
+| `initialValue`                                                                                        | [`ElementVisibilityValue`](#return-value)                                                              | `{ isVisible: true, ratio: 1 }`   | Initial value for SSR                                                                              |
+| `equal`                                                                                               | [`ValueEqualityFn<ElementVisibilityValue>`](https://angular.dev/api/core/ValueEqualityFn)             | -                           | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName`                                                                                           | `string`                                                                                              | -                           | Debug name for the signal (development only)                                                       |
+| `injector`                                                                                            | [`Injector`](https://angular.dev/api/core/Injector)                                                   | -                           | Optional injector for DI context                                                                   |
 
 ## Return Value
 
@@ -206,10 +207,10 @@ export class ScrollableContainer {
 
 ## SSR Compatibility
 
-On the server, signals initialize with safe defaults:
+On the server, signals initialize with the `initialValue` (or safe defaults):
 
-- `isVisible` → `false`
-- `ratio` → `0`
+- `isVisible` → `true` (or custom `initialValue.isVisible`)
+- `ratio` → `1` (or custom `initialValue.ratio`)
 
 ## Type Definitions
 
@@ -225,6 +226,7 @@ interface ElementVisibilityOptions
   readonly threshold?: MaybeSignal<number | number[]>;
   readonly root?: MaybeElementSignal<Element> | Document;
   readonly rootMargin?: MaybeSignal<string>;
+  readonly initialValue?: ElementVisibilityValue;
 }
 
 function elementVisibility(
