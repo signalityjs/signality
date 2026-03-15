@@ -1,114 +1,184 @@
 import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angular/core';
 import { elementVisibility } from '@signality/core/elements/element-visibility';
-import { DemoButton, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-element-visibility',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton],
+  imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="visibility-card">
-        <div #scrollContainer class="scroll-container">
-          <div #targetBox class="target-box" [class.visible]="visibility().isVisible">
-            <span class="box-label">{{ visibility().isVisible ? 'Visible' : 'Not Visible' }}</span>
+    <ng-demo-wrapper [demoPath]="'element-visibility/element-visibility-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Scroll container with target box -->
+        <div #scrollContainer class="ev-scroll">
+          <div class="ev-spacer">
+            Scroll down
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <polyline points="19 12 12 19 5 12" />
+            </svg>
           </div>
+          <div #targetBox class="ev-target" [class.ev-target--visible]="visibility().isVisible">
+            {{ visibility().isVisible ? 'Visible' : 'Hidden' }}
+          </div>
+          <div class="ev-spacer ev-spacer--bottom"></div>
         </div>
 
-        <demo-card>
-          <div class="status-info">
-            <div class="info-row">
-              <span class="info-label">Status</span>
-              <span class="info-value" [class.active]="visibility().isVisible">
-                {{ visibility().isVisible ? 'Intersecting' : 'Not Intersecting' }}
-              </span>
-            </div>
-          </div>
-        </demo-card>
+        <!-- Divider -->
+        <div class="ev-divider"></div>
 
-        <demo-button variant="secondary" (click)="scrollToBox()"> Scroll into View </demo-button>
-      </div>
+        <!-- Footer -->
+        <div class="ev-footer">
+          <span class="ev-status" [class.ev-status--active]="visibility().isVisible">
+            <span class="ev-dot" [class.ev-dot--active]="visibility().isVisible"></span>
+            {{ visibility().isVisible ? 'Visible' : 'Not visible' }}
+          </span>
+          <button class="ev-btn" (click)="scrollToBox()">Scroll to target</button>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .visibility-card {
+    /* ── Scroll area ── */
+    .ev-scroll {
+      height: 160px;
+      overflow-y: auto;
+      border: 1px dashed #27272a;
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      align-items: center;
+      scrollbar-width: thin;
+      scrollbar-color: #27272a transparent;
     }
 
-    .scroll-container {
-      height: 136px;
-      overflow-y: auto;
+    .ev-spacer {
+      flex-shrink: 0;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      color: #3f3f46;
+      user-select: none;
+    }
+
+    .ev-spacer--bottom {
+      height: 220px;
+    }
+
+    /* ── Target box ── */
+    .ev-target {
+      flex-shrink: 0;
+      width: calc(100% - 2rem);
+      height: 48px;
+      border-radius: 6px;
+      border: 1px dashed #3f3f46;
       background: #161618;
-      border: 1px solid #3f3f46;
-      border-radius: 8px;
-      padding: 1rem 1.5rem;
-    }
-
-    .target-box {
-      height: 80px;
-      background: #232125;
-      border: 2px dashed #3f3f46;
-      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
-      margin-bottom: 200px;
-      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
     }
 
-    .target-box.visible {
-      border-color: #22c55e;
-      background: rgba(34, 197, 94, 0.1);
-    }
-
-    .box-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #71717a;
-    }
-
-    .target-box.visible .box-label {
+    .ev-target--visible {
+      border-color: rgba(34, 197, 94, 0.4);
+      background: rgba(34, 197, 94, 0.06);
       color: #22c55e;
     }
 
-    .status-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+    /* ── Divider ── */
+    .ev-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
     }
 
-    .info-row {
+    /* ── Footer ── */
+    .ev-footer {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
     }
 
-    .info-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .ev-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: color 0.3s ease;
+    }
+
+    .ev-status--active {
       color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
     }
 
-    .info-value {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #e4e4e7;
+    /* ── Status dot ── */
+    .ev-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
     }
 
-    .info-value.active {
-      color: #22c55e;
+    .ev-dot::before,
+    .ev-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #3f3f46;
+      transition: background 0.3s ease;
+    }
+
+    .ev-dot--active::before,
+    .ev-dot--active::after {
+      background: #22c55e;
+    }
+
+    .ev-dot--active::after {
+      animation: evPulse 2s ease-out infinite;
+    }
+
+    @keyframes evPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* ── Button ── */
+    .ev-btn {
+      font-size: 0.8125rem;
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      color: #DEB3EB;
+      transition: color 0.15s ease;
+    }
+
+    .ev-btn:hover {
+      color: #e8c8f5;
     }
   `,
 })
 export class ElementVisibilityDemo {
   readonly box = viewChild<ElementRef>('targetBox');
   readonly scrollContainer = viewChild<ElementRef>('scrollContainer');
-  readonly visibility = elementVisibility(this.box, { root: undefined });
+  readonly visibility = elementVisibility(this.box, { root: this.scrollContainer });
 
   readonly importCode = `import { elementVisibility } from '@signality/core'`;
 

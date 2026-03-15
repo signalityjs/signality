@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 
 @Component({
   selector: 'ng-demo-wrapper',
@@ -20,7 +20,7 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
           <circle cx="12" cy="12" r="3"></circle>
         </svg>
-        <span>Demo</span>
+        <a target="_blank" [href]="sourceUrl()">Demo</a>
       </div>
       @if (code()) {
       <button class="copy-btn" (click)="copyCode()" [class.copied]="copied()">
@@ -62,7 +62,7 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
       background: #161618;
       border: 1px solid #232125;
       border-radius: 10px;
-      padding: 1.5rem;
+      padding: 1.25rem;
       color: #e4e4e7;
     }
 
@@ -82,7 +82,14 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
       color: #a1a1aa;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-top: -0.375rem;
+      margin-top: -0.25rem;
+      margin-left: 0.25rem;
+
+      a {
+        color: #a1a1aa;
+        font-weight: 600;
+        text-decoration: none;
+      }
     }
 
     .demo-icon {
@@ -120,8 +127,15 @@ import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core
   `,
 })
 export class Wrapper {
+  readonly demoPath = input('');
   readonly code = input('');
   readonly copied = signal(false);
+
+  readonly sourceUrl = computed(() => {
+    const path = this.demoPath();
+    if (!path) return '';
+    return `https://github.com/signalityjs/signality/blob/main/projects/demos/src/demos/${path}.ts`;
+  });
 
   async copyCode(): Promise<void> {
     try {

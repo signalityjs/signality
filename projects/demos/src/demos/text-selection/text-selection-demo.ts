@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { textSelection } from '@signality/core/elements/text-selection';
 import { DemoCard, Wrapper } from '../../common';
 
@@ -7,88 +7,126 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="text-selection-card">
-        <div class="selectable-text">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua.
-          </p>
-          <p>
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-            commodo consequat.
-          </p>
-        </div>
+    <ng-demo-wrapper [demoPath]="'text-selection/text-selection-demo'" [code]="importCode">
+      <demo-card>
+        <div class="ts-wrap">
+          <!-- Selectable text block -->
+          <div class="ts-text-block">
+            <p class="ts-text">
+              Angular signals bring reactivity to the core. With Signality, you can track browser
+              state, user interactions, and DOM changes — all as composable, lazy signals that
+              integrate seamlessly with Angular's change detection.
+            </p>
+          </div>
 
-        <demo-card>
-          <div class="selection-info">
-            <div class="info-row">
-              <span class="info-label">Selected Text</span>
-              <span class="info-value">{{ selection.text() || '(none)' }}</span>
+          <div class="ts-divider"></div>
+
+          <!-- Info rows -->
+          <div class="ts-list">
+            <div class="ts-row">
+              <span class="ts-label">Characters</span>
+              <span class="ts-value" [class.ts-value--active]="hasSelection()">
+                {{ charCount() }}
+              </span>
             </div>
-            <div class="info-row">
-              <span class="info-label">Ranges Count</span>
-              <span class="info-value">{{ selection.ranges().length }}</span>
+
+            <div class="ts-divider"></div>
+
+            <div class="ts-row">
+              <span class="ts-label">Words</span>
+              <span class="ts-value" [class.ts-value--active]="hasSelection()">
+                {{ wordCount() }}
+              </span>
+            </div>
+
+            <div class="ts-divider"></div>
+
+            <div class="ts-row">
+              <span class="ts-label">Text</span>
+              <span class="ts-value ts-value--text" [class.ts-value--active]="hasSelection()">
+                {{ displayText() }}
+              </span>
             </div>
           </div>
-        </demo-card>
-      </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .text-selection-card {
+    .ts-wrap {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
     }
 
-    .selectable-text {
-      background: #161618;
-      border: 1px solid #3f3f46;
-      border-radius: 8px;
-      padding: 1rem;
+    /* ── Selectable text block ── */
+    .ts-text-block {
+      background: rgba(255, 255, 255, 0.025);
+      border-radius: 6px;
+      padding: 0.875rem 1rem;
+      margin-bottom: 0.75rem;
       user-select: text;
+      cursor: text;
     }
 
-    .selectable-text p {
-      margin: 0 0 0.75rem;
-      font-size: 0.875rem;
-      color: #e4e4e7;
-      line-height: 1.6;
+    .ts-text {
+      margin: 0;
+      font-size: 0.8125rem;
+      color: #a1a1aa;
+      line-height: 1.7;
+      font-style: italic;
     }
 
-    .selectable-text p:last-child {
-      margin-bottom: 0;
+    /* ── Divider ── */
+    .ts-divider {
+      height: 1px;
+      background: #1f1f22;
     }
 
-    .selection-info {
+    /* ── Info list ── */
+    .ts-list {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      margin-top: 0.75rem;
     }
 
-    .info-row {
+    /* ── Row ── */
+    .ts-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.5rem 0;
     }
 
-    .info-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .ts-row:first-child { padding-top: 0; }
+    .ts-row:last-child  { padding-bottom: 0; }
+
+    /* ── Label ── */
+    .ts-label {
+      font-size: 0.8125rem;
+      font-weight: 400;
       color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
+      flex-shrink: 0;
     }
 
-    .info-value {
-      font-size: 0.875rem;
+    /* ── Value ── */
+    .ts-value {
+      font-size: 0.8125rem;
       font-weight: 500;
-      color: #e4e4e7;
-      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-      max-width: 60%;
-      word-break: break-all;
+      color: #3f3f46;
       text-align: right;
+      transition: color 0.25s ease;
+    }
+
+    .ts-value--active {
+      color: #e4e4e7;
+    }
+
+    .ts-value--text {
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   `,
 })
@@ -96,4 +134,16 @@ export class TextSelectionDemo {
   readonly selection = textSelection();
 
   readonly importCode = `import { textSelection } from '@signality/core'`;
+
+  readonly hasSelection = computed(() => !!this.selection.text());
+  readonly charCount = computed(() => this.selection.text().length);
+  readonly wordCount = computed(() => {
+    const t = this.selection.text().trim();
+    return t ? t.split(/\s+/).length : 0;
+  });
+  readonly displayText = computed(() => {
+    const t = this.selection.text();
+    if (!t) return '—';
+    return t.length > 36 ? t.slice(0, 36) + '…' : t;
+  });
 }

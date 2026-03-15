@@ -7,77 +7,106 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="resize-demo">
-        <div #resizable class="resizable-box">
-          <span class="box-hint">Resize this box</span>
+    <ng-demo-wrapper [demoPath]="'resize-observer/resize-observer-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Resizable zone -->
+        <div #resizable class="ro-zone">
+          <svg
+            class="ro-resize-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+          Resize me
         </div>
 
-        <demo-card>
-          <div class="size-grid">
-            <div class="size-item">
-              <span class="size-label">Width</span>
-              <span class="size-value">{{ size().width.toFixed(0) }}px</span>
-            </div>
-            <div class="size-item">
-              <span class="size-label">Height</span>
-              <span class="size-value">{{ size().height.toFixed(0) }}px</span>
-            </div>
+        <!-- Divider -->
+        <div class="ro-divider"></div>
+
+        <!-- Info rows -->
+        <div class="ro-rows">
+          <div class="ro-row">
+            <span class="ro-label">Width</span>
+            <span class="ro-value">{{ size().width.toFixed(0) }}px</span>
           </div>
-        </demo-card>
-      </div>
+          <div class="ro-row">
+            <span class="ro-label">Height</span>
+            <span class="ro-value">{{ size().height.toFixed(0) }}px</span>
+          </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .resize-demo {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .resizable-box {
+    /* ── Resizable zone ── */
+    .ro-zone {
       height: 80px;
-      background: #161618;
-      border: 1px dashed #3f3f46;
+      border: 1px dashed #27272a;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
       resize: both;
       overflow: hidden;
-      min-width: 100px;
+      min-width: 120px;
       min-height: 60px;
+      cursor: se-resize;
+      user-select: none;
     }
 
-    .box-hint {
-      font-size: 0.875rem;
+    /* ── Resize icon ── */
+    .ro-resize-icon {
+      flex-shrink: 0;
+      color: #3f3f46;
+    }
+
+    /* ── Divider ── */
+    .ro-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Info rows ── */
+    .ro-rows {
+      display: flex;
+      flex-direction: column;
+      padding-top: 0.75rem;
+    }
+
+    .ro-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.375rem 0;
+    }
+
+    .ro-row + .ro-row {
+      border-top: 1px solid #1f1f22;
+    }
+
+    .ro-label {
+      font-size: 0.8125rem;
       color: #71717a;
     }
 
-    .size-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .size-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .size-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .ro-value {
+      font-size: 0.8125rem;
       color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .size-value {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #e4e4e7;
+      font-variant-numeric: tabular-nums;
     }
   `,
 })

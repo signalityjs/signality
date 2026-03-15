@@ -7,77 +7,84 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="throttled-card">
-        <div class="move-area" (mousemove)="onMouseMove($event)">
-          <span class="move-hint">Move your mouse here</span>
-        </div>
+    <ng-demo-wrapper [demoPath]="'throttled/throttled-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Mouse zone -->
+        <div class="th-zone" (mousemove)="onMouseMove($event)">Move your mouse here</div>
 
-        <demo-card>
-          <div class="values-grid">
-            <div class="value-item">
-              <span class="value-label">Immediate</span>
-              <span class="value-text">{{ immediateX() }}, {{ immediateY() }}</span>
-            </div>
-            <div class="value-item">
-              <span class="value-label">Throttled (100ms)</span>
-              <span class="value-text throttled">{{ throttledX() }}, {{ throttledY() }}</span>
-            </div>
+        <!-- Divider -->
+        <div class="th-divider"></div>
+
+        <!-- Info rows -->
+        <div class="th-rows">
+          <div class="th-row">
+            <span class="th-label">Immediate</span>
+            <span class="th-value">{{ immediateX() }}, {{ immediateY() }}</span>
           </div>
-        </demo-card>
-      </div>
+          <div class="th-row">
+            <span class="th-label">Throttled</span>
+            <span class="th-value th-value--accent">{{ throttledX() }}, {{ throttledY() }}</span>
+          </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .throttled-card {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .move-area {
-      height: 120px;
-      background: #161618;
-      border: 1px dashed #3f3f46;
+    /* ── Mouse zone ── */
+    .th-zone {
+      height: 80px;
+      border: 1px dashed #27272a;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.8125rem;
+      color: #52525b;
+      cursor: crosshair;
+      user-select: none;
     }
 
-    .move-hint {
-      font-size: 0.875rem;
-      color: #71717a;
+    /* ── Divider ── */
+    .th-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
     }
 
-    .values-grid {
+    /* ── Info rows ── */
+    .th-rows {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      padding-top: 0.75rem;
     }
 
-    .value-item {
+    .th-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0.375rem 0;
     }
 
-    .value-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .th-row + .th-row {
+      border-top: 1px solid #1f1f22;
+    }
+
+    .th-label {
+      font-size: 0.8125rem;
+      color: #71717a;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    /* ── Values ── */
+    .th-value {
+      font-size: 0.8125rem;
       color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
+      font-variant-numeric: tabular-nums;
     }
 
-    .value-text {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #e4e4e7;
-      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-    }
-
-    .value-text.throttled {
+    .th-value--accent {
       color: #DEB3EB;
     }
   `,
@@ -92,12 +99,12 @@ export class ThrottledDemo {
 
   onMouseMove(event: MouseEvent): void {
     const rect = (event.target as HTMLElement).getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = Math.round(event.clientX - rect.left);
+    const y = Math.round(event.clientY - rect.top);
 
-    this.immediateX.set(Math.round(x));
-    this.immediateY.set(Math.round(y));
-    this.throttledX.set(Math.round(x));
-    this.throttledY.set(Math.round(y));
+    this.immediateX.set(x);
+    this.immediateY.set(y);
+    this.throttledX.set(x);
+    this.throttledY.set(y);
   }
 }

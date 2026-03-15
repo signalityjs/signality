@@ -1,88 +1,191 @@
 import { ChangeDetectionStrategy, Component, signal, viewChild } from '@angular/core';
 import { onLongPress } from '@signality/core/elements/on-long-press';
-import { DemoBadge, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-on-long-press',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoBadge],
+  imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="long-press-demo">
+    <ng-demo-wrapper [demoPath]="'long-press/long-press-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Press zone -->
         <div
           #target
-          class="press-box"
-          [class.pressed]="isPressed()"
-          [class.triggered]="triggered()"
+          class="lp-zone"
+          [class.lp-zone--pressing]="isPressed() && !triggered()"
+          [class.lp-zone--triggered]="triggered()"
+          (pointerdown)="isPressed.set(true)"
+          (pointerup)="isPressed.set(false)"
+          (pointerleave)="isPressed.set(false)"
         >
-          <span class="press-text">{{
-            triggered() ? 'Long press detected!' : 'Press and hold'
-          }}</span>
+          @if (triggered()) {
+          <span class="lp-dot lp-dot--success"></span>
+          } @else if (isPressed()) {
+          <span class="lp-dot lp-dot--amber"></span>
+          }
+          {{ triggered() ? 'Long press!' : isPressed() ? 'Holding…' : 'Press and hold' }}
         </div>
 
-        <demo-card>
-          <div class="status-row">
-            <span class="status-label">Status</span>
-            <demo-badge [type]="triggered() ? 'success' : 'neutral'">
-              {{ triggered() ? 'Triggered!' : 'Waiting' }}
-            </demo-badge>
-          </div>
-        </demo-card>
-      </div>
+        <!-- Divider -->
+        <div class="lp-divider"></div>
+
+        <!-- Footer -->
+        <div class="lp-footer">
+          <span
+            class="lp-status"
+            [class.lp-status--pressing]="isPressed() && !triggered()"
+            [class.lp-status--triggered]="triggered()"
+          >
+            <span
+              class="lp-status-dot"
+              [class.lp-status-dot--amber]="isPressed() && !triggered()"
+              [class.lp-status-dot--success]="triggered()"
+            ></span>
+            {{ triggered() ? 'Triggered' : isPressed() ? 'Holding…' : 'Waiting' }}
+          </span>
+          <span class="lp-count">{{ count() }} {{ count() === 1 ? 'trigger' : 'triggers' }}</span>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .long-press-demo {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .press-box {
-      height: 80px;
-      background: #161618;
-      border: 1px dashed #3f3f46;
+    /* ── Press zone ── */
+    .lp-zone {
+      height: 96px;
+      border: 1px dashed #27272a;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-
-    .press-box.pressed {
-      border-color: #f59e0b;
-      background: rgba(245, 158, 11, 0.1);
-    }
-
-    .press-box.triggered {
-      border-color: #22c55e;
-      background: rgba(34, 197, 94, 0.1);
-    }
-
-    .press-text {
-      font-size: 0.875rem;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
       color: #71717a;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+      transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
     }
 
-    .press-box.pressed .press-text {
+    .lp-zone--pressing {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.04);
       color: #f59e0b;
     }
 
-    .press-box.triggered .press-text {
+    .lp-zone--triggered {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.04);
       color: #22c55e;
     }
 
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ── Inline dot ── */
+    .lp-dot {
+      position: relative;
+      display: inline-flex;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
     }
 
-    .status-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
+    .lp-dot::before,
+    .lp-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+    }
+
+    .lp-dot--amber::before,
+    .lp-dot--amber::after {
+      background: #f59e0b;
+    }
+
+    .lp-dot--amber::after {
+      animation: lpPulse 1.2s ease-out infinite;
+    }
+
+    .lp-dot--success::before,
+    .lp-dot--success::after {
+      background: #22c55e;
+    }
+
+    .lp-dot--success::after {
+      animation: lpPulse 2s ease-out infinite;
+    }
+
+    @keyframes lpPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* ── Divider ── */
+    .lp-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Footer ── */
+    .lp-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+    }
+
+    .lp-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #71717a;
+      transition: color 0.2s ease;
+    }
+
+    .lp-status--pressing { color: #a1a1aa; }
+    .lp-status--triggered { color: #a1a1aa; }
+
+    /* ── Status dot ── */
+    .lp-status-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .lp-status-dot::before,
+    .lp-status-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #3f3f46;
+      transition: background 0.2s ease;
+    }
+
+    .lp-status-dot--amber::before,
+    .lp-status-dot--amber::after {
+      background: #f59e0b;
+    }
+
+    .lp-status-dot--amber::after {
+      animation: lpPulse 1.2s ease-out infinite;
+    }
+
+    .lp-status-dot--success::before,
+    .lp-status-dot--success::after {
+      background: #22c55e;
+    }
+
+    .lp-status-dot--success::after {
+      animation: lpPulse 2s ease-out infinite;
+    }
+
+    /* ── Count ── */
+    .lp-count {
+      font-size: 0.8125rem;
+      color: #52525b;
     }
   `,
 })
@@ -90,6 +193,7 @@ export class LongPressDemo {
   readonly target = viewChild<HTMLElement>('target');
   readonly isPressed = signal(false);
   readonly triggered = signal(false);
+  readonly count = signal(0);
 
   readonly importCode = `import { onLongPress } from '@signality/core'`;
 
@@ -97,8 +201,9 @@ export class LongPressDemo {
     onLongPress(
       this.target,
       () => {
+        this.count.update(n => n + 1);
         this.triggered.set(true);
-        setTimeout(() => this.triggered.set(false), 2000);
+        setTimeout(() => this.triggered.set(false), 1500);
       },
       { delay: 500 }
     );

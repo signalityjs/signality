@@ -1,63 +1,110 @@
 import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { elementFocusWithin } from '@signality/core/elements/element-focus-within';
-import { DemoBadge, DemoCard, DemoInput, Wrapper } from '../../common';
+import { DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-element-focus-within',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoBadge, DemoInput],
+  imports: [Wrapper, DemoCard, DemoInput],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="focus-within-demo">
-        <div #container class="focus-container" [class.focused]="isFocusedWithin()">
-          <demo-input #input1 placeholder="Focus inside..." />
-          <demo-input #input2 placeholder="Another input" />
+    <ng-demo-wrapper
+      [demoPath]="'element-focus-within/element-focus-within-demo'"
+      [code]="importCode"
+    >
+      <demo-card>
+        <!-- Observed container -->
+        <div #container class="fw-zone" [class.fw-zone--active]="isFocusedWithin()">
+          <input demoInput placeholder="Focus inside…" />
+          <input demoInput placeholder="Or here…" />
         </div>
 
-        <demo-card>
-          <div class="status-row">
-            <span class="status-label">Focus Within</span>
-            <demo-badge [type]="isFocusedWithin() ? 'success' : 'neutral'">
-              {{ isFocusedWithin() ? 'Inside' : 'Outside' }}
-            </demo-badge>
-          </div>
-        </demo-card>
-      </div>
+        <!-- Divider -->
+        <div class="fw-divider"></div>
+
+        <!-- Footer -->
+        <div class="fw-footer">
+          <span class="fw-status" [class.fw-status--active]="isFocusedWithin()">
+            <span class="fw-dot" [class.fw-dot--active]="isFocusedWithin()"></span>
+            {{ isFocusedWithin() ? 'Focus within' : 'No focus' }}
+          </span>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .focus-within-demo {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .focus-container {
+    /* ── Zone ── */
+    .fw-zone {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      padding: 1rem;
-      background: #161618;
-      border: 1px dashed #3f3f46;
+      padding: 0.75rem;
+      border: 1px dashed #27272a;
       border-radius: 8px;
-      transition: all 0.2s ease;
+      transition: border-color 0.25s ease, background 0.25s ease;
     }
 
-    .focus-container.focused {
-      border-color: #22c55e;
-      background: rgba(34, 197, 94, 0.05);
+    .fw-zone--active {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.04);
     }
 
-    .status-row {
+    /* ── Divider ── */
+    .fw-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Footer ── */
+    .fw-footer {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      padding-top: 0.75rem;
     }
 
-    .status-label {
-      font-size: 0.875rem;
-      font-weight: 500;
+    .fw-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: color 0.25s ease;
+    }
+
+    .fw-status--active {
       color: #a1a1aa;
+    }
+
+    /* ── Status dot ── */
+    .fw-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .fw-dot::before,
+    .fw-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #3f3f46;
+      transition: background 0.25s ease;
+    }
+
+    .fw-dot--active::before,
+    .fw-dot--active::after {
+      background: #22c55e;
+    }
+
+    .fw-dot--active::after {
+      animation: fwPulse 2s ease-out infinite;
+    }
+
+    @keyframes fwPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
     }
   `,
 })

@@ -1,125 +1,118 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { storage } from '@signality/core/browser/storage';
-import { DemoButton, DemoCard, DemoInput, DemoToggle, Wrapper } from '../../common';
+import { DemoCard, DemoInput, DemoToggle, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-storage',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoButton, DemoCard, DemoInput, DemoToggle, FormsModule],
+  imports: [Wrapper, DemoCard, DemoInput, DemoToggle, FormsModule],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="storage-card">
-        <demo-card>
-          <div class="storage-row">
-            <span class="storage-label">Type</span>
-            <demo-toggle [options]="storageOptions" [value]="storageType" />
-          </div>
-        </demo-card>
-
-        <demo-card>
-          <div class="storage-row">
-            <span class="storage-label">Counter</span>
-            <div class="counter-controls">
-              <button class="counter-btn" (click)="count.set(count() - 1)">−</button>
-              <span class="counter-value">{{ count() }}</span>
-              <button class="counter-btn" (click)="count.set(count() + 1)">+</button>
-            </div>
-          </div>
-        </demo-card>
-
-        <demo-card>
-          <div class="storage-row">
-            <span class="storage-label">Message</span>
-            <demo-input
-              class="message-input"
-              placeholder="Type a message..."
-              [(ngModel)]="messageText"
-            />
-          </div>
-          <div class="storage-hint">Value: "{{ messageText }}"</div>
-        </demo-card>
-
-        <div class="actions">
-          <demo-button variant="ghost" size="sm" (click)="clear()">Clear All</demo-button>
+    <ng-demo-wrapper [demoPath]="'storage/storage-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Toggle + Input -->
+        <div class="st-input-row">
+          <demo-toggle [options]="storageOptions" [value]="storageType" />
+          <input
+            demoInput
+            class="st-input"
+            size="sm"
+            placeholder="Type something to persist..."
+            [(ngModel)]="messageText"
+          />
         </div>
-      </div>
+
+        <div class="st-divider"></div>
+
+        <!-- Footer -->
+        <div class="st-footer">
+          <span class="st-status">
+            <svg
+              class="st-sync-icon"
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 16h5v5" />
+            </svg>
+            Synced to {{ storageType() }}Storage
+          </span>
+          <button class="st-clear" (click)="clear()">Clear</button>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .storage-card {
+    /* ── Toggle + Input row ── */
+    .st-input-row {
       display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+      align-items: center;
+      gap: 0.625rem;
     }
 
-    .storage-row {
+    .st-input {
+      flex: 1;
+    }
+
+    /* ── Divider ── */
+    .st-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Footer ── */
+    .st-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      padding-top: 0.75rem;
     }
 
-    .storage-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
-    }
-
-    .counter-controls {
+    .st-status {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-    }
-
-    .counter-btn {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: #e4e4e7;
-      background: #27272a;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-
-    .counter-btn:hover {
-      background: #3f3f46;
-    }
-
-    .counter-value {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #e4e4e7;
-      min-width: 2.5rem;
-      text-align: center;
-    }
-
-    .message-input {
-      flex: 1;
-      max-width: 200px;
-    }
-
-    .storage-hint {
-      font-size: 0.75rem;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
       color: #71717a;
-      margin-top: 0.5rem;
     }
 
-    .actions {
-      display: flex;
-      justify-content: flex-end;
+    @keyframes stSyncSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .st-sync-icon {
+      flex-shrink: 0;
+      animation: stSyncSpin 4s linear infinite;
+    }
+
+    .st-clear {
+      font-size: 0.8125rem;
+      font-family: inherit;
+      color: #52525b;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s ease;
+    }
+
+    .st-clear:hover {
+      color: #a1a1aa;
     }
   `,
 })
 export class StorageDemo {
   readonly storageType = storage<'local' | 'session'>('demo-storage-type', 'local');
-  readonly count = storage<number>('demo-storage-count', 0, { type: this.storageType() });
   readonly message = storage<string>('demo-storage-message', '', { type: this.storageType() });
 
   readonly storageOptions = [
@@ -138,7 +131,6 @@ export class StorageDemo {
   }
 
   clear(): void {
-    this.count.set(0);
     this.message.set('');
   }
 }

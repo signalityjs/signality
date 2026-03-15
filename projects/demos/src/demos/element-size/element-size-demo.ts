@@ -7,77 +7,106 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="size-demo">
-        <div #resizable class="resizable-box">
-          <span class="box-hint">Resize this box</span>
+    <ng-demo-wrapper [demoPath]="'element-size/element-size-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Resizable zone -->
+        <div #resizable class="es-zone">
+          <svg
+            class="es-resize-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+          Resize me
         </div>
 
-        <demo-card>
-          <div class="size-grid">
-            <div class="size-item">
-              <span class="size-label">Width</span>
-              <span class="size-value">{{ size().width }}px</span>
-            </div>
-            <div class="size-item">
-              <span class="size-label">Height</span>
-              <span class="size-value">{{ size().height }}px</span>
-            </div>
+        <!-- Divider -->
+        <div class="es-divider"></div>
+
+        <!-- Info rows -->
+        <div class="es-rows">
+          <div class="es-row">
+            <span class="es-label">Width</span>
+            <span class="es-value">{{ size().width }}px</span>
           </div>
-        </demo-card>
-      </div>
+          <div class="es-row">
+            <span class="es-label">Height</span>
+            <span class="es-value">{{ size().height }}px</span>
+          </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .size-demo {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .resizable-box {
+    /* ── Resizable zone ── */
+    .es-zone {
       height: 80px;
-      background: #161618;
-      border: 1px dashed #3f3f46;
+      border: 1px dashed #27272a;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
       resize: both;
       overflow: hidden;
-      min-width: 100px;
+      min-width: 120px;
       min-height: 60px;
+      cursor: se-resize;
+      user-select: none;
     }
 
-    .box-hint {
-      font-size: 0.875rem;
+    /* ── Resize icon ── */
+    .es-resize-icon {
+      flex-shrink: 0;
+      color: #3f3f46;
+    }
+
+    /* ── Divider ── */
+    .es-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Info rows ── */
+    .es-rows {
+      display: flex;
+      flex-direction: column;
+      padding-top: 0.75rem;
+    }
+
+    .es-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.375rem 0;
+    }
+
+    .es-row + .es-row {
+      border-top: 1px solid #1f1f22;
+    }
+
+    .es-label {
+      font-size: 0.8125rem;
       color: #71717a;
     }
 
-    .size-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .size-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .size-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .es-value {
+      font-size: 0.8125rem;
       color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .size-value {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #e4e4e7;
+      font-variant-numeric: tabular-nums;
     }
   `,
 })

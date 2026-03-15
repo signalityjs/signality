@@ -1,62 +1,21 @@
-import { ChangeDetectionStrategy, Component, input, forwardRef, signal } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewEncapsulation,
+  forwardRef,
+  inject,
+  input,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 export type DemoInputSize = 'sm' | 'md';
 
 @Component({
-  selector: 'demo-input',
+  selector: 'input[demoInput]',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule],
-  template: `
-    <input
-      class="input"
-      [class]="'input--' + size()"
-      [type]="type()"
-      [placeholder]="placeholder()"
-      [disabled]="isDisabled()"
-      [(ngModel)]="value"
-      (ngModelChange)="onValueChange($event)"
-      (blur)="onTouchedFn()"
-    />
-  `,
-  styles: `
-    :host {
-      display: flex;
-    }
-
-    .input {
-      width: 100%;
-      background: #232125;
-      border: 1px solid #3f3f46;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      color: #e4e4e7;
-      font-family: inherit;
-      transition: border-color 0.15s ease;
-    }
-
-    .input:focus {
-      outline: none;
-      border-color: #DEB3EB;
-    }
-
-    .input::placeholder {
-      color: #71717a;
-    }
-
-    .input:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .input--sm {
-      padding: 0.375rem 0.75rem;
-    }
-
-    .input--md {
-      padding: 0.5rem 0.75rem;
-    }
-  `,
+  encapsulation: ViewEncapsulation.None,
+  template: '',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -64,46 +23,70 @@ export type DemoInputSize = 'sm' | 'md';
       multi: true,
     },
   ],
+  host: {
+    '[class.demo-input--sm]': `size() === 'sm'`,
+    '[class.demo-input--md]': `size() === 'md'`,
+    '(input)': '_handleInput($event)',
+    '(blur)': '_onTouched()',
+  },
+  styles: `
+    input[demoInput] {
+      display: block;
+      width: 100%;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: #e4e4e7;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+      box-sizing: border-box;
+      padding: 0.5rem 0.75rem;
+    }
+
+    input[demoInput].demo-input--sm { padding: 0.375rem 0.75rem; }
+    input[demoInput].demo-input--md { padding: 0.5rem 0.75rem; }
+
+    input[demoInput]:focus {
+      outline: none;
+      border-color: rgba(222, 179, 235, 0.5);
+    }
+
+    input[demoInput]::placeholder {
+      color: #71717a;
+    }
+
+    input[demoInput]:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  `,
 })
 export class DemoInput implements ControlValueAccessor {
-  readonly type = input<'text' | 'password' | 'email' | 'number'>('text');
-  readonly placeholder = input('');
   readonly size = input<DemoInputSize>('md');
-  readonly disabledInput = input(false);
 
-  protected isDisabled = signal(false);
+  private readonly el = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
-  value = '';
+  _onChange: (value: string) => void = () => {};
+  _onTouched: () => void = () => {};
 
-  private onChange: (value: string) => void = () => {
-    /* empty */
-  };
-  private onTouched: () => void = () => {
-    /* empty */
-  };
-
-  writeValue(value: string): void {
-    this.value = value ?? '';
+  writeValue(value: unknown): void {
+    this.el.nativeElement.value = value == null ? '' : String(value);
   }
 
   registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
+    this._onChange = fn;
   }
 
   registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
+    this._onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    this.el.nativeElement.disabled = isDisabled;
   }
 
-  onValueChange(value: string): void {
-    this.value = value;
-    this.onChange(value);
-  }
-
-  onTouchedFn(): void {
-    this.onTouched();
+  _handleInput(event: Event): void {
+    this._onChange((event.target as HTMLInputElement).value);
   }
 }

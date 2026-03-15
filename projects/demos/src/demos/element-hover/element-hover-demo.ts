@@ -1,72 +1,78 @@
 import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { elementHover } from '@signality/core/elements/element-hover';
-import { DemoBadge, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-element-hover',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoBadge],
+  imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="hover-demo">
-        <div #hoverEl class="hover-box" [class.hovered]="isHovered()">
-          <span class="hover-text">Hover over me</span>
+    <ng-demo-wrapper [demoPath]="'element-hover/element-hover-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Hover zone -->
+        <div #hoverEl class="eh-zone" [class.eh-zone--active]="isHovered()">
+          @if (isHovered()) {
+          <span class="eh-dot"></span>
+          }
+          {{ isHovered() ? 'Hovering…' : 'Hover over me' }}
         </div>
-
-        <demo-card>
-          <div class="hover-result">
-            <span class="hover-label">Hover state:</span>
-            <demo-badge [type]="isHovered() ? 'success' : 'neutral'">
-              {{ isHovered() ? 'Hovered' : 'Not hovered' }}
-            </demo-badge>
-          </div>
-        </demo-card>
-      </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .hover-demo {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .hover-box {
+    /* ── Hover zone ── */
+    .eh-zone {
       height: 80px;
-      background: #161618;
-      border: 1px dashed #3f3f46;
+      border: 1px dashed #27272a;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
-      cursor: pointer;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #60606b;
+      cursor: default;
+      user-select: none;
+      transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
     }
 
-    .hover-box.hovered {
-      border-color: #22c55e;
-      background: rgba(34, 197, 94, 0.1);
-    }
-
-    .hover-text {
-      font-size: 0.875rem;
-      color: #71717a;
-    }
-
-    .hover-box.hovered .hover-text {
+    .eh-zone--active {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.04);
       color: #22c55e;
     }
 
-    .hover-result {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ── Inline dot ── */
+    .eh-dot {
+      position: relative;
+      display: inline-flex;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
     }
 
-    .hover-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
+    .eh-dot::before,
+    .eh-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .eh-dot::after {
+      animation: ehPulse 2s ease-out infinite;
+    }
+
+    @keyframes ehPulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(3);
+        opacity: 0;
+      }
     }
   `,
 })

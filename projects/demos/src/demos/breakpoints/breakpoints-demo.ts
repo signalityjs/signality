@@ -7,124 +7,89 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="breakpoints-card">
-        <demo-card>
-          <div class="current-breakpoint">
-            <span class="breakpoint-label">Current Breakpoint</span>
-            <span class="breakpoint-value">{{ currentBreakpoint() }}</span>
+    <ng-demo-wrapper [demoPath]="'breakpoints/breakpoints-demo'" [code]="importCode">
+      <demo-card>
+        <div class="bp-list">
+          @for (item of breakpointList; track item.name; let last = $last) {
+          <div class="bp-row">
+            <span class="bp-dot" [class.bp-dot--on]="item.signal()"></span>
+            <span class="bp-query" [class.bp-query--on]="item.signal()">{{ item.name }}</span>
+            <span class="bp-value" [class.bp-value--on]="item.signal()">{{ item.range }}</span>
           </div>
-        </demo-card>
-
-        <demo-card>
-          <div class="breakpoints-list">
-            <span class="section-label">All Breakpoints</span>
-            <div class="breakpoint-items">
-              @for (bp of breakpointList; track bp.name) {
-              <div class="breakpoint-item" [class.active]="bp.signal()">
-                <span class="bp-name">{{ bp.name }}</span>
-                <span class="bp-query">{{ bp.query }}</span>
-                <span class="bp-status" [class.active]="bp.signal()">
-                  {{ bp.signal() ? 'Active' : 'Inactive' }}
-                </span>
-              </div>
-              }
-            </div>
-          </div>
-        </demo-card>
-      </div>
+          @if (!last) {
+          <div class="bp-divider"></div>
+          } }
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .breakpoints-card {
+    .bp-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
     }
 
-    .current-breakpoint {
+    /* ── Row ── */
+    .bp-row {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 0;
+      gap: 0.625rem;
+      padding: 0.625rem 0;
     }
 
-    .breakpoint-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
+    .bp-row:first-child { padding-top: 0; }
+    .bp-row:last-child  { padding-bottom: 0; }
+
+    /* ── Dot ── */
+    .bp-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3f3f46;
+      flex-shrink: 0;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .breakpoint-value {
-      font-size: 2rem;
-      font-weight: 700;
+    .bp-dot--on {
+      background: #DEB3EB;
+      box-shadow: 0 0 0 3px rgba(222, 179, 235, 0.18);
+    }
+
+    /* ── Query label ── */
+    .bp-query {
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: #71717a;
+      width: 1.75rem;
+      flex-shrink: 0;
+      transition: color 0.3s ease;
+    }
+
+    .bp-query--on {
       color: #DEB3EB;
     }
 
-    .breakpoints-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    /* ── Value ── */
+    .bp-value {
+      font-size: 0.8125rem;
+      font-weight: 400;
+      color: #3f3f46;
+      flex: 1;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.3s ease;
     }
 
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .breakpoint-items {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .breakpoint-item {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
-      align-items: center;
-      padding: 0.5rem 0.75rem;
-      background: #161618;
-      border-radius: 6px;
-      border: 1px solid transparent;
-    }
-
-    .breakpoint-item.active {
-      border-color: #DEB3EB;
-    }
-
-    .bp-name {
-      font-size: 0.875rem;
-      font-weight: 600;
+    .bp-value--on {
       color: #e4e4e7;
     }
 
-    .bp-query {
-      font-size: 0.815rem;
-      color: #71717a;
-      text-align: center;
+    /* ── Divider ── */
+    .bp-divider {
+      height: 1px;
+      background: #1f1f22;
     }
 
-    .bp-status {
-      inline-size: fit-content;
-      margin-left: auto;
-      font-size: 0.75rem;
-      color: #71717a;
-      padding: 0.125rem 0.5rem;
-      border-radius: 999px;
-      background: #232125;
-    }
-
-    .bp-status.active {
-      color: #22c55e;
-      background: rgba(34, 197, 94, 0.1);
-    }
   `,
 })
 export class BreakpointsDemo {
@@ -138,16 +103,11 @@ export class BreakpointsDemo {
 
   readonly importCode = `import { breakpoints } from '@signality/core'`;
 
-  breakpointList = [
-    { name: 'xs', query: '(max-width: 639px)', signal: this.bp.xs },
-    { name: 'sm', query: '(640px - 767px)', signal: this.bp.sm },
-    { name: 'md', query: '(768px - 1023px)', signal: this.bp.md },
-    { name: 'lg', query: '(1024px - 1279px)', signal: this.bp.lg },
-    { name: 'xl', query: '(min-width: 1280px)', signal: this.bp.xl },
+  readonly breakpointList = [
+    { name: 'xs', range: '≤ 639px', signal: this.bp.xs },
+    { name: 'sm', range: '640 – 767px', signal: this.bp.sm },
+    { name: 'md', range: '768 – 1023px', signal: this.bp.md },
+    { name: 'lg', range: '1024 – 1279px', signal: this.bp.lg },
+    { name: 'xl', range: '≥ 1280px', signal: this.bp.xl },
   ];
-
-  currentBreakpoint(): string {
-    const current = this.bp.current();
-    return current.length > 0 ? current[0].toUpperCase() : 'None';
-  }
 }

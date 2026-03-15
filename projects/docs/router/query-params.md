@@ -132,10 +132,10 @@ export class SearchPage {
 
   constructor() {
     effect(() => {
-      if (this.params.isValid()) { // [!code highlight]
-        const { q, page } = this.params.value(); // [!code highlight]
-        this.searchProducts(q, page); // [!code highlight]
-      } // [!code highlight]
+      if (this.params.isValid()) { // [!code warning]
+        const { q, page } = this.params.value(); // [!code warning]
+        this.searchProducts(q, page); // [!code warning]
+      } // [!code warning]
     });
   }
 
