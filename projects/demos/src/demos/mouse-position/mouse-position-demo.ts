@@ -7,66 +7,44 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="mouse-position-card">
-        <div
-          class="cursor-follower"
-          [class.visible]="isVisible()"
-          [style.left.px]="position().x"
-          [style.top.px]="position().y"
-        ></div>
+    <ng-demo-wrapper [demoPath]="'mouse-position/mouse-position-demo'" [code]="importCode">
+      <!-- Cursor follower (fixed, follows mouse globally) -->
+      <div
+        class="mp-follower"
+        [class.mp-follower--visible]="isVisible()"
+        [style.left.px]="position().x"
+        [style.top.px]="position().y"
+      ></div>
 
-        <demo-card>
-          <div class="coords-grid">
-            <div class="coord-item">
-              <span class="coord-label">X</span>
-              <span class="coord-value">{{ position().x }}</span>
-            </div>
-            <div class="coord-item">
-              <span class="coord-label">Y</span>
-              <span class="coord-value">{{ position().y }}</span>
-            </div>
+      <demo-card>
+        <!-- Info rows -->
+        <div class="mp-rows">
+          <div class="mp-row">
+            <span class="mp-label">X</span>
+            <span class="mp-value">{{ position().x }}px</span>
           </div>
-        </demo-card>
-      </div>
+          <div class="mp-row">
+            <span class="mp-label">Y</span>
+            <span class="mp-value">{{ position().y }}px</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="mp-divider"></div>
+
+        <!-- Footer -->
+        <div class="mp-footer">
+          <span class="mp-status" [class.mp-status--active]="isVisible()">
+            <span class="mp-dot" [class.mp-dot--active]="isVisible()"></span>
+            {{ isVisible() ? 'Tracking' : 'Move your mouse' }}
+          </span>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .mouse-position-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      position: relative;
-    }
-
-    .coords-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .coord-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .coord-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .coord-value {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #e4e4e7;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .cursor-follower {
+    /* ── Cursor follower ── */
+    .mp-follower {
       position: fixed;
       width: 10px;
       height: 10px;
@@ -74,14 +52,101 @@ import { DemoCard, Wrapper } from '../../common';
       border-radius: 50%;
       pointer-events: none;
       transform: translate(-50%, -50%);
-      transition: opacity 0.2s ease;
       opacity: 0;
+      transition: opacity 0.2s ease;
       box-shadow: 0 0 10px #DEB3EB, 0 0 20px rgba(222, 179, 235, 0.5);
       z-index: 10;
+    }
 
-      &.visible {
-        opacity: 1;
-      }
+    .mp-follower--visible {
+      opacity: 1;
+    }
+
+    /* ── Info rows ── */
+    .mp-rows {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.375rem 0;
+    }
+
+    .mp-row + .mp-row {
+      border-top: 1px solid #1f1f22;
+    }
+
+    .mp-label {
+      font-size: 0.8125rem;
+      color: #71717a;
+    }
+
+    .mp-value {
+      font-size: 0.8125rem;
+      color: #a1a1aa;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Divider ── */
+    .mp-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Footer ── */
+    .mp-footer {
+      display: flex;
+      align-items: center;
+      padding-top: 0.75rem;
+    }
+
+    .mp-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: color 0.25s ease;
+    }
+
+    .mp-status--active {
+      color: #a1a1aa;
+    }
+
+    /* ── Status dot ── */
+    .mp-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .mp-dot::before,
+    .mp-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #3f3f46;
+      transition: background 0.25s ease;
+    }
+
+    .mp-dot--active::before,
+    .mp-dot--active::after {
+      background: #DEB3EB;
+    }
+
+    .mp-dot--active::after {
+      animation: mpPulse 2s ease-out infinite;
+    }
+
+    @keyframes mpPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
     }
   `,
 })

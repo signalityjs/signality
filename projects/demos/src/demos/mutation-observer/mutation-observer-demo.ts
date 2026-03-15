@@ -1,99 +1,177 @@
 import { ChangeDetectionStrategy, Component, ElementRef, signal, viewChild } from '@angular/core';
 import { mutationObserver } from '@signality/core/observers/mutation-observer';
-import { DemoButton, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-mutation-observer',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton],
+  imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="mutation-card">
-        <div #container class="mutation-container">
-          @for (item of items(); track item) {
-          <div class="item">{{ item }}</div>
+    <ng-demo-wrapper [demoPath]="'mutation-observer/mutation-observer-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Observed container -->
+        <div #container class="mo-list">
+          @if (items().length === 0) {
+          <span class="mo-empty">No items</span>
+          } @for (item of items(); track item) {
+          <div class="mo-item">Item {{ item }}</div>
           }
         </div>
 
-        <demo-card>
-          <div class="mutation-info">
-            <div class="info-row">
-              <span class="info-label">Children Count</span>
-              <span class="info-value">{{ items().length }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Total Mutations</span>
-              <span class="info-value">{{ mutationCount() }}</span>
-            </div>
-          </div>
-        </demo-card>
+        <!-- Divider -->
+        <div class="mo-divider"></div>
 
-        <div class="button-row">
-          <demo-button variant="secondary" size="sm" (click)="addItem()"> Add Item </demo-button>
-          <demo-button variant="secondary" size="sm" (click)="removeItem()">
-            Remove Item
-          </demo-button>
-          <demo-button variant="ghost" size="sm" (click)="clearAll()"> Clear </demo-button>
+        <!-- Info rows -->
+        <div class="mo-rows">
+          <div class="mo-row">
+            <span class="mo-label">Children</span>
+            <span class="mo-value">{{ items().length }}</span>
+          </div>
+          <div class="mo-row">
+            <span class="mo-label">Mutations</span>
+            <span class="mo-value">{{ mutationCount() }}</span>
+          </div>
         </div>
-      </div>
+
+        <!-- Divider -->
+        <div class="mo-divider"></div>
+
+        <!-- Footer actions -->
+        <div class="mo-footer">
+          <button
+            class="mo-btn mo-btn--muted"
+            (click)="clearAll()"
+            [disabled]="items().length === 0"
+          >
+            Clear
+          </button>
+          <div class="mo-actions">
+            <button
+              class="mo-btn mo-btn--secondary"
+              (click)="removeItem()"
+              [disabled]="items().length === 0"
+            >
+              Remove
+            </button>
+            <button class="mo-btn mo-btn--accent" (click)="addItem()">Add Item</button>
+          </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .mutation-card {
+    /* ── List ── */
+    .mo-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.375rem;
+      min-height: 4.5rem;
+      max-height: 9rem;
+      overflow-y: auto;
     }
 
-    .mutation-container {
+    .mo-empty {
+      font-size: 0.8125rem;
+      color: #52525b;
+      font-style: italic;
+    }
+
+    .mo-item {
+      padding: 0.375rem 0.625rem;
       background: #161618;
-      border: 1px solid #3f3f46;
-      border-radius: 8px;
-      padding: 0.75rem;
+      border-radius: 5px;
+      font-size: 0.8125rem;
+      color: #a1a1aa;
+    }
+
+    /* ── Divider ── */
+    .mo-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Info rows ── */
+    .mo-rows {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      padding-top: 0.75rem;
     }
 
-    .item {
-      background: #232125;
-      padding: 0.5rem 0.75rem;
-      border-radius: 4px;
-      font-size: 0.875rem;
-      color: #e4e4e7;
-    }
-
-    .mutation-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .info-row {
+    .mo-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0.3125rem 0;
     }
 
-    .info-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .mo-row + .mo-row {
+      border-top: 1px solid #1f1f22;
+    }
+
+    .mo-label {
+      font-size: 0.8125rem;
+      color: #71717a;
+    }
+
+    .mo-value {
+      font-size: 0.8125rem;
       color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
+      font-variant-numeric: tabular-nums;
     }
 
-    .info-value {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #e4e4e7;
-      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-    }
-
-    .button-row {
+    /* ── Footer ── */
+    .mo-footer {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+    }
+
+    .mo-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* ── Buttons ── */
+    .mo-btn {
+      font-size: 0.8125rem;
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .mo-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .mo-btn--muted {
+      color: #52525b;
+    }
+
+    .mo-btn--muted:not(:disabled):hover {
+      color: #a1a1aa;
+    }
+
+    .mo-btn--secondary {
+      color: #71717a;
+    }
+
+    .mo-btn--secondary:not(:disabled):hover {
+      color: #a1a1aa;
+    }
+
+    .mo-btn--accent {
+      color: #DEB3EB;
+    }
+
+    .mo-btn--accent:not(:disabled):hover {
+      color: #e8c8f5;
     }
   `,
 })

@@ -7,7 +7,7 @@ import { DemoBadge, DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoBadge],
   template: `
-    <ng-demo-wrapper [code]="importCode">
+    <ng-demo-wrapper [demoPath]="'gamepad/gamepad-demo'" [code]="importCode">
       <div class="gamepad-card">
         @if (!gp.isSupported()) {
         <demo-card>

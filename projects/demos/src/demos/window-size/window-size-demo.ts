@@ -7,91 +7,56 @@ import { DemoCard, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="size-card">
-        <demo-card>
-          <div class="size-grid">
-            <div class="size-item">
-              <span class="size-label">Width</span>
-              <span class="size-value">{{ size().width }}px</span>
-            </div>
-            <div class="size-item">
-              <span class="size-label">Height</span>
-              <span class="size-value">{{ size().height }}px</span>
-            </div>
+    <ng-demo-wrapper [demoPath]="'window-size/window-size-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Info rows -->
+        <div class="ws-rows">
+          <div class="ws-row">
+            <span class="ws-label">Width</span>
+            <span class="ws-value">{{ size().width }}px</span>
           </div>
-        </demo-card>
-
-        <demo-card>
-          <div class="size-details">
-            <div class="detail-row">
-              <span class="detail-label">inner</span>
-              <span class="detail-value">{{ size().innerWidth }} × {{ size().innerHeight }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">outer</span>
-              <span class="detail-value">{{ size().outerWidth }} × {{ size().outerHeight }}</span>
-            </div>
+          <div class="ws-row">
+            <span class="ws-label">Height</span>
+            <span class="ws-value">{{ size().height }}px</span>
           </div>
-        </demo-card>
-      </div>
+          <div class="ws-row">
+            <span class="ws-label">Inner</span>
+            <span class="ws-value">{{ size().innerWidth }} × {{ size().innerHeight }}</span>
+          </div>
+          <div class="ws-row">
+            <span class="ws-label">Outer</span>
+            <span class="ws-value">{{ size().outerWidth }} × {{ size().outerHeight }}</span>
+          </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .size-card {
+    /* ── Info rows ── */
+    .ws-rows {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
     }
 
-    .size-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .size-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .size-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .size-value {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #e4e4e7;
-    }
-
-    .size-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .detail-row {
+    .ws-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0.375rem 0;
     }
 
-    .detail-label {
-      font-size: 0.75rem;
-      font-weight: 500;
+    .ws-row + .ws-row {
+      border-top: 1px solid #1f1f22;
+    }
+
+    .ws-label {
+      font-size: 0.8125rem;
+      color: #71717a;
+    }
+
+    .ws-value {
+      font-size: 0.8125rem;
       color: #a1a1aa;
-      text-transform: uppercase;
-    }
-
-    .detail-value {
-      font-size: 0.875rem;
-      color: #e4e4e7;
       font-variant-numeric: tabular-nums;
     }
   `,

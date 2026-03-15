@@ -7,56 +7,113 @@ import { DemoCard, DemoToggle, Wrapper } from '../../common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoToggle],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="direction-card">
-        <demo-card>
-          <div class="direction-row">
-            <span class="direction-label">Current Direction</span>
-            <demo-toggle [options]="directionOptions" [value]="direction" />
-          </div>
-        </demo-card>
-
-        <div class="preview" [attr.dir]="direction()">
-          <p class="preview-text">Hello, World!</p>
-          <p class="preview-text">مرحبا بالعالم!</p>
-          <p class="preview-text">שלום עולם!</p>
+    <ng-demo-wrapper [demoPath]="'text-direction/text-direction-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Toggle row -->
+        <div class="td-row">
+          <span class="td-label">Direction</span>
+          <demo-toggle [options]="directionOptions" [value]="direction" />
         </div>
-      </div>
+
+        <!-- Divider -->
+        <div class="td-divider"></div>
+
+        <!-- Preview -->
+        <div class="td-preview" [attr.dir]="direction()">
+          <p class="td-text">Hello, World!</p>
+          <p class="td-text">مرحبا بالعالم!</p>
+          <p class="td-text">שלום עולם!</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="td-divider"></div>
+
+        <!-- Footer -->
+        <div class="td-footer">
+          <span class="td-status">
+            <svg
+              class="td-arrow"
+              [class.td-arrow--rtl]="direction() === 'rtl'"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+            {{ direction() === 'ltr' ? 'Left to right' : 'Right to left' }}
+          </span>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .direction-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .direction-row {
+    /* ── Toggle row ── */
+    .td-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
     }
 
-    .direction-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
+    .td-label {
+      font-size: 0.8125rem;
+      color: #71717a;
     }
 
-    .preview {
-      padding: 1rem;
-      background: #0f0f11;
-      border-radius: 8px;
+    /* ── Divider ── */
+    .td-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Preview ── */
+    .td-preview {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.375rem;
+      padding: 0.75rem;
+      margin-top: 0.875rem;
+      border: 1px dashed #27272a;
+      border-radius: 8px;
+      transition: text-align 0.2s ease;
     }
 
-    .preview-text {
+    .td-text {
       margin: 0;
-      font-size: 1rem;
-      color: #e4e4e7;
+      font-size: 0.8125rem;
+      color: #a1a1aa;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ── */
+    .td-footer {
+      display: flex;
+      align-items: center;
+      padding-top: 0.75rem;
+    }
+
+    .td-status {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+      color: #71717a;
+    }
+
+    /* ── Arrow ── */
+    .td-arrow {
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .td-arrow--rtl {
+      transform: scaleX(-1);
     }
   `,
 })

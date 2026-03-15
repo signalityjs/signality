@@ -1,155 +1,190 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { battery } from '@signality/core/browser/battery';
-import { DemoBadge, DemoCard, DemoProgress, Wrapper } from '../../common';
+import { DemoCard, DemoNotSupported, DemoProgress, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-battery',
-  imports: [Wrapper, DemoProgress, DemoBadge, DemoCard],
+  imports: [Wrapper, DemoCard, DemoProgress, DemoNotSupported],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      @if (!batteryStatus.isSupported()) {
-      <div class="not-supported">
-        <demo-badge type="error">Battery API not supported</demo-badge>
-        <p class="not-supported-text">The Battery Status API is not supported in this browser.</p>
-      </div>
-      } @if (batteryStatus.isSupported()) {
-      <div class="battery-card">
-        <div class="battery-main">
-          <div class="battery-info">
-            <span class="battery-percentage">{{ (batteryStatus.level() * 100).toFixed(0) }}%</span>
-            <demo-progress
-              [value]="batteryStatus.level() * 100"
-              [color]="getLevelColor(batteryStatus.level())"
-              [showValue]="false"
-            />
+    <ng-demo-wrapper [demoPath]="'battery/battery-demo'" [code]="importCode">
+      @if (!bt.isSupported()) {
+      <demo-not-supported
+        title="Battery API Not Available"
+        description="Battery Status API is not supported in this browser."
+        [hints]="['Chrome 38+', 'Edge 79+', 'Opera 25+']"
+      >
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="2" y="7" width="16" height="10" rx="2" />
+          <path d="M22 11v2" />
+        </svg>
+      </demo-not-supported>
+      } @else {
+      <demo-card>
+        <!-- Level + progress -->
+        <div class="bt-level">
+          <span class="bt-pct" [style.color]="levelColor()"> {{ pct() }}% </span>
+          <demo-progress [value]="pct()" [color]="levelColor()" [showValue]="false" />
+        </div>
+
+        <!-- Info rows -->
+        <div class="bt-rows">
+          <div class="bt-row">
+            <span class="bt-label">Charging</span>
+            <span class="bt-value">{{ bt.charging() ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="bt-row">
+            <span class="bt-label">Charging time</span>
+            <span class="bt-value">{{ formatTime(bt.chargingTime()) }}</span>
+          </div>
+          <div class="bt-row">
+            <span class="bt-label">Remaining</span>
+            <span class="bt-value">{{ formatTime(bt.dischargingTime()) }}</span>
           </div>
         </div>
 
-        <demo-card>
-          <div class="details-grid">
-            <div class="detail-item">
-              <span class="detail-label">Charging Time</span>
-              <span class="detail-value">
-                @if (isInfinity(batteryStatus.chargingTime())) {
-                <span class="detail-muted">N/A</span>
-                } @else {
-                {{ formatTime(batteryStatus.chargingTime()) }}
-                }
-              </span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Discharging Time</span>
-              <span class="detail-value">
-                @if (isInfinity(batteryStatus.dischargingTime())) {
-                <span class="detail-muted">N/A</span>
-                } @else {
-                {{ formatTime(batteryStatus.dischargingTime()) }}
-                }
-              </span>
-            </div>
-          </div>
-        </demo-card>
-      </div>
+        <!-- Divider -->
+        <div class="bt-divider"></div>
+
+        <!-- Footer -->
+        <div class="bt-footer">
+          <span class="bt-status">
+            <span class="bt-dot" [style.--dot-color]="levelColor()"></span>
+            {{ statusLabel() }}
+          </span>
+        </div>
+      </demo-card>
       }
     </ng-demo-wrapper>
   `,
   styles: `
-    .not-supported {
+    /* ── Level ── */
+    .bt-level {
       display: flex;
       flex-direction: column;
+      gap: 0.625rem;
+      padding-bottom: 0.75rem;
+    }
+
+    .bt-pct {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      transition: color 0.4s ease;
+    }
+
+    /* ── Rows ── */
+    .bt-rows {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bt-row {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.75rem;
-      padding: 2rem;
-      text-align: center;
+      padding: 0.375rem 0;
     }
 
-    .not-supported-text {
-      color: #a1a1aa;
-      font-size: 0.875rem;
-      margin: 0;
+    .bt-row + .bt-row {
+      border-top: 1px solid #1f1f22;
     }
 
-    .battery-card {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .battery-main {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .battery-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      min-width: 0;
-    }
-
-    .battery-percentage {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #e4e4e7;
-      line-height: 1.5;
-    }
-
-    .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .detail-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .detail-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #a1a1aa;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .detail-value {
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: #e4e4e7;
-    }
-
-    .detail-muted {
+    .bt-label {
+      font-size: 0.8125rem;
       color: #71717a;
+    }
+
+    .bt-value {
+      font-size: 0.8125rem;
+      color: #a1a1aa;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Divider ── */
+    .bt-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
+    }
+
+    /* ── Footer ── */
+    .bt-footer {
+      display: flex;
+      align-items: center;
+      padding-top: 0.75rem;
+    }
+
+    .bt-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #a1a1aa;
+    }
+
+    .bt-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .bt-dot::before,
+    .bt-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--dot-color, #3f3f46);
+      transition: background 0.4s ease;
+    }
+
+    .bt-dot::after {
+      animation: btPulse 2s ease-out infinite;
+    }
+
+    @keyframes btPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
     }
   `,
 })
 export class BatteryDemo {
-  readonly batteryStatus = battery();
+  readonly bt = battery();
 
   readonly importCode = `import { battery } from '@signality/core'`;
 
-  getLevelColor(level: number): string {
-    if (level <= 0.2) return '#ef4444';
-    if (level <= 0.5) return '#f59e0b';
+  readonly pct = computed(() => Math.round(this.bt.level() * 100));
+
+  readonly levelColor = computed(() => {
+    const p = this.pct();
+    if (p <= 20) return '#ef4444';
+    if (p <= 50) return '#f59e0b';
     return '#22c55e';
-  }
+  });
+
+  readonly statusLabel = computed(() => {
+    if (this.bt.charging()) return `Charging — ${this.pct()}%`;
+    const p = this.pct();
+    if (p <= 20) return `Low battery — ${p}%`;
+    return `Discharging — ${p}%`;
+  });
 
   formatTime(seconds: number): string {
-    if (!isFinite(seconds) || seconds === 0) return '0';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    }
-    return `${minutes}m`;
-  }
-
-  isInfinity(value: number): boolean {
-    return !isFinite(value);
+    if (!isFinite(seconds) || seconds <= 0) return '—';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
   }
 }

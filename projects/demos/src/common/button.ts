@@ -30,6 +30,7 @@ export type DemoButtonSize = 'sm' | 'md';
       font-family: inherit;
       font-weight: 500;
       border-radius: 6px;
+      line-height: 1.25rem;
       cursor: pointer;
       transition: all 0.15s ease;
       border: 1px solid transparent;

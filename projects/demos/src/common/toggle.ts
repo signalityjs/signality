@@ -26,39 +26,36 @@ export interface ToggleOption<T> {
   styles: `
     .toggle {
       display: flex;
-      background: #27272a;
-      border-radius: 6px;
+      border: 1px solid #27272a;
+      border-radius: 8px;
       padding: 2px;
+      gap: 1px;
     }
 
     .toggle-btn {
-      padding: 0.375rem 0.75rem;
+      padding: 0.3125rem 0.75rem;
       font-size: 0.75rem;
       font-weight: 500;
-      color: #a1a1aa;
+      color: #71717a;
       background: transparent;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: color 0.2s ease, background 0.2s ease;
+      transition: color 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
     }
 
     .toggle-btn:hover:not(:disabled):not(.active) {
-      color: #e4e4e7;
+      color: #a1a1aa;
     }
 
     .toggle-btn.active {
-      background: #DEB3EB;
-      color: #0f0f11;
-    }
-
-    .toggle-btn.active:hover:not(:disabled) {
-      background: #d4a3e4;
-      color: #0f0f11;
+      background: #27272a;
+      color: #e4e4e7;
     }
 
     .toggle-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
     }
   `,

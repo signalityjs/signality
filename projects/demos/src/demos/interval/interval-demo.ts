@@ -1,100 +1,173 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { interval } from '@signality/core/scheduling/interval';
-import { DemoButton, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-interval',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton],
+  imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="interval-card">
-        <demo-card>
-          <div class="counter-display">
-            <span class="counter-value">{{ timer.counter() }}</span>
-            <span class="counter-label">ticks</span>
-          </div>
-        </demo-card>
-
-        <demo-card>
-          <div class="status-row">
-            <span class="status-label">Status</span>
-            <span class="status-value" [class.running]="timer.isActive()">
-              {{ timer.isActive() ? 'Running' : 'Stopped' }}
-            </span>
-          </div>
-        </demo-card>
-
-        <div class="controls">
-          @if (timer.isActive()) {
-          <demo-button variant="secondary" (click)="timer.pause()">Pause</demo-button>
-          } @else {
-          <demo-button variant="primary" (click)="timer.resume()">Resume</demo-button>
-          }
-          <demo-button variant="ghost" (click)="timer.reset()">Reset</demo-button>
+    <ng-demo-wrapper [demoPath]="'interval/interval-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Counter -->
+        <div class="iv-counter">
+          <span class="iv-value">{{ timer.counter() }}</span>
+          <span class="iv-unit">ticks</span>
         </div>
-      </div>
+
+        <!-- Divider -->
+        <div class="iv-divider"></div>
+
+        <!-- Footer -->
+        <div class="iv-footer">
+          <span class="iv-status" [class.iv-status--active]="timer.isActive()">
+            <span class="iv-dot" [class.iv-dot--active]="timer.isActive()"></span>
+            {{ timer.isActive() ? 'Running' : 'Stopped' }}
+          </span>
+          <div class="iv-actions">
+            <button class="iv-btn iv-btn--muted" (click)="timer.reset()">Reset</button>
+            @if (timer.isActive()) {
+            <button class="iv-btn iv-btn--secondary" (click)="timer.pause()">Pause</button>
+            } @else {
+            <button class="iv-btn iv-btn--accent" (click)="timer.resume()">Resume</button>
+            }
+          </div>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .interval-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .counter-display {
+    /* ── Counter ── */
+    .iv-counter {
       display: flex;
       align-items: baseline;
       justify-content: center;
       gap: 0.5rem;
+      padding: 0.5rem 0 0.75rem;
     }
 
-    .counter-value {
+    .iv-value {
       font-size: 2.5rem;
       font-weight: 700;
       color: #e4e4e7;
       line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      min-width: 3ch;
+      text-align: right;
     }
 
-    .counter-label {
-      font-size: 1rem;
-      color: #a1a1aa;
+    .iv-unit {
+      font-size: 0.9375rem;
+      color: #52525b;
+      font-weight: 400;
     }
 
-    .status-row {
+    /* ── Divider ── */
+    .iv-divider {
+      height: 1px;
+      background: #1f1f22;
+    }
+
+    /* ── Footer ── */
+    .iv-footer {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
     }
 
-    .status-label {
-      font-size: 0.875rem;
-      font-weight: 500;
+    .iv-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: color 0.3s ease;
+    }
+
+    .iv-status--active {
       color: #a1a1aa;
     }
 
-    .status-value {
-      font-size: 0.875rem;
-      font-weight: 500;
+    /* ── Status dot ── */
+    .iv-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .iv-dot::before,
+    .iv-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #3f3f46;
+      transition: background 0.3s ease;
+    }
+
+    .iv-dot--active::before,
+    .iv-dot--active::after {
+      background: #22c55e;
+    }
+
+    .iv-dot--active::after {
+      animation: ivPulse 2s ease-out infinite;
+    }
+
+    @keyframes ivPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* ── Actions ── */
+    .iv-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .iv-btn {
+      font-size: 0.8125rem;
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s ease;
+    }
+
+    .iv-btn--muted {
+      color: #52525b;
+    }
+
+    .iv-btn--muted:hover {
+      color: #a1a1aa;
+    }
+
+    .iv-btn--secondary {
       color: #71717a;
     }
 
-    .status-value.running {
-      color: #22c55e;
+    .iv-btn--secondary:hover {
+      color: #a1a1aa;
     }
 
-    .controls {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: center;
+    .iv-btn--accent {
+      color: #DEB3EB;
+    }
+
+    .iv-btn--accent:hover {
+      color: #e8c8f5;
     }
   `,
 })
 export class IntervalDemo {
   readonly timer = interval(
     () => {
-      /* empty */
+      /* tick */
     },
     1000,
     { immediate: true }

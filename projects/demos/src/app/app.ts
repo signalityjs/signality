@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { ActiveElementDemo } from '../demos/active-element/active-element-demo';
 import { BatteryDemo } from '../demos/battery/battery-demo';
+import { BrowserLanguageDemo } from '../demos/browser-language/browser-language-demo';
 import { BluetoothDemo } from '../demos/bluetooth/bluetooth-demo';
 import { BreakpointsDemo } from '../demos/breakpoints/breakpoints-demo';
 import { BroadcastChannelDemo } from '../demos/broadcast-channel/broadcast-channel-demo';
@@ -60,6 +61,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     ActiveElementDemo,
     BatteryDemo,
     BluetoothDemo,
+    BrowserLanguageDemo,
     BreakpointsDemo,
     BroadcastChannelDemo,
     ClipboardDemo,
@@ -115,6 +117,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
+        <h2>Browser Language Demo</h2>
+        <demo-browser-language />
+      </section>
+
+      <section>
         <h2>Clipboard Demo</h2>
         <demo-clipboard />
       </section>
@@ -140,8 +147,18 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
+        <h2>Element Focus Within Demo</h2>
+        <demo-element-focus-within />
+      </section>
+
+      <section>
         <h2>Element Hover Demo</h2>
         <demo-element-hover />
+      </section>
+
+      <section>
+        <h2>Long Press Demo</h2>
+        <demo-on-long-press />
       </section>
 
       <section>
@@ -172,6 +189,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Scroll Position Demo</h2>
         <demo-scroll-position />
+      </section>
+
+      <section>
+        <h2>Text Direction Demo</h2>
+        <demo-text-direction />
       </section>
 
       <section>
@@ -230,6 +252,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
+        <h2>On Click Outside Demo</h2>
+        <demo-on-click-outside />
+      </section>
+
+      <section>
         <h2>Network Demo</h2>
         <demo-network />
       </section>
@@ -272,6 +299,16 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Storage Demo</h2>
         <demo-storage />
+      </section>
+
+      <section>
+        <h2>Swipe Demo</h2>
+        <demo-swipe />
+      </section>
+
+      <section>
+        <h2>Pointer Swipe Demo</h2>
+        <demo-pointer-swipe />
       </section>
 
       <section>

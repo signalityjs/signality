@@ -44,17 +44,7 @@ The `OnLongPressOptions` extends `WithInjector`:
 |---------------------|-----------------------------------------------------|---------|-------------------------------------------------------------------------------------|
 | `delay`             | `MaybeSignal<number>`                               | `500`   | Time in ms before the callback is triggered                                         |
 | `distanceThreshold` | `number \| false`                                   | `10`    | Max distance (px) the pointer can move before cancelling. Set to `false` to disable |
-| `modifiers`         | `OnLongPressModifiers`                              | -       | Keyboard modifiers required during the press                                        |
 | `injector`          | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                                    |
-
-### OnLongPressModifiers
-
-| Property | Type      | Description                           |
-|----------|-----------|---------------------------------------|
-| `ctrl`   | `boolean` | Require Ctrl key to be held           |
-| `shift`  | `boolean` | Require Shift key to be held          |
-| `alt`    | `boolean` | Require Alt key to be held            |
-| `meta`   | `boolean` | Require Meta (Cmd/Win) key to be held |
 
 ## Return Value
 
@@ -86,26 +76,6 @@ export class CustomDelayDemo {
 }
 ```
 
-### With modifier keys
-
-```angular-ts
-import { Component, viewChild, ElementRef } from '@angular/core';
-import { onLongPress } from '@signality/core';
-
-@Component({
-  template: `<div #area>Ctrl + Hold to activate</div>`,
-})
-export class ModifierDemo {
-  readonly area = viewChild<ElementRef>('area');
-
-  constructor() {
-    onLongPress(this.area, () => {
-      console.log('Ctrl + long press!');
-    }, { modifiers: { ctrl: true } }); // [!code highlight]
-  }
-}
-```
-
 ### Disable distance threshold
 
 ```angular-ts
@@ -133,17 +103,9 @@ On the server, the utility returns a no-op ref with an empty `destroy` method.
 ## Type Definitions
 
 ```typescript
-interface OnLongPressModifiers {
-  readonly ctrl?: boolean;
-  readonly shift?: boolean;
-  readonly alt?: boolean;
-  readonly meta?: boolean;
-}
-
 interface OnLongPressOptions extends WithInjector {
   readonly delay?: MaybeSignal<number>;
   readonly distanceThreshold?: number | false;
-  readonly modifiers?: OnLongPressModifiers;
 }
 
 interface OnLongPressRef {

@@ -4,7 +4,11 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/element
 
 # Swipe
 
-Reactive touch-swipe detection on an element. Tracks single-finger swipe gestures and provides direction and distance signals.
+Reactive touch-swipe detection on an element using [Touch Events API](https://developer.mozilla.org/en-US/docs/Web/API/Touch_events). Tracks single-finger swipe gestures and provides direction and distance signals.
+
+::: tip Use PointerSwipe for non-touch input
+The `swipe` function only responds to touch events. If you need to detect swipe gestures from mouse or pen input, use [PointerSwipe](/elements/pointer-swipe) instead — it works with all pointer types.
+:::
 
 <Demo name="swipe" />
 
@@ -83,7 +87,7 @@ import { swipe } from '@signality/core';
 })
 export class SwipeDismissDemo {
   readonly card = viewChild<ElementRef>('card');
-  readonly sw = swipe(this.card); // [!code highlight]
+  readonly sw = swipe(this.card);
 
   readonly visible = linkedSignal({
     source: () => !this.sw.isSwiping() && Math.abs(this.sw.distanceX()) >= 150,
@@ -155,5 +159,6 @@ function swipe(
 
 ## Related
 
+- [PointerSwipe](/elements/pointer-swipe) — Swipe detection for mouse, touch, and pen input
 - [OnLongPress](/elements/on-long-press) — Detect long press gestures on an element
 - [MousePosition](/elements/mouse-position) — Track mouse position on an element

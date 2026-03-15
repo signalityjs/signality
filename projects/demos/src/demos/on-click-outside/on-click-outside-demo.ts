@@ -1,78 +1,154 @@
 import { ChangeDetectionStrategy, Component, ElementRef, signal, viewChild } from '@angular/core';
 import { onClickOutside } from '@signality/core/elements/on-click-outside';
-import { DemoBadge, DemoButton, DemoCard, Wrapper } from '../../common';
+import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-on-click-outside',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton, DemoBadge],
+  imports: [Wrapper, DemoCard],
   template: `
-    <ng-demo-wrapper [code]="importCode">
-      <div class="click-demo">
-        <div #dropdown class="dropdown" [class.open]="isOpen()">
-          <span class="dropdown-text">Dropdown content</span>
+    <ng-demo-wrapper [demoPath]="'on-click-outside/on-click-outside-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Dropdown zone -->
+        <div
+          #dropdown
+          class="co-zone"
+          [class.co-zone--open]="isOpen()"
+          [class.co-zone--dismissed]="clickedOutside()"
+        >
+          {{
+            clickedOutside() ? 'Dismissed' : isOpen() ? 'Click outside to close' : 'Open the panel'
+          }}
         </div>
 
-        <demo-card>
-          <div class="status-row">
-            <span class="status-label">Click outside</span>
-            <demo-badge [type]="clickedOutside() ? 'warning' : 'neutral'">
-              {{ clickedOutside() ? 'Detected!' : 'Not detected' }}
-            </demo-badge>
-          </div>
-        </demo-card>
+        <!-- Divider -->
+        <div class="co-divider"></div>
 
-        <demo-button #trigger variant="secondary" (click)="toggle()">
-          {{ isOpen() ? 'Close' : 'Open' }} Dropdown
-        </demo-button>
-      </div>
+        <!-- Footer -->
+        <div class="co-footer">
+          <span
+            class="co-status"
+            [class.co-status--open]="isOpen()"
+            [class.co-status--dismissed]="clickedOutside()"
+          >
+            <span
+              class="co-dot"
+              [class.co-dot--open]="isOpen() && !clickedOutside()"
+              [class.co-dot--dismissed]="clickedOutside()"
+            ></span>
+            {{ clickedOutside() ? 'Click outside detected' : isOpen() ? 'Open' : 'Closed' }}
+          </span>
+          <button #trigger class="co-btn" (click)="toggle()">
+            {{ isOpen() ? 'Close' : 'Open' }}
+          </button>
+        </div>
+      </demo-card>
     </ng-demo-wrapper>
   `,
   styles: `
-    .click-demo {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .dropdown {
+    /* ── Dropdown zone ── */
+    .co-zone {
+      height: 80px;
+      border: 1px dashed #27272a;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 80px;
-      padding: 1rem;
-      background: #161618;
-      border: 1px dashed #3f3f46;
-      border-radius: 8px;
-      text-align: center;
-      transition: all 0.2s ease;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+      user-select: none;
     }
 
-    .dropdown.open {
-      border-color: #DEB3EB;
-      background: rgba(222, 179, 235, 0.1);
-    }
-
-    .dropdown-text {
-      font-size: 0.875rem;
-      color: #a1a1aa;
-    }
-
-    .dropdown.open .dropdown-text {
+    .co-zone--open {
+      border-color: rgba(222, 179, 235, 0.35);
+      background: rgba(222, 179, 235, 0.04);
       color: #DEB3EB;
     }
 
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .co-zone--dismissed {
+      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.04);
+      color: #f59e0b;
     }
 
-    .status-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #a1a1aa;
+    /* ── Divider ── */
+    .co-divider {
+      height: 1px;
+      background: #1f1f22;
+      margin: 0.875rem 0 0;
     }
+
+    /* ── Footer ── */
+    .co-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+    }
+
+    .co-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: #52525b;
+      transition: color 0.2s ease;
+    }
+
+    .co-status--open      { color: #a1a1aa; }
+    .co-status--dismissed { color: #a1a1aa; }
+
+    /* ── Status dot ── */
+    .co-dot {
+      position: relative;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .co-dot::before,
+    .co-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #3f3f46;
+      transition: background 0.2s ease;
+    }
+
+    .co-dot--open::before,
+    .co-dot--open::after { background: #DEB3EB; }
+
+    .co-dot--open::after {
+      animation: coPulse 2s ease-out infinite;
+    }
+
+    .co-dot--dismissed::before,
+    .co-dot--dismissed::after { background: #f59e0b; }
+
+    .co-dot--dismissed::after {
+      animation: coPulse 1.2s ease-out infinite;
+    }
+
+    @keyframes coPulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* ── Button ── */
+    .co-btn {
+      font-size: 0.8125rem;
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      color: #DEB3EB;
+      transition: color 0.15s ease;
+    }
+
+    .co-btn:hover { color: #e8c8f5; }
   `,
 })
 export class OnClickOutsideDemo {
@@ -90,7 +166,7 @@ export class OnClickOutsideDemo {
         if (this.isOpen()) {
           this.clickedOutside.set(true);
           this.isOpen.set(false);
-          setTimeout(() => this.clickedOutside.set(false), 2000);
+          setTimeout(() => this.clickedOutside.set(false), 1500);
         }
       },
       { ignore: [this.btn] }
