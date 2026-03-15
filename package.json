@@ -32,10 +32,10 @@
     "demos:build": "nx run demos:buildElements --configuration=production",
     "demos:watch": "nx watch --projects=demos -- nx run demos:buildElements --configuration=development",
     "docs:dev": "pnpm demos:build && vitepress dev projects/docs",
-    "docs:dev:host": "pnpm demos:build && VITEPRESS_HOST=0.0.0.0 vitepress dev projects/docs",
     "docs:dev:watch": "pnpm demos:build && node scripts/watch-docs.js",
     "docs:build": "pnpm demos:build && vitepress build projects/docs",
-    "docs:preview": "vitepress preview projects/docs"
+    "docs:preview": "vitepress preview projects/docs",
+    "ci:publish": "nx release publish --access public"
   },
   "packageManager": "pnpm@9.12.0",
   "engines": {
