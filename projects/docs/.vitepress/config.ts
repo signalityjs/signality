@@ -120,14 +120,14 @@ export default defineConfig({
     ['link', { rel: 'canonical', href: 'https://signality.dev/' }],
 
     // Cloudflare Web Analytics
-    // [
-    //   'script',
-    //   {
-    //     defer: '',
-    //     src: 'https://static.cloudflareinsights.com/beacon.min.js',
-    //     'data-cf-beacon': `{"token": "${cloudflareToken}"}`,
-    //   },
-    // ],
+    [
+      'script',
+      {
+        defer: '',
+        src: 'https://static.cloudflareinsights.com/beacon.min.js',
+        'data-cf-beacon': `{"token": "${cloudflareToken}"}`,
+      },
+    ],
   ],
 
   themeConfig: {
@@ -230,6 +230,7 @@ export default defineConfig({
         items: [
           { text: 'IntersectionObserver', link: '/observers/intersection-observer' },
           { text: 'MutationObserver', link: '/observers/mutation-observer' },
+          { text: 'PerformanceObserver', link: '/observers/performance-observer' },
           { text: 'ResizeObserver', link: '/observers/resize-observer' },
         ],
       },

@@ -21,10 +21,10 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@signality/core": ["projects/core"],
-      "@signality/core/*": ["projects/core/*"],
       "@signality/cdk-interop": ["projects/cdk-interop"],
-      "@signality/cdk-interop/*": ["projects/cdk-interop/*"]
+      "@signality/cdk-interop/*": ["projects/cdk-interop/*"],
+      "@signality/core": ["projects/core"],
+      "@signality/core/*": ["projects/core/*"]
     }
   },
   "angularCompilerOptions": {

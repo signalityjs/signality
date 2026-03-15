@@ -71,11 +71,11 @@ import { DemoCard, DemoNotSupported, Wrapper } from '../../common';
           <div class="geo-rows">
             <div class="geo-row">
               <span class="geo-label">Latitude</span>
-              <span class="geo-value geo-value--mono">{{ coords()?.latitude?.toFixed(6) }}</span>
+              <span class="geo-value">{{ coords()?.latitude?.toFixed(6) }}</span>
             </div>
             <div class="geo-row">
               <span class="geo-label">Longitude</span>
-              <span class="geo-value geo-value--mono">{{ coords()?.longitude?.toFixed(6) }}</span>
+              <span class="geo-value">{{ coords()?.longitude?.toFixed(6) }}</span>
             </div>
             <div class="geo-row geo-row--last">
               <span class="geo-label">Accuracy</span>
@@ -209,12 +209,6 @@ import { DemoCard, DemoNotSupported, Wrapper } from '../../common';
       text-align: right;
     }
 
-    .geo-value--mono {
-      font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 400;
-    }
-
     /* ── Error area (max-height reveal) ── */
     .geo-error-area {
       max-height: 0;
@@ -325,7 +319,7 @@ import { DemoCard, DemoNotSupported, Wrapper } from '../../common';
 export class GeolocationDemo {
   private readonly sanitizer = inject(DomSanitizer);
 
-  readonly geo = geolocation({ immediate: false });
+  readonly geo = geolocation({ immediate: true });
 
   readonly coords = computed(() => this.geo.position()?.coords ?? null);
 

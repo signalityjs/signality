@@ -82,7 +82,12 @@ function scrollToHeader(id: string) {
   if (!inBrowser) return;
   const el = document.getElementById(id);
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const y = el.getBoundingClientRect().top + window.scrollY - 80;
+
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    });
   }
 }
 
@@ -132,7 +137,7 @@ onUnmounted(() => {
             { 'on-this-page-link--active': activeId === header.id },
             { 'on-this-page-link--nested': header.level === 3 },
           ]"
-          @click.prevent="scrollToHeader(header.id)"
+          @click.prevent.stop="scrollToHeader(header.id)"
         >
           {{ header.title }}
         </a>
