@@ -10,8 +10,8 @@ export interface SignalProxyHandler<T> {
 }
 
 /**
- * @internal
  * Creates a proxy wrapper around a {@link Signal}
+ * @internal
  */
 export function proxySignal<T>(
   source: Signal<T>,
@@ -19,8 +19,8 @@ export function proxySignal<T>(
 ): Signal<T>;
 
 /**
- * @internal
  * Creates a proxy wrapper around a {@link WritableSignal}
+ * @internal
  */
 export function proxySignal<T>(
   source: WritableSignal<T>,

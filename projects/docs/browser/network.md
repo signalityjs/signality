@@ -44,7 +44,7 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `options` | `WithInjector` | Optional configuration |
+| `options` | `NetworkOptions` | Optional configuration |
 
 ## Options
 
@@ -147,6 +147,8 @@ On the server, signals initialize with safe defaults:
 type EffectiveConnectionType = 'slow-2g' | '2g' | '3g' | '4g';
 type ConnectionType = 'bluetooth' | 'cellular' | 'ethernet' | 'wifi' | 'wimax' | 'none' | 'other' | 'unknown';
 
+type NetworkOptions = WithInjector;
+
 interface NetworkRef {
   readonly isOnline: Signal<boolean>;
   readonly isSupported: Signal<boolean>;
@@ -157,6 +159,6 @@ interface NetworkRef {
   readonly type: Signal<ConnectionType | undefined>;
 }
 
-function network(options?: WithInjector): NetworkRef;
+function network(options?: NetworkOptions): NetworkRef;
 ```
 

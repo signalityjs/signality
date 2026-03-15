@@ -1,5 +1,11 @@
 import { isSignal, type Signal, signal, type WritableSignal } from '@angular/core';
-import { constSignal, setupContext, toElement, toValue } from '@signality/core/internal';
+import {
+  constSignal,
+  isNodeWithin,
+  setupContext,
+  toElement,
+  toValue,
+} from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 import { onDisconnect } from '@signality/core/elements/on-disconnect';
@@ -150,11 +156,9 @@ export function dropzone(
       isOver.set(false);
       isDragging.set(false);
 
-      if (e.dataTransfer) {
-        if (e.dataTransfer.files.length > 0) {
-          const filtered = filterFiles(Array.from(e.dataTransfer.files));
-          files.set(filtered);
-        }
+      if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+        const filtered = filterFiles(Array.from(e.dataTransfer.files));
+        files.set(filtered);
       }
     });
 
@@ -175,36 +179,18 @@ export function dropzone(
     if (preventDocumentDrop) {
       listener.capture(document, 'dragover', (e: DragEvent) => {
         const el = toElement(target);
-        if (el) {
-          const targetNode = e.target as Node;
-
-          const isWithinDropzone =
-            el === targetNode ||
-            el.contains(targetNode) ||
-            (el.shadowRoot && el.shadowRoot.contains(targetNode));
-
-          if (!isWithinDropzone) {
-            e.preventDefault();
-            if (e.dataTransfer) {
-              e.dataTransfer.dropEffect = 'none';
-            }
+        if (el && !isNodeWithin(e.target as Node, el)) {
+          e.preventDefault();
+          if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = 'none';
           }
         }
       });
 
       listener.capture(document, 'drop', (e: DragEvent) => {
         const el = toElement(target);
-        if (el) {
-          const targetNode = e.target as Node;
-
-          const isWithinDropzone =
-            el === targetNode ||
-            el.contains(targetNode) ||
-            (el.shadowRoot && el.shadowRoot.contains(targetNode));
-
-          if (!isWithinDropzone) {
-            e.preventDefault();
-          }
+        if (el && !isNodeWithin(e.target as Node, el)) {
+          e.preventDefault();
         }
       });
     }

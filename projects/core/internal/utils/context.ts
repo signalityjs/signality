@@ -38,11 +38,11 @@ export function setupContext(
     assertInInjectionContext(debugFn || setupContext);
   }
 
-  const contextInjector = injector || inject(INJECTOR);
+  const ctxInjector = injector || inject(INJECTOR);
 
   return {
     runInContext<T>(fn: (context: ContextRef) => T): T {
-      return runInContextImpl(fn, contextInjector, debugFn || setupContext);
+      return runInContextImpl(fn, ctxInjector, debugFn || setupContext);
     },
   };
 }
@@ -77,7 +77,9 @@ function setupDebugInfo<T>(value: T, debugFn: (...args: any[]) => any): T {
     setDebugName(value, debugFn);
   } else if (value && typeof value === 'object') {
     for (const [postfix, maybeSignal] of Object.entries(value)) {
-      if (isSignal(maybeSignal)) setDebugName(maybeSignal, debugFn, postfix);
+      if (isSignal(maybeSignal)) {
+        setDebugName(maybeSignal, debugFn, postfix);
+      }
     }
   }
 
