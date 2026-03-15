@@ -19,6 +19,10 @@ describe(geolocation.name, () => {
       }),
       clearWatch: jest.fn(),
     };
+
+    (navigator as any).permissions = {
+      query: jest.fn().mockResolvedValue({ state: 'granted', addEventListener: jest.fn() }),
+    };
   });
 
   const mockPosition = (lat: number, lng: number): GeolocationPosition =>
