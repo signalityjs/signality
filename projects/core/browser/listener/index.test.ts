@@ -1,4 +1,4 @@
-import { Component, ElementRef, signal, viewChild, inject } from '@angular/core';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { listener, setupSync } from './index';
 
@@ -24,27 +24,27 @@ describe(listener.name, () => {
       fixture.detectChanges();
 
       return {
-        component: fixture.componentInstance,
+        cmp: fixture.componentInstance,
         target: fixture.nativeElement.querySelector('button'),
       };
     }
 
     it('should attach event listener', () => {
-      const { component, target } = createComponent();
+      const { cmp, target } = createComponent();
 
       target.click();
 
-      expect(component.clickCount).toBe(1);
+      expect(cmp.clickCount).toBe(1);
     });
 
     it('should handle multiple events', () => {
-      const { component, target } = createComponent();
+      const { cmp, target } = createComponent();
 
       target.click();
       target.click();
       target.click();
 
-      expect(component.clickCount).toBe(3);
+      expect(cmp.clickCount).toBe(3);
     });
   });
 
@@ -63,16 +63,16 @@ describe(listener.name, () => {
       }
     }
 
-    function setup() {
+    function createComponent() {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
-      return { cmp: fixture.componentInstance, element: fixture.nativeElement };
+      return { cmp: fixture.componentInstance, hostEl: fixture.nativeElement };
     }
 
     it('should attach event listener to host element', () => {
-      const { cmp, element } = setup();
+      const { cmp, hostEl } = createComponent();
 
-      element.click();
+      hostEl.click();
 
       expect(cmp.clickCount).toBe(1);
     });
@@ -92,14 +92,14 @@ describe(listener.name, () => {
       }
     }
 
-    function setup() {
+    function createComponent() {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       return { cmp: fixture.componentInstance };
     }
 
     it('should attach event listener to window', () => {
-      const { cmp } = setup();
+      const { cmp } = createComponent();
 
       window.dispatchEvent(new Event('resize'));
 
@@ -123,14 +123,14 @@ describe(listener.name, () => {
       }
     }
 
-    function setup() {
+    function createComponent() {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       return { cmp: fixture.componentInstance };
     }
 
     it('should attach event listener to document', () => {
-      const { cmp } = setup();
+      const { cmp } = createComponent();
 
       document.dispatchEvent(new MouseEvent('click'));
 
@@ -158,19 +158,19 @@ describe(listener.name, () => {
         }
       }
 
-      function setup() {
+      function createComponent() {
         const fixture = TestBed.createComponent(TestComponent);
         fixture.detectChanges();
         return {
           cmp: fixture.componentInstance,
-          child: fixture.nativeElement.querySelector('button'),
+          childEl: fixture.nativeElement.querySelector('button'),
         };
       }
 
       it('should execute capture listener first', () => {
-        const { cmp, child } = setup();
+        const { cmp, childEl } = createComponent();
 
-        child.click();
+        childEl.click();
 
         expect(cmp.events).toEqual(['parent-capture', 'child']);
       });
@@ -191,16 +191,16 @@ describe(listener.name, () => {
         }
       }
 
-      function setup() {
+      function createComponent() {
         const fixture = TestBed.createComponent(TestComponent);
         fixture.detectChanges();
-        return { cmp: fixture.componentInstance, link: fixture.nativeElement.querySelector('a') };
+        return { cmp: fixture.componentInstance, linkEl: fixture.nativeElement.querySelector('a') };
       }
 
       it('should prevent default action', () => {
-        const { cmp, link } = setup();
+        const { cmp, linkEl } = createComponent();
 
-        link.click();
+        linkEl.click();
 
         expect(cmp.defaultPrevented).toBe(true);
       });
@@ -226,19 +226,19 @@ describe(listener.name, () => {
         }
       }
 
-      function setup() {
+      function createComponent() {
         const fixture = TestBed.createComponent(TestComponent);
         fixture.detectChanges();
         return {
           cmp: fixture.componentInstance,
-          child: fixture.nativeElement.querySelector('button'),
+          childEl: fixture.nativeElement.querySelector('button'),
         };
       }
 
       it('should stop event propagation', () => {
-        const { cmp, child } = setup();
+        const { cmp, childEl } = createComponent();
 
-        child.click();
+        childEl.click();
 
         expect(cmp.parentClicked).toBe(false);
       });
@@ -259,23 +259,23 @@ describe(listener.name, () => {
         }
       }
 
-      function setup() {
+      function createComponent() {
         const fixture = TestBed.createComponent(TestComponent);
         fixture.detectChanges();
         return {
           cmp: fixture.componentInstance,
-          parent: fixture.nativeElement.querySelector('div'),
-          child: fixture.nativeElement.querySelector('button'),
+          parentEl: fixture.nativeElement.querySelector('div'),
+          childEl: fixture.nativeElement.querySelector('button'),
         };
       }
 
       it('should only trigger when event.target is element itself', () => {
-        const { cmp, parent, child } = setup();
+        const { cmp, parentEl, childEl } = createComponent();
 
-        child.click();
+        childEl.click();
         expect(cmp.parentClickCount).toBe(0);
 
-        parent.click();
+        parentEl.click();
         expect(cmp.parentClickCount).toBe(1);
       });
     });
@@ -300,17 +300,17 @@ describe(listener.name, () => {
         }
       }
 
-      function setup() {
+      function createComponent() {
         const fixture = TestBed.createComponent(TestComponent);
         fixture.detectChanges();
-        return { cmp: fixture.componentInstance, link: fixture.nativeElement.querySelector('a') };
+        return { cmp: fixture.componentInstance, linkEl: fixture.nativeElement.querySelector('a') };
       }
 
       it('should apply multiple modifiers', () => {
-        const { cmp, link } = setup();
+        const { cmp, linkEl } = createComponent();
 
         const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
-        link.dispatchEvent(clickEvent);
+        linkEl.dispatchEvent(clickEvent);
 
         expect(cmp.linkClicked).toBe(true);
         expect(cmp.parentClicked).toBe(false);
@@ -335,28 +335,28 @@ describe(listener.name, () => {
       }
     }
 
-    function setup() {
+    function createComponent() {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       return {
         cmp: fixture.componentInstance,
-        element: fixture.nativeElement.querySelector('button'),
+        childEl: fixture.nativeElement.querySelector('button'),
       };
     }
 
     it('should update listener when event name changes', () => {
-      const { cmp, element } = setup();
+      const { cmp, childEl } = createComponent();
 
-      element.click();
+      childEl.click();
       expect(cmp.eventCount).toBe(1);
 
       cmp.eventName.set('dblclick');
       TestBed.tick();
-      element.click();
+      childEl.click();
 
       expect(cmp.eventCount).toBe(1);
 
-      element.dispatchEvent(new MouseEvent('dblclick'));
+      childEl.dispatchEvent(new MouseEvent('dblclick'));
 
       expect(cmp.eventCount).toBe(2);
     });
@@ -374,23 +374,23 @@ describe(listener.name, () => {
       });
     }
 
-    function setup() {
+    function createComponent() {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       return {
         cmp: fixture.componentInstance,
-        element: fixture.nativeElement.querySelector('button'),
+        childEl: fixture.nativeElement.querySelector('button'),
       };
     }
 
     it('should remove listener when destroyed', () => {
-      const { cmp, element } = setup();
+      const { cmp, childEl } = createComponent();
 
-      element.click();
+      childEl.click();
       expect(cmp.clickCount).toBe(1);
 
       cmp.ref.destroy();
-      element.click();
+      childEl.click();
       expect(cmp.clickCount).toBe(1);
     });
   });

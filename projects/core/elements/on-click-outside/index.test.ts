@@ -42,9 +42,9 @@ describe(onClickOutside.name, () => {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
 
-      // Simulate pointerdown + click outside
+      // Simulate pointerdown + pointerup outside
       outsideElement.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      outsideElement.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      outsideElement.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       expect(handler).toHaveBeenCalledTimes(1);
     });
@@ -64,7 +64,7 @@ describe(onClickOutside.name, () => {
       const target = fixture.nativeElement.querySelector('div') as HTMLElement;
 
       target.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      target.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      target.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       expect(handler).not.toHaveBeenCalled();
     });
@@ -82,10 +82,10 @@ describe(onClickOutside.name, () => {
       fixture.detectChanges();
 
       outsideElement.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      outsideElement.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      outsideElement.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       outsideElement.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      outsideElement.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      outsideElement.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       expect(handler).toHaveBeenCalledTimes(2);
     });
@@ -105,7 +105,7 @@ describe(onClickOutside.name, () => {
       fixture.detectChanges();
 
       outsideElement.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      outsideElement.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      outsideElement.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       expect(handler).toHaveBeenCalledTimes(1);
     });
@@ -130,7 +130,7 @@ describe(onClickOutside.name, () => {
       fixture.detectChanges();
 
       ignoredElement.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      ignoredElement.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      ignoredElement.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       expect(handler).not.toHaveBeenCalled();
 
@@ -154,7 +154,7 @@ describe(onClickOutside.name, () => {
       fixture.componentInstance.ref.destroy();
 
       outsideElement.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-      outsideElement.dispatchEvent(new PointerEvent('click', { bubbles: true }));
+      outsideElement.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
 
       expect(handler).not.toHaveBeenCalled();
     });
