@@ -46,13 +46,13 @@ import { DemoCard, DemoNotSupported, Wrapper } from '../../common';
           <div class="nw-row">
             <span class="nw-label">Downlink</span>
             <span class="nw-value">{{
-              net.downlink() != null ? net.downlink() + ' Mbps' : '—'
+              net.downlink() !== null ? net.downlink() + ' Mbps' : '—'
             }}</span>
           </div>
 
           <div class="nw-row">
             <span class="nw-label">RTT</span>
-            <span class="nw-value">{{ net.rtt() != null ? net.rtt() + ' ms' : '—' }}</span>
+            <span class="nw-value">{{ net.rtt() !== null ? net.rtt() + ' ms' : '—' }}</span>
           </div>
 
           <div class="nw-row nw-row--last">
