@@ -223,52 +223,6 @@ describe(onLongPress.name, () => {
     });
   });
 
-  describe('modifiers', () => {
-    it('should NOT fire callback when required modifier is not held', () => {
-      const handler = jest.fn();
-
-      @Component({ template: '<button #btn>Hold</button>' })
-      class TestComponent {
-        readonly btn = viewChild<ElementRef>('btn');
-        readonly ref = onLongPress(this.btn, handler, { modifiers: { ctrl: true } });
-      }
-
-      const fixture = TestBed.createComponent(TestComponent);
-      fixture.detectChanges();
-
-      const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
-
-      button.dispatchEvent(
-        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0, ctrlKey: false })
-      );
-      jest.advanceTimersByTime(500);
-
-      expect(handler).not.toHaveBeenCalled();
-    });
-
-    it('should fire callback when required modifier is held', () => {
-      const handler = jest.fn();
-
-      @Component({ template: '<button #btn>Hold</button>' })
-      class TestComponent {
-        readonly btn = viewChild<ElementRef>('btn');
-        readonly ref = onLongPress(this.btn, handler, { modifiers: { ctrl: true } });
-      }
-
-      const fixture = TestBed.createComponent(TestComponent);
-      fixture.detectChanges();
-
-      const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
-
-      button.dispatchEvent(
-        new PointerEvent('pointerdown', { bubbles: true, clientX: 0, clientY: 0, ctrlKey: true })
-      );
-      jest.advanceTimersByTime(500);
-
-      expect(handler).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('with non-reactive target', () => {
     it('should fire callback after delay on host element', () => {
       const handler = jest.fn();

@@ -47,10 +47,9 @@ export interface TextDirectionOptions extends CreateSignalOptions<TextDirection>
  */
 export function textDirection(options?: TextDirectionOptions): WritableSignal<TextDirection> {
   const { runInContext } = setupContext(options?.injector, textDirection);
+  const initialValue = options?.initialValue ?? 'ltr';
 
   return runInContext(({ isServer }) => {
-    const initialValue = options?.initialValue ?? 'ltr';
-
     if (isServer) {
       return signal(initialValue, options);
     }

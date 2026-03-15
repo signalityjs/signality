@@ -15,22 +15,10 @@ export interface OnLongPressOptions extends WithInjector {
    * @default 10
    */
   readonly distanceThreshold?: number | false;
-
-  /**
-   * Keyboard modifiers required during the press.
-   */
-  readonly modifiers?: OnLongPressModifiers;
 }
 
 export interface OnLongPressRef {
   readonly destroy: () => void;
-}
-
-export interface OnLongPressModifiers {
-  readonly ctrl?: boolean;
-  readonly shift?: boolean;
-  readonly alt?: boolean;
-  readonly meta?: boolean;
 }
 
 /**
@@ -40,7 +28,7 @@ export interface OnLongPressModifiers {
  *
  * @param target - The element to detect long presses on
  * @param handler - Callback invoked when a long press is detected
- * @param options - Optional configuration including delay, distance threshold, modifiers, and injector
+ * @param options - Optional configuration including delay, distance threshold, and injector
  * @returns A OnLongPressRef with a destroy method to stop detection
  *
  * @example
@@ -71,25 +59,11 @@ export function onLongPress(
       return NOOP_EFFECT_REF;
     }
 
-    const modifiers = options?.modifiers;
     const distanceThreshold = options?.distanceThreshold;
 
     let startX = 0;
     let startY = 0;
     let longPressTimeout: Timer;
-
-    function checkModifiers(e: PointerEvent): boolean {
-      if (!modifiers) {
-        return true;
-      }
-
-      if (modifiers.ctrl && !e.ctrlKey) return false;
-      if (modifiers.shift && !e.shiftKey) return false;
-      if (modifiers.alt && !e.altKey) return false;
-      if (modifiers.meta && !e.metaKey) return false;
-
-      return true;
-    }
 
     function abortPendingPress(): void {
       clearTimeout(longPressTimeout);
@@ -97,10 +71,6 @@ export function onLongPress(
     }
 
     const downListener = listener(target, 'pointerdown', (e: PointerEvent) => {
-      if (!checkModifiers(e)) {
-        return;
-      }
-
       startX = e.clientX;
       startY = e.clientY;
 

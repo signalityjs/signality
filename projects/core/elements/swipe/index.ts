@@ -33,6 +33,7 @@ export interface SwipeRef {
 
 /**
  * Reactive touch-swipe detection on an element.
+ * Uses Touch Events API — for mouse/pen input use PointerSwipe instead.
  * Tracks single-finger swipe gestures and provides direction and distance signals.
  *
  * @param target - Element to detect swipe gestures on

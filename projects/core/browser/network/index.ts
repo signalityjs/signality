@@ -16,6 +16,8 @@ export type ConnectionType =
   | 'other'
   | 'unknown';
 
+export type NetworkOptions = WithInjector;
+
 export interface NetworkRef {
   /** Whether Network Information API is supported */
   readonly isSupported: Signal<boolean>;
@@ -60,7 +62,7 @@ export interface NetworkRef {
  * }
  * ```
  */
-export function network(options?: WithInjector): NetworkRef {
+export function network(options?: NetworkOptions): NetworkRef {
   const { runInContext } = setupContext(options?.injector, network);
 
   return runInContext(({ isBrowser }) => {

@@ -1,6 +1,7 @@
 import { InjectionToken, type ProviderToken } from '@angular/core';
 
 /**
+ * Creates an Angular InjectionToken with a factory function.
  * @internal
  */
 export function createToken<T>(
