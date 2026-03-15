@@ -1,0 +1,34 @@
+name: 📦 Publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  version:
+    name: Publish new version
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install
+        uses: ./.github/workflows/composite
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Set up npm auth for npmjs.org
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+
+      - name: Publish packages
+        run: pnpm ci:publish
+        shell: bash
