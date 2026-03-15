@@ -67,7 +67,9 @@ export class DemoInput implements ControlValueAccessor {
 
   private readonly el = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onChange: (value: string) => void = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   _onTouched: () => void = () => {};
 
   writeValue(value: unknown): void {
