@@ -14,7 +14,7 @@
     "sharedGlobals": []
   },
   "release": {
-    "projects": ["projects/*", "!web", "!demos"],
+    "projects": ["projects/*", "!docs", "!demos"],
     "version": {
       "preVersionCommand": "pnpm build"
     },
