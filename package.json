@@ -19,7 +19,7 @@
   ],
   "bugs": "https://github.com/signalityjs/signality/issues",
   "maintainers": [
-    "Vyacheslav Borodin <vyacheslav.borodin@coreteq.eu>"
+    "Vyacheslav Borodin <vs-borodin@proton.me>"
   ],
   "scripts": {
     "prepare": "husky",

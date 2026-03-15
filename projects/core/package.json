@@ -2,6 +2,7 @@
   "name": "@signality/core",
   "version": "0.0.1-alpha.1",
   "license": "MIT",
+  "author": "Vyacheslav Borodin <https://github.com/vs-borodin>",
   "description": "A foundational toolkit for Angular Signals",
   "keywords": [
     "signality",
@@ -18,7 +19,9 @@
     "type": "git",
     "url": "https://github.com/signalityjs/signality"
   },
+  "bugs": "https://github.com/signalityjs/signality/issues",
   "homepage": "https://signality.dev",
+  "sideEffects": false,
   "peerDependencies": {
     "@angular/common": ">=19.2.0",
     "@angular/core": ">=19.2.0",
