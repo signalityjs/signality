@@ -2,20 +2,6 @@ import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { onClickOutside } from './index';
 
-// PointerEvent is not available in jsdom, polyfill it
-if (typeof PointerEvent === 'undefined') {
-  (globalThis as any).PointerEvent = class PointerEvent extends MouseEvent {
-    readonly pointerId: number;
-    readonly pointerType: string;
-
-    constructor(type: string, params: PointerEventInit = {}) {
-      super(type, params);
-      this.pointerId = params.pointerId ?? 0;
-      this.pointerType = params.pointerType ?? '';
-    }
-  };
-}
-
 describe(onClickOutside.name, () => {
   let outsideElement: HTMLElement;
 

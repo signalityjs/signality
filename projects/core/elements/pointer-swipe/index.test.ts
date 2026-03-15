@@ -2,31 +2,6 @@ import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { pointerSwipe } from './index';
 
-// setPointerCapture is not available in jsdom
-if (!Element.prototype.setPointerCapture) {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  Element.prototype.setPointerCapture = function () {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  Element.prototype.releasePointerCapture = function () {};
-}
-
-// PointerEvent is not available in jsdom
-if (typeof PointerEvent === 'undefined') {
-  (globalThis as any).PointerEvent = class PointerEvent extends MouseEvent {
-    readonly pointerId: number;
-    readonly pointerType: string;
-
-    constructor(
-      type: string,
-      params: PointerEventInit & { pointerId?: number; pointerType?: string } = {}
-    ) {
-      super(type, { bubbles: true, ...params });
-      this.pointerId = params.pointerId ?? 1;
-      this.pointerType = params.pointerType ?? 'mouse';
-    }
-  };
-}
-
 function createPointerEvent(type: string, options: Partial<PointerEvent> = {}): PointerEvent {
   return new PointerEvent(type, {
     bubbles: true,
