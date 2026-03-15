@@ -2,6 +2,7 @@
   "name": "@signality/cdk-interop",
   "version": "0.0.1-alpha.1",
   "license": "MIT",
+  "author": "Vyacheslav Borodin <https://github.com/vs-borodin>",
   "description": "Signal-based utilities for Angular CDK",
   "keywords": [
     "signality",
@@ -16,7 +17,9 @@
     "type": "git",
     "url": "https://github.com/signalityjs/signality"
   },
+  "bugs": "https://github.com/signalityjs/signality/issues",
   "homepage": "https://signality.dev",
+  "sideEffects": false,
   "peerDependencies": {
     "@angular/core": ">=19.2.0",
     "@angular/cdk": ">=19.2.0",
