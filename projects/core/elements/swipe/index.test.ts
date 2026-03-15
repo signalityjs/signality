@@ -2,22 +2,6 @@ import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { swipe } from './index';
 
-// TouchEvent is not available in jsdom
-if (typeof TouchEvent === 'undefined') {
-  (globalThis as any).TouchEvent = class TouchEvent extends UIEvent {
-    readonly touches: Touch[];
-    readonly changedTouches: Touch[];
-    readonly targetTouches: Touch[];
-
-    constructor(type: string, params: TouchEventInit & { touches?: Touch[] } = {}) {
-      super(type, { bubbles: true, ...params });
-      this.touches = params.touches ?? [];
-      this.changedTouches = params.changedTouches ?? [];
-      this.targetTouches = params.targetTouches ?? [];
-    }
-  };
-}
-
 function createTouch(x: number, y: number): Touch {
   return { clientX: x, clientY: y, identifier: 0 } as Touch;
 }

@@ -10,6 +10,7 @@
     "projects/**/*.spec.ts",
     "projects/**/*.test.ts",
     "projects/**/*.d.ts",
-    "setup-jest.ts"
+    "setup-jest.ts",
+    "testing/**/*.ts"
   ]
 }
