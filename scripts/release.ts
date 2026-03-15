@@ -1,11 +1,12 @@
 import { releaseChangelog, releaseVersion } from 'nx/release';
-import * as yargs from 'yargs';
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
 import path from 'path';
 import fs from 'fs';
 import { execSync } from 'child_process';
 
 (async () => {
-  const options = await yargs
+  const options = await yargs(hideBin(process.argv))
     .version(false)
     .option('version', {
       description: 'Explicit version specifier to use, if overriding conventional commits',
@@ -30,7 +31,7 @@ import { execSync } from 'child_process';
     verbose: options.verbose,
   });
 
-  const { newVersion } = projectsVersionData.kit;
+  const { newVersion } = projectsVersionData.core;
 
   if (!options.dryRun) {
     updateVersionFile(newVersion!);
