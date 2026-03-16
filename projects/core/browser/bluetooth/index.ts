@@ -1,48 +1,72 @@
 import { type Signal, signal, untracked } from '@angular/core';
 import { constSignal, NOOP_ASYNC_FN, NOOP_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
-import { listener, setupSync } from '@signality/core/browser/listener';
+import { listener, ListenerRef, setupSync } from '@signality/core/browser/listener';
 
 export interface BluetoothOptions extends WithInjector {
   /**
-   * Accept any Bluetooth device.
+   * Accept any Bluetooth device without filtering.
+   *
+   * @see [requestDevice: acceptAllDevices on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice#acceptalldevices)
    */
   readonly acceptAllDevices?: boolean;
 
   /**
-   * Filters for device selection.
+   * Filters for device selection. Mutually exclusive with `acceptAllDevices`.
+   *
+   * @see [requestDevice: filters on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice#filters)
    */
   readonly filters?: BluetoothLEScanFilter[];
 
   /**
-   * Optional services to access.
+   * Optional GATT services to access on the connected device.
+   *
+   * @see [requestDevice: optionalServices on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice#optionalservices)
    */
   readonly optionalServices?: BluetoothServiceUUID[];
 }
 
 export interface BluetoothRef {
-  /** Whether Web Bluetooth API is supported */
+  /**
+   * Whether Web Bluetooth API is supported in the current browser.
+   *
+   * @see [Web Bluetooth API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether a device is currently connected */
+  /**
+   * Whether a device is currently connected.
+   */
   readonly isConnected: Signal<boolean>;
 
-  /** Whether connection is in progress */
+  /**
+   * Whether a connection is in progress.
+   */
   readonly isConnecting: Signal<boolean>;
 
-  /** Connected Bluetooth device */
+  /**
+   * Connected Bluetooth device.
+   */
   readonly device: Signal<BluetoothDevice | null>;
 
-  /** GATT server of connected device */
+  /**
+   * GATT server of a connected device.
+   */
   readonly server: Signal<BluetoothRemoteGATTServer | null>;
 
-  /** Last error that occurred */
+  /**
+   * The last error that occurred.
+   */
   readonly error: Signal<Error | null>;
 
-  /** Request device connection */
-  readonly request: (options?: RequestDeviceOptions) => Promise<void>;
+  /**
+   * Request device connection.
+   */
+  readonly request: () => Promise<void>;
 
-  /** Disconnect from device */
+  /**
+   * Disconnect from a device.
+   */
   readonly disconnect: () => void;
 }
 
@@ -62,7 +86,7 @@ export interface BluetoothRef {
  *     }
  *   `
  * })
- * class BluetoothComponent {
+ * class BluetoothDemo {
  *   readonly bt = bluetooth();
  * }
  * ```
@@ -86,7 +110,12 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
       };
     }
 
-    const { bluetooth } = navigator;
+    const requestOptions = {
+      ...(options?.filters?.length
+        ? { filters: options.filters }
+        : { acceptAllDevices: options?.acceptAllDevices ?? true }),
+      optionalServices: options?.optionalServices ?? [],
+    };
 
     const isConnected = signal(false);
     const isConnecting = signal(false);
@@ -94,36 +123,45 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
     const server = signal<BluetoothRemoteGATTServer | null>(null);
     const error = signal<Error | null>(null);
 
-    const request = async (requestOptions?: RequestDeviceOptions): Promise<void> => {
+    let disconnectListener: ListenerRef | null = null;
+
+    const disconnect = () => {
+      if (disconnectListener) {
+        disconnectListener?.destroy();
+        disconnectListener = null;
+      }
+
+      const activeDevice = untracked(device);
+
+      if (activeDevice?.gatt?.connected) {
+        activeDevice.gatt.disconnect();
+      }
+
+      device.set(null);
+      server.set(null);
+      isConnected.set(false);
+    };
+
+    const request = async (): Promise<void> => {
       if (untracked(isConnecting)) {
         return;
+      }
+
+      if (untracked(isConnected)) {
+        disconnect();
       }
 
       isConnecting.set(true);
       error.set(null);
 
       try {
-        const requestOpts: RequestDeviceOptions = requestOptions ?? {
-          acceptAllDevices: options?.acceptAllDevices ?? true,
-          optionalServices: options?.optionalServices ?? [],
-          ...(options?.filters ? { filters: options.filters, acceptAllDevices: false } : {}),
-        };
-
-        const btDevice = await bluetooth.requestDevice(requestOpts);
+        const btDevice = await navigator.bluetooth.requestDevice(requestOptions);
 
         device.set(btDevice);
 
-        setupSync(() => {
-          listener(
-            btDevice,
-            'gattserverdisconnected',
-            () => {
-              isConnected.set(false);
-              server.set(null);
-            },
-            { injector }
-          );
-        });
+        disconnectListener = setupSync(() =>
+          listener(btDevice, 'gattserverdisconnected', disconnect, { injector })
+        );
 
         const gattServer = await btDevice.gatt?.connect();
 
@@ -133,24 +171,10 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
         }
       } catch (e) {
         error.set(e as Error);
-        device.set(null);
-        server.set(null);
-        isConnected.set(false);
+        disconnect();
       } finally {
         isConnecting.set(false);
       }
-    };
-
-    const disconnect = () => {
-      const currentDevice = untracked(device);
-
-      if (currentDevice?.gatt?.connected) {
-        currentDevice.gatt.disconnect();
-      }
-
-      device.set(null);
-      server.set(null);
-      isConnected.set(false);
     };
 
     onCleanup(disconnect);

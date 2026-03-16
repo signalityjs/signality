@@ -65,7 +65,7 @@ The `bluetooth()` function returns a `BluetoothRef` object:
 | `device`       | `Signal<BluetoothDevice \| null>`           | Connected Bluetooth device              |
 | `server`       | `Signal<BluetoothRemoteGATTServer \| null>` | GATT server of connected device         |
 | `error`        | `Signal<Error \| null>`                     | Last error that occurred                |
-| `request`      | `(options?) => Promise<void>`               | Request device connection               |
+| `request`      | `() => Promise<void>`                             | Request device connection               |
 | `disconnect`   | `() => void`                                | Disconnect from device                  |
 
 ## Examples
@@ -140,7 +140,7 @@ interface BluetoothRef {
   readonly device: Signal<BluetoothDevice | null>;
   readonly server: Signal<BluetoothRemoteGATTServer | null>;
   readonly error: Signal<Error | null>;
-  readonly request: (options?: RequestDeviceOptions) => Promise<void>;
+  readonly request: () => Promise<void>;
   readonly disconnect: () => void;
 }
 
