@@ -19,14 +19,6 @@ import { DemoCard, Wrapper } from '../../common';
             <span class="ws-label">Height</span>
             <span class="ws-value">{{ size().height }}px</span>
           </div>
-          <div class="ws-row">
-            <span class="ws-label">Inner</span>
-            <span class="ws-value">{{ size().innerWidth }} × {{ size().innerHeight }}</span>
-          </div>
-          <div class="ws-row">
-            <span class="ws-label">Outer</span>
-            <span class="ws-value">{{ size().outerWidth }} × {{ size().outerHeight }}</span>
-          </div>
         </div>
       </demo-card>
     </ng-demo-wrapper>
@@ -44,6 +36,9 @@ import { DemoCard, Wrapper } from '../../common';
       align-items: center;
       padding: 0.375rem 0;
     }
+
+    .ws-row:first-child { padding-top: 0; }
+    .ws-row:last-child  { padding-bottom: 0; }
 
     .ws-row + .ws-row {
       border-top: 1px solid #1f1f22;

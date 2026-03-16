@@ -8,23 +8,22 @@ import { mediaQuery } from '@signality/core/browser/media-query';
 export interface WindowSizeOptions extends CreateSignalOptions<WindowSizeValue>, WithInjector {
   /**
    * Include scrollbar in dimensions calculation.
+   *
    * @default false
    */
   readonly includeScrollbar?: boolean;
 
   /**
-   * Initial dimensions for SSR.
+   * Initial value for SSR and before the first measurement.
+   *
+   * @default { width: 0, height: 0 }
    */
-  readonly initialValue?: Pick<WindowSizeValue, 'width' | 'height'>;
+  readonly initialValue?: WindowSizeValue;
 }
 
 export interface WindowSizeValue {
   readonly width: number;
   readonly height: number;
-  readonly innerWidth: number;
-  readonly innerHeight: number;
-  readonly outerWidth: number;
-  readonly outerHeight: number;
 }
 
 /**
@@ -52,19 +51,9 @@ export interface WindowSizeValue {
  */
 export function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue> {
   const { runInContext } = setupContext(options?.injector, windowSize);
+  const initialValue = options?.initialValue ?? DEFAULT_VALUE;
 
   return runInContext(({ isServer }) => {
-    const initialValue: WindowSizeValue = options?.initialValue
-      ? {
-          width: options.initialValue.width,
-          height: options.initialValue.height,
-          innerWidth: options.initialValue.width,
-          innerHeight: options.initialValue.height,
-          outerWidth: options.initialValue.width,
-          outerHeight: options.initialValue.height,
-        }
-      : DEFAULT_VALUE;
-
     if (isServer) {
       return constSignal(initialValue);
     }
@@ -77,14 +66,7 @@ export function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue>
       const width = includeScrollbar ? window.innerWidth : document.documentElement.clientWidth;
       const height = includeScrollbar ? window.innerHeight : document.documentElement.clientHeight;
 
-      size.set({
-        width,
-        height,
-        innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight,
-        outerWidth: window.outerWidth,
-        outerHeight: window.outerHeight,
-      });
+      size.set({ width, height });
     };
 
     listener(window, 'resize', update);
@@ -102,8 +84,4 @@ export const WINDOW_SIZE = /* @__PURE__ */ createToken(windowSize);
 const DEFAULT_VALUE: WindowSizeValue = {
   width: 0,
   height: 0,
-  innerWidth: 0,
-  innerHeight: 0,
-  outerWidth: 0,
-  outerHeight: 0,
 };
