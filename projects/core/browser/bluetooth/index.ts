@@ -7,6 +7,7 @@ export interface BluetoothOptions extends WithInjector {
   /**
    * Accept any Bluetooth device without filtering.
    *
+   * @default true
    * @see [requestDevice: acceptAllDevices on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice#acceptalldevices)
    */
   readonly acceptAllDevices?: boolean;
@@ -14,6 +15,7 @@ export interface BluetoothOptions extends WithInjector {
   /**
    * Filters for device selection. Mutually exclusive with `acceptAllDevices`.
    *
+   * @default undefined
    * @see [requestDevice: filters on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice#filters)
    */
   readonly filters?: BluetoothLEScanFilter[];
@@ -21,6 +23,7 @@ export interface BluetoothOptions extends WithInjector {
   /**
    * Optional GATT services to access on the connected device.
    *
+   * @default []
    * @see [requestDevice: optionalServices on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Bluetooth/requestDevice#optionalservices)
    */
   readonly optionalServices?: BluetoothServiceUUID[];

@@ -119,12 +119,12 @@ import { inject } from '@angular/core';
 import { ACTIVE_ELEMENT } from '@signality/core'; // [!code ++]
 
 @Component({ /* ... */ })
-export class HeaderComponent {
+export class Header {
   readonly activeEl = inject(ACTIVE_ELEMENT);
 }
 
 @Component({ /* ... */ })
-export class SidebarComponent {
+export class Sidebar {
   // Same signal - shared across all components
   readonly activeEl = inject(ACTIVE_ELEMENT);
 }

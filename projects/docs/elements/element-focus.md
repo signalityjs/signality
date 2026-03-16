@@ -84,7 +84,7 @@ import { elementFocus } from '@signality/core';
   `,
 })
 export class FloatingLabel {
-  readonly input = viewChild<ElementRef>('input');
+  readonly input = viewChild('input', { read: ElementRef });
   readonly isFocused = elementFocus(this.input);
   readonly value = signal('');
   
