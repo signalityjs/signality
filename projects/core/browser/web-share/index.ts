@@ -3,16 +3,30 @@ import { constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/intern
 import type { WithInjector } from '@signality/core/types';
 
 export interface WebShareRef {
-  /** Whether Web Share API is supported */
+  /**
+   * Whether the Web Share API is supported in the current browser.
+   *
+   * @see [Web Share API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether the share dialog is currently open */
+  /**
+   * Whether the native share dialog is currently open.
+   */
   readonly isSharing: Signal<boolean>;
 
-  /** Open the native share dialog */
+  /**
+   * Open the native share dialog with the provided data.
+   *
+   * @see [Navigator: share() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)
+   */
   readonly share: (data: ShareData) => Promise<void>;
 
-  /** Check if data can be shared */
+  /**
+   * Check whether the given data can be shared via the Web Share API.
+   *
+   * @see [Navigator: canShare() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare)
+   */
   readonly canShare: (data?: ShareData) => boolean;
 }
 
@@ -33,7 +47,7 @@ export interface WebShareRef {
  *     }
  *   `
  * })
- * class WebShareComponent {
+ * class WebShareDemo {
  *   readonly webShare = webShare();
  *
  *   async shareContent() {

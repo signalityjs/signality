@@ -25,7 +25,7 @@ const MODIFIER_KEYS = ['Shift', 'Control', 'Alt', 'Meta', 'ContextMenu'];
  *     </div>
  *   `
  * })
- * export class ModalityComponent {
+ * export class ModalityDemo {
  *   readonly modality = inputModality();
  * }
  * ```

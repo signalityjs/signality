@@ -28,7 +28,7 @@ export interface UrlOptions extends CreateSignalOptions<string>, WithInjector {
  *     </div>
  *   `
  * })
- * class UrlComponent {
+ * class UrlDemo {
  *   readonly currentUrl = url();
  *   readonly absoluteUrl = url({ absolute: true });
  * }

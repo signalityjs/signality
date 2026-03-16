@@ -3,39 +3,68 @@ import { constSignal, NOOP_FN, setupContext, type Timer, toValue } from '@signal
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 
 export interface VibrationOptions extends WithInjector {
+  /**
+   * Default vibration pattern in milliseconds. A single number vibrates for that duration;
+   * an array alternates between vibration and pause durations.
+   *
+   * @see [Navigator: vibrate() pattern on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate#pattern)
+   */
   readonly pattern?: MaybeSignal<number | number[]>;
 }
 
 export interface VibrationRef {
-  /** Whether Vibration API is supported */
+  /**
+   * Whether the Vibration API is supported in the current browser.
+   *
+   * @see [Vibration API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether currently vibrating */
+  /**
+   * Whether the device is currently vibrating.
+   */
   readonly isVibrating: Signal<boolean>;
 
-  /** Start vibration */
+  /**
+   * Trigger vibration with an optional pattern. Falls back to the default pattern from options, then `200ms`.
+   *
+   * @see [Navigator: vibrate() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate)
+   */
   readonly vibrate: (pattern?: number | number[]) => void;
 
-  /** Stop vibration */
+  /**
+   * Stop any active vibration by calling `navigator.vibrate(0)`.
+   *
+   * @see [Navigator: vibrate() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate)
+   */
   readonly stop: () => void;
 }
 
 /**
- * Signal-based wrapper around the Vibration API.
+ * Signal-based wrapper around the [Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API).
  *
  * @param options - Optional configuration including default pattern and injector
  * @returns A VibrationRef with vibration control methods
  *
  * @example
  * ```typescript
- * const vib = vibration();
- *
- * vib.vibrate(100); // Vibrate for 100ms
- * vib.vibrate([100, 50, 100]); // Pattern: vibrate, pause, vibrate
+ * @Component({
+ *   template: `
+ *     @if (vib.isSupported()) {
+ *       <button (click)="vib.vibrate(100)">Vibrate 100ms</button>
+ *       <button (click)="vib.vibrate([100, 50, 100])">Pattern</button>
+ *       <button (click)="vib.stop()">Stop</button>
+ *     }
+ *   `
+ * })
+ * class VibrationDemo {
+ *   readonly vib = vibration();
+ * }
  * ```
  *
  * @example
  * ```typescript
+ * // With a default pattern
  * const vib = vibration({ pattern: 200 });
  *
  * vib.vibrate(); // Uses default 200ms pattern

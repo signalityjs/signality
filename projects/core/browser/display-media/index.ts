@@ -5,35 +5,59 @@ import { listener } from '@signality/core/browser/listener';
 
 export interface DisplayMediaOptions extends WithInjector {
   /**
-   * Video constraints.
+   * Video track constraints for the captured stream.
+   *
    * @default true
+   * @see [MediaTrackConstraints on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)
    */
   readonly video?: boolean | MediaTrackConstraints;
 
   /**
-   * Audio constraints.
+   * Audio track constraints for the captured stream.
+   *
    * @default false
+   * @see [MediaTrackConstraints on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints)
    */
   readonly audio?: boolean | MediaTrackConstraints;
 }
 
 export interface DisplayMediaRef {
-  /** Whether Screen Capture API is supported */
+  /**
+   * Whether the Screen Capture API is supported in the current browser.
+   *
+   * @see [Screen Capture API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether currently capturing */
+  /**
+   * Whether screen capture is currently active.
+   */
   readonly isActive: Signal<boolean>;
 
-  /** Current media stream */
+  /**
+   * The active media stream, or `null` if capture is not active.
+   *
+   * @see [MediaStream on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MediaStream)
+   */
   readonly stream: Signal<MediaStream | null>;
 
-  /** Last error */
+  /**
+   * The last error that occurred, or `null` if no error.
+   */
   readonly error: Signal<Error | null>;
 
-  /** Start screen capture */
+  /**
+   * Start screen capture. Opens the browser's display picker.
+   *
+   * @see [MediaDevices: getDisplayMedia() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)
+   */
   readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | null>;
 
-  /** Stop screen capture */
+  /**
+   * Stop all active capture tracks and clear the stream.
+   *
+   * @see [MediaStreamTrack: stop() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/stop)
+   */
   readonly stop: () => void;
 }
 
@@ -63,7 +87,7 @@ export interface DisplayMediaRef {
  *     }
  *   `
  * })
- * class ScreenCaptureComponent {
+ * class ScreenCaptureDemo {
  *   readonly screen = displayMedia();
  *
  *   async toggleCapture() {

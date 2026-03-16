@@ -11,16 +11,32 @@ export interface EyeDropperOptions extends WithInjector {
 }
 
 export interface EyeDropperRef {
-  /** Current selected color in sRGB hex format */
-  readonly sRGBHex: Signal<string>;
-
-  /** Whether EyeDropper API is supported */
+  /**
+   * Whether the EyeDropper API is supported in the current browser.
+   *
+   * @see [EyeDropper browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Open the eyedropper tool to select a color */
+  /**
+   * The most recently selected color in sRGB hex format (e.g. `#ff0000`).
+   *
+   * @see [EyeDropper: open() return value on MDN](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper/open#return_value)
+   */
+  readonly sRGBHex: Signal<string>;
+
+  /**
+   * Open the eyedropper tool and wait for the user to select a color.
+   *
+   * @see [EyeDropper: open() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper/open)
+   */
   readonly open: () => Promise<void>;
 
-  /** Cancel the active eyedropper operation */
+  /**
+   * Cancel the active eyedropper operation via `AbortController`.
+   *
+   * @see [AbortController: abort() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort)
+   */
   readonly close: () => void;
 }
 
@@ -42,7 +58,7 @@ export interface EyeDropperRef {
  *     }
  *   `
  * })
- * class ColorPickerComponent {
+ * class ColorPicker {
  *   readonly eyeDropper = eyeDropper();
  *
  *   async pickColor() {
@@ -118,7 +134,8 @@ interface EyeDropper {
 interface EyeDropperOpenOptions {
   /**
    * AbortSignal to cancel the eyedropper operation.
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal
+   *
+   * @see [AbortSignal on MDN](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
    */
   readonly signal?: AbortSignal;
 }

@@ -25,7 +25,9 @@ export interface QueryParamsRef<T> {
    */
   readonly isValid: Signal<boolean>;
 
-  /** Signal containing validation error, or null if valid */
+  /**
+   * Signal containing validation error, or null if valid.
+   */
   readonly error: Signal<unknown | null>;
 }
 
@@ -52,7 +54,7 @@ export type QueryParamsWithSchemaOptions<T extends Params = Params> = QueryParam
  *     </div>
  *   `
  * })
- * class SearchComponent {
+ * class SearchParamsDemo {
  *   // Route: /search?q=angular&sort=name
  *   readonly searchParams = queryParams<{ q: string; sort: string }>();
  * }
@@ -78,7 +80,7 @@ export function queryParams<T extends Params = Params>(options?: QueryParamsOpti
  *     }
  *   `
  * })
- * class ValidatedSearchComponent {
+ * class ValidatedSearchParamsDemo {
  *   readonly schema = z.object({
  *     q: z.string().min(1).optional(),
  *     page: z.coerce.number().int().positive().default(1),

@@ -12,25 +12,43 @@ import { constSignal, NOOP_FN, setupContext, toElement } from '@signality/core/i
 
 export interface FocusMonitorOptions extends WithInjector {
   /**
-   * Also monitor focus within children.
+   * Whether to also monitor focus changes within child elements of the target.
+   *
    * @default false
+   * @see [FocusMonitor on Angular CDK](https://material.angular.io/cdk/a11y/overview#focusmonitor)
    */
   readonly checkChildren?: boolean;
 }
 
 export interface FocusMonitorRef {
-  /** Whether element is focused */
+  /**
+   * Whether the target element (or any of its children when `checkChildren` is `true`) is focused.
+   */
   readonly isFocused: Signal<boolean>;
 
-  /** Focus origin: 'keyboard', 'mouse', 'touch', 'program', or null */
+  /**
+   * How the element received focus. One of:
+   * - `'mouse'` — focused via mouse click
+   * - `'keyboard'` — focused via keyboard navigation
+   * - `'touch'` — focused via touch interaction
+   * - `'program'` — focused programmatically (e.g. via `focusVia`)
+   * - `null` — element is not focused
+   *
+   * @see [FocusOrigin on Angular CDK](https://material.angular.io/cdk/a11y/api#FocusOrigin)
+   */
   readonly origin: Signal<FocusOrigin>;
 
-  /** Focus element with specific origin */
+  /**
+   * Programmatically focus the target element with a specific origin.
+   * The `origin` will be reflected in the `origin` signal after focusing.
+   *
+   * @see [FocusMonitor.focusVia() on Angular CDK](https://material.angular.io/cdk/a11y/api#FocusMonitor)
+   */
   readonly focusVia: (origin: FocusOrigin, options?: FocusOptions) => void;
 }
 
 /**
- * Signal-based wrapper around the [Angular CDK](https://material.angular.io/cdk/a11y/overview) FocusMonitor.
+ * Signal-based wrapper around the [Angular CDK FocusMonitor](https://material.angular.io/cdk/a11y/overview#focusmonitor).
  *
  * @param target - Target element to monitor
  * @param options - Optional configuration
@@ -94,7 +112,7 @@ export function focusMonitor(
     };
 
     const focusVia = (origin: FocusOrigin, options?: FocusOptions) => {
-      const el = toElement(target);
+      const el = toElement.untracked(target);
 
       if (!el) {
         if (ngDevMode) {
