@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, viewChild } from '@angular/core';
 import { elementFocus } from '@signality/core/elements/element-focus';
 import { DemoCard, DemoInput, Wrapper } from '../../common';
 
@@ -10,9 +10,7 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
     <ng-demo-wrapper [demoPath]="'element-focus/element-focus-demo'" [code]="importCode">
       <demo-card>
         <!-- Input -->
-        <div class="ef-zone" [class.ef-zone--active]="isFocused()">
-          <input #inputEl demoInput placeholder="Click to focus…" />
-        </div>
+        <input #inputEl demoInput placeholder="Click to focus…" />
 
         <!-- Divider -->
         <div class="ef-divider"></div>
@@ -28,19 +26,6 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
     </ng-demo-wrapper>
   `,
   styles: `
-    /* ── Zone ── */
-    .ef-zone {
-      padding: 0.75rem;
-      border: 1px dashed #27272a;
-      border-radius: 8px;
-      transition: border-color 0.25s ease, background 0.25s ease;
-    }
-
-    .ef-zone--active {
-      border-color: rgba(34, 197, 94, 0.35);
-      background: rgba(34, 197, 94, 0.04);
-    }
-
     /* ── Divider ── */
     .ef-divider {
       height: 1px;
@@ -102,7 +87,7 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
   `,
 })
 export class ElementFocusDemo {
-  readonly inputEl = viewChild<HTMLInputElement>('inputEl');
+  readonly inputEl = viewChild('inputEl', { read: ElementRef });
   readonly isFocused = elementFocus(this.inputEl);
 
   readonly importCode = `import { elementFocus } from '@signality/core'`;
