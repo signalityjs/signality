@@ -70,7 +70,7 @@ export type RouterEventType =
  *     }
  *   `
  * })
- * class NavigationComponent {
+ * class NavigationDemo {
  *   readonly isLoading = signal(false);
  *
  *   constructor() {

@@ -25,7 +25,7 @@ export type RouteDataOptions<T = unknown> = CreateSignalOptions<T> & WithInjecto
  *     </div>
  *   `
  * })
- * class ProductComponent {
+ * class ProductPreview {
  *   // Route with data: { name: 'Product Page', showBreadcrumbs: true }
  *   readonly data = routeData<{ name: string; showBreadcrumbs: boolean }>();
  * }

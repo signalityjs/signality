@@ -230,7 +230,6 @@ export default defineConfig({
         items: [
           { text: 'IntersectionObserver', link: '/observers/intersection-observer' },
           { text: 'MutationObserver', link: '/observers/mutation-observer' },
-          { text: 'PerformanceObserver', link: '/observers/performance-observer' },
           { text: 'ResizeObserver', link: '/observers/resize-observer' },
         ],
       },

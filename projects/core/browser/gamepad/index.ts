@@ -4,33 +4,63 @@ import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
 export interface GamepadRef {
-  /** Whether Gamepad API is supported */
+  /**
+   * Whether the Gamepad API is supported in the current browser.
+   *
+   * @see [Gamepad API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Array of connected gamepads */
+  /**
+   * Array of all connected gamepads. Indices match the gamepad's `index` property. May contain `null` for disconnected slots.
+   *
+   * @see [Navigator: getGamepads() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getGamepads)
+   */
   readonly gamepads: Signal<(Gamepad | null)[]>;
 
-  /** First connected gamepad */
+  /**
+   * The first connected gamepad, or `undefined` if none are connected.
+   *
+   * @see [Gamepad on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad)
+   */
   readonly activeGamepad: Signal<Gamepad | undefined>;
 
-  /** Axes values of active gamepad */
+  /**
+   * Axes values of the active gamepad. Each value is in the range `[-1, 1]`.
+   *
+   * @see [Gamepad: axes on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/axes)
+   */
   readonly axes: Signal<readonly number[]>;
 
-  /** Button states of active gamepad */
+  /**
+   * Button states of the active gamepad.
+   *
+   * @see [Gamepad: buttons on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad/buttons)
+   */
   readonly buttons: Signal<readonly GamepadButton[]>;
 }
 
 /**
- * Signal-based wrapper around the Gamepad API.
+ * Signal-based wrapper around the [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API).
  *
  * @param options - Optional injector for DI context
  * @returns A GamepadRef with gamepad state signals
  *
  * @example
  * ```typescript
- * const gp = gamepad();
- *
- * // In template: @for (pad of gp.gamepads(); track pad?.index) { ... }
+ * @Component({
+ *   template: `
+ *     @if (gp.isSupported()) {
+ *       @for (pad of gp.gamepads(); track pad?.index) {
+ *         <p>{{ pad?.id }}</p>
+ *       }
+ *       <p>Axes: {{ gp.axes() }}</p>
+ *     }
+ *   `
+ * })
+ * class GamepadDemo {
+ *   readonly gp = gamepad();
+ * }
  * ```
  */
 export function gamepad(options?: WithInjector): GamepadRef {

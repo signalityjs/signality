@@ -32,7 +32,7 @@ export interface OnClickOutsideRef {
  *     </div>
  *   `
  * })
- * class DropdownComponent {
+ * class Dropdown {
  *   readonly dropdown = viewChild<ElementRef>('dropdown');
  *   readonly isOpen = signal(true);
  *

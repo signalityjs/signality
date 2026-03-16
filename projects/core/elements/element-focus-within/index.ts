@@ -25,7 +25,7 @@ export type ElementFocusWithinOptions = CreateSignalOptions<boolean> & WithInjec
  *     </div>
  *   `
  * })
- * class FocusWithinComponent {
+ * class FocusWithinDemo {
  *   readonly container = viewChild<ElementRef>('container');
  *   readonly isFocusedWithin = elementFocusWithin(this.container);
  * }

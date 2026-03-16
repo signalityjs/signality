@@ -27,7 +27,7 @@ export interface ScreenOrientationOptions
  *     <p>Orientation: {{ orientation() }}</p>
  *   `
  * })
- * class OrientationComponent {
+ * class OrientationDemo {
  *   readonly orientation = screenOrientation();
  * }
  * ```

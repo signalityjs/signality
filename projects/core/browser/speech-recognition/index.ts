@@ -5,53 +5,91 @@ import { watcher } from '@signality/core/reactivity/watcher';
 
 export interface SpeechRecognitionOptions extends WithInjector {
   /**
-   * Language for speech recognition.
+   * BCP 47 language tag for recognition (e.g. `'en-US'`).
+   *
    * @default 'en-US'
+   * @see [SpeechRecognition: lang on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/lang)
    */
   readonly lang?: MaybeSignal<string>;
 
   /**
-   * Whether to return interim results.
+   * Whether to return interim (in-progress) results alongside final ones.
+   *
    * @default false
+   * @see [SpeechRecognition: interimResults on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/interimResults)
    */
   readonly interimResults?: boolean;
 
   /**
-   * Whether to continue recognition after speech ends.
+   * Whether recognition continues after the user stops speaking.
+   *
    * @default false
+   * @see [SpeechRecognition: continuous on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/continuous)
    */
   readonly continuous?: boolean;
 
   /**
-   * Maximum number of alternative transcripts.
+   * Maximum number of alternative recognition results per utterance.
+   *
    * @default 1
+   * @see [SpeechRecognition: maxAlternatives on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/maxAlternatives)
    */
   readonly maxAlternatives?: number;
 }
 
 export interface SpeechRecognitionRef {
-  /** Whether Speech Recognition API is supported */
+  /**
+   * Whether the Speech Recognition API is supported in the current browser.
+   *
+   * @see [SpeechRecognition browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether recognition is currently active */
+  /**
+   * Whether speech recognition is currently active and listening.
+   */
   readonly isListening: Signal<boolean>;
 
-  /** Final transcript text */
+  /**
+   * Accumulated final transcript text.
+   *
+   * @see [SpeechRecognitionResult on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionResult)
+   */
   readonly text: Signal<string>;
 
-  /** Interim transcript text */
+  /**
+   * In-progress interim transcript. Only populated when `interimResults` is `true`.
+   *
+   * @see [SpeechRecognition: interimResults on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/interimResults)
+   */
   readonly interimText: Signal<string>;
 
-  /** Error if recognition failed */
+  /**
+   * The last recognition error, or `null` if no error occurred.
+   *
+   * @see [SpeechRecognitionErrorEvent on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionErrorEvent)
+   */
   readonly error: Signal<SpeechRecognitionErrorEvent | Error | null>;
 
-  /** Start speech recognition */
+  /**
+   * Start listening for speech input.
+   *
+   * @see [SpeechRecognition: start() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/start)
+   */
   readonly start: () => void;
 
-  /** Stop speech recognition */
+  /**
+   * Stop listening and return any remaining results.
+   *
+   * @see [SpeechRecognition: stop() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/stop)
+   */
   readonly stop: () => void;
 
-  /** Abort speech recognition */
+  /**
+   * Abort recognition immediately without returning results.
+   *
+   * @see [SpeechRecognition: abort() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition/abort)
+   */
   readonly abort: () => void;
 }
 
