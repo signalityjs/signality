@@ -38,12 +38,13 @@ export class SizeDemo {
 
 The `ElementSizeOptions` extends [`CreateSignalOptions<ElementSizeValue>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option                                                                               | Type                                                                                       | Default        | Description                                                                                        |
-|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|----------------|----------------------------------------------------------------------------------------------------|
-| [`box`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe#box) | [`MaybeSignal<ResizeObserverBoxOptions>`](/reference/utility-types#maybesignal-lt-type-gt) | `'border-box'` | Which box model to observe                                                                         |
-| `equal`                                                                              | [`ValueEqualityFn<ElementSizeValue>`](https://angular.dev/api/core/ValueEqualityFn)        | -              | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName`                                                                          | `string`                                                                                   | -              | Debug name for the signal (development only)                                                       |
-| `injector`                                                                           | [`Injector`](https://angular.dev/api/core/Injector)                                        | -              | Optional injector for DI context                                                                   |
+| Option                                                                               | Type                                                                                       | Default                   | Description                                                                                        |
+|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|---------------------------|----------------------------------------------------------------------------------------------------|
+| [`box`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe#box) | [`MaybeSignal<ResizeObserverBoxOptions>`](/reference/utility-types#maybesignal-lt-type-gt) | `'border-box'`            | Which box model to observe                                                                         |
+| `initialValue`                                                                       | `ElementSizeValue`                                                                         | `{ width: 0, height: 0 }` | Initial value for SSR and before the first measurement                                             |
+| `equal`                                                                              | [`ValueEqualityFn<ElementSizeValue>`](https://angular.dev/api/core/ValueEqualityFn)        | -                         | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName`                                                                          | `string`                                                                                   | -                         | Debug name for the signal (development only)                                                       |
+| `injector`                                                                           | [`Injector`](https://angular.dev/api/core/Injector)                                        | -                         | Optional injector for DI context                                                                   |
 
 ## Return Value
 
@@ -53,49 +54,15 @@ The `elementSize()` function returns a `Signal<ElementSizeValue>`:
 interface ElementSizeValue {
   width: number;
   height: number;
-  contentWidth: number;
-  contentHeight: number;
-  borderBoxWidth: number;
-  borderBoxHeight: number;
 }
 ```
 
-| Property          | Description                                                                                                 |
-|-------------------|-------------------------------------------------------------------------------------------------------------|
-| `width`           | Element width (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`)  |
-| `height`          | Element height (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`) |
-| `contentWidth`    | Content area width                                                                                          |
-| `contentHeight`   | Content area height                                                                                         |
-| `borderBoxWidth`  | Border-box width                                                                                            |
-| `borderBoxHeight` | Border-box height                                                                                           |
+| Property | Description                                                                                                 |
+|----------|-------------------------------------------------------------------------------------------------------------|
+| `width`  | Element width (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`)  |
+| `height` | Element height (depends on the `box` option — border-box by default, content-box when `box: 'content-box'`) |
 
 ## Examples
-
-### Responsive component
-
-```angular-ts
-import { Component, viewChild, ElementRef, computed } from '@angular/core';
-import { elementSize } from '@signality/core';
-
-@Component({
-  template: `
-    <div #container [class]="layoutClass()">
-      <ng-content />
-    </div>
-  `,
-})
-export class ResponsiveContainer {
-  readonly container = viewChild<ElementRef>('container');
-  readonly size = elementSize(this.container);
-  
-  readonly layoutClass = computed(() => {
-    const width = this.size().width;
-    if (width < 400) return 'layout-compact';
-    if (width < 800) return 'layout-medium';
-    return 'layout-wide';
-  });
-}
-```
 
 ### Aspect ratio keeper
 
@@ -122,48 +89,6 @@ export class AspectRatioVideo {
 }
 ```
 
-### Canvas auto-resize
-
-```angular-ts
-import { Component, viewChild, ElementRef, effect } from '@angular/core';
-import { elementSize } from '@signality/core';
-
-@Component({
-  template: `
-    <div #wrapper class="canvas-wrapper">
-      <canvas #canvas></canvas>
-    </div>
-  `,
-})
-export class AutoCanvas {
-  readonly wrapper = viewChild<ElementRef>('wrapper');
-  readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
-  readonly size = elementSize(this.wrapper);
-  
-  constructor() {
-    effect(() => {
-      const canvasEl = this.canvas()?.nativeElement;
-      if (!canvasEl) return;
-      
-      const { width, height } = this.size();
-      const dpr = window.devicePixelRatio || 1;
-      
-      canvasEl.width = width * dpr;
-      canvasEl.height = height * dpr;
-      canvasEl.style.width = `${width}px`;
-      canvasEl.style.height = `${height}px`;
-      
-      // Redraw canvas content
-      this.redraw(canvasEl.getContext('2d')!);
-    });
-  }
-  
-  private redraw(ctx: CanvasRenderingContext2D) {
-    // Drawing logic
-  }
-}
-```
-
 ### Overflow detection
 
 ```angular-ts
@@ -175,9 +100,9 @@ import { elementSize } from '@signality/core';
     <div #container class="content-container">
       <div #content>{{ text }}</div>
     </div>
-    @if (isOverflowing()) {
-      <button (click)="showMore()">Show more...</button>
-    }
+    @if (isOverflowing()) { <!-- [!code highlight] -->
+      <button (click)="showMore()">Show more...</button> <!-- [!code highlight] -->
+    } <!-- [!code highlight] -->
   `,
 })
 export class OverflowDetector {
@@ -187,7 +112,7 @@ export class OverflowDetector {
   readonly containerSize = elementSize(this.container);
   readonly contentSize = elementSize(this.content);
   
-  text = 'Long content...';
+  readonly text = 'Long content...';
   
   readonly isOverflowing = computed(() => 
     this.contentSize().height > this.containerSize().height
@@ -201,31 +126,20 @@ export class OverflowDetector {
 
 ## SSR Compatibility
 
-On the server, the signal initializes with default zero values:
-
-- `width` → `0`
-- `height` → `0`
-- `contentWidth` → `0`
-- `contentHeight` → `0`
-- `borderBoxWidth` → `0`
-- `borderBoxHeight` → `0`
+On the server, the signal initializes with `initialValue` (defaults to `{ width: 0, height: 0 }`).
 
 ## Type Definitions
 
 ```typescript
 interface ElementSizeValue {
-  width: number;
-  height: number;
-  contentWidth: number;
-  contentHeight: number;
-  borderBoxWidth: number;
-  borderBoxHeight: number;
+  readonly width: number;
+  readonly height: number;
 }
 
-type ElementSizeOptions = CreateSignalOptions<ElementSizeValue> &
-  WithInjector & {
+interface ElementSizeOptions extends CreateSignalOptions<ElementSizeValue>, WithInjector {
   readonly box?: MaybeSignal<ResizeObserverBoxOptions>;
-};
+  readonly initialValue?: ElementSizeValue;
+}
 
 function elementSize(
   target: MaybeElementSignal<HTMLElement>,
