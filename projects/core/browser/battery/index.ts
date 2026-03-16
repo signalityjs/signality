@@ -6,11 +6,40 @@ import { listener, setupSync } from '@signality/core/browser/listener';
 export type BatteryOptions = WithInjector;
 
 export interface BatteryRef {
-  readonly charging: Signal<boolean>;
-  readonly chargingTime: Signal<number>;
-  readonly dischargingTime: Signal<number>;
-  readonly level: Signal<number>;
+  /**
+   * Whether the Battery Status API is supported in the current browser.
+   *
+   * @see [Battery Status API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Battery_Status_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
+
+  /**
+   * Whether the battery is currently charging.
+   *
+   * @see [BatteryManager: charging on MDN](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/charging)
+   */
+  readonly charging: Signal<boolean>;
+
+  /**
+   * Time in seconds until the battery is fully charged. `Infinity` if not charging.
+   *
+   * @see [BatteryManager: chargingTime on MDN](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/chargingTime)
+   */
+  readonly chargingTime: Signal<number>;
+
+  /**
+   * Time in seconds until the battery is fully discharged. `Infinity` if charging.
+   *
+   * @see [BatteryManager: dischargingTime on MDN](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/dischargingTime)
+   */
+  readonly dischargingTime: Signal<number>;
+
+  /**
+   * Battery level as a value between `0.0` and `1.0`.
+   *
+   * @see [BatteryManager: level on MDN](https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/level)
+   */
+  readonly level: Signal<number>;
 }
 
 /**
@@ -31,7 +60,7 @@ export interface BatteryRef {
  *     }
  *   `
  * })
- * class BatteryComponent {
+ * class BatteryDemo {
  *   readonly batteryStatus = battery();
  * }
  * ```

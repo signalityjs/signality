@@ -8,12 +8,35 @@ import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface IntersectionObserverInitOptions
   extends Omit<CreateEffectOptions, 'allowSignalWrites'> {
+  /**
+   * Scrollable ancestor used as the intersection viewport.
+   * `null` or `undefined` defaults to the browser viewport.
+   *
+   * @see [IntersectionObserver: root on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root)
+   */
   readonly root?: MaybeElementSignal<Element> | Document | null;
+
+  /**
+   * CSS margin applied around the root before computing intersections.
+   * Accepts values in the same format as the CSS `margin` property (e.g. `'10px 0px'`).
+   *
+   * @see [IntersectionObserver: rootMargin on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)
+   */
   readonly rootMargin?: MaybeSignal<string>;
+
+  /**
+   * Fraction(s) of the target element that must be visible to trigger the callback.
+   * A single number or an array of thresholds, each between `0` and `1`.
+   *
+   * @see [IntersectionObserver: thresholds on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)
+   */
   readonly threshold?: MaybeSignal<number | number[]>;
 }
 
 export interface IntersectionObserverRef {
+  /**
+   * Stop observing all targets and disconnect the underlying `IntersectionObserver`.
+   */
   readonly destroy: () => void;
 }
 
@@ -36,7 +59,7 @@ export interface IntersectionObserverRef {
  *     }
  *   `
  * })
- * class IntersectionComponent {
+ * class IntersectionDemo {
  *   readonly section = viewChild<ElementRef>('section');
  *   readonly isVisible = signal(false);
  *

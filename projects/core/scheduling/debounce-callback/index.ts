@@ -17,7 +17,7 @@ import { setupContext, type Timer, toValue } from '@signality/core/internal';
  *     <input (input)="handleInput($event.target.value)" />
  *   `,
  * })
- * export class SearchComponent {
+ * export class SearchInput {
  *   readonly debounceTime = input(300);
  *   readonly searchChange = output<string>();
  *

@@ -5,43 +5,82 @@ import { listener, type ListenerRef, setupSync } from '@signality/core/browser/l
 import { PAGE_VISIBILITY } from '@signality/core/browser/page-visibility';
 
 export interface WakeLockOptions extends WithInjector {
-  /** Whether to automatically reacquire wake lock when document becomes visible */
+  /**
+   * Whether to automatically reacquire the wake lock when the document becomes visible again
+   * after being hidden (e.g. tab switch or screen lock).
+   *
+   * Defaults to `true`.
+   *
+   * @see [Page Visibility API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API)
+   */
   readonly autoReacquire?: boolean;
 }
 
 export interface WakeLockRef {
-  /** Whether Screen Wake Lock API is supported */
+  /**
+   * Whether the Screen Wake Lock API is supported in the current browser.
+   *
+   * @see [Screen Wake Lock API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether wake lock is currently active */
+  /**
+   * Whether the wake lock is currently active.
+   * `false` when the sentinel is released or the document is not visible.
+   */
   readonly isActive: Signal<boolean>;
 
-  /** Current wake lock sentinel */
+  /**
+   * The active `WakeLockSentinel` instance, or `null` when no wake lock is held.
+   *
+   * @see [WakeLockSentinel on MDN](https://developer.mozilla.org/en-US/docs/Web/API/WakeLockSentinel)
+   */
   readonly sentinel: Signal<WakeLockSentinel | null>;
 
-  /** Request a wake lock */
+  /**
+   * Request a wake lock. No-op if a lock is already active.
+   * If the document is not visible, the request will be deferred until it becomes visible
+   * (only when `autoReacquire` is `true`).
+   *
+   * @see [WakeLock.request() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/WakeLock/request)
+   */
   readonly request: () => Promise<void>;
 
-  /** Force request a wake lock (releases existing one first) */
+  /**
+   * Request a wake lock unconditionally, releasing the existing sentinel first if present.
+   *
+   * @see [WakeLockSentinel.release() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/WakeLockSentinel/release)
+   */
   readonly forceRequest: () => Promise<void>;
 
-  /** Release the wake lock */
+  /**
+   * Release the active wake lock and clear the sentinel.
+   *
+   * @see [WakeLockSentinel.release() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/WakeLockSentinel/release)
+   */
   readonly release: () => Promise<void>;
 }
 
 /**
  * Signal-based wrapper around the [Screen Wake Lock API](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API).
+ * Prevents the screen from turning off while the wake lock is active.
  *
  * @param options - Optional configuration
  * @returns A WakeLockRef with isSupported, isActive, sentinel signals and control methods
  *
  * @example
  * ```typescript
- * const wakeLock = wakeLock();
- *
- * if (wakeLock.isSupported()) {
- *   await wakeLock.request();
- *   // Screen will stay awake
+ * @Component({
+ *   template: `
+ *     @if (wl.isSupported()) {
+ *       <button (click)="wl.request()">Keep screen on</button>
+ *       <button (click)="wl.release()">Release</button>
+ *       <p>Active: {{ wl.isActive() }}</p>
+ *     }
+ *   `
+ * })
+ * class WakeLockDemo {
+ *   readonly wl = wakeLock();
  * }
  * ```
  */

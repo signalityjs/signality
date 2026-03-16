@@ -45,7 +45,7 @@ export interface FpsRef {
  *     <button (click)="fpsMonitor.start()">Start</button>
  *   `
  * })
- * class FpsComponent {
+ * class FpsMonitor {
  *   readonly fpsMonitor = fps();
  * }
  * ```

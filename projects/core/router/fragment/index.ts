@@ -23,7 +23,7 @@ export type FragmentOptions = CreateSignalOptions<string | null> & WithInjector;
  *     }
  *   `
  * })
- * class FragmentComponent {
+ * class FragmentDemo {
  *   readonly currentFragment = fragment();
  * }
  * ```

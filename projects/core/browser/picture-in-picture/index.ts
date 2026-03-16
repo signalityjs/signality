@@ -13,19 +13,37 @@ import { onDisconnect } from '@signality/core/elements/on-disconnect';
 export type PictureInPictureOptions = WithInjector;
 
 export interface PictureInPictureRef {
-  /** Whether Picture-in-Picture API is supported */
+  /**
+   * Whether the Picture-in-Picture API is supported in the current browser.
+   *
+   * @see [Picture-in-Picture API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Picture-in-Picture_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether Picture-in-Picture is active */
+  /**
+   * Whether the target video element is currently displayed in Picture-in-Picture mode.
+   *
+   * @see [Document: pictureInPictureElement on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document/pictureInPictureElement)
+   */
   readonly isActive: Signal<boolean>;
 
-  /** Enter Picture-in-Picture mode */
+  /**
+   * Enter Picture-in-Picture mode for the target video element.
+   *
+   * @see [HTMLVideoElement: requestPictureInPicture() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestPictureInPicture)
+   */
   readonly enter: () => Promise<void>;
 
-  /** Exit Picture-in-Picture mode */
+  /**
+   * Exit Picture-in-Picture mode.
+   *
+   * @see [Document: exitPictureInPicture() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Document/exitPictureInPicture)
+   */
   readonly exit: () => Promise<void>;
 
-  /** Toggle Picture-in-Picture mode */
+  /**
+   * Toggle Picture-in-Picture mode — enters if inactive, exits if active.
+   */
   readonly toggle: () => Promise<void>;
 }
 
@@ -49,7 +67,7 @@ export interface PictureInPictureRef {
  *     }
  *   `
  * })
- * class PiPComponent {
+ * class PiPDemo {
  *   readonly video = viewChild<HTMLVideoElement>('video');
  *   readonly pip = pictureInPicture(this.video);
  * }
@@ -81,17 +99,15 @@ export function pictureInPicture(
     const isActive = signal(false);
 
     const enter = async (): Promise<void> => {
-      const el = toElement.untracked(target);
-      if (el) {
-        await el.requestPictureInPicture();
-      }
+      const targetEl = toElement.untracked(target);
+      await targetEl?.requestPictureInPicture();
     };
 
     const exit = async (): Promise<void> => {
-      const el = toElement.untracked(target);
+      const targetEl = toElement.untracked(target);
       const pipEl = getPipElement(document);
 
-      if (el && pipEl && el === pipEl) {
+      if (targetEl && pipEl && targetEl === pipEl) {
         await document.exitPictureInPicture();
       }
     };
@@ -107,10 +123,10 @@ export function pictureInPicture(
     listener(target, 'enterpictureinpicture', () => isActive.set(true));
     listener(target, 'leavepictureinpicture', () => isActive.set(false));
 
-    onDisconnect(target, async el => {
+    onDisconnect(target, async targetEl => {
       const pipEl = getPipElement(document);
 
-      if (pipEl && el === pipEl) {
+      if (pipEl && targetEl === pipEl) {
         await document.exitPictureInPicture();
         isActive.set(false);
       }

@@ -4,19 +4,50 @@ import { constSignal, createToken, NOOP_FN, setupContext } from '@signality/core
 import type { WithInjector } from '@signality/core/types';
 
 export interface FaviconOptions extends WithInjector {
+  /**
+   * Base URL prepended to all favicon paths passed to `set()`.
+   *
+   * Resolution priority:
+   * 1. Explicit `baseUrl` value
+   * 2. [`APP_BASE_HREF`](https://angular.dev/api/common/APP_BASE_HREF) token value (if configured)
+   * 3. Empty string `''`
+   */
   readonly baseUrl?: string;
 }
 
 export interface FaviconRef {
+  /**
+   * URL of the currently active favicon.
+   */
   readonly current: Signal<string>;
+
+  /**
+   * URL of the favicon at the time the utility was initialized.
+   */
   readonly original: Signal<string>;
+
+  /**
+   * Set the favicon to the given URL.
+   *
+   * @see [HTMLLinkElement on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLinkElement)
+   */
   readonly set: (url: string) => void;
+
+  /**
+   * Render an emoji onto a canvas and use it as the favicon.
+   *
+   * @see [Canvas API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+   */
   readonly setEmoji: (emoji: string) => void;
+
+  /**
+   * Reset the favicon to the original URL captured on initialization.
+   */
   readonly reset: () => void;
 }
 
 /**
- * Reactive favicon manipulation.
+ * Reactive favicon manipulation using the [HTMLLinkElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLinkElement).
  * Dynamically change the page favicon based on application state.
  *
  * @param options - Optional configuration
@@ -31,7 +62,7 @@ export interface FaviconRef {
  *     <p>Current: {{ fav.current() }}</p>
  *   `
  * })
- * class FaviconComponent {
+ * class FaviconDemo {
  *   readonly fav = favicon();
  *
  *   setNotification() {

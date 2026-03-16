@@ -8,16 +8,64 @@ import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface MutationObserverInitOptions
   extends Omit<CreateEffectOptions, 'allowSignalWrites'> {
+  /**
+   * Whether to observe additions and removals of child nodes.
+   *
+   * @see [MutationObserver.observe(): childList on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#childlist)
+   */
   readonly childList?: MaybeSignal<boolean>;
+
+  /**
+   * Whether to observe attribute changes on the target element.
+   * Use `attributeFilter` to limit which attributes are observed.
+   *
+   * @see [MutationObserver.observe(): attributes on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#attributes)
+   */
   readonly attributes?: MaybeSignal<boolean>;
+
+  /**
+   * Whether to observe changes to the text content (`CharacterData`) of the target.
+   *
+   * @see [MutationObserver.observe(): characterData on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#characterdata)
+   */
   readonly characterData?: MaybeSignal<boolean>;
+
+  /**
+   * Whether to extend observation to the entire subtree of the target element.
+   *
+   * @see [MutationObserver.observe(): subtree on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#subtree)
+   */
   readonly subtree?: MaybeSignal<boolean>;
+
+  /**
+   * Whether to record the previous attribute value in each `MutationRecord`.
+   * Implicitly sets `attributes` to `true` if not already set.
+   *
+   * @see [MutationObserver.observe(): attributeOldValue on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#attributeoldvalue)
+   */
   readonly attributeOldValue?: MaybeSignal<boolean>;
+
+  /**
+   * Whether to record the previous character data value in each `MutationRecord`.
+   * Implicitly sets `characterData` to `true` if not already set.
+   *
+   * @see [MutationObserver.observe(): characterDataOldValue on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#characterdataoldvalue)
+   */
   readonly characterDataOldValue?: MaybeSignal<boolean>;
+
+  /**
+   * Array of attribute local names to observe. Only mutations to listed attributes are reported.
+   * Implicitly sets `attributes` to `true` if not already set.
+   *
+   * @see [MutationObserver.observe(): attributeFilter on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#attributefilter)
+   */
   readonly attributeFilter?: MaybeSignal<string[]>;
 }
 
 export interface MutationObserverRef {
+  /**
+   * Stop observing all targets and disconnect the underlying `MutationObserver`.
+   */
   readonly destroy: () => void;
 }
 

@@ -22,7 +22,7 @@ export type PageVisibilityOptions = CreateSignalOptions<DocumentVisibilityState>
  *     }
  *   `
  * })
- * class VisibilityComponent {
+ * class VisibilityDemo {
  *   readonly visibility = pageVisibility();
  * }
  * ```

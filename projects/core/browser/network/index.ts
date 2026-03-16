@@ -19,30 +19,58 @@ export type ConnectionType =
 export type NetworkOptions = WithInjector;
 
 export interface NetworkRef {
-  /** Whether Network Information API is supported */
+  /**
+   * Whether the Network Information API is supported in the current browser.
+   *
+   * @see [Network Information API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Whether the browser is online */
+  /**
+   * Whether the browser currently has network connectivity.
+   *
+   * @see [Navigator: onLine on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine)
+   */
   readonly isOnline: Signal<boolean>;
 
-  /** Effective connection type */
+  /**
+   * Estimated effective connection type based on recently observed network conditions.
+   *
+   * @see [NetworkInformation: effectiveType on MDN](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/effectiveType)
+   */
   readonly effectiveType: Signal<EffectiveConnectionType | undefined>;
 
-  /** Downlink speed in Mbps */
+  /**
+   * Estimated downlink bandwidth in Mbps.
+   *
+   * @see [NetworkInformation: downlink on MDN](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/downlink)
+   */
   readonly downlink: Signal<number | undefined>;
 
-  /** Round-trip time in ms */
+  /**
+   * Estimated round-trip latency in milliseconds.
+   *
+   * @see [NetworkInformation: rtt on MDN](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/rtt)
+   */
   readonly rtt: Signal<number | undefined>;
 
-  /** Whether user has data saver enabled */
+  /**
+   * Whether the user has enabled a data-saving mode in their browser or OS.
+   *
+   * @see [NetworkInformation: saveData on MDN](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/saveData)
+   */
   readonly saveData: Signal<boolean>;
 
-  /** Connection type (wifi, cellular, etc.) */
+  /**
+   * The physical connection type (e.g. `'wifi'`, `'cellular'`).
+   *
+   * @see [NetworkInformation: type on MDN](https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation/type)
+   */
   readonly type: Signal<ConnectionType | undefined>;
 }
 
 /**
- * Signal-based wrapper around the Network Information API and online/offline events.
+ * Signal-based wrapper around the [Network Information API](https://developer.mozilla.org/en-US/docs/Web/API/Network_Information_API) and online/offline events.
  *
  * @param options - Optional configuration including injector
  * @returns A NetworkRef with network status signals

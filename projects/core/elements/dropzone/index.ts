@@ -13,32 +13,49 @@ import { watcher } from '@signality/core/reactivity/watcher';
 
 export interface DropzoneOptions extends WithInjector {
   /**
-   * Accepted MIME types.
+   * Accepted MIME types. Supports wildcards (`'image/*'`) and exact types (`'image/png'`).
+   * Use `['*']` to accept all file types.
+   *
    * @default ['*']
+   * @see [MIME types on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types)
    */
   readonly accept?: MaybeSignal<string[]>;
 
   /**
-   * Allow multiple files.
+   * Whether to allow dropping multiple files at once.
+   * When `false`, only the first accepted file is kept.
+   *
    * @default true
    */
   readonly multiple?: MaybeSignal<boolean>;
 
   /**
-   * Prevent drops outside the zone.
+   * When `true`, prevents files from being dropped anywhere outside the drop zone
+   * by intercepting `dragover` and `drop` events on the document.
+   *
    * @default true
    */
   readonly preventDocumentDrop?: boolean;
 }
 
 export interface DropzoneRef {
-  /** Dropped files */
+  /**
+   * List of files dropped onto the zone, filtered by `accept` and `multiple`.
+   * A `WritableSignal` — can be reset externally (e.g. after upload).
+   *
+   * @see [DataTransfer.files on MDN](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/files)
+   */
   readonly files: WritableSignal<File[]>;
 
-  /** Whether dragging over the zone */
+  /**
+   * Whether the user is currently dragging over the drop zone.
+   */
   readonly isOver: Signal<boolean>;
 
-  /** Whether any drag is in progress (document-wide) */
+  /**
+   * Whether any drag operation is in progress anywhere on the document.
+   * Useful for showing a global drop overlay.
+   */
   readonly isDragging: Signal<boolean>;
 }
 
@@ -69,7 +86,7 @@ export interface DropzoneRef {
  *     </div>
  *   `
  * })
- * class DropzoneComponent {
+ * class DropzoneDemo {
  *   readonly zone = viewChild<ElementRef>('zone');
  *   readonly drop = dropzone(this.zone, { accept: ['image/*'], multiple: true });
  * }

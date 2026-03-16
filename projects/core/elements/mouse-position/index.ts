@@ -5,39 +5,60 @@ import { listener } from '@signality/core/browser/listener';
 import { onDisconnect } from '@signality/core/elements/on-disconnect';
 
 export interface MousePosition {
+  /** Horizontal coordinate in pixels. */
   readonly x: number;
+
+  /** Vertical coordinate in pixels. */
   readonly y: number;
 }
 
+/**
+ * Coordinate space used to report mouse position.
+ *
+ * - `'page'` — relative to the document origin, includes scroll offset.
+ * - `'client'` — relative to the viewport, unaffected by scroll.
+ * - `'screen'` — relative to the physical screen.
+ *
+ * @see [MouseEvent.pageX on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/pageX)
+ * @see [MouseEvent.clientX on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/clientX)
+ * @see [MouseEvent.screenX on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/screenX)
+ */
 export type MouseCoordinateType = 'page' | 'client' | 'screen';
 
 export interface MousePositionOptions extends WithInjector {
   /**
-   * Element or window to track mouse position on.
+   * Element or `window` to track mouse position on.
+   * When an element signal is provided, tracking stops on element disconnect.
+   *
    * @default window
    */
   readonly target?: MaybeElementSignal<Element> | Window;
 
   /**
-   * Coordinate type to use.
+   * Coordinate space for the reported position. See {@link MouseCoordinateType}.
+   *
    * @default 'page'
    */
   readonly type?: MouseCoordinateType;
 
   /**
-   * Whether to track touch events as well.
+   * Whether to also track touch events (`touchmove`).
+   *
    * @default true
+   * @see [TouchEvent on MDN](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent)
    */
   readonly touch?: boolean;
 
   /**
-   * Initial mouse position.
+   * Initial value for SSR.
+   *
+   * @default { x: 0, y: 0 }
    */
   readonly initialValue?: MousePosition;
 }
 
 /**
- * Reactive tracking of mouse position.
+ * Reactive tracking of mouse position using the [mousemove](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousemove_event) event.
  * Track cursor coordinates globally or relative to an element.
  *
  * @param options - Optional configuration

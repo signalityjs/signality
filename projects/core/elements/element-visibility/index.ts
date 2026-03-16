@@ -8,35 +8,53 @@ export interface ElementVisibilityOptions
   extends CreateSignalOptions<ElementVisibilityValue>,
     WithInjector {
   /**
-   * Visibility threshold(s). A number between 0 and 1, or an array of thresholds.
+   * Fraction of the element that must be visible to trigger a change.
+   * A single number or an array of thresholds, each between `0` and `1`.
+   *
    * @default 0
+   * @see [IntersectionObserver: thresholds on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/thresholds)
    */
   readonly threshold?: MaybeSignal<number | number[]>;
 
   /**
-   * Scrollable ancestor element (null = viewport).
+   * Scrollable ancestor used as the viewport for intersection checks.
+   * `null` or `undefined` defaults to the browser viewport.
+   *
    * @default undefined
+   * @see [IntersectionObserver: root on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root)
    */
   readonly root?: MaybeElementSignal<Element> | Document;
 
   /**
-   * Margin around the root element.
+   * CSS margin applied around the root before computing intersections.
+   * Accepts values in the same format as the CSS `margin` property (e.g. `'10px 0px'`).
+   *
    * @default '0px'
+   * @see [IntersectionObserver: rootMargin on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)
    */
   readonly rootMargin?: MaybeSignal<string>;
 
   /**
    * Initial value for SSR.
+   *
    * @default { isVisible: true, ratio: 1 }
    */
   readonly initialValue?: ElementVisibilityValue;
 }
 
 export interface ElementVisibilityValue {
-  /** Whether the element is visible in the viewport */
+  /**
+   * Whether the element is currently intersecting the root (visible in the viewport).
+   *
+   * @see [IntersectionObserverEntry: isIntersecting on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry/isIntersecting)
+   */
   readonly isVisible: boolean;
 
-  /** Intersection ratio (0.0 to 1.0) */
+  /**
+   * Fraction of the element visible within the root, from `0.0` (not visible) to `1.0` (fully visible).
+   *
+   * @see [IntersectionObserverEntry: intersectionRatio on MDN](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry/intersectionRatio)
+   */
   readonly ratio: number;
 }
 
@@ -44,7 +62,7 @@ export interface ElementVisibilityValue {
  * Signal-based wrapper around the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
  *
  * @param target - The element to observe
- * @param options - Optional configuration including signal options (equal, debugName), observer options (threshold, root, rootMargin, initialValue), and injector
+ * @param options - Optional configuration
  * @returns A signal containing the current visibility state
  *
  * @example
@@ -56,7 +74,7 @@ export interface ElementVisibilityValue {
  *     </div>
  *   `
  * })
- * class VisibilityComponent {
+ * class VisibilityDemo {
  *   readonly section = viewChild<ElementRef>('section');
  *   readonly visibility = elementVisibility(this.section);
  * }
