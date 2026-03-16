@@ -15,7 +15,7 @@ export interface TextDirectionOptions extends CreateSignalOptions<TextDirection>
   readonly target?: MaybeElementSignal<HTMLElement>;
 
   /**
-   * Initial direction value used during SSR or before the DOM is read.
+   * Initial value for SSR.
    * @default 'ltr'
    */
   readonly initialValue?: TextDirection;
@@ -24,9 +24,6 @@ export interface TextDirectionOptions extends CreateSignalOptions<TextDirection>
 /**
  * Reactive read/write wrapper around an element's `dir` attribute for detecting and controlling
  * [text directionality](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir).
- *
- * Returns a `WritableSignal` that reflects the current `dir` attribute value and updates the DOM
- * when written to. Changes made to the attribute externally are picked up via `MutationObserver`.
  *
  * @param options - Optional configuration including target element, initial value and injector
  * @returns A writable signal of the current text direction
@@ -40,7 +37,7 @@ export interface TextDirectionOptions extends CreateSignalOptions<TextDirection>
  *     <button (click)="dir.set('ltr')">Set LTR</button>
  *   `
  * })
- * class TextDirectionComponent {
+ * class TextDirectionDemo {
  *   readonly dir = textDirection();
  * }
  * ```

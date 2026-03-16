@@ -4,50 +4,81 @@ import type { WithInjector } from '@signality/core/types';
 
 export interface GeolocationOptions extends WithInjector {
   /**
-   * Start tracking immediately.
+   * Start tracking immediately on initialization.
+   *
    * @default true
    */
   readonly immediate?: boolean;
 
   /**
-   * Use GPS for better accuracy.
+   * Use GPS for higher accuracy. May be slower and consume more power.
+   *
    * @default true
+   * @see [PositionOptions: enableHighAccuracy on MDN](https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions/enableHighAccuracy)
    */
   readonly enableHighAccuracy?: boolean;
 
   /**
-   * Max age of cached position (ms).
+   * Maximum age of a cached position in milliseconds. `0` forces a fresh lookup.
+   *
    * @default 0
+   * @see [PositionOptions: maximumAge on MDN](https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions/maximumAge)
    */
   readonly maximumAge?: number;
 
   /**
-   * Request timeout (ms).
+   * Maximum time in milliseconds allowed to retrieve a position before erroring.
+   *
    * @default Infinity
+   * @see [PositionOptions: timeout on MDN](https://developer.mozilla.org/en-US/docs/Web/API/PositionOptions/timeout)
    */
   readonly timeout?: number;
 }
 
 export interface GeolocationRef {
-  /** Whether Geolocation is supported */
+  /**
+   * Whether the Geolocation API is supported in the current browser.
+   *
+   * @see [Geolocation API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Full position object with timestamp */
+  /**
+   * The most recent position, including coordinates and timestamp. `null` until first fix.
+   *
+   * @see [GeolocationPosition on MDN](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition)
+   */
   readonly position: Signal<GeolocationPosition | null>;
 
-  /** Last error */
+  /**
+   * The last error returned by the Geolocation API, or `null` if no error.
+   *
+   * @see [GeolocationPositionError on MDN](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPositionError)
+   */
   readonly error: Signal<GeolocationPositionError | null>;
 
-  /** Whether location tracking is currently active */
+  /**
+   * Whether position watching is currently active.
+   */
   readonly isActive: Signal<boolean>;
 
-  /** Whether currently fetching location */
+  /**
+   * Whether a position fix is currently being fetched.
+   */
   readonly isLoading: Signal<boolean>;
 
-  /** Start/resume watching position */
+  /**
+   * Start watching the device position.
+   *
+   * @see [Geolocation: watchPosition() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition)
+   */
   readonly start: () => void;
 
-  /** Stop watching position */
+  /**
+   * Stop watching the device position.
+   *
+   * @see [Geolocation: clearWatch() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/clearWatch)
+   */
   readonly stop: () => void;
 }
 
@@ -69,7 +100,7 @@ export interface GeolocationRef {
  *     <button (click)="geo.stop()">Stop</button>
  *     <button (click)="geo.start()">Start</button>
  * })
- * class LocationComponent {
+ * class LocationDemo {
  *   readonly geo = geolocation();
  * }
  * ```

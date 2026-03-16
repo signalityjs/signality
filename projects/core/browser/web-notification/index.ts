@@ -4,33 +4,59 @@ import type { MaybeSignal, WithInjector } from '@signality/core/types';
 
 export interface WebNotificationOptions extends NotificationOptions, WithInjector {
   /**
-   * Auto-close notification after specified milliseconds.
+   * Auto-close the notification after the specified number of milliseconds.
+   *
+   * @see [Notification: close() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/close)
    */
   readonly autoClose?: MaybeSignal<number>;
 }
 
 export interface WebNotificationRef {
-  /** Whether Notifications API is supported */
+  /**
+   * Whether the Notifications API is supported in the current browser.
+   *
+   * @see [Notifications API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Current permission state */
+  /**
+   * Current notification permission state: `'granted'`, `'denied'`, or `'default'`.
+   *
+   * @see [Notification: permission static property on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/permission_static)
+   */
   readonly permission: Signal<NotificationPermission>;
 
-  /** Current active notification instance */
+  /**
+   * The currently active notification instance, or `null` if none is shown.
+   *
+   * @see [Notification on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification)
+   */
   readonly notification: Signal<Notification | null>;
 
-  /** Request notification permission */
+  /**
+   * Request permission to show notifications.
+   *
+   * @see [Notification: requestPermission() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static)
+   */
   readonly requestPermission: () => Promise<NotificationPermission>;
 
-  /** Show a notification (auto-closes previous). Per-call options override defaults from constructor. */
+  /**
+   * Show a notification. Automatically closes the previous one. Per-call options override constructor defaults.
+   *
+   * @see [Notification() constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification)
+   */
   readonly show: (title: string, options?: NotificationOptions) => Notification | undefined;
 
-  /** Close the current notification */
+  /**
+   * Close the currently active notification.
+   *
+   * @see [Notification: close() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/close)
+   */
   readonly close: () => void;
 }
 
 /**
- * Signal-based wrapper around the Notifications API.
+ * Signal-based wrapper around the [Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API).
  *
  * Tracks the current notification as a signal. Calling `show()` auto-closes
  * the previous notification. Calling `close()` closes the current one.
@@ -51,7 +77,7 @@ export interface WebNotificationRef {
  *     }
  *   `
  * })
- * class NotificationComponent {
+ * class NotificationDemo {
  *   readonly notif = webNotification({ icon: '/icon.png' });
  *
  *   async requestPermission() {

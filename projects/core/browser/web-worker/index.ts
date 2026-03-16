@@ -5,43 +5,67 @@ import { watcher } from '@signality/core/reactivity/watcher';
 
 export interface WebWorkerOptions extends WithInjector {
   /**
-   * Worker type.
+   * Worker script type.
+   *
    * @default 'classic'
+   * @see [Worker: Worker() constructor — type on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker#type)
    */
   readonly type?: 'classic' | 'module';
 
   /**
-   * Credentials mode.
+   * Credentials mode used when fetching the worker script.
+   *
+   * @see [Worker: Worker() constructor — credentials on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker#credentials)
    */
   readonly credentials?: RequestCredentials;
 
   /**
-   * Worker name for debugging.
+   * Identifying name for the worker, useful for debugging in DevTools.
+   *
+   * @see [Worker: Worker() constructor — name on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker#name)
    */
   readonly name?: string;
 }
 
 export interface WebWorkerRef<I, O> {
-  /** Last message received from worker */
+  /**
+   * The last message received from the worker via `postMessage`.
+   * `undefined` until the first message is received.
+   */
   readonly data: Signal<O | undefined>;
 
-  /** Whether worker is ready */
+  /**
+   * Whether the worker has been successfully created and is ready to receive messages.
+   */
   readonly isReady: Signal<boolean>;
 
-  /** Last error from worker */
+  /**
+   * The last error emitted by the worker, or `null` if no error has occurred.
+   */
   readonly error: Signal<Error | null>;
 
-  /** Send message to worker */
+  /**
+   * Send a message to the worker.
+   *
+   * @see [Worker.postMessage() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Worker/postMessage)
+   */
   readonly post: (data: I) => void;
 
-  /** Terminate the worker */
+  /**
+   * Terminate the worker immediately, discarding any pending messages.
+   *
+   * @see [Worker.terminate() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Worker/terminate)
+   */
   readonly terminate: () => void;
 }
 
 /**
- * Signal-based wrapper around the Web Workers API.
+ * Signal-based wrapper around the [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API).
+ * Run scripts in background threads without blocking the main thread.
  *
- * @param url - Worker script URL
+ * When `url` is a signal, the worker is automatically recreated whenever the URL changes.
+ *
+ * @param url - Worker script URL (static or reactive signal)
  * @param options - Optional configuration
  * @returns A WebWorkerRef with data signal and control methods
  *
@@ -55,7 +79,7 @@ export interface WebWorkerRef<I, O> {
  *     }
  *   `
  * })
- * class WorkerComponent {
+ * class WorkerDemo {
  *   readonly worker = webWorker<number, number>('/workers/calc.js');
  * }
  * ```

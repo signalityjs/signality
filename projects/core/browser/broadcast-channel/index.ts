@@ -39,7 +39,7 @@ export interface BroadcastChannelRef<T> {
  *     <button (click)="sendMessage()">Send Message</button>
  *   `
  * })
- * class ChatComponent {
+ * class ChatDemo {
  *   readonly channel = broadcastChannel<string>('my-channel');
  *
  *   sendMessage() {

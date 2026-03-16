@@ -17,19 +17,35 @@ export interface ClipboardOptions extends WithInjector {
 }
 
 export interface ClipboardRef {
-  /** Whether Clipboard API is supported */
+  /**
+   * Whether the Clipboard API is supported in the current browser.
+   *
+   * @see [Clipboard API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Current clipboard text content */
+  /**
+   * The most recently copied or pasted text.
+   */
   readonly text: Signal<string>;
 
-  /** Whether content was recently copied (resets after timeout) */
+  /**
+   * Whether the text was recently copied. Resets to `false` after `copiedDuration` ms.
+   */
   readonly copied: Signal<boolean>;
 
-  /** Copy text to clipboard */
+  /**
+   * Write text to the clipboard.
+   *
+   * @see [Clipboard: writeText() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText)
+   */
   readonly copy: (text: string) => Promise<void>;
 
-  /** Read text from clipboard */
+  /**
+   * Read text from the clipboard.
+   *
+   * @see [Clipboard: readText() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText)
+   */
   readonly paste: () => Promise<string>;
 }
 
@@ -50,7 +66,7 @@ export interface ClipboardRef {
  *     }
  *   `
  * })
- * class ClipboardComponent {
+ * class ClipboardDemo {
  *   readonly cb = clipboard();
  *
  *   async copyText(text: string) {

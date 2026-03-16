@@ -30,7 +30,7 @@ export type ActiveElementOptions = CreateSignalOptions<Element | null> & WithInj
  *     }
  *   `
  * })
- * class ActiveElementComponent {
+ * class ActiveElementDemo {
  *   readonly activeEl = activeElement();
  * }
  * ```

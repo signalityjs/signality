@@ -29,7 +29,7 @@ export interface BrowserLanguageOptions extends CreateSignalOptions<string>, Wit
  *     }
  *   `
  * })
- * class LanguageComponent {
+ * class LanguageDemo {
  *   readonly language = browserLanguage();
  * }
  * ```

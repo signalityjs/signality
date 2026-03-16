@@ -22,7 +22,7 @@ export type OnlineOptions = CreateSignalOptions<boolean> & WithInjector;
  *     }
  *   `
  * })
- * class NetworkStatusComponent {
+ * class NetworkStatus {
  *   readonly isOnline = online();
  * }
  * ```

@@ -7,10 +7,22 @@ import { NOOP_EFFECT_REF, setupContext, toElement, toValue } from '@signality/co
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface ResizeObserverInitOptions extends Omit<CreateEffectOptions, 'allowSignalWrites'> {
+  /**
+   * Box model to measure when reporting size changes.
+   *
+   * - `'content-box'` — size of the content area, excluding padding and border (default).
+   * - `'border-box'` — size including padding and border.
+   * - `'device-pixel-content-box'` — content-box size in physical device pixels.
+   *
+   * @see [ResizeObserver.observe(): box on MDN](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver/observe#box)
+   */
   readonly box?: MaybeSignal<ResizeObserverBoxOptions>;
 }
 
 export interface ResizeObserverRef {
+  /**
+   * Stop observing all targets and disconnect the underlying `ResizeObserver`.
+   */
   readonly destroy: () => void;
 }
 

@@ -6,10 +6,18 @@ import { listener, setupSync } from '@signality/core/browser/listener';
 export type DevicePostureType = 'continuous' | 'folded';
 
 export interface DevicePostureRef {
-  /** Whether Device Posture API is supported */
+  /**
+   * Whether the Device Posture API is supported in the current browser.
+   *
+   * @see [Device Posture API browser compatibility on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Device_Posture_API#browser_compatibility)
+   */
   readonly isSupported: Signal<boolean>;
 
-  /** Current device posture */
+  /**
+   * Current posture of the device. `'continuous'` for flat screens, `'folded'` for foldable devices.
+   *
+   * @see [DevicePosture: type on MDN](https://developer.mozilla.org/en-US/docs/Web/API/DevicePosture/type)
+   */
   readonly type: Signal<DevicePostureType>;
 }
 
@@ -20,6 +28,19 @@ export interface DevicePostureRef {
  * @param options - Optional configuration including injector
  * @returns A DevicePostureRef with type signal
  *
+ * @example
+ * ```typescript
+ * @Component({
+ *   template: `
+ *     @if (posture.isSupported()) {
+ *       <p>Device posture: {{ posture.type() }}</p>
+ *     }
+ *   `
+ * })
+ * class PostureDemo {
+ *   readonly posture = devicePosture();
+ * }
+ * ```
  */
 export function devicePosture(options?: WithInjector): DevicePostureRef {
   const { runInContext } = setupContext(options?.injector, devicePosture);
