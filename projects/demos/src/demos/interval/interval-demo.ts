@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { interval } from '@signality/core/scheduling/interval';
 import { DemoCard, Wrapper } from '../../common';
 
@@ -11,7 +11,7 @@ import { DemoCard, Wrapper } from '../../common';
       <demo-card>
         <!-- Counter -->
         <div class="iv-counter">
-          <span class="iv-value">{{ timer.counter() }}</span>
+          <span class="iv-value">{{ ticks() }}</span>
           <span class="iv-unit">ticks</span>
         </div>
 
@@ -25,11 +25,8 @@ import { DemoCard, Wrapper } from '../../common';
             {{ timer.isActive() ? 'Running' : 'Stopped' }}
           </span>
           <div class="iv-actions">
-            <button class="iv-btn iv-btn--muted" (click)="timer.reset()">Reset</button>
             @if (timer.isActive()) {
-            <button class="iv-btn iv-btn--secondary" (click)="timer.pause()">Pause</button>
-            } @else {
-            <button class="iv-btn iv-btn--accent" (click)="timer.resume()">Resume</button>
+            <button class="iv-btn iv-btn--secondary" (click)="timer.stop()">Stop</button>
             }
           </div>
         </div>
@@ -139,14 +136,6 @@ import { DemoCard, Wrapper } from '../../common';
       transition: color 0.15s ease;
     }
 
-    .iv-btn--muted {
-      color: #52525b;
-    }
-
-    .iv-btn--muted:hover {
-      color: #a1a1aa;
-    }
-
     .iv-btn--secondary {
       color: #71717a;
     }
@@ -154,24 +143,12 @@ import { DemoCard, Wrapper } from '../../common';
     .iv-btn--secondary:hover {
       color: #a1a1aa;
     }
-
-    .iv-btn--accent {
-      color: #DEB3EB;
-    }
-
-    .iv-btn--accent:hover {
-      color: #e8c8f5;
-    }
   `,
 })
 export class IntervalDemo {
-  readonly timer = interval(
-    () => {
-      /* tick */
-    },
-    1000,
-    { immediate: true }
-  );
+  readonly ticks = signal(0);
+
+  readonly timer = interval(() => this.ticks.update(n => n + 1), 1000);
 
   readonly importCode = `import { interval } from '@signality/core'`;
 }

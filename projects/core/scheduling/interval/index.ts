@@ -5,45 +5,41 @@ import { watcher } from '@signality/core/reactivity/watcher';
 
 export interface IntervalOptions extends WithInjector {
   /**
-   * Whether to start the interval immediately.
+   * Call the callback immediately, without waiting for the first tick.
+   *
    * @default false
    */
   readonly immediate?: boolean;
 }
 
 export interface IntervalRef {
-  /** Whether the interval is currently active */
+  /**
+   * Whether the interval is currently running.
+   */
   readonly isActive: Signal<boolean>;
 
-  /** Number of times the callback has been executed */
-  readonly counter: Signal<number>;
-
-  /** Pause the interval */
-  readonly pause: () => void;
-
-  /** Resume the interval */
-  readonly resume: () => void;
-
-  /** Reset the counter to 0 */
-  readonly reset: () => void;
+  /**
+   * Stop the interval permanently.
+   */
+  readonly stop: () => void;
 }
 
 /**
- * Creates a reactive interval that executes a callback function at specified intervals.
- * Automatically handles cleanup and supports reactive interval duration.
+ * Signal-based wrapper around [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval).
+ * Creates a reactive interval that executes a callback at specified intervals.
+ * The interval starts immediately upon creation and can be stopped with `stop()`.
  *
- * @param callback - Function to execute on each interval tick, receives current counter value
+ * @param callback - Function to execute on each interval tick
  * @param intervalMs - Interval duration in milliseconds (can be a reactive signal)
- * @param options - Optional configuration including immediate start and injector
- * @returns An IntervalRef with control methods and state signals
+ * @param options - Optional configuration
+ * @returns An IntervalRef with `isActive` signal and `stop` method
  *
  * @example
  * ```typescript
  * @Component({
  *   template: `
  *     <p>Status: {{ polling.isActive() ? 'Polling' : 'Stopped' }}</p>
- *     <button (click)="polling.pause()">Stop</button>
- *     <button (click)="polling.resume()">Start</button>
+ *     <button (click)="polling.stop()">Stop</button>
  *   `,
  * })
  * export class PeriodicTask {
@@ -58,7 +54,7 @@ export interface IntervalRef {
  * ```
  */
 export function interval(
-  callback: (counter: number) => void,
+  callback: () => void,
   intervalMs: MaybeSignal<number>,
   options?: IntervalOptions
 ): IntervalRef {
@@ -68,38 +64,13 @@ export function interval(
     if (isServer) {
       return {
         isActive: constSignal(false),
-        counter: constSignal(0),
-        pause: NOOP_FN,
-        resume: NOOP_FN,
-        reset: NOOP_FN,
+        stop: NOOP_FN,
       };
     }
 
-    const isActive = signal(false);
-    const counter = signal(0);
+    const isActive = signal(true);
 
     let intervalId: Timer;
-
-    const start = () => {
-      untracked(() => {
-        if (intervalId !== undefined || !isActive()) {
-          return;
-        }
-
-        const ms = toValue(intervalMs);
-
-        intervalId = setInterval(() => {
-          const currentCounter = counter() + 1;
-          counter.set(currentCounter);
-          callback(currentCounter);
-        }, ms);
-      });
-    };
-
-    const pause = () => {
-      cleanup();
-      isActive.set(false);
-    };
 
     const cleanup = () => {
       if (intervalId !== undefined) {
@@ -108,41 +79,39 @@ export function interval(
       }
     };
 
-    const resume = () => {
-      if (intervalId !== undefined) {
-        return;
-      }
+    const start = () => {
+      cleanup();
 
-      isActive.set(true);
-      start();
+      const ms = toValue.untracked(intervalMs);
+      if (ms <= 0) return;
+
+      intervalId = setInterval(callback, ms);
     };
 
-    const reset = () => {
-      counter.set(0);
+    const stop = () => {
+      isActive.set(false);
+      cleanup();
     };
 
     if (isSignal(intervalMs)) {
-      watcher(intervalMs, newMs => {
-        if (isActive() && newMs !== undefined) {
-          cleanup();
+      watcher(intervalMs, () => {
+        if (untracked(isActive)) {
           start();
         }
       });
     }
 
-    onCleanup(cleanup);
+    onCleanup(stop);
 
     if (options?.immediate) {
-      isActive.set(true);
-      start();
+      callback();
     }
+
+    start();
 
     return {
       isActive: isActive.asReadonly(),
-      counter: counter.asReadonly(),
-      pause,
-      resume,
-      reset,
+      stop,
     };
   });
 }
