@@ -58,7 +58,7 @@ export class ScreenCaptureDemo {
 | `isActive`    | `Signal<boolean>`                            | Whether currently capturing             |
 | `stream`      | `Signal<MediaStream \| null>`                | Current media stream                    |
 | `error`       | `Signal<Error \| null>`                      | Last error occurred                     |
-| `start`       | `(options?) => Promise<MediaStream \| null>` | Start screen capture                    |
+| `start`       | `() => Promise<MediaStream \| null>`         | Start screen capture                    |
 | `stop`        | `() => void`                                 | Stop screen capture                     |
 
 ## Browser Compatibility
@@ -98,7 +98,7 @@ interface DisplayMediaRef {
   readonly isActive: Signal<boolean>;
   readonly stream: Signal<MediaStream | null>;
   readonly error: Signal<Error | null>;
-  readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | null>;
+  readonly start: () => Promise<MediaStream | null>;
   readonly stop: () => void;
 }
 

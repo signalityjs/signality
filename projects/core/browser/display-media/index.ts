@@ -51,7 +51,7 @@ export interface DisplayMediaRef {
    *
    * @see [MediaDevices: getDisplayMedia() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)
    */
-  readonly start: (options?: DisplayMediaOptions) => Promise<MediaStream | null>;
+  readonly start: () => Promise<MediaStream | null>;
 
   /**
    * Stop all active capture tracks and clear the stream.
@@ -99,18 +99,6 @@ export interface DisplayMediaRef {
  *   }
  * }
  * ```
- *
- * @example
- * ```typescript
- * // With custom constraints
- * const screen = displayMedia({
- *   video: {
- *     width: { ideal: 1920 },
- *     height: { ideal: 1080 },
- *   },
- *   audio: true,
- * });
- * ```
  */
 export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
   const { runInContext } = setupContext(options?.injector, displayMedia);
@@ -133,7 +121,7 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
       };
     }
 
-    const defaults: DisplayMediaOptions = {
+    const constraints: DisplayMediaStreamOptions = {
       video: options?.video ?? true,
       audio: options?.audio ?? false,
     };
@@ -142,12 +130,11 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
     const error = signal<Error | null>(null);
     const isActive = computed(() => stream() !== null);
 
-    const start = async (overrides?: DisplayMediaOptions): Promise<MediaStream | null> => {
+    const start = async (): Promise<MediaStream | null> => {
       try {
         stop();
 
-        const mergedOptions = { ...defaults, ...overrides };
-        const mediaStream = await navigator.mediaDevices.getDisplayMedia(mergedOptions);
+        const mediaStream = await navigator.mediaDevices.getDisplayMedia(constraints);
 
         stream.set(mediaStream);
         error.set(null);
