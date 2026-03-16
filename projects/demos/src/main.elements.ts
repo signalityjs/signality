@@ -44,6 +44,7 @@ import { NetworkDemo } from './demos/network/network-demo';
 import { OnClickOutsideDemo } from './demos/on-click-outside/on-click-outside-demo';
 import { OnlineDemo } from './demos/online/online-demo';
 import { PageVisibilityDemo } from './demos/page-visibility/page-visibility-demo';
+import { PermissionStateDemo } from './demos/permission-state/permission-state-demo';
 import { PictureInPictureDemo } from './demos/picture-in-picture/picture-in-picture-demo';
 import { ScrollPositionDemo } from './demos/scroll/scroll-position-demo';
 import { WebShareDemo } from './demos/web-share/web-share-demo';
@@ -96,6 +97,7 @@ const DEMOS = [
   { component: OnClickOutsideDemo, name: 'signality-demo-on-click-outside' },
   { component: OnlineDemo, name: 'signality-demo-online' },
   { component: PageVisibilityDemo, name: 'signality-demo-page-visibility' },
+  { component: PermissionStateDemo, name: 'signality-demo-permission-state' },
   { component: PictureInPictureDemo, name: 'signality-demo-picture-in-picture' },
   { component: ScrollPositionDemo, name: 'signality-demo-scroll-position' },
   { component: WebShareDemo, name: 'signality-demo-web-share' },

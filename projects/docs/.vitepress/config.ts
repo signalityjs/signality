@@ -190,6 +190,7 @@ export default defineConfig({
           { text: 'Network', link: '/browser/network' },
           { text: 'Online', link: '/browser/online' },
           { text: 'PageVisibility', link: '/browser/page-visibility' },
+          { text: 'PermissionState', link: '/browser/permission-state' },
           { text: 'PictureInPicture', link: '/browser/picture-in-picture' },
           { text: 'PointerLockElement', link: '/browser/pointer-lock-element' },
           { text: 'ScreenOrientation', link: '/browser/screen-orientation' },

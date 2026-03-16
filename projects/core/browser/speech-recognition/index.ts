@@ -2,6 +2,7 @@ import { isSignal, type Signal, signal, untracked } from '@angular/core';
 import { constSignal, NOOP_FN, setupContext, toValue } from '@signality/core/internal';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { watcher } from '@signality/core/reactivity/watcher';
+import { permissionState } from '@signality/core/browser/permission-state';
 
 export interface SpeechRecognitionOptions extends WithInjector {
   /**
@@ -130,7 +131,7 @@ export interface SpeechRecognitionRef {
 export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRecognitionRef {
   const { runInContext } = setupContext(options?.injector, speechRecognition);
 
-  return runInContext(({ isBrowser, onCleanup }) => {
+  return runInContext(({ isBrowser, injector, onCleanup }) => {
     const isSupported = constSignal(
       isBrowser && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
     );
@@ -151,7 +152,6 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
     const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     const recognition = new SpeechRecognitionClass();
-    const abortController = new AbortController();
 
     const {
       lang = 'en-US',
@@ -240,10 +240,7 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       }
     };
 
-    onCleanup(() => {
-      abortController.abort();
-      abort();
-    });
+    onCleanup(abort);
 
     if (isSignal(lang)) {
       watcher(lang, newLang => {
@@ -253,22 +250,10 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       });
     }
 
-    navigator.permissions.query({ name: 'microphone' }).then(result => {
-      if (abortController.signal.aborted) {
-        return;
+    watcher(permissionState('microphone'), state => {
+      if (state === 'denied') {
+        abort();
       }
-
-      const check = () => {
-        if (result.state === 'denied') {
-          abort();
-        }
-      };
-
-      check();
-
-      result.addEventListener('change', check, {
-        signal: abortController.signal,
-      });
     });
 
     return {

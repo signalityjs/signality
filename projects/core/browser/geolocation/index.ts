@@ -1,6 +1,8 @@
 import { computed, type Signal, signal, untracked } from '@angular/core';
 import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
+import { watcher } from '@signality/core/reactivity/watcher';
+import { permissionState } from '@signality/core/browser/permission-state';
 
 export interface GeolocationOptions extends WithInjector {
   /**
@@ -172,29 +174,12 @@ export function geolocation(options?: GeolocationOptions): GeolocationRef {
       });
     };
 
-    const abortController = new AbortController();
+    onCleanup(() => stop());
 
-    onCleanup(() => {
-      abortController.abort();
-      stop();
-    });
-
-    navigator.permissions.query({ name: 'geolocation' }).then(status => {
-      if (abortController.signal.aborted) {
-        return;
+    watcher(permissionState('geolocation'), state => {
+      if (state === 'denied') {
+        stop();
       }
-
-      const check = () => {
-        if (status.state === 'denied') {
-          stop();
-        }
-      };
-
-      check();
-
-      status.addEventListener('change', check, {
-        signal: abortController.signal,
-      });
     });
 
     if (immediate) {
