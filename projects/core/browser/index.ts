@@ -16,6 +16,7 @@ export * from '@signality/core/browser/listener';
 export * from '@signality/core/browser/media-query';
 export * from '@signality/core/browser/network';
 export * from '@signality/core/browser/online';
+export * from '@signality/core/browser/permission-state';
 export * from '@signality/core/browser/page-visibility';
 export * from '@signality/core/browser/picture-in-picture';
 export * from '@signality/core/browser/web-share';
