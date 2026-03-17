@@ -1,86 +1,45 @@
 import { type Signal, signal } from '@angular/core';
-import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
-import type { WithInjector } from '@signality/core/types';
-
-export interface SpeechSynthesisSpeakOptions {
-  /**
-   * Text to synthesize and speak.
-   *
-   * @see [SpeechSynthesisUtterance: text on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/text)
-   */
-  readonly text: string;
-
-  /**
-   * BCP 47 language tag for the utterance (e.g. `'en-US'`).
-   *
-   * @see [SpeechSynthesisUtterance: lang on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/lang)
-   */
-  readonly lang?: string;
-
-  /**
-   * Speech rate from `0.1` (slowest) to `10` (fastest).
-   *
-   * @see [SpeechSynthesisUtterance: rate on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/rate)
-   */
-  readonly rate?: number;
-
-  /**
-   * Speech pitch from `0` to `2`. `1` is the default.
-   *
-   * @see [SpeechSynthesisUtterance: pitch on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/pitch)
-   */
-  readonly pitch?: number;
-
-  /**
-   * Speech volume from `0` (silent) to `1` (loudest).
-   *
-   * @see [SpeechSynthesisUtterance: volume on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/volume)
-   */
-  readonly volume?: number;
-
-  /**
-   * Specific voice to use for synthesis.
-   *
-   * @see [SpeechSynthesisUtterance: voice on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/voice)
-   */
-  readonly voice?: SpeechSynthesisVoice;
-}
+import { constSignal, NOOP_FN, setupContext, toValue } from '@signality/core/internal';
+import type { MaybeSignal, WithInjector } from '@signality/core/types';
 
 export interface SpeechSynthesisOptions extends WithInjector {
   /**
-   * Default BCP 47 language tag (e.g. `'en-US'`).
+   * BCP 47 language tag (e.g. `'en-US'`). Supports reactive values.
    *
    * @see [SpeechSynthesisUtterance: lang on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/lang)
    */
-  readonly lang?: string;
+  readonly lang?: MaybeSignal<string>;
 
   /**
-   * Default speech rate from `0.1` to `10`.
+   * Speech rate from `0.1` to `10`. Supports reactive values.
    *
+   * @default 1
    * @see [SpeechSynthesisUtterance: rate on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/rate)
    */
-  readonly rate?: number;
+  readonly rate?: MaybeSignal<number>;
 
   /**
-   * Default speech pitch from `0` to `2`.
+   * Speech pitch from `0` to `2`. Supports reactive values.
    *
+   * @default 1
    * @see [SpeechSynthesisUtterance: pitch on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/pitch)
    */
-  readonly pitch?: number;
+  readonly pitch?: MaybeSignal<number>;
 
   /**
-   * Default speech volume from `0` to `1`.
+   * Speech volume from `0` to `1`. Supports reactive values.
    *
+   * @default 1
    * @see [SpeechSynthesisUtterance: volume on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/volume)
    */
-  readonly volume?: number;
+  readonly volume?: MaybeSignal<number>;
 
   /**
-   * Default voice to use for synthesis.
+   * Voice to use for synthesis. Supports reactive values.
    *
    * @see [SpeechSynthesisUtterance: voice on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/voice)
    */
-  readonly voice?: SpeechSynthesisVoice;
+  readonly voice?: MaybeSignal<SpeechSynthesisVoice>;
 }
 
 export interface SpeechSynthesisRef {
@@ -119,10 +78,11 @@ export interface SpeechSynthesisRef {
 
   /**
    * Speak the given text, cancelling any ongoing utterance.
+   * Reads current reactive option values (`lang`, `rate`, `pitch`, `volume`, `voice`) at call time.
    *
    * @see [SpeechSynthesis: speak() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/speak)
    */
-  readonly speak: (text: string, options?: Partial<SpeechSynthesisSpeakOptions>) => void;
+  readonly speak: (text: string) => void;
 
   /**
    * Cancel and stop the current utterance.
@@ -157,7 +117,7 @@ export interface SpeechSynthesisRef {
  * @Component({
  *   template: `
  *     @if (synthesis.isSupported()) {
- *       <button (click)="speakText()" [disabled]="synthesis.isSpeaking()">
+ *       <button (click)="synthesis.speak('Hello, world!')" [disabled]="synthesis.isSpeaking()">
  *         {{ synthesis.isSpeaking() ? 'Speaking...' : 'Speak' }}
  *       </button>
  *       <button (click)="synthesis.stop()">Stop</button>
@@ -165,11 +125,7 @@ export interface SpeechSynthesisRef {
  *   `
  * })
  * class TextToSpeechDemo {
- *   readonly synthesis = speechSynthesis();
- *
- *   speakText() {
- *     this.synthesis.speak('Hello, world!');
- *   }
+ *   readonly synthesis = speechSynthesis({ rate: 1.5 });
  * }
  * ```
  */
@@ -196,14 +152,6 @@ export function speechSynthesis(options?: SpeechSynthesisOptions): SpeechSynthes
     }
 
     const { speechSynthesis } = window;
-
-    const {
-      lang: defaultLang,
-      rate: defaultRate = 1,
-      pitch: defaultPitch = 1,
-      volume: defaultVolume = 1,
-      voice: defaultVoice,
-    } = options ?? {};
 
     const isSpeaking = signal(false);
     const isPaused = signal(false);
@@ -245,7 +193,7 @@ export function speechSynthesis(options?: SpeechSynthesisOptions): SpeechSynthes
       isPaused.set(false);
     };
 
-    const speak = (text: string, speakOptions?: Partial<SpeechSynthesisSpeakOptions>) => {
+    const speak = (text: string) => {
       if (!text) {
         return;
       }
@@ -254,21 +202,20 @@ export function speechSynthesis(options?: SpeechSynthesisOptions): SpeechSynthes
 
       const utterance = new SpeechSynthesisUtterance(text);
 
-      const {
-        lang = defaultLang,
-        rate = defaultRate,
-        pitch = defaultPitch,
-        volume = defaultVolume,
-        voice = defaultVoice,
-      } = speakOptions ?? {};
+      const lang = toValue.untracked(options?.lang);
+      const voice = toValue.untracked(options?.voice);
 
-      if (lang) utterance.lang = lang;
+      if (lang) {
+        utterance.lang = lang;
+      }
 
-      utterance.rate = rate;
-      utterance.pitch = pitch;
-      utterance.volume = volume;
+      if (voice) {
+        utterance.voice = voice;
+      }
 
-      if (voice) utterance.voice = voice;
+      utterance.rate = toValue.untracked(options?.rate) ?? 1;
+      utterance.pitch = toValue.untracked(options?.pitch) ?? 1;
+      utterance.volume = toValue.untracked(options?.volume) ?? 1;
 
       utterance.onstart = handleStart;
       utterance.onend = handleEnd;

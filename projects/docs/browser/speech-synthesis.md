@@ -11,28 +11,28 @@ Reactive wrapper around the [Speech Synthesis API](https://developer.mozilla.org
 ## Usage
 
 ```angular-ts
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { speechSynthesis } from '@signality/core';
 
 @Component({
   template: `
     <input [(ngModel)]="text" />
-    <button 
-      (click)="synthesis.speak(text())" 
-      [disabled]="synthesis.isSpeaking()"
+    <button
+      (click)="speech.speak(text())"
+      [disabled]="speech.isSpeaking()"
     >
       Speak
     </button>
-    <button 
-      (click)="synthesis.stop()" 
-      [disabled]="!synthesis.isSpeaking()"
+    <button
+      (click)="speech.stop()"
+      [disabled]="!speech.isSpeaking()"
     >
       Stop
     </button>
   `,
 })
 export class TextToSpeech {
-  readonly synthesis = speechSynthesis(); // [!code highlight]
+  readonly speech = speechSynthesis(); // [!code highlight]
   readonly text = signal('Hello, world!');
 }
 ```
@@ -45,13 +45,15 @@ export class TextToSpeech {
 
 ## Options
 
+All options support reactive values via `MaybeSignal<T>` — pass a plain value or an Angular signal.
+
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `lang` | `string` | - | Default language |
-| `rate` | `number` | `1` | Default speech rate (0.1 to 10) |
-| `pitch` | `number` | `1` | Default pitch (0 to 2) |
-| `volume` | `number` | `1` | Default volume (0 to 1) |
-| `voice` | `SpeechSynthesisVoice` | - | Default voice |
+| `lang` | `MaybeSignal<string>` | - | Language |
+| `rate` | `MaybeSignal<number>` | `1` | Speech rate (0.1 to 10) |
+| `pitch` | `MaybeSignal<number>` | `1` | Pitch (0 to 2) |
+| `volume` | `MaybeSignal<number>` | `1` | Volume (0 to 1) |
+| `voice` | `MaybeSignal<SpeechSynthesisVoice>` | - | Voice |
 | `injector` | [`Injector`](https://angular.dev/api/core/Injector) | - | Optional injector for DI context |
 
 ## Return Value
@@ -65,36 +67,68 @@ The `speechSynthesis()` function returns a `SpeechSynthesisRef` object:
 | `isPaused` | `Signal<boolean>` | Whether speech is currently paused |
 | `voices` | `Signal<SpeechSynthesisVoice[]>` | Available voices |
 | `currentText` | `Signal<string>` | Current speaking text |
-| `speak` | `(text: string, options?: Partial<SpeechSynthesisSpeakOptions>) => void` | Speak text |
+| `speak` | `(text: string) => void` | Speak text |
 | `stop` | `() => void` | Stop speaking |
 | `pause` | `() => void` | Pause speaking |
 | `resume` | `() => void` | Resume speaking |
 
 ## Examples
 
-### Voice selection
+### Reactive options
 
 ```angular-ts
-import { Component, computed } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { speechSynthesis } from '@signality/core';
 
 @Component({
   template: `
-    <select [value]="selectedVoice()" (change)="selectedVoice.set($any($event.target).value)">
-      @for (voice of synthesis.voices(); track voice.voiceURI) {
+    <label>Rate: {{ rate() }}</label>
+    <input type="range" min="0.5" max="2" step="0.1" [value]="rate()" (input)="rate.set(+$any($event.target).value)" />
+
+    <label>Pitch: {{ pitch() }}</label>
+    <input type="range" min="0" max="2" step="0.1" [value]="pitch()" (input)="pitch.set(+$any($event.target).value)" />
+
+    <button (click)="speech.speak('Hello, world!')">Speak</button>
+    <button (click)="speech.stop()">Stop</button>
+  `,
+})
+export class ReactiveOptions {
+  readonly rate = signal(1);
+  readonly pitch = signal(1);
+
+  readonly speech = speechSynthesis({ // [!code highlight]
+    rate: this.rate, // [!code highlight]
+    pitch: this.pitch, // [!code highlight]
+  }); // [!code highlight]
+}
+```
+
+### Voice selection
+
+```angular-ts
+import { Component, signal } from '@angular/core';
+import { speechSynthesis } from '@signality/core';
+
+@Component({
+  template: `
+    <select (change)="onVoiceChange($any($event.target).value)">
+      @for (voice of speech.voices(); track voice.voiceURI) {
         <option [value]="voice.voiceURI">{{ voice.name }}</option>
       }
     </select>
-    <button (click)="speak()">Speak</button>
+    <button (click)="speech.speak('Hello, world!')">Speak</button>
   `,
 })
 export class VoiceSelector {
-  readonly synthesis = speechSynthesis();
-  readonly selectedVoice = signal('');
-  
-  speak() {
-    const voice = this.synthesis.voices().find(v => v.voiceURI === this.selectedVoice());
-    this.synthesis.speak('Hello, world!', { voice }); // [!code highlight]
+  readonly selectedVoice = signal<SpeechSynthesisVoice | undefined>(undefined);
+
+  readonly speech = speechSynthesis({
+    voice: this.selectedVoice, // [!code highlight]
+  });
+
+  onVoiceChange(voiceURI: string) {
+    const voice = this.speech.voices().find(v => v.voiceURI === voiceURI);
+    this.selectedVoice.set(voice);
   }
 }
 ```
@@ -107,49 +141,22 @@ import { speechSynthesis } from '@signality/core';
 
 @Component({
   template: `
-    <button (click)="synthesis.speak('This is a long text that can be paused')">
+    <button (click)="speech.speak('This is a long text that can be paused')">
       Start
     </button>
-    <button (click)="synthesis.pause()" [disabled]="!synthesis.isSpeaking() || synthesis.isPaused()">
+    <button (click)="speech.pause()" [disabled]="!speech.isSpeaking() || speech.isPaused()">
       Pause
     </button>
-    <button (click)="synthesis.resume()" [disabled]="!synthesis.isPaused()">
+    <button (click)="speech.resume()" [disabled]="!speech.isPaused()">
       Resume
     </button>
-    <button (click)="synthesis.stop()" [disabled]="!synthesis.isSpeaking()">
+    <button (click)="speech.stop()" [disabled]="!speech.isSpeaking()">
       Stop
     </button>
   `,
 })
 export class PauseResume {
-  readonly synthesis = speechSynthesis();
-}
-```
-
-### Custom speech settings
-
-```angular-ts
-import { Component } from '@angular/core';
-import { speechSynthesis } from '@signality/core';
-
-@Component({
-  template: `
-    <input [value]="text()" (input)="text.set($any($event.target).value)" />
-    <button (click)="speakWithSettings()">Speak</button>
-  `,
-})
-export class CustomSettings {
-  readonly synthesis = speechSynthesis();
-  readonly text = signal('Hello, world!');
-  
-  speakWithSettings() {
-    this.synthesis.speak(this.text(), {
-      lang: 'en-US', // [!code highlight]
-      rate: 1.5, // [!code highlight]
-      pitch: 1.2, // [!code highlight]
-      volume: 0.8, // [!code highlight]
-    });
-  }
+  readonly speech = speechSynthesis();
 }
 ```
 
@@ -158,8 +165,8 @@ export class CustomSettings {
 The Speech Synthesis API has limited browser support. Always check `isSupported()` before using text-to-speech (see [Browser API support detection](/guide/key-concepts#browser-api-support-detection)):
 
 ```angular-html
-@if (synthesis.isSupported()) {
-  <button (click)="synthesis.speak(text())">Speak</button>
+@if (speech.isSupported()) {
+  <button (click)="speech.speak('Hello')">Speak</button>
 } @else {
   <p>Text-to-speech is not available in this browser</p>
 }
@@ -182,20 +189,11 @@ On the server, signals initialize with safe defaults:
 
 ```typescript
 interface SpeechSynthesisOptions extends WithInjector {
-  readonly lang?: string;
-  readonly rate?: number;
-  readonly pitch?: number;
-  readonly volume?: number;
-  readonly voice?: SpeechSynthesisVoice;
-}
-
-interface SpeechSynthesisSpeakOptions {
-  readonly text: string;
-  readonly lang?: string;
-  readonly rate?: number;
-  readonly pitch?: number;
-  readonly volume?: number;
-  readonly voice?: SpeechSynthesisVoice;
+  readonly lang?: MaybeSignal<string>;
+  readonly rate?: MaybeSignal<number>;
+  readonly pitch?: MaybeSignal<number>;
+  readonly volume?: MaybeSignal<number>;
+  readonly voice?: MaybeSignal<SpeechSynthesisVoice>;
 }
 
 interface SpeechSynthesisRef {
@@ -204,7 +202,7 @@ interface SpeechSynthesisRef {
   readonly isPaused: Signal<boolean>;
   readonly voices: Signal<SpeechSynthesisVoice[]>;
   readonly currentText: Signal<string>;
-  readonly speak: (text: string, options?: Partial<SpeechSynthesisSpeakOptions>) => void;
+  readonly speak: (text: string) => void;
   readonly stop: () => void;
   readonly pause: () => void;
   readonly resume: () => void;
