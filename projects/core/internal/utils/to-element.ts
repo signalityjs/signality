@@ -1,6 +1,7 @@
-import { ElementRef, type Signal } from '@angular/core';
+import { type ElementRef, type Signal } from '@angular/core';
 import type { MaybeElementSignal } from '@signality/core/types';
 import { toValue } from './to-value';
+import { unrefElement } from './unref-element';
 
 export interface ToElementFn extends ToElementBase {
   untracked: ToElementBase;
@@ -28,11 +29,6 @@ function toElementFn<T extends Element>(
   maybeSignal: MaybeElementSignal<T>,
   untracked = false
 ): T | null | undefined {
-  const value = untracked ? toValue.untracked(maybeSignal) : toValue(maybeSignal);
-
-  if (value instanceof ElementRef) {
-    return value.nativeElement;
-  }
-
-  return value;
+  const raw = untracked ? toValue.untracked(maybeSignal) : toValue(maybeSignal);
+  return unrefElement(raw);
 }
