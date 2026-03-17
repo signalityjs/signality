@@ -42,7 +42,7 @@ export class LocationDemo {
 
 | Option               | Type                                                | Default    | Description                      |
 |----------------------|-----------------------------------------------------|------------|----------------------------------|
-| `immediate`          | `boolean`                                           | `true`     | Start tracking immediately       |
+| `immediate`          | `boolean`                                           | `false`    | Start tracking immediately       |
 | `enableHighAccuracy` | `boolean`                                           | `true`     | Use GPS for better accuracy      |
 | `maximumAge`         | `number`                                            | `0`        | Max age of cached position (ms)  |
 | `timeout`            | `number`                                            | `Infinity` | Request timeout (ms)             |
@@ -113,7 +113,7 @@ import { geolocation } from '@signality/core';
   `,
 })
 export class DistanceCalculator {
-  readonly geo = geolocation();
+  readonly geo = geolocation({ immediate: true });
   readonly destination = signal({ lat: 40.7128, lng: -74.0060 }); // NYC
   
   readonly formattedCoords = computed(() => {

@@ -8,7 +8,7 @@ export interface GeolocationOptions extends WithInjector {
   /**
    * Start tracking immediately on initialization.
    *
-   * @default true
+   * @default false
    */
   readonly immediate?: boolean;
 
@@ -125,7 +125,7 @@ export function geolocation(options?: GeolocationOptions): GeolocationRef {
       };
     }
 
-    const immediate = options?.immediate ?? true;
+    const immediate = options?.immediate ?? false;
 
     const positionOptions: PositionOptions = {
       enableHighAccuracy: options?.enableHighAccuracy ?? true,
@@ -174,7 +174,7 @@ export function geolocation(options?: GeolocationOptions): GeolocationRef {
       });
     };
 
-    onCleanup(() => stop());
+    onCleanup(stop);
 
     watcher(permissionState('geolocation'), state => {
       if (state === 'denied') {
