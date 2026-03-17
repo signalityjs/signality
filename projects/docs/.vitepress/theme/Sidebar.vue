@@ -7,6 +7,10 @@ const { site } = useData();
 const sidebar = site.value.themeConfig.sidebar || [];
 
 const emit = defineEmits<{ navigate: [] }>();
+
+function onSearchClick() {
+  setTimeout(() => emit('navigate'), 150);
+}
 </script>
 
 <template>
@@ -64,7 +68,7 @@ const emit = defineEmits<{ navigate: [] }>();
           </a>
         </div>
 
-        <div @click.capture="setTimeout(() => emit('navigate'), 150)">
+        <div @click.capture="onSearchClick">
           <VPNavBarSearch />
         </div>
 
