@@ -1,0 +1,44 @@
+<ng-demo-wrapper [demoPath]="'text-selection/text-selection-demo'" [code]="importCode">
+  <demo-card>
+    <div class="ts-wrap">
+      <!-- Selectable text block -->
+      <div class="ts-text-block">
+        <p class="ts-text">
+          Angular signals bring reactivity to the core. With Signality, you can track browser
+          state, user interactions, and DOM changes — all as composable, lazy signals that
+          integrate seamlessly with Angular's change detection.
+        </p>
+      </div>
+
+      <div class="ts-divider"></div>
+
+      <!-- Info rows -->
+      <div class="ts-list">
+        <div class="ts-row">
+          <span class="ts-label">Characters</span>
+          <span class="ts-value" [class.ts-value--active]="hasSelection()">
+            {{ charCount() }}
+          </span>
+        </div>
+
+        <div class="ts-divider"></div>
+
+        <div class="ts-row">
+          <span class="ts-label">Words</span>
+          <span class="ts-value" [class.ts-value--active]="hasSelection()">
+            {{ wordCount() }}
+          </span>
+        </div>
+
+        <div class="ts-divider"></div>
+
+        <div class="ts-row">
+          <span class="ts-label">Text</span>
+          <span class="ts-value ts-value--text" [class.ts-value--active]="hasSelection()">
+            {{ displayText() }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

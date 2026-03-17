@@ -1,0 +1,41 @@
+<ng-demo-wrapper [demoPath]="'long-press/long-press-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Press zone -->
+    <div
+      #target
+      class="lp-zone"
+      [class.lp-zone--pressing]="isPressed() && !triggered()"
+      [class.lp-zone--triggered]="triggered()"
+      (pointerdown)="isPressed.set(true)"
+      (pointerup)="isPressed.set(false)"
+      (pointerleave)="isPressed.set(false)"
+    >
+      @if (triggered()) {
+        <span class="lp-dot lp-dot--success"></span>
+      } @else if (isPressed()) {
+        <span class="lp-dot lp-dot--amber"></span>
+      }
+      {{ triggered() ? 'Long press!' : isPressed() ? 'Holding…' : 'Press and hold' }}
+    </div>
+
+    <!-- Divider -->
+    <div class="lp-divider"></div>
+
+    <!-- Footer -->
+    <div class="lp-footer">
+      <span
+        class="lp-status"
+        [class.lp-status--pressing]="isPressed() && !triggered()"
+        [class.lp-status--triggered]="triggered()"
+      >
+        <span
+          class="lp-status-dot"
+          [class.lp-status-dot--amber]="isPressed() && !triggered()"
+          [class.lp-status-dot--success]="triggered()"
+        ></span>
+        {{ triggered() ? 'Triggered' : isPressed() ? 'Holding…' : 'Waiting' }}
+      </span>
+      <span class="lp-count">{{ count() }} {{ count() === 1 ? 'trigger' : 'triggers' }}</span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useData } from 'vitepress';
 
 interface SidebarItem {
@@ -46,6 +46,24 @@ const toggle = () => {
     isCollapsed.value = !isCollapsed.value;
   }
 };
+
+const githubStars = ref('0');
+
+onMounted(async () => {
+  if (props.item.text !== 'GitHub' && !props.item.items?.some(i => i.text === 'GitHub')) return;
+  try {
+    const res = await fetch('https://api.github.com/repos/signalityjs/signality');
+    if (res.ok) {
+      const data = await res.json();
+      const count: number = data.stargazers_count;
+      githubStars.value = count >= 1000
+        ? (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+        : String(count);
+    }
+  } catch {
+    // silently ignore
+  }
+});
 </script>
 
 <template>
@@ -206,7 +224,7 @@ const toggle = () => {
             >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
-            <span class="github-stars-count">1.2k</span>
+            <span class="github-stars-count">{{ githubStars }}</span>
           </span>
         </span>
       </a>

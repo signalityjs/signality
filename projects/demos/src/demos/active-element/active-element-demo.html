@@ -1,0 +1,22 @@
+<ng-demo-wrapper [demoPath]="'active-element/active-element-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Interactive elements -->
+    <div class="ae-row">
+      <input demoInput class="ae-input" placeholder="Left" />
+      <input demoInput class="ae-input" placeholder="Right" />
+    </div>
+
+    <!-- Divider + footer -->
+    <div class="ae-divider"></div>
+
+    <div class="ae-footer">
+      <span class="ae-label">Active element</span>
+      <span class="ae-value" [class.ae-value--active]="isFocused()">
+        @if (isFocused()) {
+          <span class="ae-dot"></span>
+        }
+        {{ isFocused() ? activeEl()?.tagName : '—' }}
+      </span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

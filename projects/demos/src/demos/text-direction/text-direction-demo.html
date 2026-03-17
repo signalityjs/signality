@@ -1,0 +1,44 @@
+<ng-demo-wrapper [demoPath]="'text-direction/text-direction-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Toggle row -->
+    <div class="td-row">
+      <span class="td-label">Direction</span>
+      <demo-toggle [options]="directionOptions" [value]="direction" />
+    </div>
+
+    <!-- Divider -->
+    <div class="td-divider"></div>
+
+    <!-- Preview -->
+    <div class="td-preview" [attr.dir]="direction()">
+      <p class="td-text">Hello, World!</p>
+      <p class="td-text">مرحبا بالعالم!</p>
+      <p class="td-text">שלום עולם!</p>
+    </div>
+
+    <!-- Divider -->
+    <div class="td-divider"></div>
+
+    <!-- Footer -->
+    <div class="td-footer">
+      <span class="td-status">
+        <svg
+          class="td-arrow"
+          [class.td-arrow--rtl]="direction() === 'rtl'"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+        {{ direction() === 'ltr' ? 'Left to right' : 'Right to left' }}
+      </span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

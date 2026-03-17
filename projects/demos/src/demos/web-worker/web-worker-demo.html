@@ -1,0 +1,37 @@
+<ng-demo-wrapper [demoPath]="'web-worker/web-worker-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Result display -->
+    <div class="ww-result">
+      <span
+        class="ww-value"
+        [class.ww-value--set]="isComputed()"
+        [class.ww-value--dim]="pending()"
+      >
+        {{ result() }}
+      </span>
+      <span class="ww-meta">fib({{ selected() }})</span>
+    </div>
+
+    <!-- Preset selector -->
+    <div class="ww-presets">
+      <demo-toggle [options]="toggleOptions" [value]="selected" [disabled]="pending()" />
+    </div>
+
+    <!-- Divider + footer -->
+    <div class="ww-divider"></div>
+    <div class="ww-footer">
+      <span class="ww-status" [class.ww-status--active]="pending() || isComputed()">
+        <span
+          class="ww-dot"
+          [class.ww-dot--computing]="pending()"
+          [class.ww-dot--done]="isComputed() && !pending()"
+          [class.ww-dot--error]="hasError()"
+        ></span>
+        {{ statusText() }}
+      </span>
+      <button class="ww-btn" [disabled]="!canCalculate()" (click)="calculate()">
+        Calculate
+      </button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

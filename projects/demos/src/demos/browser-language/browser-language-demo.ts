@@ -1,77 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { browserLanguage } from '@signality/core/browser/browser-language';
+import { browserLanguage } from '@signality/core';
 import { DemoCard, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-browser-language',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard],
-  template: `
-    <ng-demo-wrapper [demoPath]="'browser-language/browser-language-demo'" [code]="importCode">
-      <demo-card>
-        <div class="bl-rows">
-          <div class="bl-row">
-            <span class="bl-label">Language</span>
-            <span class="bl-value">{{ languageName() }}</span>
-          </div>
-          <div class="bl-row">
-            <span class="bl-label">Region</span>
-            <span class="bl-value">{{ regionName() }}</span>
-          </div>
-          <div class="bl-row bl-row--last">
-            <span class="bl-label">Tag</span>
-            <span class="bl-value bl-value--tag">{{ language() }}</span>
-          </div>
-        </div>
-      </demo-card>
-    </ng-demo-wrapper>
-  `,
-  styles: `
-    .bl-rows {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bl-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.625rem 0;
-      border-bottom: 1px solid #1f1f22;
-    }
-
-    .bl-row--last {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .bl-row:first-child {
-      padding-top: 0;
-    }
-
-    .bl-label {
-      font-size: 0.8125rem;
-      color: #71717a;
-    }
-
-    .bl-value {
-      font-size: 0.8125rem;
-      color: #a1a1aa;
-      font-weight: 500;
-    }
-
-    .bl-value--tag {
-      font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
-      font-size: 0.75rem;
-      color: #71717a;
-      font-weight: 400;
-    }
-  `,
+  templateUrl: './browser-language-demo.html',
+  styleUrl: './browser-language-demo.scss',
 })
 export class BrowserLanguageDemo {
-  readonly language = browserLanguage();
-
   readonly importCode = `import { browserLanguage } from '@signality/core'`;
+
+  readonly language = browserLanguage();
 
   readonly displayName = computed(() => {
     const lang = this.language();

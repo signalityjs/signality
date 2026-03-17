@@ -1,0 +1,81 @@
+<ng-demo-wrapper [demoPath]="'dropzone/dropzone-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Drop zone -->
+    <div
+      #dropZone
+      class="dz-zone"
+      [class.dz-zone--dragging]="dz.isDragging() && !dz.isOver()"
+      [class.dz-zone--over]="dz.isOver()"
+      [class.dz-zone--filled]="dz.files().length > 0 && !dz.isOver()"
+    >
+      @if (dz.files().length === 0) {
+        <!-- Upload icon -->
+        <svg
+          class="dz-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="16 16 12 12 8 16" />
+          <line x1="12" y1="12" x2="12" y2="21" />
+          <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+        </svg>
+        <span class="dz-hint">
+            {{
+            dz.isOver() ? 'Release to drop' : dz.isDragging() ? 'Drag here…' : 'Drop files here'
+          }}
+          </span>
+      } @else {
+        <!-- File list -->
+        <div class="dz-files">
+          @for (file of dz.files(); track file.name) {
+            <div class="dz-file">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              <span class="dz-file-name">{{ file.name }}</span>
+              <span class="dz-file-size">{{ formatSize(file.size) }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Divider -->
+    <div class="dz-divider"></div>
+
+    <!-- Footer -->
+    <div class="dz-footer">
+      <span
+        class="dz-status"
+        [class.dz-status--dragging]="dz.isDragging()"
+        [class.dz-status--filled]="dz.files().length > 0 && !dz.isDragging()"
+      >
+        <span
+          class="dz-dot"
+          [class.dz-dot--amber]="dz.isOver()"
+          [class.dz-dot--success]="dz.files().length > 0 && !dz.isOver()"
+        ></span>
+        {{ statusLabel() }}
+      </span>
+      @if (dz.files().length > 0) {
+        <button class="dz-clear" (click)="dz.files.set([])">Clear</button>
+      }
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

@@ -1,0 +1,53 @@
+<ng-demo-wrapper [demoPath]="'media-query/media-query-demo'" [code]="importCode">
+  <demo-card>
+    <div class="mq-list">
+      <div class="mq-row">
+        <span class="mq-dot" [class.mq-dot--on]="prefersDark()"></span>
+        <span class="mq-query">prefers-color-scheme</span>
+        <span class="mq-value" [class.mq-value--on]="prefersDark()">
+          {{ prefersDark() ? 'dark' : 'light' }}
+        </span>
+      </div>
+
+      <div class="mq-divider"></div>
+
+      <div class="mq-row">
+        <span class="mq-dot" [class.mq-dot--on]="prefersReducedMotion()"></span>
+        <span class="mq-query">prefers-reduced-motion</span>
+        <span class="mq-value" [class.mq-value--on]="prefersReducedMotion()">
+          {{ prefersReducedMotion() ? 'reduce' : 'no-preference' }}
+        </span>
+      </div>
+
+      <div class="mq-divider"></div>
+
+      <div class="mq-row">
+        <span class="mq-dot" [class.mq-dot--on]="isPortrait()"></span>
+        <span class="mq-query">orientation</span>
+        <span class="mq-value" [class.mq-value--on]="isPortrait()">
+          {{ isPortrait() ? 'portrait' : 'landscape' }}
+        </span>
+      </div>
+
+      <div class="mq-divider"></div>
+
+      <div class="mq-row">
+        <span class="mq-dot" [class.mq-dot--on]="hasHover()"></span>
+        <span class="mq-query">hover</span>
+        <span class="mq-value" [class.mq-value--on]="hasHover()">
+          {{ hasHover() ? 'hover' : 'none' }}
+        </span>
+      </div>
+
+      <div class="mq-divider"></div>
+
+      <div class="mq-row">
+        <span class="mq-dot" [class.mq-dot--on]="isCoarsePointer()"></span>
+        <span class="mq-query">pointer</span>
+        <span class="mq-value" [class.mq-value--on]="isCoarsePointer()">
+          {{ isCoarsePointer() ? 'coarse' : 'fine' }}
+        </span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

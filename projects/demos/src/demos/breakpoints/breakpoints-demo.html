@@ -1,0 +1,17 @@
+<ng-demo-wrapper [demoPath]="'breakpoints/breakpoints-demo'" [code]="importCode">
+  <demo-card>
+    <div class="bp-list">
+      @for (item of breakpointList; track item.name; let last = $last) {
+        <div class="bp-row">
+          <span class="bp-dot" [class.bp-dot--on]="item.signal()"></span>
+          <span class="bp-query" [class.bp-query--on]="item.signal()">{{ item.name }}</span>
+          <span class="bp-value" [class.bp-value--on]="item.signal()">{{ item.range }}</span>
+        </div>
+
+        @if (!last) {
+          <div class="bp-divider"></div>
+        }
+      }
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

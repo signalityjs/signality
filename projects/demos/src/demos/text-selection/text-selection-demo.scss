@@ -1,0 +1,80 @@
+.ts-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Selectable text block ── */
+.ts-text-block {
+  background: rgba(255, 255, 255, 0.025);
+  border-radius: 6px;
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.75rem;
+  user-select: text;
+  cursor: text;
+}
+
+.ts-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+/* ── Divider ── */
+.ts-divider {
+  height: 1px;
+  background: #1f1f22;
+}
+
+/* ── Info list ── */
+.ts-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.75rem;
+}
+
+/* ── Row ── */
+.ts-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.ts-row:first-child {
+  padding-top: 0;
+}
+
+.ts-row:last-child {
+  padding-bottom: 0;
+}
+
+/* ── Label ── */
+.ts-label {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: #a1a1aa;
+  flex-shrink: 0;
+}
+
+/* ── Value ── */
+.ts-value {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #3f3f46;
+  text-align: right;
+  transition: color 0.25s ease;
+}
+
+.ts-value--active {
+  color: #e4e4e7;
+}
+
+.ts-value--text {
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

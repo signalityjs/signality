@@ -1,0 +1,21 @@
+<div class="unsupported">
+      <div class="unsupported-icon">
+        <ng-content />
+      </div>
+      <div class="unsupported-body">
+        <h3 class="unsupported-title">{{ title() }}</h3>
+        <p class="unsupported-desc">{{ description() }}</p>
+      </div>
+      @if (hints().length) {
+      <div class="unsupported-hints">
+        @for (hint of hints(); track hint) {
+        <span class="unsupported-hint">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1" />
+          </svg>
+          {{ hint }}
+        </span>
+        }
+      </div>
+      }
+    </div>

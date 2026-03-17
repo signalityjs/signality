@@ -1,0 +1,90 @@
+<ng-demo-wrapper [demoPath]="'web-notification/web-notification-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Icon ring -->
+    <div class="wn-visual">
+      <div
+        class="wn-icon-ring"
+        [class.wn-icon-ring--granted]="state() === 'granted'"
+        [class.wn-icon-ring--denied]="state() === 'denied'"
+      >
+        <div class="wn-icon-inner">
+          <!-- Bell — default / granted idle -->
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [style.opacity]="bellOpacity()"
+          >
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+          </svg>
+          <!-- Checkmark — sent -->
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [style.opacity]="checkOpacity()"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <!-- X — denied -->
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [style.opacity]="deniedOpacity()"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Title + subtitle -->
+    <div class="wn-text">
+      <h3 class="wn-title">{{ title() }}</h3>
+      <p class="wn-subtitle">{{ subtitle() }}</p>
+    </div>
+
+    <!-- Divider -->
+    <div class="wn-divider"></div>
+
+    <!-- Footer -->
+    <div class="wn-footer">
+          <span
+            class="wn-status"
+            [class.wn-status--granted]="state() === 'granted'"
+            [class.wn-status--denied]="state() === 'denied'"
+          >
+            <span
+              class="wn-dot"
+              [class.wn-dot--granted]="state() === 'granted'"
+              [class.wn-dot--denied]="state() === 'denied'"
+            ></span>
+            {{ statusLabel() }}
+          </span>
+
+      @if (state() === 'default') {
+        <button class="wn-btn" (click)="requestPermission()">Allow</button>
+      } @else if (state() === 'granted') {
+        <button class="wn-btn" (click)="send()">Send</button>
+      }
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

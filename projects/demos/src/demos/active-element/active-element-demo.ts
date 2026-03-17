@@ -6,110 +6,16 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
   selector: 'demo-active-element',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Wrapper, DemoCard, DemoInput],
-  template: `
-    <ng-demo-wrapper [demoPath]="'active-element/active-element-demo'" [code]="importCode">
-      <demo-card>
-        <!-- Interactive elements -->
-        <div class="ae-row">
-          <input demoInput class="ae-input" placeholder="Left" />
-          <input demoInput class="ae-input" placeholder="Right" />
-        </div>
-
-        <!-- Divider + footer -->
-        <div class="ae-divider"></div>
-        <div class="ae-footer">
-          <span class="ae-label">Active element</span>
-          <span class="ae-value" [class.ae-value--active]="isFocused()">
-            @if (isFocused()) {
-            <span class="ae-dot"></span>
-            }
-            {{ isFocused() ? activeEl()?.tagName : '—' }}
-          </span>
-        </div>
-      </demo-card>
-    </ng-demo-wrapper>
-  `,
-  styles: `
-    /* ── Row ── */
-    .ae-row {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .ae-input {
-      flex: 1;
-    }
-
-    /* ── Divider ── */
-    .ae-divider {
-      height: 1px;
-      background: #1f1f22;
-      margin: 0.875rem 0 0;
-    }
-
-    /* ── Footer ── */
-    .ae-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 0.75rem;
-    }
-
-    .ae-label {
-      font-size: 0.8125rem;
-      color: #71717a;
-    }
-
-    .ae-value {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
-      font-size: 0.75rem;
-      color: #3f3f46;
-      font-weight: 400;
-      transition: color 0.2s ease;
-    }
-
-    .ae-value--active {
-      color: #a1a1aa;
-    }
-
-    /* ── Dot indicator ── */
-    .ae-dot {
-      position: relative;
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      flex-shrink: 0;
-    }
-
-    .ae-dot::before,
-    .ae-dot::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: #22c55e;
-    }
-
-    .ae-dot::after {
-      animation: aePulse 2s ease-out infinite;
-    }
-
-    @keyframes aePulse {
-      0%   { transform: scale(1); opacity: 0.6; }
-      100% { transform: scale(3); opacity: 0; }
-    }
-  `,
+  templateUrl: './active-element-demo.html',
+  styleUrl: './active-element-demo.scss',
 })
 export class ActiveElementDemo {
+  readonly importCode = `import { activeElement } from '@signality/core'`;
+
   readonly activeEl = activeElement();
 
   readonly isFocused = computed(() => {
     const el = this.activeEl();
     return !!el && el.tagName !== 'BODY';
   });
-
-  readonly importCode = `import { activeElement } from '@signality/core'`;
 }

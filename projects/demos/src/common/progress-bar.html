@@ -1,0 +1,12 @@
+<div class="progress-wrapper">
+      <div class="progress-track">
+        <div
+          class="progress-fill"
+          [style.width.%]="(value() / max()) * 100"
+          [style.background]="color()"
+        ></div>
+      </div>
+      @if (showValue()) {
+      <span class="progress-value">{{ value().toFixed(0) }}%</span>
+      }
+    </div>

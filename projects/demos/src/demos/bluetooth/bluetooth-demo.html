@@ -1,0 +1,139 @@
+<ng-demo-wrapper [demoPath]="'bluetooth/bluetooth-demo'" [code]="importCode">
+  @if (state() === 'unsupported') {
+    <demo-not-supported
+      title="Bluetooth Not Available"
+      description="Web Bluetooth API requires a Chromium-based browser on a secure origin."
+      [hints]="['Chrome 56+', 'Edge 79+', 'Opera 43+']"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M6.5 6.5l11 11L12 23V1l5.5 5.5-11 11" />
+        <line x1="3" y1="3" x2="21" y2="21" stroke-width="2" opacity="0.7" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <!-- Radar + icon ring -->
+      <div class="bt-visual">
+        <div class="bt-radar" [class.bt-radar--active]="state() === 'connecting'">
+          <div class="bt-radar-ring bt-radar-ring--1"></div>
+          <div class="bt-radar-ring bt-radar-ring--2"></div>
+          <div class="bt-radar-ring bt-radar-ring--3"></div>
+          <div
+            class="bt-icon-ring"
+            [class.bt-icon-ring--success]="state() === 'connected'"
+            [class.bt-icon-ring--error]="state() === 'error'"
+          >
+            <div class="bt-icon-inner" [class.bt-icon-inner--pulse]="state() === 'connecting'">
+              <!-- Bluetooth icon -->
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="iconOpacity()"
+              >
+                <path d="M6.5 6.5l11 11L12 23V1l5.5 5.5-11 11" />
+              </svg>
+              <!-- Checkmark -->
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="checkOpacity()"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <!-- X -->
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="errorOpacity()"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title + subtitle -->
+      <div class="bt-text">
+        <h3 class="bt-title" [class.bt-title--shimmer]="state() === 'connecting'">
+          {{ title() }}
+        </h3>
+        @if (subtitle()) {
+          <p class="bt-subtitle">{{ subtitle() }}</p>
+        }
+      </div>
+
+      <!-- Error area — max-height reveal -->
+      <div class="bt-error-area" [class.bt-error-area--visible]="state() === 'error'">
+        <p class="bt-error-message">{{ errorMessage() }}</p>
+      </div>
+
+      <!-- Divider -->
+      <div class="bt-divider"></div>
+
+      <!-- Footer -->
+      <div class="bt-footer">
+        <span
+          class="bt-status"
+          [class.bt-status--connected]="state() === 'connected'"
+          [class.bt-status--connecting]="state() === 'connecting'"
+          [class.bt-status--error]="state() === 'error'"
+        >
+            <span
+              class="bt-dot"
+              [class.bt-dot--connected]="state() === 'connected'"
+              [class.bt-dot--connecting]="state() === 'connecting'"
+              [class.bt-dot--error]="state() === 'error'"
+            ></span>
+          {{ statusLabel() }}
+        </span>
+
+        @if (state() === 'connected') {
+          <button
+            type="button"
+            class="bt-btn"
+            (click)="disconnect()"
+          >
+            Disconnect
+          </button>
+        } @else {
+          <button
+            type="button" class="bt-btn"
+            [disabled]="state() === 'connecting'"
+            (click)="connect()"
+          >
+            {{ state() === 'connecting' ? 'Searching…' : 'Connect' }}
+          </button>
+        }
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

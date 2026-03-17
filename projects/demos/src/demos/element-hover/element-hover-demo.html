@@ -1,0 +1,11 @@
+<ng-demo-wrapper [demoPath]="'element-hover/element-hover-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Hover zone -->
+    <div #hoverEl class="eh-zone" [class.eh-zone--active]="isHovered()">
+      @if (isHovered()) {
+        <span class="eh-dot"></span>
+      }
+      {{ isHovered() ? 'Hovering…' : 'Hover over me' }}
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

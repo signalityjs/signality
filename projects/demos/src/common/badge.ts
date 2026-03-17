@@ -5,53 +5,8 @@ export type DemoBadgeType = 'success' | 'warning' | 'error' | 'info' | 'neutral'
 @Component({
   selector: 'demo-badge',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <span class="badge" [class]="'badge--' + type()">
-      <ng-content />
-    </span>
-  `,
-  styles: `
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.825rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .badge--success {
-      background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.25);
-    }
-
-    .badge--warning {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-      border: 1px solid rgba(245, 158, 11, 0.25);
-    }
-
-    .badge--error {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.25);
-    }
-
-    .badge--info {
-      background: rgba(222, 179, 235, 0.15);
-      color: #DEB3EB;
-      border: 1px solid rgba(222, 179, 235, 0.25);
-    }
-
-    .badge--neutral {
-      background: rgba(161, 161, 170, 0.15);
-      color: #a1a1aa;
-      border: 1px solid rgba(161, 161, 170, 0.25);
-    }
-  `,
+  templateUrl: './badge.html',
+  styleUrl: './badge.scss',
 })
 export class DemoBadge {
   readonly type = input<DemoBadgeType>('neutral');

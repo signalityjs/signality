@@ -1,0 +1,17 @@
+<ng-demo-wrapper [demoPath]="'element-focus/element-focus-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Input -->
+    <input #inputEl demoInput placeholder="Click to focus…" />
+
+    <!-- Divider -->
+    <div class="ef-divider"></div>
+
+    <!-- Footer -->
+    <div class="ef-footer">
+      <span class="ef-status" [class.ef-status--active]="isFocused()">
+        <span class="ef-dot" [class.ef-dot--active]="isFocused()"></span>
+        {{ isFocused() ? 'Focused' : 'No focus' }}
+      </span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>
