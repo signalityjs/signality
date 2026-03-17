@@ -59,12 +59,13 @@ The `TextDirectionOptions` extends `CreateSignalOptions<TextDirection>` and `Wit
 
 ## Return Value
 
-Returns a `WritableSignal<TextDirection>`:
+Returns a `WritableSignal<TextDirection>`. Possible values:
 
-- **Read** — call the signal to get the current direction (`'ltr'`, `'rtl'`, or `'auto'`)
-- **Write** — call `.set(dir)` to update both the signal and the element's `dir` attribute
+- `'ltr'` — Left-to-right text direction
+- `'rtl'` — Right-to-left text direction
+- `'auto'` — Direction determined by the browser based on content
 
-External changes to the `dir` attribute are automatically tracked via MutationObserver and reflected in the signal.
+Calling `.set(dir)` updates both the signal and the element's `dir` attribute. External attribute changes are automatically tracked via MutationObserver.
 
 ## Examples
 

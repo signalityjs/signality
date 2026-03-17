@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { broadcastChannel } from '@signality/core/browser/broadcast-channel';
+import { broadcastChannel } from '@signality/core';
 import { DemoCard, DemoInput, Wrapper } from '../../common';
 
 interface Message {
@@ -37,14 +37,16 @@ interface Message {
             class="bc-input"
             placeholder="Type a message…"
             [(ngModel)]="messageText"
-            (keydown.enter)="sendMessage()"
             [disabled]="channel.isClosed()"
+            (keydown.enter)="sendMessage()"
           />
           <button
+            title="Send"
+            type="button"
             class="bc-send-icon"
             (click)="sendMessage()"
-            [disabled]="channel.isClosed() || !messageText.trim()"
-            title="Send"
+            [class.bc-send-icon--sent]="isSending()"
+            [disabled]="channel.isClosed()"
           >
             <svg
               width="16"
@@ -71,6 +73,7 @@ interface Message {
             <span class="bc-dot" [class.bc-dot--closed]="channel.isClosed()"></span>
             {{ channel.isClosed() ? 'Closed' : 'demo-channel' }}
           </span>
+
           @if (!channel.isClosed()) {
           <button class="bc-btn bc-btn--close" (click)="channel.close()">Close</button>
           }
@@ -84,17 +87,15 @@ interface Message {
       display: flex;
       flex-direction: column;
       gap: 0.375rem;
-      min-height: 6rem;
+      min-height: 4rem;
       max-height: 11rem;
       overflow-y: auto;
       padding-bottom: 0.25rem;
     }
 
     .bc-empty {
-      font-size: 0.8125rem;
+      font-size: 0.845rem;
       color: #52525b;
-      font-style: italic;
-      padding: 0.25rem 0;
     }
 
     .bc-msg {
@@ -118,7 +119,6 @@ interface Message {
       font-size: 0.75rem;
       color: #52525b;
       flex-shrink: 0;
-      font-variant-numeric: tabular-nums;
     }
 
     /* ── Divider ── */
@@ -130,15 +130,13 @@ interface Message {
 
     /* ── Send row ── */
     .bc-send {
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
+      position: relative;
       padding-top: 0.75rem;
     }
 
     .bc-input {
-      flex: 1;
-      min-width: 0;
+      width: 100%;
+      padding-right: 2.75rem !important;
     }
 
     /* ── Footer ── */
@@ -152,9 +150,10 @@ interface Message {
     .bc-status {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.625rem;
       font-size: 0.8125rem;
       color: #71717a;
+      margin-inline-start: 0.25rem;
     }
 
     .bc-status--closed {
@@ -210,13 +209,15 @@ interface Message {
     }
 
     .bc-send-icon {
-      flex-shrink: 0;
+      position: absolute;
+      right: 4px;
+      top: calc(0.75rem + 4px);
+      bottom: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
+      inline-size: 34px;
+      border-radius: 4px;
       background: none;
       border: none;
       cursor: pointer;
@@ -227,11 +228,24 @@ interface Message {
 
     .bc-send-icon:not(:disabled):hover {
       color: #e8c8f5;
+      background: rgba(222, 179, 235, 0.06);
     }
 
     .bc-send-icon:disabled {
       opacity: 0.3;
       cursor: default;
+    }
+
+    .bc-send-icon svg {
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s,
+                  opacity 0.35s cubic-bezier(0.33, 1, 0.68, 1) 0.28s;
+    }
+
+    .bc-send-icon--sent svg {
+      transform: translate(14px, -14px) scale(0.35) rotate(45deg);
+      opacity: 0;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 1, 1),
+                  opacity 0.28s cubic-bezier(0.4, 0, 1, 1);
     }
 
     .bc-btn--close {
@@ -247,8 +261,9 @@ export class BroadcastChannelDemo {
   readonly channel = broadcastChannel<Message>('demo-channel');
   readonly importCode = `import { broadcastChannel } from '@signality/core'`;
 
-  messageText = '';
+  readonly messageText = signal('');
   readonly messages = signal<Message[]>([]);
+  readonly isSending = signal(false);
 
   constructor() {
     effect(() => {
@@ -260,9 +275,13 @@ export class BroadcastChannelDemo {
   }
 
   sendMessage(): void {
-    if (this.messageText.trim() && !this.channel.isClosed()) {
-      this.channel.post({ text: this.messageText.trim(), time: new Date() });
-      this.messageText = '';
+    const text = this.messageText().trim();
+
+    if (text && !this.channel.isClosed()) {
+      this.channel.post({ text, time: new Date() });
+      this.messageText.set('');
+      this.isSending.set(true);
+      setTimeout(() => this.isSending.set(false), 350);
     }
   }
 }

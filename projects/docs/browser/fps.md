@@ -124,63 +124,6 @@ export class AdaptiveRenderer {
 }
 ```
 
-### Dev Tools Panel
-
-```angular-ts
-import { Component, signal, effect, computed } from '@angular/core';
-import { fps } from '@signality/core';
-
-@Component({
-  selector: 'dev-fps-panel',
-  template: `
-    <div class="dev-panel">
-      <h4>Performance</h4>
-      <div class="fps-bar">
-        <div 
-          class="fps-fill" 
-          [style.width.%]="fpsPercent()"
-          [style.background]="fpsColor()"
-        ></div>
-      </div>
-      <p>{{ fpsMonitor.fps() }} / 60 FPS</p>
-      <p>Min: {{ minFps() }} | Max: {{ maxFps() }}</p>
-      <button (click)="resetStats()">Reset</button>
-    </div>
-  `,
-})
-export class DevFpsPanel {
-  readonly fpsMonitor = fps();
-  readonly minFps = signal(60);
-  readonly maxFps = signal(0);
-  
-  readonly fpsPercent = computed(() => 
-    Math.min((this.fpsMonitor.fps() / 60) * 100, 100)
-  );
-  
-  readonly fpsColor = computed(() => {
-    const pct = this.fpsPercent();
-    if (pct >= 90) return '#4ade80';
-    if (pct >= 50) return '#fbbf24';
-    return '#ef4444';
-  });
-  
-  constructor() {
-    effect(() => {
-      const current = this.fpsMonitor.fps();
-      if (current > 0) {
-        if (current < this.minFps()) this.minFps.set(current);
-        if (current > this.maxFps()) this.maxFps.set(current);
-      }
-    });
-  }
-  
-  resetStats() {
-    this.minFps.set(60);
-    this.maxFps.set(0);
-  }
-}
-```
-
 ## SSR Compatibility
 
 On the server, signals initialize with safe defaults:

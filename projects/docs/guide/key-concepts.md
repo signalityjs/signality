@@ -217,24 +217,24 @@ export class Demo {
 
 ## Avoiding hidden dependencies
 
-Utilities that return `*Ref` containers with methods are designed to be safely callable within reactive contexts (`effect()`) without tracking hidden dependencies.
+Utilities that return `*Ref` containers with methods are designed to be safely callable within [reactive contexts](https://angular.dev/guide/signals#reactive-contexts) without tracking hidden dependencies.
 
 All `*Ref` methods use `untracked()` internally when reading signals, ensuring that any signals accessed within these methods won't be registered as dependencies:
 
 ```typescript
 import { effect, signal } from '@angular/core';
-import { debounced, interval } from '@signality/core';
+import { debounced, geolocation, geoPermission } from '@signality/core';
 
 @Component({ /* ... */ })
 export class Demo {
-  readonly time = signal(300);
-  readonly intervalRef = interval(console.log, this.time);
+  readonly geoPermission = permissionState('geolocation');
+  readonly geo = geolocation(); // -> GeolocationRef
 
   constructor() {
     effect(() => {
-      // Safe to call - no hidden dependencies created
-      this.intervalRef.pause();
-      this.intervalRef.resume();
+      if (this.geoPermission() === 'granted') {
+        this.geo.start(); // Safe to call - no hidden dependencies created // [!code highlight]
+      }
     });
   }
 }

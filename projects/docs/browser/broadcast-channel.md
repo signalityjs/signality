@@ -16,7 +16,7 @@ import { broadcastChannel } from '@signality/core';
 
 @Component({
   template: `
-    <input (input)="channel.post($any($event.target).value)" />
+    <input (input)="channel.post($event.target.value)" />
     <p>Last message: {{ channel.data() }}</p>
   `,
 })
@@ -33,30 +33,30 @@ export class SyncedInput {
 
 ## Parameters
 
-| Parameter | Type                      | Description                           |
-|-----------|---------------------------|---------------------------------------|
-| `name`    | `string`                  | Channel name (must match across tabs) |
-| `options` | `BroadcastChannelOptions` | Optional configuration (see [Options](#options) below)                |
+| Parameter | Type                      | Description                                            |
+|-----------|---------------------------|--------------------------------------------------------|
+| `name`    | `string`                  | Channel name (must match across tabs)                  |
+| `options` | `BroadcastChannelOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `BroadcastChannelOptions` extends `WithInjector`:
 
-| Option     | Type      | Description                                    |
-|------------|-----------|------------------------------------------------|
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context               |
+| Option     | Type                                                | Description                      |
+|------------|-----------------------------------------------------|----------------------------------|
+| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context |
 
 ## Return Value
 
 The `broadcastChannel()` function returns a `BroadcastChannelRef` object:
 
-| Property   | Type                           | Description                   |
-|------------|--------------------------------|-------------------------------|
-| `data`     | `Signal<T \| null>`            | Last received data            |
-| `error`    | `Signal<MessageEvent \| null>` | Last error that occurred (see [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent))      |
-| `isClosed` | `Signal<boolean>`              | Whether the channel is closed |
-| `post`     | `(data: T) => void`            | Send message to all tabs      |
-| `close`    | `() => void`                   | Close the channel             |
+| Property   | Type                           | Description                                                                                                  |
+|------------|--------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `data`     | `Signal<T \| null>`            | Last received data                                                                                           |
+| `error`    | `Signal<MessageEvent \| null>` | Last error that occurred (see [MessageEvent](https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent)) |
+| `isClosed` | `Signal<boolean>`              | Whether the channel is closed                                                                                |
+| `post`     | `(data: T) => void`            | Send message to all tabs                                                                                     |
+| `close`    | `() => void`                   | Close the channel                                                                                            |
 
 ## Examples
 
@@ -81,8 +81,8 @@ export class AuthService {
   }
   
   logout() {
-    // Notify all tabs
-    this.logoutChannel.post(true);
+    // Notify all tabs // [!code warning]
+    this.logoutChannel.post(true); // [!code warning]
     this.router.navigate(['/login']);
   }
 }

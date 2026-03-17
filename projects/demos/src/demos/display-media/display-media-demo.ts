@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { displayMedia } from '@signality/core/browser/display-media';
-import { DemoButton, DemoCard, DemoNotSupported, Wrapper } from '../../common';
+import { DemoCard, DemoNotSupported, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-display-media',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton, DemoNotSupported],
+  imports: [Wrapper, DemoCard, DemoNotSupported],
   template: `
     <ng-demo-wrapper [demoPath]="'display-media/display-media-demo'" [code]="importCode">
       @if (state() === 'unsupported') {

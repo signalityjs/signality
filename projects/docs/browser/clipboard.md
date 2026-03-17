@@ -90,23 +90,17 @@ export class CopyButton {
 ### Paste from clipboard
 
 ```angular-ts
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { clipboard } from '@signality/core';
 
 @Component({
   template: `
-    <button (click)="pasteContent()">Paste from clipboard</button>
-    <pre>{{ content() }}</pre>
+    <button (click)="cb.paste()">Paste from clipboard</button>
+    <pre>{{ cb.text() }}</pre>
   `,
 })
 export class PasteDemo {
   readonly cb = clipboard();
-  readonly content = signal('');
-  
-  async pasteContent() {
-    const text = await this.cb.paste();
-    this.content.set(text);
-  }
 }
 ```
 
