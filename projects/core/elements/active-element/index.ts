@@ -1,4 +1,4 @@
-import { type CreateSignalOptions, type Signal, signal } from '@angular/core';
+import { type CreateSignalOptions, type Signal, signal, untracked } from '@angular/core';
 import {
   constSignal,
   createToken,
@@ -95,7 +95,8 @@ export function activeElement(options?: ActiveElementOptions): Signal<Element | 
 
       listener.capture(window, 'focusout', (e: FocusEvent) => {
         if (e.relatedTarget === null) {
-          updateActiveElement();
+          // https://github.com/angular/angular/issues/60143#issuecomment-2688455986
+          untracked(() => updateActiveElement());
         }
       });
     });

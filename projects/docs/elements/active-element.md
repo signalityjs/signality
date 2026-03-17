@@ -58,7 +58,17 @@ The `ActiveElementOptions` extends [`CreateSignalOptions<Element | null>`](https
 
 ## Return Value
 
-Returns a `Signal<Element | null>` containing the currently focused element, or `null` if no element has focus.
+Returns a `Signal<Element | null>` that reflects the currently focused element. The value depends on the current focus state:
+
+| Signal value      | When                                                                                       |
+|-------------------|--------------------------------------------------------------------------------------------|
+| Focused `Element` | An interactive element (input, button, link, `[tabindex]`, etc.) has focus                 |
+| `<body>`          | No interactive element has focus — the browser defaults `activeElement` to `document.body`  |
+| `null`            | The document itself has no focus (e.g. the browser window is blurred), or during SSR       |
+
+::: info Shadow DOM
+Unlike native `document.activeElement`, this utility traverses open Shadow DOM boundaries and returns the **deepest** focused element inside shadow trees. The native API would return the shadow host instead.
+:::
 
 ## Examples
 
@@ -83,7 +93,10 @@ export class FocusHints {
   
   readonly hint = computed(() => {
     const el = this.activeEl();
-    if (!(el instanceof HTMLInputElement)) return '';
+    
+    if (!(el instanceof HTMLInputElement)) {
+      return '';
+    }
     
     switch (el.name) {
       case 'email': return 'Enter your email address';
@@ -95,6 +108,8 @@ export class FocusHints {
 ```
 
 ### Focus trap
+
+A **focus trap** keeps keyboard focus confined within a specific region (e.g. a modal dialog) while it's open. Without it, pressing <kbd>Tab</kbd> would move focus outside the dialog — breaking keyboard navigation and accessibility. See the [WAI-ARIA dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) for the full spec.
 
 ```angular-ts
 import { Component, viewChild, ElementRef, effect } from '@angular/core';
