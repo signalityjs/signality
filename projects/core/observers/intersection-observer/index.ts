@@ -3,7 +3,13 @@ import {
   type CreateEffectOptions,
   type EffectCleanupRegisterFn,
 } from '@angular/core';
-import { NOOP_EFFECT_REF, setupContext, toElement, toValue } from '@signality/core/internal';
+import {
+  assertElement,
+  NOOP_EFFECT_REF,
+  setupContext,
+  toElement,
+  toValue,
+} from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface IntersectionObserverInitOptions
@@ -103,6 +109,7 @@ export function intersectionObserver(
       const observer = new IntersectionObserver(callback, { root, rootMargin, threshold });
 
       for (const el of els) {
+        ngDevMode && assertElement(el, 'intersectionObserver');
         observer.observe(el!);
       }
 

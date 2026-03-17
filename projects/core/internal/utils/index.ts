@@ -1,5 +1,6 @@
 export * from './bom';
 export * from './dom';
+export * from './assert';
 export * from './context';
 export * from './create-token';
 export * from './is-query-signal';
@@ -8,3 +9,4 @@ export * from './const-signal';
 export * from './proxy-signal';
 export * from './to-element';
 export * from './to-value';
+export * from './unref-element';

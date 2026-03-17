@@ -6,7 +6,13 @@ import {
   type EffectRef,
 } from '@angular/core';
 import { type BaseEffectNode, SIGNAL } from '@angular/core/primitives/signals';
-import { NOOP_EFFECT_REF, setupContext, toElement, toValue } from '@signality/core/internal';
+import {
+  assertEventTarget,
+  NOOP_EFFECT_REF,
+  setupContext,
+  toValue,
+  unrefElement,
+} from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 
 export type ListenerOptions = WithInjector;
@@ -142,11 +148,16 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
       : rawHandler;
 
     const setupListener = (onCleanup: EffectCleanupRegisterFn) => {
-      const target = toElement(maybeReactiveTarget);
+      const raw = toValue(maybeReactiveTarget);
+      const target = unrefElement(raw);
       const event = toValue(maybeReactiveEvent);
 
       if (!target) {
         return;
+      }
+
+      if (ngDevMode) {
+        assertEventTarget(target, 'listener');
       }
 
       target.addEventListener(event, handler, nativeOptions);

@@ -3,7 +3,13 @@ import {
   type CreateEffectOptions,
   type EffectCleanupRegisterFn,
 } from '@angular/core';
-import { NOOP_EFFECT_REF, setupContext, toElement, toValue } from '@signality/core/internal';
+import {
+  assertElement,
+  NOOP_EFFECT_REF,
+  setupContext,
+  toElement,
+  toValue,
+} from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface ResizeObserverInitOptions extends Omit<CreateEffectOptions, 'allowSignalWrites'> {
@@ -85,6 +91,7 @@ export function resizeObserver(
       observer ??= new ResizeObserver(callback);
 
       for (const el of els) {
+        ngDevMode && assertElement(el, 'resizeObserver');
         observer.observe(el!, { box });
       }
 
