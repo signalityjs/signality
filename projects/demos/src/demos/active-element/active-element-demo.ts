@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { activeElement } from '@signality/core/elements/active-element';
+import { activeElement } from '@signality/core';
 import { DemoCard, DemoInput, Wrapper } from '../../common';
 
 @Component({
@@ -11,8 +11,8 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
       <demo-card>
         <!-- Interactive elements -->
         <div class="ae-row">
-          <input demoInput class="ae-input" placeholder="Focus me…" />
-          <button class="ae-btn">Button</button>
+          <input demoInput class="ae-input" placeholder="Left" />
+          <input demoInput class="ae-input" placeholder="Right" />
         </div>
 
         <!-- Divider + footer -->
@@ -20,7 +20,10 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
         <div class="ae-footer">
           <span class="ae-label">Active element</span>
           <span class="ae-value" [class.ae-value--active]="isFocused()">
-            {{ isFocused() ? activeEl()!.tagName : '—' }}
+            @if (isFocused()) {
+            <span class="ae-dot"></span>
+            }
+            {{ isFocused() ? activeEl()?.tagName : '—' }}
           </span>
         </div>
       </demo-card>
@@ -35,30 +38,6 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
 
     .ae-input {
       flex: 1;
-    }
-
-    .ae-btn {
-      font-size: 0.875rem;
-      font-family: inherit;
-      font-weight: 500;
-      color: #a1a1aa;
-      background: transparent;
-      border: 1px solid #27272a;
-      border-radius: 6px;
-      padding: 0.375rem 0.875rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: border-color 0.15s ease, color 0.15s ease;
-    }
-
-    .ae-btn:hover {
-      border-color: #3f3f46;
-      color: #e4e4e7;
-    }
-
-    .ae-btn:focus {
-      outline: none;
-      border-color: rgba(222, 179, 235, 0.5);
     }
 
     /* ── Divider ── */
@@ -82,6 +61,9 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
     }
 
     .ae-value {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
       font-size: 0.75rem;
       color: #3f3f46;
@@ -92,10 +74,38 @@ import { DemoCard, DemoInput, Wrapper } from '../../common';
     .ae-value--active {
       color: #a1a1aa;
     }
+
+    /* ── Dot indicator ── */
+    .ae-dot {
+      position: relative;
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .ae-dot::before,
+    .ae-dot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .ae-dot::after {
+      animation: aePulse 2s ease-out infinite;
+    }
+
+    @keyframes aePulse {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
+    }
   `,
 })
 export class ActiveElementDemo {
   readonly activeEl = activeElement();
+
   readonly isFocused = computed(() => {
     const el = this.activeEl();
     return !!el && el.tagName !== 'BODY';
