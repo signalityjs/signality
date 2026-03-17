@@ -1,0 +1,93 @@
+<ng-demo-wrapper [demoPath]="'geolocation/geolocation-demo'" [code]="importCode">
+  @if (!geo.isSupported()) {
+    <demo-not-supported
+      title="Not Available"
+      description="Geolocation API is not supported in this browser."
+      [hints]="['Chrome', 'Firefox', 'Safari']"
+    >
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <!-- Map / placeholder (fixed 200px — no layout jump) -->
+      <div class="geo-map-area">
+        @if (coords()) {
+          <iframe [src]="mapUrl()" loading="lazy" title="Location map" class="geo-iframe"></iframe>
+        } @else {
+          <div class="geo-placeholder">
+            <svg
+              class="geo-pin"
+              [class.geo-pin--loading]="geo.isLoading()"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span class="geo-placeholder-text">
+              {{ geo.isLoading() ? 'Acquiring location…' : 'Press Get Location to start' }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Coord rows — expands via max-height transition -->
+      <div class="geo-coord-area" [class.geo-coord-area--visible]="!!coords()">
+        <div class="geo-rows">
+          <div class="geo-row">
+            <span class="geo-label">Latitude</span>
+            <span class="geo-value">{{ coords()?.latitude?.toFixed(6) }}</span>
+          </div>
+          <div class="geo-row">
+            <span class="geo-label">Longitude</span>
+            <span class="geo-value">{{ coords()?.longitude?.toFixed(6) }}</span>
+          </div>
+          <div class="geo-row geo-row--last">
+            <span class="geo-label">Accuracy</span>
+            <span class="geo-value">{{ coords()?.accuracy?.toFixed(0) }} m</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error area — expands via max-height transition -->
+      <div class="geo-error-area" [class.geo-error-area--visible]="!!geo.error()">
+        <p class="geo-error-text">{{ geo.error()?.message }}</p>
+      </div>
+
+      <!-- Divider + footer -->
+      <div class="geo-divider"></div>
+      <div class="geo-footer">
+          <span class="geo-status" [class.geo-status--on]="geo.isActive() || geo.isLoading()">
+            <span
+              class="geo-dot"
+              [class.geo-dot--loading]="geo.isLoading()"
+              [class.geo-dot--active]="geo.isActive() && !geo.isLoading() && !geo.error()"
+              [class.geo-dot--error]="!!geo.error()"
+            ></span>
+            {{ statusText() }}
+          </span>
+        <button class="geo-btn" (click)="toggleTracking()">
+          {{ geo.isActive() ? 'Stop' : 'Get Location' }}
+        </button>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

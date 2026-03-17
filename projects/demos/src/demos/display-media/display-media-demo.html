@@ -1,0 +1,69 @@
+<ng-demo-wrapper [demoPath]="'display-media/display-media-demo'" [code]="importCode">
+  @if (state() === 'unsupported') {
+    <demo-not-supported
+      title="Screen Capture Not Available"
+      description="Screen Capture API requires a secure origin and a modern browser."
+      [hints]="['Chrome 72+', 'Firefox 66+', 'Edge 79+']"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <div class="dm-wrap">
+        <!-- Preview area -->
+        <div class="dm-preview" [class.dm-preview--active]="state() === 'active'">
+          @if (dm.stream()) {
+            <video class="dm-video" [srcObject]="dm.stream()" autoplay muted playsinline></video>
+            <div class="dm-rec">
+              <span class="dm-rec-dot"></span>
+              <span class="dm-rec-label">Live</span>
+            </div>
+          } @else {
+            <div class="dm-idle-content">
+              <svg
+                class="dm-idle-icon"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+            </div>
+          }
+
+          <!-- Hover overlay button -->
+          <div class="dm-overlay" [class.dm-overlay--video]="state() === 'active'">
+            <button class="dm-overlay-btn" (click)="toggle()">
+              {{ buttonLabel() }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Error area -->
+        <div class="dm-error-area" [class.dm-error-area--visible]="state() === 'error'">
+          <p class="dm-error-text">{{ errorMessage() }}</p>
+        </div>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

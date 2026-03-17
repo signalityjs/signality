@@ -1,0 +1,297 @@
+/* ── Visual anchor ── */
+.bt-visual {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0 0.625rem;
+}
+
+/* ── Radar ── */
+.bt-radar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bt-radar-ring {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(222, 179, 235, 0.25);
+  opacity: 0;
+  animation: radarPulse 3.4s cubic-bezier(0, 0, 0.5, 1) infinite;
+  animation-play-state: paused;
+}
+
+.bt-radar--active .bt-radar-ring {
+  animation-play-state: running;
+}
+
+.bt-radar-ring--1 {
+  animation-delay: 0s;
+}
+
+.bt-radar-ring--2 {
+  animation-delay: 1.067s;
+}
+
+.bt-radar-ring--3 {
+  animation-delay: 2.133s;
+}
+
+@keyframes radarPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.45;
+    border-color: rgba(222, 179, 235, 0.2);
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+    border-color: rgba(222, 179, 235, 0);
+  }
+}
+
+/* ── Icon ring ── */
+.bt-icon-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid rgba(222, 179, 235, 0.2);
+  background: rgba(222, 179, 235, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.bt-icon-ring--success {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.bt-icon-ring--error {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ── Icons inside ring ── */
+.bt-icon-inner {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #deb3eb;
+}
+
+.bt-icon-ring--success .bt-icon-inner {
+  color: #22c55e;
+}
+
+.bt-icon-ring--error .bt-icon-inner {
+  color: #ef4444;
+}
+
+.bt-icon-inner svg {
+  position: absolute;
+  transition: opacity 0.4s ease;
+}
+
+.bt-icon-inner--pulse {
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+
+/* ── Text ── */
+.bt-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding-bottom: 0.625rem;
+}
+
+.bt-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #a1a1aa;
+  margin: 0;
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.bt-title--shimmer {
+  background: linear-gradient(to right, #888895 0%, #ffffff 50%, #888895 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.bt-subtitle {
+  font-size: 0.8125rem;
+  color: #52525b;
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+/* ── Error area ── */
+.bt-error-area {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+
+.bt-error-area--visible {
+  max-height: 40px;
+  opacity: 1;
+  margin-bottom: 0.5rem;
+}
+
+.bt-error-message {
+  font-size: 0.8125rem;
+  color: #ef4444;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Divider ── */
+.bt-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 0;
+}
+
+/* ── Footer ── */
+.bt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.bt-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #52525b;
+  transition: color 0.25s ease;
+}
+
+.bt-status--connecting {
+  color: #a1a1aa;
+}
+
+.bt-status--connected {
+  color: #a1a1aa;
+}
+
+.bt-status--error {
+  color: #a1a1aa;
+}
+
+/* ── Status dot ── */
+.bt-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.bt-dot::before,
+.bt-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3f3f46;
+  transition: background 0.25s ease;
+}
+
+.bt-dot--connecting::before,
+.bt-dot--connecting::after {
+  background: #deb3eb;
+}
+
+.bt-dot--connecting::after {
+  animation: btPulse 1.4s ease-out infinite;
+}
+
+.bt-dot--connected::before,
+.bt-dot--connected::after {
+  background: #22c55e;
+}
+
+.bt-dot--connected::after {
+  animation: btPulse 2s ease-out infinite;
+}
+
+.bt-dot--error::before,
+.bt-dot--error::after {
+  background: #ef4444;
+}
+
+@keyframes btPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* ── Ghost button ── */
+.bt-btn {
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #deb3eb;
+  transition: color 0.15s ease;
+}
+
+.bt-btn:hover:not(:disabled) {
+  color: #e8c8f5;
+}
+
+.bt-btn:disabled {
+  color: #52525b;
+  cursor: default;
+}

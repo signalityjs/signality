@@ -1,0 +1,12 @@
+<div class="toggle">
+  @for (option of options(); track option.value) {
+    <button
+      class="toggle-btn"
+      [class.active]="isActive(option.value)"
+      [disabled]="disabled()"
+      (click)="handleClick(option.value)"
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>

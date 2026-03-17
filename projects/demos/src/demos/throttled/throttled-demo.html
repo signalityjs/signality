@@ -1,0 +1,21 @@
+<ng-demo-wrapper [demoPath]="'throttled/throttled-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Mouse zone -->
+    <div class="th-zone" (mousemove)="onMouseMove($event)">Move your mouse here</div>
+
+    <!-- Divider -->
+    <div class="th-divider"></div>
+
+    <!-- Info rows -->
+    <div class="th-rows">
+      <div class="th-row">
+        <span class="th-label">Immediate</span>
+        <span class="th-value">{{ immediateX() }}, {{ immediateY() }}</span>
+      </div>
+      <div class="th-row">
+        <span class="th-label">Throttled</span>
+        <span class="th-value th-value--accent">{{ throttledX() }}, {{ throttledY() }}</span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

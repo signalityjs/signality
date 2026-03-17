@@ -1,0 +1,134 @@
+/* ── Rows ── */
+.ws-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.ws-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid #1f1f22;
+  gap: 1rem;
+}
+
+.ws-row--last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ws-row:first-child {
+  padding-top: 0;
+}
+
+.ws-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+  flex-shrink: 0;
+}
+
+.ws-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-weight: 500;
+  text-align: right;
+}
+
+.ws-value--muted {
+  color: #a1a1aa;
+  font-weight: 400;
+}
+
+.ws-value--tag {
+  font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
+  font-size: 0.75rem;
+  color: #71717a;
+  font-weight: 400;
+}
+
+/* ── Divider ── */
+.ws-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 0.875rem 0 0;
+}
+
+/* ── Footer ── */
+.ws-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.ws-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #71717a;
+  transition: color 0.2s ease;
+}
+
+.ws-status--sharing {
+  color: #71717a;
+}
+
+/* ── Pulse indicator ── */
+.ws-pulse {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.ws-pulse::before,
+.ws-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3f3f46;
+  transition: background 0.3s ease;
+}
+
+.ws-pulse--active::before {
+  background: #deb3eb;
+}
+
+.ws-pulse--active::after {
+  background: #deb3eb;
+  animation: wsPulse 1.2s ease-out infinite;
+}
+
+@keyframes wsPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.ws-btn {
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #deb3eb;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.ws-btn:hover:not(:disabled) {
+  color: #e8c8f5;
+}
+
+.ws-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

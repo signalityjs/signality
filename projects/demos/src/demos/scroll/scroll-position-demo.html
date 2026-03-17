@@ -1,0 +1,26 @@
+<ng-demo-wrapper [code]="importCode">
+  <demo-card>
+    <!-- Info rows -->
+    <div class="sp-rows">
+      <div class="sp-row">
+        <span class="sp-label">Scroll X</span>
+        <span class="sp-value">{{ scrollPos.x() }}px</span>
+      </div>
+      <div class="sp-row">
+        <span class="sp-label">Scroll Y</span>
+        <span class="sp-value">{{ scrollPos.y() }}px</span>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="sp-divider"></div>
+
+    <!-- Footer -->
+    <div class="sp-footer">
+      <span class="sp-status" [class.sp-status--active]="hasScrolled()">
+        <span class="sp-dot" [class.sp-dot--active]="hasScrolled()"></span>
+        {{ hasScrolled() ? 'Scrolled' : 'At top' }}
+      </span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

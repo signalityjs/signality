@@ -1,0 +1,65 @@
+<ng-demo-wrapper [demoPath]="'gamepad/gamepad-demo'" [code]="importCode">
+  <div class="gamepad-card">
+    @if (!gp.isSupported()) {
+      <demo-card>
+        <div class="not-supported">
+          <demo-badge type="error">Gamepad API not supported</demo-badge>
+          <p class="not-supported-text">Use a browser with Gamepad API support.</p>
+        </div>
+      </demo-card>
+    } @else if (!gp.activeGamepad()) {
+      <demo-card>
+        <div class="not-connected">
+          <div class="gamepad-icon">
+            <svg
+              width="48"
+              height="32"
+              viewBox="0 0 48 32"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="2" y="8" width="44" height="16" rx="8" />
+              <circle cx="12" cy="16" r="3" />
+              <circle cx="36" cy="16" r="3" />
+            </svg>
+          </div>
+          <p class="not-connected-text">Connect a gamepad to test</p>
+          <p class="not-connected-hint">Press any button on your gamepad</p>
+        </div>
+      </demo-card>
+    } @else {
+      <demo-card>
+        <div class="gamepad-info">
+          <span class="gamepad-name">{{ gp.activeGamepad()?.id }}</span>
+          <demo-badge type="success">Connected</demo-badge>
+        </div>
+      </demo-card>
+
+      <demo-card>
+        <div class="buttons-grid">
+          @for (button of gp.buttons(); track $index) {
+            <div class="button-item" [class.pressed]="button.pressed">
+              <span class="button-index">{{ $index }}</span>
+            </div>
+          }
+        </div>
+      </demo-card>
+
+      <demo-card>
+        <div class="axes-list">
+          @for (axis of gp.axes(); track $index) {
+            <div class="axis-item">
+              <span class="axis-label">Axis {{ $index }}</span>
+              <div class="axis-bar">
+                <div class="axis-fill" [style.width.%]="getAxisPercent(axis)"></div>
+                <div class="axis-center"></div>
+              </div>
+              <span class="axis-value">{{ axis.toFixed(2) }}</span>
+            </div>
+          }
+        </div>
+      </demo-card>
+    }
+  </div>
+</ng-demo-wrapper>

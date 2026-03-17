@@ -1,0 +1,79 @@
+<ng-demo-wrapper [demoPath]="'vibration/vibration-demo'" [code]="importCode">
+  @if (!vib.isSupported()) {
+    <demo-not-supported
+      title="Vibration Not Available"
+      description="Vibration API is only available on mobile devices."
+      [hints]="['Android Chrome', 'Firefox Android', 'Samsung Browser']"
+    >
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="8" y="2" width="8" height="20" rx="2" />
+        <path d="M4 9a8 8 0 0 0 0 6" opacity="0.5" />
+        <path d="M20 9a8 8 0 0 1 0 6" opacity="0.5" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <!-- Icon ring (120px container prevents shake from causing layout jumps) -->
+      <div class="vb-visual">
+        <div class="vb-ring-container">
+          <div class="vb-ring" [class.vb-ring--active]="vib.isVibrating()">
+            <div class="vb-icon-inner">
+              <!-- Phone idle -->
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="idleOpacity()"
+              >
+                <rect x="8" y="2" width="8" height="20" rx="2" />
+              </svg>
+              <!-- Phone vibrating (with waves) -->
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="activeOpacity()"
+              >
+                <rect x="8" y="2" width="8" height="20" rx="2" />
+                <path d="M4 9a8 8 0 0 0 0 6" />
+                <path d="M20 9a8 8 0 0 1 0 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider + footer -->
+      <div class="vb-divider"></div>
+      <div class="vb-footer">
+        <span class="vb-status" [class.vb-status--active]="vib.isVibrating()">
+          <span class="vb-dot" [class.vb-dot--active]="vib.isVibrating()"></span>
+          {{ vib.isVibrating() ? 'Vibrating…' : 'Idle' }}
+        </span>
+        <div class="vb-actions">
+          <button class="vb-btn vb-btn--muted" (click)="vibratePattern()">Pattern</button>
+          <button class="vb-btn vb-btn--accent" (click)="vibrate()">Vibrate</button>
+        </div>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

@@ -5,6 +5,12 @@ import SidebarGroup from './SidebarGroup.vue';
 
 const { site } = useData();
 const sidebar = site.value.themeConfig.sidebar || [];
+
+const emit = defineEmits<{ navigate: [] }>();
+
+function onSearchClick() {
+  setTimeout(() => emit('navigate'), 150);
+}
 </script>
 
 <template>
@@ -62,7 +68,9 @@ const sidebar = site.value.themeConfig.sidebar || [];
           </a>
         </div>
 
-        <VPNavBarSearch />
+        <div @click.capture="onSearchClick">
+          <VPNavBarSearch />
+        </div>
 
         <div class="sidebar-divider" aria-hidden="true"></div>
       </header>

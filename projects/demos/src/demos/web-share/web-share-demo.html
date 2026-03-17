@@ -1,0 +1,54 @@
+<ng-demo-wrapper [demoPath]="'web-share/web-share-demo'" [code]="importCode">
+  @if (!webShare.isSupported()) {
+    <demo-not-supported
+      title="Not supported"
+      description="Web Share API is not available in this browser."
+      [hints]="['Chrome', 'Safari', 'Mobile']"
+    >
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <!-- Share data rows -->
+      <div class="ws-rows">
+        <div class="ws-row">
+          <span class="ws-label">Title</span>
+          <span class="ws-value">Signality</span>
+        </div>
+        <div class="ws-row">
+          <span class="ws-label">Text</span>
+          <span class="ws-value ws-value--muted">Reactive utilities for Angular</span>
+        </div>
+        <div class="ws-row ws-row--last">
+          <span class="ws-label">URL</span>
+          <span class="ws-value ws-value--tag">signality.dev</span>
+        </div>
+      </div>
+
+      <!-- Divider + footer -->
+      <div class="ws-divider"></div>
+      <div class="ws-footer">
+          <span class="ws-status" [class.ws-status--sharing]="webShare.isSharing()">
+            <span class="ws-pulse" [class.ws-pulse--active]="webShare.isSharing()"></span>
+            {{ webShare.isSharing() ? 'Sharing…' : 'Ready to share' }}
+          </span>
+        <button class="ws-btn" [disabled]="webShare.isSharing()" (click)="share()">Share</button>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

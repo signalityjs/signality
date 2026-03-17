@@ -1,0 +1,15 @@
+<ng-demo-wrapper [demoPath]="'window-size/window-size-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Info rows -->
+    <div class="ws-rows">
+      <div class="ws-row">
+        <span class="ws-label">Width</span>
+        <span class="ws-value">{{ size().width }}px</span>
+      </div>
+      <div class="ws-row">
+        <span class="ws-label">Height</span>
+        <span class="ws-value">{{ size().height }}px</span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

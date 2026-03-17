@@ -1,0 +1,23 @@
+<ng-demo-wrapper
+  [demoPath]="'element-focus-within/element-focus-within-demo'"
+  [code]="importCode"
+>
+  <demo-card>
+    <!-- Observed container -->
+    <div #container class="fw-zone" [class.fw-zone--active]="isFocusedWithin()">
+      <input demoInput placeholder="Focus inside…" />
+      <input demoInput placeholder="Or here…" />
+    </div>
+
+    <!-- Divider -->
+    <div class="fw-divider"></div>
+
+    <!-- Footer -->
+    <div class="fw-footer">
+      <span class="fw-status" [class.fw-status--active]="isFocusedWithin()">
+        <span class="fw-dot" [class.fw-dot--active]="isFocusedWithin()"></span>
+        {{ isFocusedWithin() ? 'Focus within' : 'No focus' }}
+      </span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

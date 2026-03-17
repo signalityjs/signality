@@ -1,0 +1,37 @@
+<ng-demo-wrapper [demoPath]="'on-click-outside/on-click-outside-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Dropdown zone -->
+    <div
+      #dropdown
+      class="co-zone"
+      [class.co-zone--open]="isOpen()"
+      [class.co-zone--dismissed]="clickedOutside()"
+    >
+      {{
+        clickedOutside() ? 'Dismissed' : isOpen() ? 'Click outside to close' : 'Open the panel'
+      }}
+    </div>
+
+    <!-- Divider -->
+    <div class="co-divider"></div>
+
+    <!-- Footer -->
+    <div class="co-footer">
+      <span
+        class="co-status"
+        [class.co-status--open]="isOpen()"
+        [class.co-status--dismissed]="clickedOutside()"
+      >
+        <span
+          class="co-dot"
+          [class.co-dot--open]="isOpen() && !clickedOutside()"
+          [class.co-dot--dismissed]="clickedOutside()"
+        ></span>
+        {{ clickedOutside() ? 'Click outside detected' : isOpen() ? 'Open' : 'Closed' }}
+      </span>
+      <button #trigger class="co-btn" (click)="toggle()">
+        {{ isOpen() ? 'Close' : 'Open' }}
+      </button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>
