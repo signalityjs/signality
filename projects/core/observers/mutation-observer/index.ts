@@ -3,7 +3,13 @@ import {
   type CreateEffectOptions,
   type EffectCleanupRegisterFn,
 } from '@angular/core';
-import { NOOP_EFFECT_REF, setupContext, toElement, toValue } from '@signality/core/internal';
+import {
+  assertElement,
+  NOOP_EFFECT_REF,
+  setupContext,
+  toElement,
+  toValue,
+} from '@signality/core/internal';
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface MutationObserverInitOptions
@@ -131,6 +137,8 @@ export function mutationObserver(
       const observer = new MutationObserver(callback);
 
       for (const el of els) {
+        ngDevMode && assertElement(el, 'mutationObserver');
+
         observer.observe(el!, {
           childList,
           attributes,
