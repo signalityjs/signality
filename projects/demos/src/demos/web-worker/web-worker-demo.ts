@@ -232,13 +232,10 @@ export class WebWorkerDemo {
       this._worker = null;
     }
 
-    effect(
-      () => {
-        this._worker?.data(); // track data changes → clear pending
-        this.pending.set(false);
-      },
-      { allowSignalWrites: true }
-    );
+    effect(() => {
+      this._worker?.data(); // track data changes → clear pending
+      this.pending.set(false);
+    });
   }
 
   calculate(): void {

@@ -49,18 +49,18 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type             | Description                                            |
+|-----------|------------------|--------------------------------------------------------|
 | `options` | `FaviconOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `FaviconOptions` extends `WithInjector` and includes:
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `baseUrl` | `string` | `APP_BASE_HREF` or `''` | Base URL for favicon paths. If not provided, uses [`APP_BASE_HREF`](https://angular.dev/api/common/APP_BASE_HREF) token value if available, otherwise empty string |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | - | Optional injector for DI context |
+| Option     | Type                                                | Default                 | Description                                                                                                                                                        |
+|------------|-----------------------------------------------------|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `baseUrl`  | `string`                                            | `APP_BASE_HREF` or `''` | Base URL for favicon paths. If not provided, uses [`APP_BASE_HREF`](https://angular.dev/api/common/APP_BASE_HREF) token value if available, otherwise empty string |
+| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | -                       | Optional injector for DI context                                                                                                                                   |
 
 ### Base URL resolution
 
@@ -81,7 +81,7 @@ import { App } from './app';
 export const appConfig: ApplicationConfig = {
   providers: [
     // ...
-    { provide: APP_BASE_HREF, useValue: '/my-app/' } // [!code highlight]
+    { provide: APP_BASE_HREF, useValue: '/my-app/' } // [!code ++]
   ]
 };
 
@@ -92,13 +92,13 @@ bootstrapApplication(App, appConfig);
 
 The `favicon()` function returns a `FaviconRef` object:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `current` | `Signal<string>` | Current favicon URL |
-| `original` | `Signal<string>` | Original favicon URL (for reset) |
-| `set` | `(url: string) => void` | Set favicon to URL |
-| `setEmoji` | `(emoji: string) => void` | Set favicon to emoji |
-| `reset` | `() => void` | Reset to original favicon |
+| Property   | Type                      | Description                      |
+|------------|---------------------------|----------------------------------|
+| `current`  | `Signal<string>`          | Current favicon URL              |
+| `original` | `Signal<string>`          | Original favicon URL (for reset) |
+| `set`      | `(url: string) => void`   | Set favicon to URL               |
+| `setEmoji` | `(emoji: string) => void` | Set favicon to emoji             |
+| `reset`    | `() => void`              | Reset to original favicon        |
 
 ## Examples
 
@@ -122,7 +122,7 @@ export class NotificationBadge {
     effect(() => {
       const count = this.unreadCount();
       if (count > 0) {
-        this.fav.setEmoji('🔴'); // [!code highlight]
+        this.fav.setEmoji('🔴');
       } else {
         this.fav.reset();
       }

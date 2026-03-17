@@ -26,24 +26,25 @@ export class PermissionDemo {
 
 ## Parameters
 
-| Parameter | Type                    | Description                                              |
-|-----------|-------------------------|----------------------------------------------------------|
-| `name`    | `PermissionName`        | The permission name to query (e.g. `'camera'`, `'geolocation'`, `'notifications'`) |
-| `options` | `PermissionStateOptions` | Optional configuration (see [Options](#options) below)   |
+| Parameter | Type                     | Description                                                                        |
+|-----------|--------------------------|------------------------------------------------------------------------------------|
+| `name`    | `PermissionName`         | The permission name to query (e.g. `'camera'`, `'geolocation'`, `'notifications'`) |
+| `options` | `PermissionStateOptions` | Optional configuration (see [Options](#options) below)                             |
 
 ## Options
 
 The `PermissionStateOptions` extends Angular's [`CreateSignalOptions<PermissionState>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                      | Description                                    |
-|-------------|---------------------------|------------------------------------------------|
+| Option      | Type                                                                               | Description                                                                                        |
+|-------------|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `equal`     | [`ValueEqualityFn<PermissionState>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                  | Debug name for the signal (development only)   |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                | Optional injector for DI context               |
+| `debugName` | `string`                                                                           | Debug name for the signal (development only)                                                       |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                | Optional injector for DI context                                                                   |
 
 ## Return Value
 
 Returns a `Signal<PermissionState>` containing the current permission state:
+
 - `'granted'` — The permission has been granted
 - `'denied'` — The permission has been denied
 - `'prompt'` — The user has not yet been asked (also used as default for SSR and unsupported browsers)
