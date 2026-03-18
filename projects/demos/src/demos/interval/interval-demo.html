@@ -11,13 +11,13 @@
 
     <!-- Footer -->
     <div class="iv-footer">
-      <span class="iv-status" [class.iv-status--active]="timer.isActive()">
-        <span class="iv-dot" [class.iv-dot--active]="timer.isActive()"></span>
-        {{ timer.isActive() ? 'Running' : 'Stopped' }}
+      <span class="iv-status" [class.iv-status--active]="isActive()">
+        <span class="iv-dot" [class.iv-dot--active]="isActive()"></span>
+        {{ isActive() ? 'Running' : 'Stopped' }}
       </span>
       <div class="iv-actions">
-        @if (timer.isActive()) {
-          <button class="iv-btn iv-btn--secondary" (click)="timer.stop()">Stop</button>
+        @if (isActive()) {
+          <button class="iv-btn iv-btn--secondary" (click)="stop()">Stop</button>
         }
       </div>
     </div>

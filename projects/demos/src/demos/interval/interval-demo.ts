@@ -13,6 +13,12 @@ export class IntervalDemo {
   readonly importCode = `import { interval } from '@signality/core'`;
 
   readonly ticks = signal(0);
+  readonly isActive = signal(true);
 
   readonly timer = interval(() => this.ticks.update(n => n + 1), 1000);
+
+  stop(): void {
+    this.timer.destroy();
+    this.isActive.set(false);
+  }
 }
