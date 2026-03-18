@@ -28,11 +28,11 @@
 
 **Key Features:**
 
-- 🎯 **Signal-First Design** — Built on top of Angular Signals, no RxJS needed
-- 🧹 **Automatic Cleanup** — All resources released when the view is destroyed
-- 🚀 **SSR-Compatible** — Browser APIs are guarded with safe defaults on the server
-- 🎨 **Reactive Inputs** — Accepts both signals and static values via `MaybeSignal<T>`
-- 📦 **Tree-Shakable** — Import only what you need
+- **Signal-first design** — Built on top of [Angular Signals](https://angular.dev/guide/signals)
+- **Automatic cleanup** — Utilities manage resource lifecycles automatically
+- **SSR-compatible** — Browser APIs are guarded with safe defaults on the server
+- **Reactive inputs** — Seamlessly handles static and reactive values
+- **Tree-Shakable** — Import only what you need
 
 ## Framework Compatibility
 
@@ -66,7 +66,7 @@ Signality also provides specialized integration packages:
 
 #### CDK Integration
 
-Signal-based utilities for Angular CDK (`focusMonitor`, `interactivityChecker`, `inputModality`):
+Signal-based utilities for Angular CDK:
 
 ```bash
 pnpm add @signality/cdk-interop
