@@ -1,5 +1,5 @@
-import { isSignal, signal, type Signal, untracked } from '@angular/core';
-import { constSignal, NOOP_FN, setupContext, type Timer, toValue } from '@signality/core/internal';
+import { isSignal } from '@angular/core';
+import { NOOP_EFFECT_REF, setupContext, type Timer, toValue } from '@signality/core/internal';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { watcher } from '@signality/core/reactivity/watcher';
 
@@ -14,42 +14,35 @@ export interface IntervalOptions extends WithInjector {
 
 export interface IntervalRef {
   /**
-   * Whether the interval is currently running.
-   */
-  readonly isActive: Signal<boolean>;
-
-  /**
    * Stop the interval permanently.
    */
-  readonly stop: () => void;
+  readonly destroy: () => void;
 }
 
 /**
  * Signal-based wrapper around [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval).
  * Creates a reactive interval that executes a callback at specified intervals.
- * The interval starts immediately upon creation and can be stopped with `stop()`.
+ * The interval starts immediately upon creation and can be stopped with `destroy()`.
  *
  * @param callback - Function to execute on each interval tick
  * @param intervalMs - Interval duration in milliseconds (can be a reactive signal)
  * @param options - Optional configuration
- * @returns An IntervalRef with `isActive` signal and `stop` method
+ * @returns An IntervalRef with a `destroy` method to stop the interval
  *
  * @example
  * ```typescript
  * @Component({
  *   template: `
- *     <p>Status: {{ polling.isActive() ? 'Polling' : 'Stopped' }}</p>
- *     <button (click)="polling.stop()">Stop</button>
+ *     <p>Ticks: {{ ticks() }}</p>
+ *     <button (click)="polling.destroy()">Stop</button>
  *   `,
  * })
  * export class PeriodicTask {
- *   readonly polling = interval(async () => {
- *     await this.checkStatus();
- *   }, 5000);
+ *   readonly ticks = signal(0);
  *
- *   async checkStatus() {
- *     // async operation
- *   }
+ *   readonly polling = interval(() => {
+ *     this.ticks.update(n => n + 1);
+ *   }, 5000);
  * }
  * ```
  */
@@ -62,46 +55,28 @@ export function interval(
 
   return runInContext(({ isServer, onCleanup }) => {
     if (isServer) {
-      return {
-        isActive: constSignal(false),
-        stop: NOOP_FN,
-      };
+      return NOOP_EFFECT_REF;
     }
-
-    const isActive = signal(true);
 
     let intervalId: Timer;
 
-    const cleanup = () => {
-      if (intervalId !== undefined) {
-        clearInterval(intervalId);
-        intervalId = undefined;
-      }
-    };
-
     const start = () => {
-      cleanup();
+      clearInterval(intervalId);
 
       const ms = toValue.untracked(intervalMs);
-      if (ms <= 0) return;
-
-      intervalId = setInterval(callback, ms);
-    };
-
-    const stop = () => {
-      isActive.set(false);
-      cleanup();
+      intervalId = ms > 0 ? setInterval(callback, ms) : undefined;
     };
 
     if (isSignal(intervalMs)) {
-      watcher(intervalMs, () => {
-        if (untracked(isActive)) {
-          start();
-        }
-      });
+      watcher(intervalMs, start);
     }
 
-    onCleanup(stop);
+    const destroy = () => {
+      clearInterval(intervalId);
+      intervalId = undefined;
+    };
+
+    onCleanup(destroy);
 
     if (options?.immediate) {
       callback();
@@ -109,9 +84,6 @@ export function interval(
 
     start();
 
-    return {
-      isActive: isActive.asReadonly(),
-      stop,
-    };
+    return { destroy };
   });
 }

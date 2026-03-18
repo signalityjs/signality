@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/schedul
 
 # Interval
 
-Signal-based wrapper around [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval). Creates a reactive interval that executes a callback at specified intervals. The interval starts immediately upon creation and can be stopped with `stop()`.
+Signal-based wrapper around [`setInterval`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setInterval). Creates a reactive interval that executes a callback at specified intervals. The interval starts immediately upon creation and can be stopped with `destroy()`.
 
 <Demo name="interval" />
 
@@ -16,18 +16,16 @@ import { interval } from '@signality/core';
 
 @Component({
   template: `
-    <p>Status: {{ polling.isActive() ? 'Polling' : 'Stopped' }}</p>
-    <button (click)="polling.stop()">Stop</button>
+    <p>Ticks: {{ ticks() }}</p>
+    <button (click)="polling.destroy()">Stop</button>
   `,
 })
 export class PeriodicTask {
-  readonly polling = interval(async () => { // [!code highlight]
-    await this.checkStatus();
-  }, 5000);
+  readonly ticks = signal(0);
 
-  async checkStatus() {
-    // Async operation
-  }
+  readonly polling = interval(() => { // [!code highlight]
+    this.ticks.update(n => n + 1);
+  }, 5000);
 }
 ```
 
@@ -52,10 +50,9 @@ The `IntervalOptions` extends `WithInjector`:
 
 The `interval()` function returns an `IntervalRef` object:
 
-| Property   | Type              | Description                               |
-|------------|-------------------|-------------------------------------------|
-| `isActive` | `Signal<boolean>` | Whether the interval is currently running |
-| `stop`     | `() => void`      | Stop the interval permanently             |
+| Property  | Type         | Description                   |
+|-----------|--------------|-------------------------------|
+| `destroy` | `() => void` | Stop the interval permanently |
 
 ## Examples
 
@@ -109,10 +106,7 @@ export class ReactiveInterval {
 
 ## SSR Compatibility
 
-On the server, the interval does not execute:
-
-- `isActive()` → `false`
-- `stop()` → no-op function
+On the server, `interval` returns a no-op `IntervalRef` that safely handles `destroy()` calls without scheduling any timers.
 
 ## Type Definitions
 
@@ -122,8 +116,7 @@ interface IntervalOptions extends WithInjector {
 }
 
 interface IntervalRef {
-  readonly isActive: Signal<boolean>;
-  readonly stop: () => void;
+  readonly destroy: () => void;
 }
 
 function interval(
