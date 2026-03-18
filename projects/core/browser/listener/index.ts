@@ -4,6 +4,7 @@ import {
   effect,
   type EffectCleanupRegisterFn,
   type EffectRef,
+  untracked,
 } from '@angular/core';
 import { type BaseEffectNode, SIGNAL } from '@angular/core/primitives/signals';
 import {
@@ -147,6 +148,15 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
         }
       : rawHandler;
 
+    // Isolate event handler from signal dependency tracking.
+    // Angular's template compiler does this via setActiveConsumer(null) in executeListenerWithErrorHandling.
+    // Without this, events that fire during change detection (e.g. window 'blur' when the tab loses focus)
+    // can trigger NG0600 if the handler writes to a signal while a reactive consumer is active.
+    // See: https://github.com/angular/angular/issues/60143
+    const untrackedHandler = function (this: any, event: Event) {
+      untracked(() => handler.call(this, event));
+    };
+
     const setupListener = (onCleanup: EffectCleanupRegisterFn) => {
       const raw = toValue(maybeReactiveTarget);
       const target = unrefElement(raw);
@@ -160,10 +170,10 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
         assertEventTarget(target, 'listener');
       }
 
-      target.addEventListener(event, handler, nativeOptions);
+      target.addEventListener(event, untrackedHandler, nativeOptions);
 
       onCleanup(() => {
-        target.removeEventListener(event, handler, nativeOptions);
+        target.removeEventListener(event, untrackedHandler, nativeOptions);
       });
     };
 
