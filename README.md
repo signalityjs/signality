@@ -24,15 +24,17 @@
 
 <hr>
 
+A collection of atomic utilities for building reactive compositions in [Angular](https://angular.dev).
+
 ## Overview
 
 **Key Features:**
 
-- **Signal-first design** — Built on top of [Angular Signals](https://angular.dev/guide/signals)
-- **Automatic cleanup** — Utilities manage resource lifecycles automatically
-- **SSR-compatible** — Browser APIs are guarded with safe defaults on the server
-- **Reactive inputs** — Seamlessly handles static and reactive values
-- **Tree-Shakable** — Import only what you need
+- **Signal-first design** — built on top of Angular [Signals](https://angular.dev/guide/signals), abstracting away from RxJS
+- **Automatic cleanup** — utilities manage resource lifecycles automatically
+- **SSR-compatible** — browser APIs are guarded with safe defaults on the server
+- **Reactive inputs** — seamlessly handles static and reactive values
+- **Tree-Shakable** — only the code you use ends up in your bundle
 
 ## Framework Compatibility
 
