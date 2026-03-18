@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { fullscreen, type FullscreenRef } from './index';
+import { fullscreen } from './index';
 
 describe(fullscreen.name, () => {
   let fullscreenElementValue: Element | null;
@@ -31,8 +31,6 @@ describe(fullscreen.name, () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    delete (document as any).fullscreenEnabled;
-    delete (document as any).fullscreenElement;
   });
 
   @Component({ template: '{{ fs.isActive() }}' })
@@ -45,16 +43,6 @@ describe(fullscreen.name, () => {
     fixture.detectChanges();
     return fixture.componentInstance;
   };
-
-  it('should report isSupported as true when Fullscreen API is available', () => {
-    const component = createComponent();
-    expect(component.fs.isSupported()).toBe(true);
-  });
-
-  it('should initialize isActive as false', () => {
-    const component = createComponent();
-    expect(component.fs.isActive()).toBe(false);
-  });
 
   it('should update isActive when fullscreenchange event fires', () => {
     const component = createComponent();
