@@ -1,0 +1,79 @@
+<ng-demo-wrapper [demoPath]="'fullscreen/fullscreen-demo'" [code]="importCode">
+  <demo-card>
+    <div class="fs-wrap">
+      <!-- Icon ring -->
+      <div class="fs-visual">
+        <div class="fs-radar" [class.fs-radar--active]="isActive()">
+          <div class="fs-radar-ring fs-radar-ring--1"></div>
+          <div class="fs-radar-ring fs-radar-ring--2"></div>
+          <div class="fs-radar-ring fs-radar-ring--3"></div>
+          <div
+            class="fs-icon-ring"
+            [class.fs-icon-ring--active]="isActive()"
+            [class.fs-icon-ring--idle]="!isActive()"
+          >
+            <div class="fs-icon-inner">
+              <!-- Expand icon (enter fullscreen) -->
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="isActive() ? 0 : 1"
+              >
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+                <line x1="21" y1="3" x2="14" y2="10" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+
+              <!-- Minimize icon (exit fullscreen) -->
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [style.opacity]="isActive() ? 1 : 0"
+              >
+                <polyline points="4 14 10 14 10 20" />
+                <polyline points="20 10 14 10 14 4" />
+                <line x1="14" y1="10" x2="21" y2="3" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="fs-text">
+        <h3 class="fs-title">{{ isActive() ? 'Fullscreen' : 'Normal' }}</h3>
+        <p class="fs-subtitle">
+          {{
+            isActive()
+              ? 'Press Esc or click to exit'
+              : 'Enter immersive fullscreen mode'
+          }}
+        </p>
+      </div>
+
+      <!-- Button -->
+      <demo-button
+        variant="secondary"
+        size="sm"
+        [disabled]="!fs.isSupported()"
+        (click)="handleToggle()"
+      >
+        {{ isActive() ? 'Exit Fullscreen' : 'Enter Fullscreen' }}
+      </demo-button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

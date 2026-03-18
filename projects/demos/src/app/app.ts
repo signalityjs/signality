@@ -17,6 +17,7 @@ import { ElementSizeDemo } from '../demos/element-size/element-size-demo';
 import { ElementVisibilityDemo } from '../demos/element-visibility/element-visibility-demo';
 import { FaviconDemo } from '../demos/favicon/favicon-demo';
 import { FpsDemo } from '../demos/fps/fps-demo';
+import { FullscreenDemo } from '../demos/fullscreen/fullscreen-demo';
 import { GamepadDemo } from '../demos/gamepad/gamepad-demo';
 import { GeolocationDemo } from '../demos/geolocation/geolocation-demo';
 import { IntervalDemo } from '../demos/interval/interval-demo';
@@ -45,6 +46,7 @@ import { VibrationDemo } from '../demos/vibration/vibration-demo';
 import { WakeLockDemo } from '../demos/wake-lock/wake-lock-demo';
 import { WebNotificationDemo } from '../demos/web-notification/web-notification-demo';
 import { WebWorkerDemo } from '../demos/web-worker/web-worker-demo';
+import { WindowFocusDemo } from '../demos/window-focus/window-focus-demo';
 import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
 
 /**
@@ -76,6 +78,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     ElementVisibilityDemo,
     FaviconDemo,
     FpsDemo,
+    FullscreenDemo,
     GamepadDemo,
     GeolocationDemo,
     IntervalDemo,
@@ -104,6 +107,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     WakeLockDemo,
     WebNotificationDemo,
     WebWorkerDemo,
+    WindowFocusDemo,
     WindowSizeDemo,
   ],
   template: `
@@ -182,6 +186,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       </section>
 
       <section>
+        <h2>Fullscreen Demo</h2>
+        <demo-fullscreen />
+      </section>
+
+      <section>
         <h2>Mouse Position Demo</h2>
         <demo-mouse-position />
       </section>
@@ -204,6 +213,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Throttled Demo</h2>
         <demo-throttled />
+      </section>
+
+      <section>
+        <h2>Window Focus Demo</h2>
+        <demo-window-focus />
       </section>
 
       <section>
