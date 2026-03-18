@@ -31,6 +31,7 @@ import { ElementSizeDemo } from './demos/element-size/element-size-demo';
 import { ElementVisibilityDemo } from './demos/element-visibility/element-visibility-demo';
 import { FaviconDemo } from './demos/favicon/favicon-demo';
 import { FpsDemo } from './demos/fps/fps-demo';
+import { FullscreenDemo } from './demos/fullscreen/fullscreen-demo';
 import { GamepadDemo } from './demos/gamepad/gamepad-demo';
 import { GeolocationDemo } from './demos/geolocation/geolocation-demo';
 import { IntervalDemo } from './demos/interval/interval-demo';
@@ -60,6 +61,7 @@ import { VibrationDemo } from './demos/vibration/vibration-demo';
 import { WakeLockDemo } from './demos/wake-lock/wake-lock-demo';
 import { WebNotificationDemo } from './demos/web-notification/web-notification-demo';
 import { WebWorkerDemo } from './demos/web-worker/web-worker-demo';
+import { WindowFocusDemo } from './demos/window-focus/window-focus-demo';
 import { WindowSizeDemo } from './demos/window-size/window-size-demo';
 import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
 
@@ -83,6 +85,7 @@ const DEMOS = [
   { component: ElementVisibilityDemo, name: 'signality-demo-element-visibility' },
   { component: FaviconDemo, name: 'signality-demo-favicon' },
   { component: FpsDemo, name: 'signality-demo-fps' },
+  { component: FullscreenDemo, name: 'signality-demo-fullscreen' },
   { component: GamepadDemo, name: 'signality-demo-gamepad' },
   { component: GeolocationDemo, name: 'signality-demo-geolocation' },
   { component: IntervalDemo, name: 'signality-demo-interval' },
@@ -113,6 +116,7 @@ const DEMOS = [
   { component: WakeLockDemo, name: 'signality-demo-wake-lock' },
   { component: WebNotificationDemo, name: 'signality-demo-web-notification' },
   { component: WebWorkerDemo, name: 'signality-demo-web-worker' },
+  { component: WindowFocusDemo, name: 'signality-demo-window-focus' },
   { component: WindowSizeDemo, name: 'signality-demo-window-size' },
 ] as const;
 

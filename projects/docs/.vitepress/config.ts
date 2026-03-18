@@ -182,6 +182,7 @@ export default defineConfig({
           { text: 'EyeDropper', link: '/browser/eye-dropper' },
           { text: 'Favicon', link: '/browser/favicon' },
           { text: 'Fps', link: '/browser/fps' },
+          { text: 'Fullscreen', link: '/browser/fullscreen' },
           { text: 'Gamepad', link: '/browser/gamepad' },
           { text: 'Geolocation', link: '/browser/geolocation' },
           { text: 'InputModality', link: '/browser/input-modality' },
@@ -202,6 +203,7 @@ export default defineConfig({
           { text: 'WakeLock', link: '/browser/wake-lock' },
           { text: 'WebNotification', link: '/browser/web-notification' },
           { text: 'WebWorker', link: '/browser/web-worker' },
+          { text: 'WindowFocus', link: '/browser/window-focus' },
         ],
       },
       {
