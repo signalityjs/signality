@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/@signality/core">
-    <img src="https://img.shields.io/npm/v/@angular/core.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Signality on npm" />
+    <img src="https://img.shields.io/npm/v/@signality/core.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Signality on npm" />
   </a>
 </p>
 
