@@ -44,12 +44,14 @@ export class DropzoneDemo {
 
 ## Options
 
-| Option                | Type                                                                       | Default | Description                                                                                        |
-|-----------------------|----------------------------------------------------------------------------|---------|----------------------------------------------------------------------------------------------------|
-| `accept`              | [`MaybeSignal<string[]>`](/reference/utility-types#maybesignal-lt-type-gt) | `['*']` | Accepted [MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) |
-| `multiple`            | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt)  | `true`  | Allow multiple files                                                                               |
-| `preventDocumentDrop` | `boolean`                                                                  | `true`  | Prevent drops outside zone                                                                         |
-| `injector`            | [`Injector`](https://angular.dev/api/core/Injector)                        | -       | Optional injector for DI context                                                                   |
+| Option                | Type                                                                      | Default | Description                                                                                                      |
+|-----------------------|---------------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------|
+| `accept`              | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)  | `'*'`   | Comma-separated accepted file types (MIME types, wildcards, or extensions). Ignored when `validator` is provided |
+| `multiple`            | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt) | `true`  | Allow multiple files                                                                                             |
+| `preventDocumentDrop` | `boolean`                                                                 | `true`  | Prevent drops outside zone                                                                                       |
+| `validator`           | `(file: File) => boolean`                                                 | -       | Custom per-file validation predicate. When provided, `accept` is ignored                                         |
+| `onReject`            | `(files: File[]) => void`                                                 | -       | Callback invoked with rejected files after each drop                                                             |
+| `injector`            | [`Injector`](https://angular.dev/api/core/Injector)                       | -       | Optional injector for DI context                                                                                 |
 
 ## Return Value
 
@@ -87,7 +89,7 @@ import { dropzone } from '@signality/core';
 export class ImageUpload {
   readonly zone = viewChild<ElementRef>('zone');
   readonly drop = dropzone(this.zone, {
-    accept: ['image/jpeg', 'image/png', 'image/gif'], // [!code highlight]
+    accept: 'image/*', // [!code highlight]
     multiple: false,
   });
   
@@ -99,64 +101,33 @@ export class ImageUpload {
 }
 ```
 
-### Multi-file upload
+### File size validation with rejection feedback
 
 ```angular-ts
-import { Component, viewChild, ElementRef, signal, computed } from '@angular/core';
+import { Component, viewChild, ElementRef, signal } from '@angular/core';
 import { dropzone } from '@signality/core';
-
-interface UploadedFile {
-  file: File;
-  progress: number;
-  status: 'pending' | 'uploading' | 'done' | 'error';
-}
 
 @Component({
   template: `
     <div #zone class="dropzone" [class.over]="drop.isOver()">
-      <p>Drop files to upload</p>
+      <p>Drop files (max 5 MB each)</p>
     </div>
-    
-    <div class="file-list">
-      @for (item of uploads(); track item.file.name) {
-        <div class="file-item">
-          <span>{{ item.file.name }}</span>
-          <progress [value]="item.progress" max="100"></progress>
-          <span>{{ item.status }}</span>
-        </div>
-      }
-    </div>
+
+    @for (msg of errors(); track msg) {
+      <p class="error">{{ msg }}</p>
+    }
   `,
 })
-export class MultiUpload {
+export class ValidatedUpload {
   readonly zone = viewChild<ElementRef>('zone');
-  readonly drop = dropzone(this.zone);
-  readonly uploads = signal<UploadedFile[]>([]);
-  
-  constructor() {
-    effect(() => {
-      const files = this.drop.files();
-      if (files.length > 0) {
-        this.handleFiles(files); // [!code highlight]
-      }
-    });
-  }
-  
-  private handleFiles(files: File[]) {
-    const newUploads = files.map(file => ({
-      file,
-      progress: 0,
-      status: 'pending' as const,
-    }));
-    
-    this.uploads.update(u => [...u, ...newUploads]);
-    
-    newUploads.forEach(item => this.uploadFile(item));
-  }
-  
-  private async uploadFile(item: UploadedFile) {
-    // Upload logic
-  }
+  readonly errors = signal<string[]>([]);
+
+  readonly drop = dropzone(this.zone, {
+    validator: (file) => file.size <= 5 * 1024 * 1024, // [!code highlight]
+    onReject: (rejected) => { // [!code highlight]
+      this.errors.set(rejected.map(f => `${f.name} exceeds 5 MB`)); // [!code highlight]
+    }, // [!code highlight]
+  });
 }
 ```
 
@@ -172,9 +143,11 @@ On the server, signals initialize with safe defaults:
 
 ```typescript
 interface DropzoneOptions extends WithInjector {
-  readonly accept?: MaybeSignal<string[]>;
+  readonly accept?: MaybeSignal<string>;
   readonly multiple?: MaybeSignal<boolean>;
   readonly preventDocumentDrop?: boolean;
+  readonly validator?: (file: File) => boolean;
+  readonly onReject?: (files: File[]) => void;
 }
 
 interface DropzoneRef {

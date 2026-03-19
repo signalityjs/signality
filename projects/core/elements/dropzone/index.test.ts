@@ -126,7 +126,7 @@ describe(dropzone.name, () => {
     })
     class TestComponentWithAccept {
       readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
-      readonly drop = dropzone(this.zone, { accept: ['image/*'] });
+      readonly drop = dropzone(this.zone, { accept: 'image/*' });
     }
 
     const createComponent = () => {
@@ -154,7 +154,7 @@ describe(dropzone.name, () => {
       })
       class TestExactType {
         readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
-        readonly drop = dropzone(this.zone, { accept: ['text/plain'] });
+        readonly drop = dropzone(this.zone, { accept: 'text/plain' });
       }
 
       const fixture = TestBed.createComponent(TestExactType);
@@ -206,7 +206,7 @@ describe(dropzone.name, () => {
     })
     class TestComponentReactiveAccept {
       readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
-      readonly acceptTypes = signal(['image/*']);
+      readonly acceptTypes = signal('image/*');
       readonly drop = dropzone(this.zone, { accept: this.acceptTypes });
     }
 
@@ -227,8 +227,167 @@ describe(dropzone.name, () => {
       element.dispatchEvent(createDragEvent('drop', [imageFile, textFile]));
       expect(component.drop.files()).toEqual([imageFile]);
 
-      component.acceptTypes.set(['text/*']);
+      component.acceptTypes.set('text/*');
       expect(component.drop.files()).toEqual([textFile]);
+    });
+  });
+
+  describe('with validator option', () => {
+    @Component({
+      template: '<div #zone>Drop zone</div>',
+    })
+    class TestComponentWithValidator {
+      readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
+      readonly drop = dropzone(this.zone, {
+        validator: (file: File) => file.size <= 2048,
+      });
+    }
+
+    const createComponent = () => {
+      const fixture = TestBed.createComponent(TestComponentWithValidator);
+      fixture.detectChanges();
+      return {
+        component: fixture.componentInstance,
+        element: fixture.nativeElement.querySelector('div') as HTMLElement,
+      };
+    };
+
+    it('should keep only files passing the validator', () => {
+      const { component, element } = createComponent();
+      const smallFile = createFile('small.txt', 'text/plain', 1024);
+      const largeFile = createFile('large.txt', 'text/plain', 4096);
+
+      element.dispatchEvent(createDragEvent('drop', [smallFile, largeFile]));
+
+      expect(component.drop.files()).toEqual([smallFile]);
+    });
+
+    it('should ignore accept when validator is provided', () => {
+      @Component({
+        template: '<div #zone>Drop zone</div>',
+      })
+      class TestValidatorIgnoresAccept {
+        readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
+        readonly drop = dropzone(this.zone, {
+          accept: 'image/*',
+          validator: () => true,
+        });
+      }
+
+      const fixture = TestBed.createComponent(TestValidatorIgnoresAccept);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const element = fixture.nativeElement.querySelector('div') as HTMLElement;
+
+      const textFile = createFile('doc.txt', 'text/plain');
+
+      element.dispatchEvent(createDragEvent('drop', [textFile]));
+
+      expect(component.drop.files()).toEqual([textFile]);
+    });
+
+    it('should apply multiple limit with validator', () => {
+      @Component({
+        template: '<div #zone>Drop zone</div>',
+      })
+      class TestValidatorSingleFile {
+        readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
+        readonly drop = dropzone(this.zone, {
+          multiple: false,
+          validator: () => true,
+        });
+      }
+
+      const fixture = TestBed.createComponent(TestValidatorSingleFile);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const element = fixture.nativeElement.querySelector('div') as HTMLElement;
+
+      const file1 = createFile('a.txt', 'text/plain');
+      const file2 = createFile('b.txt', 'text/plain');
+
+      element.dispatchEvent(createDragEvent('drop', [file1, file2]));
+
+      expect(component.drop.files()).toEqual([file1]);
+    });
+  });
+
+  describe('with onReject callback', () => {
+    it('should call onReject with files failing validator', () => {
+      const onReject = jest.fn();
+
+      @Component({
+        template: '<div #zone>Drop zone</div>',
+      })
+      class TestOnRejectValidator {
+        readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
+        readonly drop = dropzone(this.zone, {
+          validator: (file: File) => file.size <= 2048,
+          onReject,
+        });
+      }
+
+      const fixture = TestBed.createComponent(TestOnRejectValidator);
+      fixture.detectChanges();
+      const element = fixture.nativeElement.querySelector('div') as HTMLElement;
+
+      const smallFile = createFile('small.txt', 'text/plain', 1024);
+      const largeFile = createFile('large.txt', 'text/plain', 4096);
+
+      element.dispatchEvent(createDragEvent('drop', [smallFile, largeFile]));
+
+      expect(onReject).toHaveBeenCalledWith([largeFile]);
+    });
+
+    it('should call onReject with files failing accept filter', () => {
+      const onReject = jest.fn();
+
+      @Component({
+        template: '<div #zone>Drop zone</div>',
+      })
+      class TestOnRejectAccept {
+        readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
+        readonly drop = dropzone(this.zone, {
+          accept: 'image/*',
+          onReject,
+        });
+      }
+
+      const fixture = TestBed.createComponent(TestOnRejectAccept);
+      fixture.detectChanges();
+      const element = fixture.nativeElement.querySelector('div') as HTMLElement;
+
+      const imageFile = createFile('photo.jpg', 'image/jpeg');
+      const textFile = createFile('doc.txt', 'text/plain');
+
+      element.dispatchEvent(createDragEvent('drop', [imageFile, textFile]));
+
+      expect(onReject).toHaveBeenCalledWith([textFile]);
+    });
+
+    it('should not call onReject when all files are accepted', () => {
+      const onReject = jest.fn();
+
+      @Component({
+        template: '<div #zone>Drop zone</div>',
+      })
+      class TestOnRejectAllAccepted {
+        readonly zone = viewChild<ElementRef<HTMLElement>>('zone');
+        readonly drop = dropzone(this.zone, {
+          validator: () => true,
+          onReject,
+        });
+      }
+
+      const fixture = TestBed.createComponent(TestOnRejectAllAccepted);
+      fixture.detectChanges();
+      const element = fixture.nativeElement.querySelector('div') as HTMLElement;
+
+      const file = createFile('test.txt', 'text/plain');
+
+      element.dispatchEvent(createDragEvent('drop', [file]));
+
+      expect(onReject).not.toHaveBeenCalled();
     });
   });
 
