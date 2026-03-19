@@ -67,7 +67,7 @@ export interface PictureInPictureRef {
  *     }
  *   `
  * })
- * class PiPDemo {
+ * export class PiPDemo {
  *   readonly video = viewChild<HTMLVideoElement>('video');
  *   readonly pip = pictureInPicture(this.video);
  * }
@@ -81,9 +81,7 @@ export function pictureInPicture(
 
   return runInContext(({ isBrowser }) => {
     const isSupported = constSignal(
-      isBrowser &&
-        'pictureInPictureEnabled' in document &&
-        document.pictureInPictureEnabled !== false
+      isBrowser && 'pictureInPictureEnabled' in document && document.pictureInPictureEnabled
     );
 
     if (!isSupported()) {
@@ -100,7 +98,14 @@ export function pictureInPicture(
 
     const enter = async (): Promise<void> => {
       const targetEl = toElement.untracked(target);
-      await targetEl?.requestPictureInPicture();
+
+      try {
+        await targetEl?.requestPictureInPicture();
+      } catch (error) {
+        if (ngDevMode) {
+          console.warn(`[pictureInPicture] Failed to enter Picture-in-Picture mode.`, error);
+        }
+      }
     };
 
     const exit = async (): Promise<void> => {
@@ -108,7 +113,13 @@ export function pictureInPicture(
       const pipEl = getPipElement(document);
 
       if (targetEl && pipEl && targetEl === pipEl) {
-        await document.exitPictureInPicture();
+        try {
+          await document.exitPictureInPicture();
+        } catch (error) {
+          if (ngDevMode) {
+            console.warn(`[pictureInPicture] Failed to exit Picture-in-Picture mode.`, error);
+          }
+        }
       }
     };
 
@@ -127,7 +138,16 @@ export function pictureInPicture(
       const pipEl = getPipElement(document);
 
       if (pipEl && targetEl === pipEl) {
-        await document.exitPictureInPicture();
+        try {
+          await document.exitPictureInPicture();
+        } catch (error) {
+          if (ngDevMode) {
+            console.warn(
+              `[pictureInPicture] Failed to exit Picture-in-Picture mode on disconnect.`,
+              error
+            );
+          }
+        }
         isActive.set(false);
       }
     });

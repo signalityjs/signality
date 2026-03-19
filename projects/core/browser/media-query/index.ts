@@ -29,7 +29,7 @@ export interface MediaQueryOptions extends CreateSignalOptions<boolean>, WithInj
  *     }
  *   `
  * })
- * class ThemeDemo {
+ * export class ThemeDemo {
  *   readonly prefersDark = mediaQuery('(prefers-color-scheme: dark)');
  * }
  * ```

@@ -124,7 +124,7 @@ export interface SpeechSynthesisRef {
  *     }
  *   `
  * })
- * class TextToSpeechDemo {
+ * export class TextToSpeechDemo {
  *   readonly synthesis = speechSynthesis({ rate: 1.5 });
  * }
  * ```

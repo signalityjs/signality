@@ -54,7 +54,7 @@ export type QueryParamsWithSchemaOptions<T extends Params = Params> = QueryParam
  *     </div>
  *   `
  * })
- * class SearchParamsDemo {
+ * export class SearchParamsDemo {
  *   // Route: /search?q=angular&sort=name
  *   readonly searchParams = queryParams<{ q: string; sort: string }>();
  * }
@@ -80,7 +80,7 @@ export function queryParams<T extends Params = Params>(options?: QueryParamsOpti
  *     }
  *   `
  * })
- * class ValidatedSearchParamsDemo {
+ * export class ValidatedSearchParamsDemo {
  *   readonly schema = z.object({
  *     q: z.string().min(1).optional(),
  *     page: z.coerce.number().int().positive().default(1),

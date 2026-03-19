@@ -47,7 +47,7 @@ export interface WebShareRef {
  *     }
  *   `
  * })
- * class WebShareDemo {
+ * export class WebShareDemo {
  *   readonly webShare = webShare();
  *
  *   async shareContent() {
@@ -87,10 +87,8 @@ export function webShare(options?: WithInjector): WebShareRef {
       } catch (error) {
         // user canceled, or share failed
         // AbortError is expected when a user cancels
-        if ((error as Error).name !== 'AbortError') {
-          if (ngDevMode) {
-            console.warn(`[webShare] Failed to share content.`, error);
-          }
+        if (ngDevMode && (error as Error).name !== 'AbortError') {
+          console.warn(`[webShare] Failed to share content.`, error);
         }
       } finally {
         isSharing.set(false);

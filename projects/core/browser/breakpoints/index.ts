@@ -39,7 +39,7 @@ export type BreakpointsRef<T extends Record<string, string>> = {
  *     <p>Active: {{ bp.current() }}</p>
  *   `
  * })
- * class Layout {
+ * export class Layout {
  *   readonly bp = breakpoints({
  *     mobile: '(max-width: 767px)',
  *     desktop: '(min-width: 768px)',
@@ -66,7 +66,7 @@ export function breakpoints<T extends Record<string, string>>(
     if (isServer) {
       return {
         ...queries,
-        current: constSignal(Object.keys(map).filter(key => !!initialValues[key])),
+        current: constSignal(Object.keys(map).filter(key => initialValues[key])),
       } as BreakpointsRef<T>;
     }
 

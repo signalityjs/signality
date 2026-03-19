@@ -45,7 +45,7 @@ export interface TextSelectionRef {
  *     }
  *   `
  * })
- * class TextSelectionDemo {
+ * export class TextSelectionDemo {
  *   readonly selection = textSelection();
  * }
  * ```

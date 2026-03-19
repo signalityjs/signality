@@ -77,7 +77,7 @@ export interface WebNotificationRef {
  *     }
  *   `
  * })
- * class NotificationDemo {
+ * export class NotificationDemo {
  *   readonly notif = webNotification({ icon: '/icon.png' });
  *
  *   async requestPermission() {
@@ -113,10 +113,8 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
     let autoCloseTimeout: Timer;
 
     const clearAutoClose = () => {
-      if (autoCloseTimeout) {
-        clearTimeout(autoCloseTimeout);
-        autoCloseTimeout = undefined;
-      }
+      clearTimeout(autoCloseTimeout);
+      autoCloseTimeout = undefined;
     };
 
     const requestPermission = async (): Promise<NotificationPermission> => {
@@ -135,7 +133,7 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
     const close = (): void => {
       clearAutoClose();
 
-      const current = untracked(notification);
+      const current = notification();
 
       if (current) {
         try {

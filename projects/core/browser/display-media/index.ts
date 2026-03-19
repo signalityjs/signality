@@ -87,7 +87,7 @@ export interface DisplayMediaRef {
  *     }
  *   `
  * })
- * class ScreenCaptureDemo {
+ * export class ScreenCaptureDemo {
  *   readonly screen = displayMedia();
  *
  *   async toggleCapture() {

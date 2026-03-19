@@ -93,7 +93,7 @@ export interface Serializer<T> {
  *     <button (click)="count.set(count() + 1)">Increment</button>
  *   '
  * })
- * class UserPreview {
+ * export class UserPreview {
  *   readonly username = storage('username', '');
  *   readonly count = storage('counter', 0); // number serialization inferred
  *   readonly lastVisit = storage('lastVisit', new Date()); // Date serialization inferred

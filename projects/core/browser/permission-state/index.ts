@@ -18,7 +18,7 @@ export type PermissionStateOptions = CreateSignalOptions<PermissionState> & With
  *     <p>Camera permission: {{ cameraPermission() }}</p>
  *   `
  * })
- * class PermissionDemo {
+ * export class PermissionDemo {
  *   readonly cameraPermission = permissionState('camera');
  * }
  * ```

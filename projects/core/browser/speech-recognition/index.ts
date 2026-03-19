@@ -115,7 +115,7 @@ export interface SpeechRecognitionRef {
  *     }
  *   `
  * })
- * class SpeechComponent {
+ * export class SpeechComponent {
  *   readonly recognition = speechRecognition();
  *
  *   toggleRecognition() {

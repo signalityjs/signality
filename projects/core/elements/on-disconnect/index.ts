@@ -24,7 +24,7 @@ export interface OnDisconnectRef {
  *     <button (click)="remove()">Remove</button>
  *   `
  * })
- * class OnDisconnectDemo {
+ * export class OnDisconnectDemo {
  *   readonly box = viewChild<ElementRef>('box');
  *
  *   constructor() {

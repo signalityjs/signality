@@ -50,7 +50,7 @@ export interface SwipeRef {
  *     </div>
  *   `
  * })
- * class SwipeComponent {
+ * export class SwipeComponent {
  *   readonly area = viewChild<ElementRef>('area');
  *   readonly sw = swipe(this.area);
  * }

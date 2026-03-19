@@ -24,7 +24,7 @@ export type ParamsOptions<T extends Params = Params> = CreateSignalOptions<T> & 
  *     </div>
  *   `
  * })
- * class UserPreview {
+ * export class UserPreview {
  *   // Route: /user/:id/:slug
  *   readonly routeParams = params<{ id: string; slug: string }>();
  * }

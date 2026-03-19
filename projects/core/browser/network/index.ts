@@ -85,7 +85,7 @@ export interface NetworkRef {
  *     }
  *   `
  * })
- * class NetworkComponent {
+ * export class NetworkComponent {
  *   readonly net = network();
  * }
  * ```

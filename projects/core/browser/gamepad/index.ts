@@ -58,7 +58,7 @@ export interface GamepadRef {
  *     }
  *   `
  * })
- * class GamepadDemo {
+ * export class GamepadDemo {
  *   readonly gp = gamepad();
  * }
  * ```

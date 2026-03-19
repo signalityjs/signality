@@ -44,7 +44,7 @@ export interface WindowSizeValue {
  *     </div>
  *   `
  * })
- * class WindowSizeComponent {
+ * export class WindowSizeComponent {
  *   readonly size = windowSize();
  * }
  * ```

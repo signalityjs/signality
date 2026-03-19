@@ -79,7 +79,7 @@ export interface WakeLockRef {
  *     }
  *   `
  * })
- * class WakeLockDemo {
+ * export class WakeLockDemo {
  *   readonly wl = wakeLock();
  * }
  * ```
@@ -89,7 +89,7 @@ export function wakeLock(options?: WakeLockOptions): WakeLockRef {
 
   return runInContext(({ isBrowser, onCleanup, injector }) => {
     const sentinel = signal<WakeLockSentinel | null>(null);
-    const requestedType = signal<'screen' | false>(false);
+    const pendingRequest = signal(false);
 
     const isSupported = constSignal(
       isBrowser &&
@@ -118,8 +118,12 @@ export function wakeLock(options?: WakeLockOptions): WakeLockRef {
     });
 
     let listenerRef: ListenerRef | null = null;
+    let isRequesting = false;
 
     const forceRequest = async (): Promise<void> => {
+      if (isRequesting) return;
+      isRequesting = true;
+
       try {
         const currentSentinel = untracked(sentinel);
 
@@ -144,7 +148,7 @@ export function wakeLock(options?: WakeLockOptions): WakeLockRef {
               newSentinel,
               'release',
               () => {
-                requestedType.set(false);
+                pendingRequest.set(false);
                 sentinel.set(null);
                 listenerRef = null;
               },
@@ -154,13 +158,18 @@ export function wakeLock(options?: WakeLockOptions): WakeLockRef {
         }
       } catch (err) {
         sentinel.set(null);
-        requestedType.set(false);
+        pendingRequest.set(false);
 
         if (listenerRef) {
+          listenerRef.destroy();
           listenerRef = null;
         }
 
-        throw err;
+        if (ngDevMode) {
+          console.warn('[wakeLock] Failed to acquire wake lock.', err);
+        }
+      } finally {
+        isRequesting = false;
       }
     };
 
@@ -168,12 +177,12 @@ export function wakeLock(options?: WakeLockOptions): WakeLockRef {
       if (untracked(visibility) === 'visible') {
         await forceRequest();
       } else {
-        requestedType.set('screen');
+        pendingRequest.set(true);
       }
     };
 
     const release = async (): Promise<void> => {
-      requestedType.set(false);
+      pendingRequest.set(false);
 
       const currentSentinel = untracked(sentinel);
 
@@ -199,19 +208,19 @@ export function wakeLock(options?: WakeLockOptions): WakeLockRef {
     if (autoReacquire) {
       effect(() => {
         const isVisible = visibility() === 'visible';
-        const pendingType = requestedType();
+        const isPending = pendingRequest();
 
-        if (isVisible && pendingType) {
-          requestedType.set(false);
+        if (isVisible && isPending) {
+          pendingRequest.set(false);
           forceRequest().catch(() => {
-            /* ignore errors, will retry on next visibility change */
+            /* handled inside forceRequest */
           });
         }
       });
     }
 
     onCleanup(() => {
-      const currentSentinel = sentinel();
+      const currentSentinel = untracked(sentinel);
       if (currentSentinel) {
         if (listenerRef) {
           listenerRef.destroy();

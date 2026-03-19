@@ -37,7 +37,7 @@ export interface DevicePostureRef {
  *     }
  *   `
  * })
- * class PostureDemo {
+ * export class PostureDemo {
  *   readonly posture = devicePosture();
  * }
  * ```

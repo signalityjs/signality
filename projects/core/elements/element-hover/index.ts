@@ -23,7 +23,7 @@ export type ElementHoverOptions = CreateSignalOptions<boolean> & WithInjector;
  *     </div>
  *   `
  * })
- * class HoverDemo {
+ * export class HoverDemo {
  *   readonly box = viewChild<ElementRef>('box');
  *   readonly isHovered = elementHover(this.box);
  * }

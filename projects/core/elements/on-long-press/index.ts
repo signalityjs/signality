@@ -36,7 +36,7 @@ export interface OnLongPressRef {
  * @Component({
  *   template: `<button #btn>Hold me</button>`
  * })
- * class OnLongPressDemo {
+ * export class OnLongPressDemo {
  *   readonly btn = viewChild<ElementRef>('btn');
  *
  *   constructor() {

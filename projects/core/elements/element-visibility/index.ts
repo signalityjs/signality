@@ -74,7 +74,7 @@ export interface ElementVisibilityValue {
  *     </div>
  *   `
  * })
- * class VisibilityDemo {
+ * export class VisibilityDemo {
  *   readonly section = viewChild<ElementRef>('section');
  *   readonly visibility = elementVisibility(this.section);
  * }

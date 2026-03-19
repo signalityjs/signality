@@ -22,7 +22,7 @@ export type WindowFocusOptions = CreateSignalOptions<boolean> & WithInjector;
  *     }
  *   `
  * })
- * class FocusDemo {
+ * export class FocusDemo {
  *   readonly isFocused = windowFocus();
  * }
  * ```

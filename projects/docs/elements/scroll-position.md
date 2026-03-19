@@ -258,4 +258,4 @@ function scrollPosition(options?: ScrollPositionOptions): ScrollPositionRef;
 ## Related
 
 - [MousePosition](/elements/mouse-position) — Track mouse position
-- [WindowSize](/elements/window-size) — Track window dimensions
+- [WindowSize](/browser/window-size) — Track window dimensions

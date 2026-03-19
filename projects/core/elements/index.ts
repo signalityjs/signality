@@ -12,5 +12,3 @@ export * from '@signality/core/elements/pointer-swipe';
 export * from '@signality/core/elements/on-disconnect';
 export * from '@signality/core/elements/scroll-position';
 export * from '@signality/core/elements/swipe';
-export * from '@signality/core/elements/text-selection';
-export * from '@signality/core/elements/window-size';

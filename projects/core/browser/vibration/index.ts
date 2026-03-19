@@ -57,7 +57,7 @@ export interface VibrationRef {
  *     }
  *   `
  * })
- * class VibrationDemo {
+ * export class VibrationDemo {
  *   readonly vib = vibration();
  * }
  * ```

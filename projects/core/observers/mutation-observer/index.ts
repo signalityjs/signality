@@ -93,7 +93,7 @@ export interface MutationObserverRef {
  *     </div>
  *   `
  * })
- * class MutationComponent {
+ * export class MutationComponent {
  *   readonly container = viewChild<ElementRef>('container');
  *   readonly childCount = signal(0);
  *

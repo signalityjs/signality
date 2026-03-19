@@ -58,7 +58,7 @@ export interface EyeDropperRef {
  *     }
  *   `
  * })
- * class ColorPicker {
+ * export class ColorPicker {
  *   readonly eyeDropper = eyeDropper();
  *
  *   async pickColor() {

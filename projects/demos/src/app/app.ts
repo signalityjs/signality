@@ -10,6 +10,7 @@ import { DebouncedDemo } from '../demos/debounced/debounced-demo';
 import { DisplayMediaDemo } from '../demos/display-media/display-media-demo';
 import { DropzoneDemo } from '../demos/dropzone/dropzone-demo';
 import { EyeDropperDemo } from '../demos/eye-dropper/eye-dropper-demo';
+import { FileDialogDemo } from '../demos/file-dialog/file-dialog-demo';
 import { ElementFocusDemo } from '../demos/element-focus/element-focus-demo';
 import { ElementFocusWithinDemo } from '../demos/element-focus-within/element-focus-within-demo';
 import { ElementHoverDemo } from '../demos/element-hover/element-hover-demo';
@@ -71,6 +72,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     DropzoneDemo,
     DisplayMediaDemo,
     EyeDropperDemo,
+    FileDialogDemo,
     ElementFocusDemo,
     ElementFocusWithinDemo,
     ElementHoverDemo,
@@ -293,6 +295,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Eye Dropper Demo</h2>
         <demo-eye-dropper />
+      </section>
+
+      <section>
+        <h2>File Dialog Demo</h2>
+        <demo-file-dialog />
       </section>
 
       <section>

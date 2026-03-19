@@ -103,5 +103,5 @@ function devicePosture(options?: WithInjector): DevicePostureRef;
 
 ## Related
 
-- [WindowSize](/elements/window-size) — Window dimensions tracking
+- [WindowSize](/browser/window-size) — Window dimensions tracking
 - [ScreenOrientation](/browser/screen-orientation) — Screen orientation tracking
