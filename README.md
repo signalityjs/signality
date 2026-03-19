@@ -36,6 +36,9 @@ A collection of atomic utilities for building reactive compositions in [Angular]
 - **Reactive inputs** — seamlessly handles static and reactive values
 - **Tree-Shakable** — only the code you use ends up in your bundle
 
+> **Signality v1.0 is here!** 🎉  
+> Help us test it in your projects — minor versions may include small API refinements as we fine-tune the library based on real-world feedback.
+
 ## Framework Compatibility
 
 Signality requires the following minimum versions:
