@@ -1,58 +1,62 @@
 # @signality/core
 
-Signal-first utility collection for Angular. Comprehensive library of reactive utilities for browser APIs, DOM elements, and common patterns.
+A collection of atomic utilities for building reactive compositions in [Angular](https://angular.dev).
+
+## Key Benefits
+
+- **Signal-first design** — built on top of Angular [Signals](https://angular.dev/guide/signals), abstracting away from RxJS
+- **Automatic cleanup** — utilities manage resource lifecycles automatically
+- **SSR-compatible** — browser APIs are guarded with safe defaults on the server
+- **Reactive inputs** — seamlessly handles static and reactive values
+- **Tree-Shakable** — only the code you use ends up in your bundle
+
+## Quick Example
+
+```ts
+import { Component, effect } from '@angular/core';
+import { storage, speechSynthesis, favicon } from '@signality/core';
+
+@Component({
+  template: `
+    <input [(ngModel)]="value" />
+    <button (click)="synthesis.speak(value())">Speak</button>
+  `,
+})
+export class Demo {
+  readonly value = storage('key', ''); // Web Storage API
+  readonly synthesis = speechSynthesis(); // Web Speech API
+  readonly fav = favicon(); // Dynamic Favicon
+
+  constructor() {
+    effect(() => {
+      if (this.synthesis.isSpeaking()) {
+        this.fav.setEmoji('🔊');
+      } else {
+        this.fav.reset();
+      }
+    });
+  }
+}
+```
+
+## Framework Compatibility
+
+| Tool        | Minimum Version |
+|-------------|-----------------|
+| **Angular** | `v20.0.0`       |
 
 ## Installation
 
 ```bash
-npm install @signality/core
+pnpm add @signality/core
 ```
 
-## Features
+Or with npm/yarn:
 
-### Browser Utilities
-- **`battery()`** — Reactive battery status and charging state
-- **`clipboard()`** — Reactive clipboard read/write operations
-- **`geolocation()`** — Reactive geolocation tracking
-- **`pageVisibility()`** — Reactive page visibility state
-- **`storage()`** — Reactive localStorage/sessionStorage with sync
-- **`network()`** — Reactive network connection status
-- **`fullscreen()`** — Reactive fullscreen API
-- And [many more...](https://signality.dev/browser/battery)
-
-### Element Utilities
-- **`elementSize()`** — Reactive element dimensions
-- **`elementVisibility()`** — Reactive Intersection Observer
-- **`dropzone()`** — Reactive drag & drop zone
-- **`windowSize()`** — Reactive window dimensions
-- **`scrollPosition()`** — Reactive scroll position
-- And [many more...](https://signality.dev/elements/active-element)
-
-### Utils
-- **`debounced()`** — Debounced writable signal
-- **`throttled()`** — Throttled writable signal
-
-## Usage
-
-```typescript
-import { battery, clipboard, elementSize, debounced } from '@signality/core';
-
-// Battery status
-const batteryStatus = battery();
-// batteryStatus.level(), batteryStatus.charging()
-
-// Clipboard operations
-const clipboard = clipboard();
-await clipboard.copy('Hello');
-const text = await clipboard.paste();
-
-// Element size tracking
-const element = viewChild<ElementRef<HTMLDivElement>>('myElement');
-const size = elementSize(element);
-// size.width(), size.height()
-
-// Debounced signal
-const searchQuery = debounced('', 300);
+```bash
+npm install @signality/core
+# or
+yarn add @signality/core
 ```
 
 ## Documentation
