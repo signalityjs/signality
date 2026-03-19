@@ -23,6 +23,7 @@ import { GamepadDemo } from '../demos/gamepad/gamepad-demo';
 import { GeolocationDemo } from '../demos/geolocation/geolocation-demo';
 import { IntervalDemo } from '../demos/interval/interval-demo';
 import { LongPressDemo } from '../demos/long-press/long-press-demo';
+import { InputModalityDemo } from '../demos/input-modality/input-modality-demo';
 import { IntersectionObserverDemo } from '../demos/intersection-observer/intersection-observer-demo';
 import { MutationObserverDemo } from '../demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from '../demos/resize-observer/resize-observer-demo';
@@ -84,6 +85,7 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     GeolocationDemo,
     IntervalDemo,
     LongPressDemo,
+    InputModalityDemo,
     IntersectionObserverDemo,
     MutationObserverDemo,
     ResizeObserverDemo,
@@ -343,6 +345,11 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Web Worker Demo</h2>
         <demo-web-worker />
+      </section>
+
+      <section>
+        <h2>Input Modality Demo</h2>
+        <demo-input-modality />
       </section>
 
       <section>

@@ -85,7 +85,7 @@ import { network } from '@signality/core';
   `,
 })
 export class OfflineBanner {
-  readonly net = network(); // [!code highlight]
+  readonly net = network();
 }
 ```
 

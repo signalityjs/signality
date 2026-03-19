@@ -75,15 +75,15 @@
       <!-- Divider + footer -->
       <div class="geo-divider"></div>
       <div class="geo-footer">
-          <span class="geo-status" [class.geo-status--on]="geo.isActive() || geo.isLoading()">
-            <span
-              class="geo-dot"
-              [class.geo-dot--loading]="geo.isLoading()"
-              [class.geo-dot--active]="geo.isActive() && !geo.isLoading() && !geo.error()"
-              [class.geo-dot--error]="!!geo.error()"
-            ></span>
-            {{ statusText() }}
-          </span>
+        <span class="geo-status" [class.geo-status--on]="geo.isActive() || geo.isLoading()">
+          <span
+            class="geo-dot"
+            [class.geo-dot--loading]="geo.isLoading()"
+            [class.geo-dot--active]="geo.isActive() && !geo.isLoading() && !geo.error()"
+            [class.geo-dot--error]="!!geo.error()"
+          ></span>
+          {{ statusText() }}
+        </span>
         <button class="geo-btn" (click)="toggleTracking()">
           {{ geo.isActive() ? 'Stop' : 'Get Location' }}
         </button>

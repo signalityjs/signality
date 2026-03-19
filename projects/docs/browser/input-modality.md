@@ -6,6 +6,8 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 Reactively track the user's current input method (keyboard, mouse, or touch).
 
+<Demo name="input-modality" />
+
 ## Usage
 
 ```angular-ts

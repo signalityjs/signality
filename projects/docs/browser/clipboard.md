@@ -15,7 +15,7 @@ This feature is available only in [secure contexts](https://developer.mozilla.or
 ## Usage
 
 ```angular-ts
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { clipboard } from '@signality/core';
 
 @Component({

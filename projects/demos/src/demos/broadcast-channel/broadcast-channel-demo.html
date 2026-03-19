@@ -32,7 +32,7 @@
         class="bc-send-icon"
         (click)="sendMessage()"
         [class.bc-send-icon--sent]="isSending()"
-        [disabled]="channel.isClosed()"
+        [disabled]="channel.isClosed() || !messageText()"
       >
         <svg
           width="16"

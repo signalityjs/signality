@@ -138,6 +138,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   inline-size: 34px;
   border-radius: 4px;
   background: none;
@@ -154,19 +155,38 @@
 }
 
 .bc-send-icon:disabled {
-  opacity: 0.3;
-  cursor: default;
+  opacity: 0.9;
+  cursor: not-allowed;
+}
+
+@keyframes flyUp {
+  from {
+    transform: none;
+    opacity: 1;
+  }
+  to {
+    transform: translate(14px, -40px) scale(0.35) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes flyBack {
+  from {
+    transform: translate(14px, 40px) scale(0.35) rotate(45deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 .bc-send-icon svg {
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s,
-    opacity 0.35s cubic-bezier(0.33, 1, 0.68, 1) 0.28s;
+  animation: flyBack 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .bc-send-icon--sent svg {
-  transform: translate(14px, -14px) scale(0.35) rotate(45deg);
-  opacity: 0;
-  transition: transform 0.28s cubic-bezier(0.4, 0, 1, 1), opacity 0.28s cubic-bezier(0.4, 0, 1, 1);
+  animation: flyUp 0.35s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 .bc-btn--close {

@@ -1,0 +1,120 @@
+<ng-demo-wrapper [demoPath]="'input-modality/input-modality-demo'" [code]="importCode">
+  <demo-card>
+    <div class="im-wrap">
+      <!-- Icon ring -->
+      <div class="im-visual">
+        <div class="im-icon-ring-container">
+          <div class="im-radar" [class.im-radar--active]="modality() !== null">
+            <div class="im-radar-ring im-radar-ring--1"></div>
+            <div class="im-radar-ring im-radar-ring--2"></div>
+            <div class="im-radar-ring im-radar-ring--3"></div>
+            <div
+              class="im-icon-ring"
+              [class.im-icon-ring--keyboard]="isKeyboard()"
+              [class.im-icon-ring--mouse]="isMouse()"
+              [class.im-icon-ring--touch]="isTouch()"
+              [class.im-icon-ring--idle]="modality() === null"
+            >
+              <div class="im-icon-inner">
+                <!-- Keyboard icon -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="keyboardOpacity()"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2" />
+                  <path d="M6 8h.001" />
+                  <path d="M10 8h.001" />
+                  <path d="M14 8h.001" />
+                  <path d="M18 8h.001" />
+                  <path d="M8 12h.001" />
+                  <path d="M12 12h.001" />
+                  <path d="M16 12h.001" />
+                  <path d="M7 16h10" />
+                </svg>
+
+                <!-- Mouse icon -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="mouseOpacity()"
+                >
+                  <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0" />
+                  <path d="M12 7a5 5 0 0 1 5 5v4a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V12a5 5 0 0 1 5-5z" />
+                  <path d="M12 7V5" />
+                  <path d="m9 3 3-2 3 2" />
+                </svg>
+
+                <!-- Touch icon -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="touchOpacity()"
+                >
+                  <path d="M6 12h4" />
+                  <path d="M8 10v4" />
+                  <path d="M15 13h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h1" />
+                  <path d="M10 12V7a2 2 0 0 1 4 0v5" />
+                  <path d="M8 13v2" />
+                  <path d="M16 13v2" />
+                </svg>
+
+                <!-- Idle — question mark -->
+                <svg
+                  class="im-idle-icon"
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="isIdle() ? 1 : 0"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                  <path d="M12 17h.01" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="im-text">
+        <h3 class="im-title">
+          @if (isKeyboard()) { Keyboard }
+          @else if (isMouse()) { Mouse }
+          @else if (isTouch()) { Touch }
+          @else { Waiting }
+        </h3>
+        <p class="im-subtitle">
+          @if (isKeyboard()) { Using keyboard input }
+          @else if (isMouse()) { Using mouse input }
+          @else if (isTouch()) { Using touch input }
+          @else { Try pressing a key, clicking, or tapping }
+        </p>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

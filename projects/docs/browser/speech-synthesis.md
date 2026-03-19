@@ -133,33 +133,6 @@ export class VoiceSelector {
 }
 ```
 
-### Pause and resume
-
-```angular-ts
-import { Component } from '@angular/core';
-import { speechSynthesis } from '@signality/core';
-
-@Component({
-  template: `
-    <button (click)="speech.speak('This is a long text that can be paused')">
-      Start
-    </button>
-    <button (click)="speech.pause()" [disabled]="!speech.isSpeaking() || speech.isPaused()">
-      Pause
-    </button>
-    <button (click)="speech.resume()" [disabled]="!speech.isPaused()">
-      Resume
-    </button>
-    <button (click)="speech.stop()" [disabled]="!speech.isSpeaking()">
-      Stop
-    </button>
-  `,
-})
-export class PauseResume {
-  readonly speech = speechSynthesis();
-}
-```
-
 ## Browser Compatibility
 
 The Speech Synthesis API has limited browser support. Always check `isSupported()` before using text-to-speech (see [Browser API support detection](/guide/key-concepts#browser-api-support-detection)):

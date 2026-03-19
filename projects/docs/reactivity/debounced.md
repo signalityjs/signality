@@ -113,7 +113,7 @@ export class SearchInput {
 The delay can be a signal, allowing runtime changes:
 
 ```angular-ts
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { debounced } from '@signality/core';
 
 @Component({

@@ -12,6 +12,7 @@ This utility requires the `@signality/cdk-interop` and `@angular/cdk` packages t
 ```bash
 npm install @signality/cdk-interop @angular/cdk
 ```
+
 :::
 
 ## Usage
@@ -37,28 +38,28 @@ export class SaveButton {
 
 ## Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type                   | Description                                            |
+|-----------|------------------------|--------------------------------------------------------|
 | `options` | `LiveAnnouncerOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `LiveAnnouncerOptions` extends `WithInjector`:
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `defaultPoliteness` | `'polite' \| 'assertive' \| 'off'` | `'polite'` | Default politeness level for announcements. See [ARIA live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Guides/Live_regions#live_regions) |
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | - | Optional injector for DI context |
+| Option              | Type                                                | Default    | Description                                                                                                                                                           |
+|---------------------|-----------------------------------------------------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `defaultPoliteness` | `'polite' \| 'assertive' \| 'off'`                  | `'polite'` | Default politeness level for announcements. See [ARIA live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Guides/Live_regions#live_regions) |
+| `injector`          | [`Injector`](https://angular.dev/api/core/Injector) | -          | Optional injector for DI context                                                                                                                                      |
 
 ## Return Value
 
 The `liveAnnouncer()` function returns a `LiveAnnouncerRef` object:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `lastMessage` | `Signal<string \| null>` | Last announced message |
-| `announce` | `(message: string, politeness?: AriaLivePoliteness) => void` | Announce a message to screen readers |
-| `clear` | `() => void` | Clear all announcements |
+| Property      | Type                                                         | Description                          |
+|---------------|--------------------------------------------------------------|--------------------------------------|
+| `lastMessage` | `Signal<string \| null>`                                     | Last announced message               |
+| `announce`    | `(message: string, politeness?: AriaLivePoliteness) => void` | Announce a message to screen readers |
+| `clear`       | `() => void`                                                 | Clear all announcements              |
 
 ## Examples
 
@@ -114,8 +115,7 @@ export class ShoppingCart {
 ### Navigation announcements
 
 ```angular-ts
-import { Component, inject } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Component, inject, DOCUMENT } from '@angular/core';
 import { liveAnnouncer } from '@signality/cdk-interop';
 import { routerListener } from '@signality/core';
 
@@ -123,12 +123,12 @@ import { routerListener } from '@signality/core';
   template: `<router-outlet />`,
 })
 export class App {
+  readonly document = inject(DOCUMENT);
   readonly announcer = liveAnnouncer();
-  private router = inject(Router);
   
   constructor() {
     routerListener('navigationend', () => {
-      const pageTitle = document.title || 'Page loaded';
+      const pageTitle = this.document.title || 'Page loaded';
       this.announcer.announce(`Navigated to ${pageTitle}`); // [!code highlight]
     });
   }

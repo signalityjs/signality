@@ -102,19 +102,20 @@ export class AnimatedBox {
 ### High contrast mode
 
 ```angular-ts
-import { Component, effect } from '@angular/core';
+import { Component, effect, inject, DOCUMENT } from '@angular/core';
 import { mediaQuery } from '@signality/core';
 
 @Component({ /* ... */ })
 export class AccessibilitySettings {
+  readonly document = inject(DOCUMENT);
   readonly prefersHighContrast = mediaQuery('(prefers-contrast: more)');
   
   constructor() {
     effect(() => {
       if (this.prefersHighContrast()) {
-        document.body.classList.add('high-contrast');
+        this.document.body.classList.add('high-contrast');
       } else {
-        document.body.classList.remove('high-contrast');
+        this.document.body.classList.remove('high-contrast');
       }
     });
   }

@@ -117,7 +117,7 @@ const userSerializer: Serializer<User> = {
 ### Theme preference
 
 ```angular-ts
-import { Component, effect } from '@angular/core';
+import { Component, effect, inject, DOCUMENT } from '@angular/core';
 import { storage } from '@signality/core';
 
 type Theme = 'light' | 'dark' | 'system';
@@ -132,11 +132,12 @@ type Theme = 'light' | 'dark' | 'system';
   `,
 })
 export class ThemeSelector {
+  readonly documentEl = inject(DOCUMENT).documentElement;
   readonly theme = storage<Theme>('theme', 'system');
   
   constructor() {
     effect(() => {
-      document.documentElement.setAttribute('data-theme', this.theme());
+      this.documentEl.setAttribute('data-theme', this.theme());
     });
   }
 }

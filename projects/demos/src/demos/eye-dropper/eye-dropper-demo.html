@@ -61,7 +61,7 @@
       <!-- Footer -->
       <div class="ed-footer">
         @if (hasColor()) {
-          <span class="ed-hex" [style.color]="ed.sRGBHex()">{{ ed.sRGBHex() }}</span>
+          <span class="ed-hex">{{ ed.sRGBHex() }}</span>
         } @else {
           <span class="ed-placeholder">
             {{ isOpen() ? 'Hover over any color…' : 'No color selected' }}

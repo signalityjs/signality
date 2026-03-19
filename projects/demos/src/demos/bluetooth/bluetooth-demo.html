@@ -23,7 +23,7 @@
     <demo-card>
       <!-- Radar + icon ring -->
       <div class="bt-visual">
-        <div class="bt-radar" [class.bt-radar--active]="state() === 'connecting'">
+        <div class="bt-radar" [class.bt-radar--active]="state() === 'connecting' || state() === 'connected'">
           <div class="bt-radar-ring bt-radar-ring--1"></div>
           <div class="bt-radar-ring bt-radar-ring--2"></div>
           <div class="bt-radar-ring bt-radar-ring--3"></div>
@@ -32,7 +32,7 @@
             [class.bt-icon-ring--success]="state() === 'connected'"
             [class.bt-icon-ring--error]="state() === 'error'"
           >
-            <div class="bt-icon-inner" [class.bt-icon-inner--pulse]="state() === 'connecting'">
+            <div class="bt-icon-inner" [class.bt-icon-inner--pulse]="state() === 'connecting' || state() === 'connected'">
               <!-- Bluetooth icon -->
               <svg
                 width="28"
@@ -89,11 +89,10 @@
         @if (subtitle()) {
           <p class="bt-subtitle">{{ subtitle() }}</p>
         }
-      </div>
 
-      <!-- Error area — max-height reveal -->
-      <div class="bt-error-area" [class.bt-error-area--visible]="state() === 'error'">
-        <p class="bt-error-message">{{ errorMessage() }}</p>
+        @if (errorMessage()) {
+          <p class="bt-subtitle">{{ errorMessage() }}</p>
+        }
       </div>
 
       <!-- Divider -->

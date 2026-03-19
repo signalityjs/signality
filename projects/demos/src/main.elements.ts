@@ -37,6 +37,7 @@ import { GamepadDemo } from './demos/gamepad/gamepad-demo';
 import { GeolocationDemo } from './demos/geolocation/geolocation-demo';
 import { IntervalDemo } from './demos/interval/interval-demo';
 import { LongPressDemo } from './demos/long-press/long-press-demo';
+import { InputModalityDemo } from './demos/input-modality/input-modality-demo';
 import { IntersectionObserverDemo } from './demos/intersection-observer/intersection-observer-demo';
 import { MutationObserverDemo } from './demos/mutation-observer/mutation-observer-demo';
 import { ResizeObserverDemo } from './demos/resize-observer/resize-observer-demo';
@@ -91,6 +92,7 @@ const DEMOS = [
   { component: GeolocationDemo, name: 'signality-demo-geolocation' },
   { component: IntervalDemo, name: 'signality-demo-interval' },
   { component: LongPressDemo, name: 'signality-demo-long-press' },
+  { component: InputModalityDemo, name: 'signality-demo-input-modality' },
   { component: IntersectionObserverDemo, name: 'signality-demo-intersection-observer' },
   { component: MutationObserverDemo, name: 'signality-demo-mutation-observer' },
   { component: ResizeObserverDemo, name: 'signality-demo-resize-observer' },
