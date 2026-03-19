@@ -18,8 +18,9 @@
     <line x1="80" y1="50" x2="95" y2="50" stroke="#DEB3EB" stroke-width="2" stroke-linecap="round"/>
   </svg>
   <h1 style="margin-top: 1.5rem; font-size: 2rem; font-weight: 700;">Signality Roadmap</h1>
-  <p style="color: #a0a0a5; margin-top: 0.5rem; text-align: center; max-width: 400px;">
-    Signality recently launched in version 1.0. Here's what we're working on for 2026.
+
+  <p style="color: #a0a0a5; margin-top: 0.5rem; text-align: center; max-width: 360px;">
+    Signality recently launched in version <code>1.0</code> Here's what we're working on for 2026.
   </p>
 </div>
 

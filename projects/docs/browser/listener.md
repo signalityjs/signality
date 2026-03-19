@@ -288,6 +288,6 @@ function listener<EventType = Event>(
 
 ## Related
 
-- [elementHover](/elements/element-hover) — Track hover state
-- [elementFocus](/elements/element-focus) — Track focus state
+- [ElementHover](/elements/element-hover) — Track hover state
+- [ElementFocus](/elements/element-focus) — Track focus state
 - [MousePosition](/elements/mouse-position) — Track mouse position

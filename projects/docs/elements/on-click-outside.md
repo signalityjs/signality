@@ -21,17 +21,20 @@ import { onClickOutside } from '@signality/core';
         Dropdown content
       </div>
     }
-    <button (click)="isOpen.set(true)">Open</button>
+    <button #trigger (click)="isOpen.set(true)">
+      Open
+    </button>
   `,
 })
 export class ClickOutsideDemo {
   readonly dropdown = viewChild<ElementRef>('dropdown');
+  readonly trigger = viewChild<ElementRef>('dropdown');
   readonly isOpen = signal(true);
 
   constructor() {
     onClickOutside(this.dropdown, () => { // [!code highlight]
       this.isOpen.set(false);
-    });
+    }, { ignore: [this.trigger] });
   }
 }
 ```

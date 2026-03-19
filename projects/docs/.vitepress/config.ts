@@ -159,8 +159,8 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
-          { text: 'AI Development', link: '/guide/ai-development' },
           { text: 'Getting Started', link: '/' },
+          { text: 'AI Development', link: '/guide/ai-development' },
           { text: 'Key Concepts', link: '/guide/key-concepts' },
         ],
       },

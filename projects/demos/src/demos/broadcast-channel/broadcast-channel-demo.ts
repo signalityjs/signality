@@ -23,6 +23,7 @@ export class BroadcastChannelDemo {
   readonly messageText = signal('');
   readonly messages = signal<Message[]>([]);
   readonly isSending = signal(false);
+  readonly hasSent = signal(false);
 
   constructor() {
     effect(() => {
@@ -41,6 +42,7 @@ export class BroadcastChannelDemo {
       this.channel.post({ text, time: new Date() });
       this.messageText.set('');
       this.isSending.set(true);
+      this.hasSent.set(true);
       setTimeout(() => this.isSending.set(false), 350);
     }
   }
