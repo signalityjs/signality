@@ -166,7 +166,10 @@ export default defineConfig({
       },
       {
         text: 'Resources',
-        items: [{ text: 'GitHub', link: 'https://github.com/signalityjs/signality' }],
+        items: [
+          { text: 'GitHub', link: 'https://github.com/signalityjs/signality' },
+          { text: 'Roadmap', link: '/resources/roadmap' },
+        ],
       },
       {
         text: 'Browser',
@@ -180,6 +183,7 @@ export default defineConfig({
           { text: 'DevicePosture', link: '/browser/device-posture' },
           { text: 'DisplayMedia', link: '/browser/display-media' },
           { text: 'EyeDropper', link: '/browser/eye-dropper' },
+          { text: 'FileDialog', link: '/browser/file-dialog' },
           { text: 'Favicon', link: '/browser/favicon' },
           { text: 'Fps', link: '/browser/fps' },
           { text: 'Fullscreen', link: '/browser/fullscreen' },
@@ -199,11 +203,13 @@ export default defineConfig({
           { text: 'SpeechSynthesis', link: '/browser/speech-synthesis' },
           { text: 'Storage', link: '/browser/storage' },
           { text: 'TextDirection', link: '/browser/text-direction' },
+          { text: 'TextSelection', link: '/browser/text-selection' },
           { text: 'Vibration', link: '/browser/vibration' },
           { text: 'WakeLock', link: '/browser/wake-lock' },
           { text: 'WebNotification', link: '/browser/web-notification' },
           { text: 'WebWorker', link: '/browser/web-worker' },
           { text: 'WindowFocus', link: '/browser/window-focus' },
+          { text: 'WindowSize', link: '/browser/window-size' },
         ],
       },
       {
@@ -223,8 +229,6 @@ export default defineConfig({
           { text: 'PointerSwipe', link: '/elements/pointer-swipe' },
           { text: 'ScrollPosition', link: '/elements/scroll-position' },
           { text: 'Swipe', link: '/elements/swipe' },
-          { text: 'TextSelection', link: '/elements/text-selection' },
-          { text: 'WindowSize', link: '/elements/window-size' },
         ],
       },
       {

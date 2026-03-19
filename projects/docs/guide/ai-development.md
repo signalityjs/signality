@@ -26,7 +26,7 @@ Signality welcomes contributions from the community to improve the developer exp
 
 We believe the best integrations come from developers who actually use them. If you're passionate about enhancing AI-powered development workflows, your ideas and contributions can help shape how developers interact with Signality.
 
-## What You Can Contribute
+## What you can contribute
 
 - **AI Rules & Skills** — Rules and prompts for Claude Code, Cursor, v0, Copilot, and other AI coding assistants
 - **llms.txt** — Documentation optimized for AI agents and code generation tools  
