@@ -59,18 +59,18 @@ describe(geolocation.name, () => {
     return fixture.componentInstance;
   };
 
-  it('should start watching immediately by default', () => {
+  it('should not start watching immediately by default', () => {
     const component = createComponent();
 
-    expect(component.geo.isSupported()).toBe(true);
-    expect(component.geo.isLoading()).toBe(true);
-    expect(navigator.geolocation.watchPosition).toHaveBeenCalled();
+    expect(component.geo.isLoading()).toBe(false);
+    expect(navigator.geolocation.watchPosition).toHaveBeenCalledTimes(0);
   });
 
   it('should update coords on position success', () => {
     const component = createComponent();
-    const pos = mockPosition(48.8566, 2.3522);
+    component.geo.start();
 
+    const pos = mockPosition(48.8566, 2.3522);
     watchCallbacks.success(pos);
 
     expect(component.geo.position()?.coords?.latitude).toBe(48.8566);
@@ -82,8 +82,9 @@ describe(geolocation.name, () => {
 
   it('should set error on position failure', () => {
     const component = createComponent();
-    const err = mockError(1, 'Permission denied');
+    component.geo.start();
 
+    const err = mockError(1, 'Permission denied');
     watchCallbacks.error(err);
 
     expect(component.geo.error()).toBe(err);
@@ -92,6 +93,8 @@ describe(geolocation.name, () => {
 
   it('should pause and resume watching', () => {
     const component = createComponent();
+
+    component.geo.start();
 
     component.geo.stop();
     expect(navigator.geolocation.clearWatch).toHaveBeenCalledWith(1);
