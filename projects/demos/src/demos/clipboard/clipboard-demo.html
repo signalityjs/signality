@@ -32,8 +32,8 @@
               placeholder="Type something to copy…"
             ></textarea>
           <button
+            type="button"
             class="cp-copy-btn"
-            [class.cp-copy-btn--copied]="cb.copied()"
             [disabled]="!text"
             (click)="copy()"
           >

@@ -6,7 +6,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/schedul
 
 Creates a debounced version of a callback function. The callback will only be executed after the specified wait time has elapsed since the last invocation.
 
-::: warning Stateless utility
+::: info Stateless utility
 `debounceCallback` is a stateless utility that only delays callback execution. For cases where you need to manage **state transitions**, consider using the [`debounced`](/reactivity/debounced) utility instead, which provides a reactive signal that tracks debounced state changes.
 :::
 
