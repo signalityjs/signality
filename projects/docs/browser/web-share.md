@@ -51,8 +51,20 @@ The `webShare()` function returns a `WebShareRef` object:
 | `share`       | `(data: ShareData) => Promise<void>` | Open native share dialog               |
 | `canShare`    | `(data?: ShareData) => boolean`      | Check if data can be shared            |
 
-::: tip canShare
+::: warning canShare
 The [`canShare()`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare) method validates whether the browser can share the provided data. Returns `true` if `share()` would succeed, otherwise `false`.
+
+```typescript
+const ref = webShare();
+const data = { files: [file] };
+
+if (ref.canShare(data)) {
+  await ref.share(data);
+} else {
+  // e.g. browser doesn't support file sharing
+}
+```
+
 :::
 
 ## Examples

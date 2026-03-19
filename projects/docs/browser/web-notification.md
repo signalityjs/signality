@@ -10,6 +10,17 @@ Reactive wrapper around the [Notifications API](https://developer.mozilla.org/en
 This feature is available only in [secure contexts](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Secure_Contexts) (HTTPS) or potentially trustworthy origins (such as `localhost` or `127.0.0.1`). Regular `http://` URLs will not work in most browsers.
 :::
 
+::: info OS-Level Notification Settings
+Even after the browser grants notification permission, the **operating system** may still block notifications for the browser app. In this case `permission()` returns `'granted'` but no notifications appear — the Notification API provides no way to detect OS-level blocking.
+
+- **macOS** — System Settings → Notifications → select your browser → enable **"Allow notifications"**
+- **Windows** — Settings → System → Notifications → ensure notifications are enabled globally **and** for the specific browser. [Focus Assist](https://support.microsoft.com/en-us/windows/turn-focus-assist-on-or-off-in-windows-5492a638-b5a3-1ee0-886f-8f22e6afe77c) (Do Not Disturb) will also suppress all notifications when active
+- **Linux (GNOME)** — Settings → Notifications → ensure the browser app is allowed. Do Not Disturb mode suppresses non-critical notifications
+- **Linux (KDE Plasma)** — System Settings → Notifications → check per-app settings and Do Not Disturb mode
+
+If notifications are not appearing despite `permission()` being `'granted'`, check the OS notification settings for your browser first.
+:::
+
 <Demo name="web-notification" />
 
 ## Usage

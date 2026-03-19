@@ -11,7 +11,7 @@ Signal-based wrapper around [`setInterval`](https://developer.mozilla.org/en-US/
 ## Usage
 
 ```angular-ts
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { interval } from '@signality/core';
 
 @Component({

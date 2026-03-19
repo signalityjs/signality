@@ -8,26 +8,24 @@
   justify-content: center;
   gap: 0.5rem;
   font-size: 0.8125rem;
-  color: #52525b;
+  color: #878787;
   resize: both;
   overflow: hidden;
   min-width: 120px;
   min-height: 60px;
   cursor: se-resize;
   user-select: none;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: #deb3eb;
+    border-style: solid;
+  }
 }
 
 /* ── Resize icon ── */
 .es-resize-icon {
   flex-shrink: 0;
-  color: #3f3f46;
-}
-
-/* ── Divider ── */
-.es-divider {
-  height: 1px;
-  background: #1f1f22;
-  margin: 0.875rem 0 0;
 }
 
 /* ── Info rows ── */
@@ -42,6 +40,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.375rem 0;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 }
 
 .es-row + .es-row {
@@ -49,12 +51,11 @@
 }
 
 .es-label {
-  font-size: 0.8125rem;
+  font-size: 0.815rem;
   color: #71717a;
 }
 
 .es-value {
-  font-size: 0.8125rem;
-  color: #a1a1aa;
-  font-variant-numeric: tabular-nums;
+  font-size: 0.815rem;
+  color: #a0a0a5;
 }

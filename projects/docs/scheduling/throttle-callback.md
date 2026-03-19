@@ -6,7 +6,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/schedul
 
 Creates a throttled version of a callback function. The callback will be executed at most once per specified wait interval.
 
-::: warning Stateless utility
+::: info Stateless utility
 `throttleCallback` is a stateless utility that only limits callback execution frequency. For cases where you need to manage **state transitions**, consider using the [`throttled`](/reactivity/throttled) utility instead, which provides a reactive signal that tracks throttled state changes.
 :::
 

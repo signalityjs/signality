@@ -19,23 +19,25 @@
       </div>
       <div class="db-row">
         <span class="db-label">
-          Debounced @if (isDebouncing()) {
-          <svg
-            class="db-spinner"
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-          >
-            <path d="M12 2a10 10 0 0 1 10 10" />
-          </svg>
-        }
+          Debounced
         </span>
+
         <span class="db-value db-value--accent">
-          {{ debouncedValue() || '—' }}
+          @if (isDebouncing()) {
+            <svg
+              class="db-spinner"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+            >
+              <path d="M12 2a10 10 0 0 1 10 10" />
+            </svg>
+          }
+          {{ label() }}
         </span>
       </div>
     </div>

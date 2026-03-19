@@ -17,6 +17,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.375rem 0;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 }
 
 .db-row + .db-row {
@@ -40,7 +44,7 @@
 /* ── Spinner ── */
 .db-spinner {
   color: #deb3eb;
-  opacity: 0.6;
+  opacity: 1;
   animation: dbSpin 0.8s linear infinite;
   flex-shrink: 0;
 }
@@ -56,11 +60,13 @@
 
 /* ── Values ── */
 .db-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.8125rem;
-  color: #a1a1aa;
+  color: #a0a0a5;
   max-width: 55%;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 

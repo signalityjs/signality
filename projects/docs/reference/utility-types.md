@@ -14,22 +14,6 @@ Extracts the value type from a `Signal`.
 type SignalValue<S> = S extends Signal<infer V> ? V : never;
 ```
 
-##### Example
-
-```typescript
-import { signal, computed } from '@angular/core';
-import type { SignalValue } from '@signality/core'; // [!code ++]
-
-const count = signal(0);
-type A = SignalValue<typeof count>; // Number
-
-const user = signal({ id: 1, name: 'John' });
-type B = SignalValue<typeof user>; // { id: number; name: string }
-
-const fullName = computed(() => `${user().name} Doe`);
-type C = SignalValue<typeof fullName>; // String
-```
-
 ## MaybeSignal&lt;Type&gt;
 
 Union type that accepts either a static value or a reactive `Signal`.

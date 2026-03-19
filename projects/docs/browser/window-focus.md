@@ -76,7 +76,6 @@ Returns a `Signal<boolean>` containing the current window focus state:
 ```angular-ts
 import { Component, effect } from '@angular/core';
 import { windowFocus } from '@signality/core';
-import { interval } from '@signality/core';
 
 @Component({
   template: `<p>Data refreshes while window is focused</p>`,

@@ -1,12 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   ElementRef,
-  computed,
   inject,
+  PLATFORM_ID,
   signal,
   viewChild,
-  PLATFORM_ID,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { pictureInPicture } from '@signality/core';
@@ -26,23 +26,34 @@ export class PictureInPictureDemo {
   readonly video = viewChild<ElementRef<HTMLVideoElement>>('video');
   readonly pip = pictureInPicture(this.video);
   readonly videoLoaded = signal(false);
-  readonly isActive = computed(() => this.pip.isActive());
+  readonly isActive = this.pip.isActive;
+
+  constructor() {
+    effect(async () => {
+      const video = this.video()?.nativeElement;
+      const pipActive = this.isActive;
+
+      if (!video) {
+        return;
+      }
+
+      if (pipActive()) {
+        try {
+          await video.play();
+        } catch (e) {
+          console.error('Failed to play video:', e);
+        }
+      } else {
+        video.pause();
+      }
+    });
+  }
 
   onVideoLoaded(): void {
     this.videoLoaded.set(true);
   }
 
   async handleToggle(): Promise<void> {
-    const video = this.video()?.nativeElement;
-    if (!video) return;
-
-    if (video.paused) {
-      try {
-        await video.play();
-      } catch (e) {
-        console.error('Failed to play video:', e);
-      }
-    }
     await this.pip.toggle();
   }
 }

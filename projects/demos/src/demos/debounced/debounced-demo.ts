@@ -15,7 +15,7 @@ export class DebouncedDemo {
 
   readonly inputText = debounced('', 0);
   readonly debouncedValue = debounced('', 500);
-
+  readonly label = computed(() => this.debouncedValue() || (this.isDebouncing() ? '' : '—'));
   readonly isDebouncing = computed(() => this.inputText() !== this.debouncedValue());
 
   onInputChange(value: string): void {

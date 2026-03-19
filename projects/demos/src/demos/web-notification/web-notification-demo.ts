@@ -63,6 +63,7 @@ export class WebNotificationDemo {
   );
   readonly checkOpacity = computed(() => (this.notif.notification() ? 1 : 0));
   readonly deniedOpacity = computed(() => (this.state() === 'denied' ? 1 : 0));
+  readonly unsupportedOpacity = computed(() => (this.state() === 'unsupported' ? 1 : 0));
 
   async requestPermission(): Promise<void> {
     await this.notif.requestPermission();

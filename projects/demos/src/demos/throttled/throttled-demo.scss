@@ -31,6 +31,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.375rem 0;
+
+  &:last-of-type {
+    padding-bottom: 0;
+  }
 }
 
 .th-row + .th-row {
@@ -48,8 +52,7 @@
 /* ── Values ── */
 .th-value {
   font-size: 0.8125rem;
-  color: #a1a1aa;
-  font-variant-numeric: tabular-nums;
+  color: #a0a0a5;
 }
 
 .th-value--accent {
