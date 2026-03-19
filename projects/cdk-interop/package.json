@@ -1,6 +1,6 @@
 {
   "name": "@signality/cdk-interop",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "license": "MIT",
   "author": "Vyacheslav Borodin <https://github.com/vs-borodin>",
   "description": "Signal-based utilities for Angular CDK",
