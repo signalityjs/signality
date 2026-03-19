@@ -102,7 +102,7 @@ export interface GeolocationRef {
  *     <button (click)="geo.stop()">Stop</button>
  *     <button (click)="geo.start()">Start</button>
  * })
- * class LocationDemo {
+ * export class LocationDemo {
  *   readonly geo = geolocation();
  * }
  * ```

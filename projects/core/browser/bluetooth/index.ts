@@ -89,7 +89,7 @@ export interface BluetoothRef {
  *     }
  *   `
  * })
- * class BluetoothDemo {
+ * export class BluetoothDemo {
  *   readonly bt = bluetooth();
  * }
  * ```

@@ -79,7 +79,7 @@ export interface WebWorkerRef<I, O> {
  *     }
  *   `
  * })
- * class WorkerDemo {
+ * export class WorkerDemo {
  *   readonly worker = webWorker<number, number>('/workers/calc.js');
  * }
  * ```

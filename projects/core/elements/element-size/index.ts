@@ -41,7 +41,7 @@ export interface ElementSizeOptions extends CreateSignalOptions<ElementSizeValue
  *     </div>
  *   `
  * })
- * class ElementSizeDemo {
+ * export class ElementSizeDemo {
  *   readonly box = viewChild<ElementRef>('box');
  *   readonly size = elementSize(this.box);
  * }

@@ -60,7 +60,7 @@ export interface BatteryRef {
  *     }
  *   `
  * })
- * class BatteryDemo {
+ * export class BatteryDemo {
  *   readonly batteryStatus = battery();
  * }
  * ```

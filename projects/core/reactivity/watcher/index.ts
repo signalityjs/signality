@@ -35,7 +35,7 @@ export type WatcherRef = EffectRef;
  *     <button (click)="count.set(count() + 1)">Count: {{ count() }}</button>
  *   `
  * })
- * class CounterComponent {
+ * export class Counter {
  *   readonly count = signal(0);
  *
  *   constructor() {
@@ -69,7 +69,7 @@ export function watcher<V>(
  *     <input [(ngModel)]="age" type="number" />
  *   `
  * })
- * class UserComponent {
+ * export class UserPreview {
  *   readonly name = signal('John');
  *   readonly age = signal(25);
  *

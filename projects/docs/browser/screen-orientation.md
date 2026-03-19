@@ -116,5 +116,5 @@ function screenOrientation(options?: ScreenOrientationOptions): Signal<Orientati
 
 ## Related
 
-- [WindowSize](/elements/window-size) — Window dimensions tracking
+- [WindowSize](/browser/window-size) — Window dimensions tracking
 - [DevicePosture](/browser/device-posture) — Device posture for foldable devices

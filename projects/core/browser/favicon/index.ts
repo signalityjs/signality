@@ -62,7 +62,7 @@ export interface FaviconRef {
  *     <p>Current: {{ fav.current() }}</p>
  *   `
  * })
- * class FaviconDemo {
+ * export class FaviconDemo {
  *   readonly fav = favicon();
  *
  *   setNotification() {

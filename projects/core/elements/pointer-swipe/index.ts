@@ -61,7 +61,7 @@ export interface PointerSwipeRef {
  *     </div>
  *   `
  * })
- * class PointerSwipeComponent {
+ * export class PointerSwipeComponent {
  *   readonly area = viewChild<ElementRef>('area');
  *   readonly sw = pointerSwipe(this.area);
  * }

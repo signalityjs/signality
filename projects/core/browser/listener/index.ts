@@ -94,7 +94,7 @@ export interface ListenerFunction {
  * @Component({
  *   template: `<button #btn>Click me</button>`,
  * })
- * class ListenerDemo {
+ * export class ListenerDemo {
  *   readonly btn = viewChild<ElementRef>('btn');
  *
  *   constructor() {

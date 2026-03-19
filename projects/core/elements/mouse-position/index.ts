@@ -71,7 +71,7 @@ export interface MousePositionOptions extends WithInjector {
  *     <p>Mouse position: X={{ position().x }}, Y={{ position().y }}</p>
  *   `
  * })
- * class MouseTracker {
+ * export class MouseTracker {
  *   readonly position = mousePosition();
  * }
  * ```
@@ -86,7 +86,7 @@ export interface MousePositionOptions extends WithInjector {
  *     </div>
  *   `
  * })
- * class MouseElementTracker {
+ * export class MouseElementTracker {
  *   readonly box = viewChild<ElementRef>('box');
  *   readonly position = mousePosition({ target: this.box });
  * }

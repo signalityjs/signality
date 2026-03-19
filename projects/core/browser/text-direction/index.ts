@@ -37,7 +37,7 @@ export interface TextDirectionOptions extends CreateSignalOptions<TextDirection>
  *     <button (click)="dir.set('ltr')">Set LTR</button>
  *   `
  * })
- * class TextDirectionDemo {
+ * export class TextDirectionDemo {
  *   readonly dir = textDirection();
  * }
  * ```

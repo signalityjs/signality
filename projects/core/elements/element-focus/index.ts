@@ -34,7 +34,7 @@ export interface ElementFocusOptions extends CreateSignalOptions<boolean>, WithI
  *     }
  *   `
  * })
- * class FocusDemo {
+ * export class FocusDemo {
  *   readonly input = viewChild<ElementRef>('input');
  *   readonly isFocused = elementFocus(this.input);
  * }

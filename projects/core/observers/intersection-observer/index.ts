@@ -65,7 +65,7 @@ export interface IntersectionObserverRef {
  *     }
  *   `
  * })
- * class IntersectionDemo {
+ * export class IntersectionDemo {
  *   readonly section = viewChild<ElementRef>('section');
  *   readonly isVisible = signal(false);
  *

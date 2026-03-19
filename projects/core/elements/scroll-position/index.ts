@@ -92,7 +92,7 @@ export interface ScrollPositionRef {
  *     }
  *   `
  * })
- * class ScrollTracker {
+ * export class ScrollTracker {
  *   readonly scrollPos = scrollPosition();
  * }
  * ```
@@ -108,7 +108,7 @@ export interface ScrollPositionRef {
  *     <p>Scroll position: {{ pos.y() }}</p>
  *   `
  * })
- * class ScrollableComponent {
+ * export class ScrollableComponent {
  *   readonly scrollableEl = viewChild<ElementRef>('scrollable');
  *   readonly pos = scrollPosition({ target: this.scrollableEl });
  * }

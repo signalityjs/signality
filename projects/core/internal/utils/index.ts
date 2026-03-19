@@ -10,3 +10,4 @@ export * from './proxy-signal';
 export * from './to-element';
 export * from './to-value';
 export * from './unref-element';
+export * from './files/index';

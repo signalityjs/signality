@@ -24,7 +24,7 @@ export type TitleOptions = CreateSignalOptions<string> & WithInjector;
  *     </div>
  *   `
  * })
- * class Page {
+ * export class Page {
  *   readonly pageTitle = title();
  *
  *   updateTitle() {

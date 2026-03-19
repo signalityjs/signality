@@ -66,7 +66,7 @@ export interface ClipboardRef {
  *     }
  *   `
  * })
- * class ClipboardDemo {
+ * export class ClipboardDemo {
  *   readonly cb = clipboard();
  *
  *   async copyText(text: string) {

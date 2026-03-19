@@ -174,6 +174,24 @@ onMounted(async () => {
             <path d="M3 5h4"/>
             <path d="M17 19h4"/>
           </svg>
+          <!-- Roadmap icon - Target/Milestone -->
+          <svg
+            v-if="item.text === 'Roadmap'"
+            class="sidebar-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
           <!-- GitHub icon -->
           <svg
             v-if="item.text === 'GitHub'"

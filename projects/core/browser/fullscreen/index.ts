@@ -62,7 +62,7 @@ export interface FullscreenRef {
  *     }
  *   `
  * })
- * class FullscreenDemo {
+ * export class FullscreenDemo {
  *   readonly fs = fullscreen();
  * }
  * ```
@@ -78,7 +78,7 @@ export interface FullscreenRef {
  *     </div>
  *   `
  * })
- * class ElementFullscreen {
+ * export class ElementFullscreen {
  *   readonly container = viewChild<ElementRef>('container');
  *   readonly fs = fullscreen({ target: this.container });
  * }

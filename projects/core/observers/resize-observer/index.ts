@@ -50,7 +50,7 @@ export interface ResizeObserverRef {
  *     </div>
  *   `
  * })
- * class ResizeComponent {
+ * export class ResizeComponent {
  *   readonly resizable = viewChild<ElementRef>('resizable');
  *   readonly size = signal({ width: 0, height: 0 });
  *
