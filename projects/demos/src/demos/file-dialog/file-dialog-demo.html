@@ -1,0 +1,49 @@
+<ng-demo-wrapper [demoPath]="'file-dialog/file-dialog-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Actions -->
+    <div class="fd-actions">
+      <button class="fd-btn fd-btn--primary" (click)="fd.open()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        Select Files
+      </button>
+      <button class="fd-btn fd-btn--secondary" (click)="fdImages.open()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <polyline points="21 15 16 10 5 21" />
+        </svg>
+        Images Only
+      </button>
+      @if (hasFiles()) {
+        <button class="fd-btn fd-btn--reset" (click)="clearAll()">Clear</button>
+      }
+    </div>
+
+    <!-- Divider -->
+    <div class="fd-divider"></div>
+
+    <!-- File list -->
+    <div class="fd-body">
+      @if (hasFiles()) {
+        <div class="fd-summary">
+          <span>{{ allFiles().length }} file(s)</span>
+          <span class="fd-total-size">{{ totalSize() }}</span>
+        </div>
+        <ul class="fd-list">
+          @for (file of allFiles(); track file.name) {
+            <li class="fd-file">
+              <span class="fd-file-name">{{ file.name }}</span>
+              <span class="fd-file-size">{{ formatSize(file.size) }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <span class="fd-placeholder">No files selected</span>
+      }
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

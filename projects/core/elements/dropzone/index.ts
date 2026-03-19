@@ -1,6 +1,7 @@
 import { isSignal, type Signal, signal, type WritableSignal } from '@angular/core';
 import {
   constSignal,
+  isAcceptedFile,
   isNodeWithin,
   setupContext,
   toElement,
@@ -13,13 +14,15 @@ import { watcher } from '@signality/core/reactivity/watcher';
 
 export interface DropzoneOptions extends WithInjector {
   /**
-   * Accepted MIME types. Supports wildcards (`'image/*'`) and exact types (`'image/png'`).
-   * Use `['*']` to accept all file types.
+   * Comma-separated list of accepted file types, matching the native HTML
+   * [`accept`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/accept) attribute format.
+   * Supports MIME types (`'image/png'`), wildcards (`'image/*'`), and file extensions (`'.pdf'`).
+   * Use `'*'` to accept all file types.
    *
-   * @default ['*']
-   * @see [MIME types on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types)
+   * @default '*'
+   * @see [accept attribute on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/accept)
    */
-  readonly accept?: MaybeSignal<string[]>;
+  readonly accept?: MaybeSignal<string>;
 
   /**
    * Whether to allow dropping multiple files at once.
@@ -36,6 +39,39 @@ export interface DropzoneOptions extends WithInjector {
    * @default true
    */
   readonly preventDocumentDrop?: boolean;
+
+  /**
+   * Custom validation predicate called for each dropped file.
+   * Return `true` to keep the file, `false` to reject it.
+   *
+   * When provided, the `accept` option is ignored — the validator
+   * takes full responsibility for deciding which files are valid.
+   *
+   * @example
+   * ```typescript
+   * dropzone(target, {
+   *   validator: (file) => file.size <= 5 * 1024 * 1024, // max 5 MB
+   * });
+   * ```
+   */
+  readonly validator?: (file: File) => boolean;
+
+  /**
+   * Callback invoked with files that were rejected during a drop.
+   * Called once per drop with the full array of rejected files.
+   * Useful for showing toast notifications or validation errors.
+   *
+   * @example
+   * ```typescript
+   * dropzone(target, {
+   *   accept: 'image/*',
+   *   onReject: (rejected) => {
+   *     rejected.forEach(f => toast.error(`${f.name} is not an image`));
+   *   },
+   * });
+   * ```
+   */
+  readonly onReject?: (files: File[]) => void;
 }
 
 export interface DropzoneRef {
@@ -86,9 +122,9 @@ export interface DropzoneRef {
  *     </div>
  *   `
  * })
- * class DropzoneDemo {
+ * export class DropzoneDemo {
  *   readonly zone = viewChild<ElementRef>('zone');
- *   readonly drop = dropzone(this.zone, { accept: ['image/*'], multiple: true });
+ *   readonly drop = dropzone(this.zone, { accept: 'image/*', multiple: true });
  * }
  * ```
  */
@@ -107,9 +143,11 @@ export function dropzone(
       };
     }
 
-    const accept = options?.accept ?? ['*'];
+    const accept = options?.accept ?? '*';
     const multiple = options?.multiple ?? true;
     const preventDocumentDrop = options?.preventDocumentDrop ?? true;
+    const validatorFn = options?.validator;
+    const onReject = options?.onReject;
 
     const files = signal<File[]>([]);
     const isOver = signal(false);
@@ -117,37 +155,32 @@ export function dropzone(
 
     let dragCounter = 0;
 
-    const isAcceptedType = (file: File): boolean => {
-      const acceptTypes = toValue(accept);
+    const processFiles = (files: File[]): File[] => {
+      const accepted: File[] = [];
+      const rejected: File[] = [];
+      const acceptValue = toValue(accept);
+      const multipleValue = toValue(multiple);
 
-      if (acceptTypes.includes('*')) {
-        return true;
-      }
+      const isAccepted = validatorFn
+        ? validatorFn
+        : (file: File) => isAcceptedFile(file, acceptValue);
 
-      return acceptTypes.some(type => {
-        if (type.endsWith('/*')) {
-          const prefix = type.slice(0, -1);
-          return file.type.startsWith(prefix);
-        }
-        return file.type === type;
-      });
-    };
-
-    const filterFiles = (files: File[]): File[] => {
-      const isMultiple = toValue(multiple);
-      const result: File[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (isAcceptedType(file)) {
-          result.push(file);
-          if (!isMultiple) {
+      for (const file of files) {
+        if (isAccepted(file)) {
+          accepted.push(file);
+          if (!multipleValue) {
             break;
           }
+        } else {
+          rejected.push(file);
         }
       }
 
-      return result;
+      if (onReject && rejected.length > 0) {
+        onReject(rejected);
+      }
+
+      return accepted;
     };
 
     listener.prevent.capture(target, 'dragenter', () => {
@@ -174,8 +207,8 @@ export function dropzone(
       isDragging.set(false);
 
       if (e.dataTransfer && e.dataTransfer.files.length > 0) {
-        const filtered = filterFiles(Array.from(e.dataTransfer.files));
-        files.set(filtered);
+        const arr = Array.from(e.dataTransfer.files);
+        files.set(processFiles(arr));
       }
     });
 
@@ -196,6 +229,7 @@ export function dropzone(
     if (preventDocumentDrop) {
       listener.capture(document, 'dragover', (e: DragEvent) => {
         const el = toElement(target);
+
         if (el && !isNodeWithin(e.target as Node, el)) {
           e.preventDefault();
           if (e.dataTransfer) {
@@ -206,6 +240,7 @@ export function dropzone(
 
       listener.capture(document, 'drop', (e: DragEvent) => {
         const el = toElement(target);
+
         if (el && !isNodeWithin(e.target as Node, el)) {
           e.preventDefault();
         }
@@ -215,7 +250,7 @@ export function dropzone(
     const filters = [accept, multiple].filter(isSignal) as Signal<any>[];
 
     if (filters.length) {
-      watcher(filters, () => files.update(filterFiles));
+      watcher(filters, () => files.update(processFiles));
     }
 
     onDisconnect(target, () => {

@@ -24,6 +24,7 @@ import { DevicePostureDemo } from './demos/device-posture/device-posture-demo';
 import { DisplayMediaDemo } from './demos/display-media/display-media-demo';
 import { DropzoneDemo } from './demos/dropzone/dropzone-demo';
 import { EyeDropperDemo } from './demos/eye-dropper/eye-dropper-demo';
+import { FileDialogDemo } from './demos/file-dialog/file-dialog-demo';
 import { ElementFocusDemo } from './demos/element-focus/element-focus-demo';
 import { ElementFocusWithinDemo } from './demos/element-focus-within/element-focus-within-demo';
 import { ElementHoverDemo } from './demos/element-hover/element-hover-demo';
@@ -78,6 +79,7 @@ const DEMOS = [
   { component: DisplayMediaDemo, name: 'signality-demo-display-media' },
   { component: DropzoneDemo, name: 'signality-demo-dropzone' },
   { component: EyeDropperDemo, name: 'signality-demo-eye-dropper' },
+  { component: FileDialogDemo, name: 'signality-demo-file-dialog' },
   { component: ElementFocusDemo, name: 'signality-demo-element-focus' },
   { component: ElementFocusWithinDemo, name: 'signality-demo-element-focus-within' },
   { component: ElementHoverDemo, name: 'signality-demo-element-hover' },
