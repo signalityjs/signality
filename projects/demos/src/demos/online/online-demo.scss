@@ -1,0 +1,204 @@
+.on-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.5rem;
+  padding-bottom: 1.25rem;
+}
+
+/* ── Visual ── */
+.on-visual {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.on-icon-ring-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+}
+
+/* ── Radar ── */
+.on-radar {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.on-radar-ring {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  opacity: 0;
+  animation: onlineRadar 3.4s cubic-bezier(0, 0, 0.5, 1) infinite;
+  animation-play-state: paused;
+}
+
+.on-radar--active .on-radar-ring {
+  animation-play-state: running;
+}
+
+.on-radar-ring--1 {
+  animation-delay: 0s;
+}
+
+.on-radar-ring--2 {
+  animation-delay: 1.067s;
+}
+
+.on-radar-ring--3 {
+  animation-delay: 2.133s;
+}
+
+@keyframes onlineRadar {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.4;
+    border-color: rgba(34, 197, 94, 0.2);
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+    border-color: rgba(34, 197, 94, 0);
+  }
+}
+
+/* ── Icon ring ── */
+.on-icon-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid rgba(222, 179, 235, 0.2);
+  background: rgba(222, 179, 235, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.on-icon-ring--online {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.on-icon-ring--offline {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ── Icons inside ring ── */
+.on-icon-inner {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #deb3eb;
+}
+
+.on-icon-ring--online .on-icon-inner {
+  color: #22c55e;
+}
+
+.on-icon-ring--offline .on-icon-inner {
+  color: #ef4444;
+}
+
+.on-icon-inner svg {
+  position: absolute;
+  transition: opacity 0.4s ease;
+}
+
+/* ── WiFi ripple animation ── */
+@keyframes wifiRipple {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  40% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+}
+
+.on-arc {
+  animation: wifiRipple 2.4s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.on-dot {
+  animation: dotPulse 2.4s ease-in-out infinite;
+  animation-play-state: paused;
+  transform-origin: 12px 20px;
+}
+
+.on-icon-ring--online .on-arc,
+.on-icon-ring--online .on-dot {
+  animation-play-state: running;
+}
+
+.on-arc--1 {
+  animation-delay: 0s;
+}
+
+.on-arc--2 {
+  animation-delay: 0.22s;
+}
+
+.on-arc--3 {
+  animation-delay: 0.44s;
+}
+
+.on-dot {
+  animation-delay: 0s;
+}
+
+/* ── Typography ── */
+.on-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.on-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.375rem 0;
+  text-align: center;
+  letter-spacing: -0.01em;
+  color: #eee;
+}
+
+.on-subtitle {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: #71717a;
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+}

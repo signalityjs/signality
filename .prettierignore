@@ -1,0 +1,11 @@
+dist
+coverage
+nx
+angular
+/projects/docs/.vitepress
+/projects/docs/public
+*.md
+*.yml
+*.yaml
+*.html
+*.json

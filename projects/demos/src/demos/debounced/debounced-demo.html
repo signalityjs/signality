@@ -1,0 +1,45 @@
+<ng-demo-wrapper [demoPath]="'debounced/debounced-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Input -->
+    <input
+      demoInput
+      placeholder="Type something…"
+      [ngModel]="inputText()"
+      (ngModelChange)="onInputChange($event)"
+    />
+
+    <!-- Divider -->
+    <div class="db-divider"></div>
+
+    <!-- Info rows -->
+    <div class="db-rows">
+      <div class="db-row">
+        <span class="db-label">Immediate</span>
+        <span class="db-value">{{ inputText() || '—' }}</span>
+      </div>
+      <div class="db-row">
+        <span class="db-label">
+          Debounced
+        </span>
+
+        <span class="db-value db-value--accent">
+          @if (isDebouncing()) {
+            <svg
+              class="db-spinner"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+            >
+              <path d="M12 2a10 10 0 0 1 10 10" />
+            </svg>
+          }
+          {{ label() }}
+        </span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

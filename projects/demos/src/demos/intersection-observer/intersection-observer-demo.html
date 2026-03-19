@@ -1,0 +1,42 @@
+<ng-demo-wrapper
+  [demoPath]="'intersection-observer/intersection-observer-demo'"
+  [code]="importCode"
+>
+  <demo-card>
+    <!-- Scroll container with target box -->
+    <div class="io-scroll">
+      <div class="io-spacer">
+        Scroll down
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <polyline points="19 12 12 19 5 12" />
+        </svg>
+      </div>
+      <div #targetBox class="io-target" [class.io-target--visible]="isIntersecting()">
+        {{ isIntersecting() ? 'Visible' : 'Hidden' }}
+      </div>
+      <div class="io-spacer io-spacer--bottom"></div>
+    </div>
+
+    <!-- Divider -->
+    <div class="io-divider"></div>
+
+    <!-- Footer -->
+    <div class="io-footer">
+      <span class="io-status" [class.io-status--active]="isIntersecting()">
+        <span class="io-dot" [class.io-dot--active]="isIntersecting()"></span>
+        {{ isIntersecting() ? 'Intersecting' : 'Not intersecting' }}
+      </span>
+      <button class="io-btn" (click)="scrollToBox()">Scroll to target</button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

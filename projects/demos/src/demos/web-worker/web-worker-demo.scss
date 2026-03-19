@@ -1,0 +1,136 @@
+/* ── Result display ── */
+.ww-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.325rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.ww-value {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #3f3f46;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease, opacity 0.2s ease;
+}
+
+.ww-value--set {
+  color: #e4e4e7;
+}
+
+.ww-value--dim {
+  opacity: 0.3;
+}
+
+.ww-meta {
+  font-size: 13px;
+  line-height: 24px;
+  font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
+  color: #52525b;
+  transition: color 0.3s ease;
+}
+
+/* ── Preset selector ── */
+.ww-presets {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0.125rem;
+}
+
+/* ── Divider ── */
+.ww-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 0.875rem 0 0;
+}
+
+/* ── Footer ── */
+.ww-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.ww-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #71717a;
+  transition: color 0.3s ease;
+}
+
+.ww-status--active {
+  color: #a1a1aa;
+}
+
+.ww-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.ww-dot::before,
+.ww-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3f3f46;
+  transition: background 0.3s ease;
+}
+
+.ww-dot--done::before,
+.ww-dot--done::after {
+  background: #22c55e;
+}
+
+.ww-dot--computing::before,
+.ww-dot--computing::after {
+  background: #deb3eb;
+}
+
+.ww-dot--computing::after {
+  animation: wwPulse 1.2s ease-out infinite;
+}
+
+.ww-dot--error::before,
+.ww-dot--error::after {
+  background: #ef4444;
+}
+
+@keyframes wwPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.ww-btn {
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #deb3eb;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.ww-btn:hover:not(:disabled) {
+  color: #e8c8f5;
+}
+
+.ww-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

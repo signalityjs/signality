@@ -1,0 +1,138 @@
+/* ── Scroll area ── */
+.io-scroll {
+  height: 120px;
+  overflow-y: auto;
+  border: 1px dashed #27272a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
+
+  &:hover {
+    .io-spacer {
+      opacity: 1;
+    }
+  }
+}
+
+.io-spacer {
+  flex-shrink: 0;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 12.5px;
+  color: #9f9fa8;
+  opacity: 0.7;
+  user-select: none;
+}
+
+.io-spacer--bottom {
+  height: 220px;
+}
+
+/* ── Target box ── */
+.io-target {
+  flex-shrink: 0;
+  width: calc(100% - 2rem);
+  height: 48px;
+  border-radius: 6px;
+  border: 1px dashed #3f3f46;
+  background: #161618;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  color: #52525b;
+  transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.io-target--visible {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.06);
+  color: #22c55e;
+}
+
+/* ── Divider ── */
+.io-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 0.875rem 0 0;
+}
+
+/* ── Footer ── */
+.io-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.io-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #52525b;
+  transition: color 0.3s ease;
+}
+
+.io-status--active {
+  color: #a1a1aa;
+}
+
+/* ── Status dot ── */
+.io-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.io-dot::before,
+.io-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3f3f46;
+  transition: background 0.3s ease;
+}
+
+.io-dot--active::before,
+.io-dot--active::after {
+  background: #22c55e;
+}
+
+.io-dot--active::after {
+  animation: ioPulse 2s ease-out infinite;
+}
+
+@keyframes ioPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* ── Button ── */
+.io-btn {
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #deb3eb;
+  transition: color 0.15s ease;
+}
+
+.io-btn:hover {
+  color: #e8c8f5;
+}

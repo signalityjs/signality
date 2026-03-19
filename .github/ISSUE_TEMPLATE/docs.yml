@@ -1,0 +1,47 @@
+name: '📖 Documentation'
+description: 'Report documentation issues or suggest improvements'
+labels: ['documentation']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve the Signality documentation!
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue Type
+      options:
+        - Missing documentation
+        - Incorrect information
+        - Unclear explanation
+        - Typo or grammar
+        - Code example issue
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: page
+    attributes:
+      label: Documentation Page
+      description: URL or path to the affected documentation page.
+      placeholder: 'https://signality.dev/browser/battery'
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe what's wrong or missing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be improved?
+

@@ -1,0 +1,39 @@
+<ng-demo-wrapper [demoPath]="'element-visibility/element-visibility-demo'" [code]="importCode">
+      <demo-card>
+        <!-- Scroll container with target box -->
+        <div #scrollContainer class="ev-scroll">
+          <div class="ev-spacer">
+            Scroll down
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <polyline points="19 12 12 19 5 12" />
+            </svg>
+          </div>
+          <div #targetBox class="ev-target" [class.ev-target--visible]="visibility().isVisible">
+            {{ visibility().isVisible ? 'Visible' : 'Hidden' }}
+          </div>
+          <div class="ev-spacer ev-spacer--bottom"></div>
+        </div>
+
+        <!-- Divider -->
+        <div class="ev-divider"></div>
+
+        <!-- Footer -->
+        <div class="ev-footer">
+          <span class="ev-status" [class.ev-status--active]="visibility().isVisible">
+            <span class="ev-dot" [class.ev-dot--active]="visibility().isVisible"></span>
+            {{ visibility().isVisible ? 'Visible' : 'Not visible' }}
+          </span>
+          <button class="ev-btn" (click)="scrollToBox()">Scroll to target</button>
+        </div>
+      </demo-card>
+    </ng-demo-wrapper>

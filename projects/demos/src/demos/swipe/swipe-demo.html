@@ -1,0 +1,45 @@
+<ng-demo-wrapper [demoPath]="'swipe/swipe-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Swipe zone -->
+    <div #swipeArea class="sw-zone" [class.sw-zone--active]="sw.isSwiping()">
+      <div class="sw-arrow" [class.sw-arrow--visible]="sw.direction() !== 'none'">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [style.transform]="arrowRotation()"
+        >
+          <line x1="12" y1="19" x2="12" y2="5" />
+          <polyline points="5 12 12 5 19 12" />
+        </svg>
+      </div>
+      <span class="sw-hint" [class.sw-hint--hidden]="sw.isSwiping()"> Swipe here </span>
+    </div>
+
+    <!-- Divider -->
+    <div class="sw-divider"></div>
+
+    <!-- Info rows -->
+    <div class="sw-rows">
+      <div class="sw-row">
+        <span class="sw-label">Direction</span>
+        <span class="sw-value" [class.sw-value--active]="sw.direction() !== 'none'">
+          {{ directionLabel() }}
+        </span>
+      </div>
+      <div class="sw-row">
+        <span class="sw-label">Distance X</span>
+        <span class="sw-value sw-value--mono">{{ sw.distanceX() }}px</span>
+      </div>
+      <div class="sw-row">
+        <span class="sw-label">Distance Y</span>
+        <span class="sw-value sw-value--mono">{{ sw.distanceY() }}px</span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

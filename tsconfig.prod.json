@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@signality/core": ["dist/core"],
+      "@signality/core/*": ["dist/core/*"],
+      "@signality/cdk-interop": ["dist/cdk-interop"],
+      "@signality/cdk-interop/*": ["dist/cdk-interop/*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"],
+  "angularCompilerOptions": {
+    "compilationMode": "partial"
+  }
+}

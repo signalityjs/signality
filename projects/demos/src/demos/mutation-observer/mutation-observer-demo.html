@@ -1,0 +1,52 @@
+<ng-demo-wrapper [demoPath]="'mutation-observer/mutation-observer-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Observed container -->
+    <div #container class="mo-list">
+      @if (items().length === 0) {
+        <span class="mo-empty">No items</span>
+      }
+      @for (item of items(); track item) {
+        <div class="mo-item">Item {{ item }}</div>
+      }
+    </div>
+
+    <!-- Divider -->
+    <div class="mo-divider"></div>
+
+    <!-- Info rows -->
+    <div class="mo-rows">
+      <div class="mo-row">
+        <span class="mo-label">Children</span>
+        <span class="mo-value">{{ items().length }}</span>
+      </div>
+      <div class="mo-row">
+        <span class="mo-label">Mutations</span>
+        <span class="mo-value">{{ mutationCount() }}</span>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="mo-divider"></div>
+
+    <!-- Footer actions -->
+    <div class="mo-footer">
+      <button
+        class="mo-btn mo-btn--muted"
+        (click)="clearAll()"
+        [disabled]="items().length === 0"
+      >
+        Clear
+      </button>
+      <div class="mo-actions">
+        <button
+          class="mo-btn mo-btn--secondary"
+          (click)="removeItem()"
+          [disabled]="items().length === 0"
+        >
+          Remove
+        </button>
+        <button class="mo-btn mo-btn--accent" (click)="addItem()">Add Item</button>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

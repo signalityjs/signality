@@ -1,0 +1,57 @@
+/* ── Visual ── */
+.so-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 0 1rem;
+}
+
+.so-phone-wrap {
+  color: #71717a;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+}
+
+/* ── Divider ── */
+.so-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin-bottom: 0;
+}
+
+/* ── Rows ── */
+.so-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.so-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid #1f1f22;
+  gap: 1rem;
+}
+
+.so-row:first-child {
+  padding-top: 0.75rem;
+}
+
+.so-row--last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.so-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+  flex-shrink: 0;
+}
+
+.so-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-weight: 500;
+  text-transform: capitalize;
+}

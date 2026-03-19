@@ -1,0 +1,25 @@
+<ng-demo-wrapper [demoPath]="'interval/interval-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Counter -->
+    <div class="iv-counter">
+      <span class="iv-value">{{ ticks() }}</span>
+      <span class="iv-unit">ticks</span>
+    </div>
+
+    <!-- Divider -->
+    <div class="iv-divider"></div>
+
+    <!-- Footer -->
+    <div class="iv-footer">
+      <span class="iv-status" [class.iv-status--active]="isActive()">
+        <span class="iv-dot" [class.iv-dot--active]="isActive()"></span>
+        {{ isActive() ? 'Running' : 'Stopped' }}
+      </span>
+      <div class="iv-actions">
+        @if (isActive()) {
+          <button class="iv-btn iv-btn--secondary" (click)="stop()">Stop</button>
+        }
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

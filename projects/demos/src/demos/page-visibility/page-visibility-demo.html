@@ -1,0 +1,69 @@
+<ng-demo-wrapper [demoPath]="'page-visibility/page-visibility-demo'" [code]="importCode">
+  <demo-card>
+    <div class="pv-wrap">
+      <!-- Icon ring -->
+      <div class="pv-visual">
+        <div class="pv-icon-ring-container">
+          <div class="pv-radar" [class.pv-radar--active]="isVisible()">
+            <div class="pv-radar-ring pv-radar-ring--1"></div>
+            <div class="pv-radar-ring pv-radar-ring--2"></div>
+            <div class="pv-radar-ring pv-radar-ring--3"></div>
+            <div
+              class="pv-icon-ring"
+              [class.pv-icon-ring--visible]="isVisible()"
+              [class.pv-icon-ring--hidden]="!isVisible()"
+            >
+              <div class="pv-icon-inner">
+                <!-- Visible — open eye -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="visibleOpacity()"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle class="pv-pupil" cx="12" cy="12" r="3" />
+                </svg>
+
+                <!-- Hidden — eye with slash -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="hiddenOpacity()"
+                >
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                  />
+                  <path
+                    d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                  />
+                  <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" />
+                  <line x1="2" y1="2" x2="22" y2="22" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="pv-text">
+        <h3 class="pv-title">{{ isVisible() ? 'Visible' : 'Hidden' }}</h3>
+        <p class="pv-subtitle">
+          {{ isVisible() ? 'Page is in the foreground' : 'Switch back to see changes' }}
+        </p>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

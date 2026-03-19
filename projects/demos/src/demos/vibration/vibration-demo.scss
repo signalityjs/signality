@@ -1,0 +1,166 @@
+/* ── Visual ── */
+.vb-visual {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0 0.75rem;
+}
+
+.vb-ring-container {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Icon ring ── */
+.vb-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid rgba(161, 161, 170, 0.12);
+  background: rgba(161, 161, 170, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.vb-ring--active {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.08);
+  animation: vbShake 0.08s ease-in-out infinite;
+}
+
+@keyframes vbShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2.5px);
+  }
+  75% {
+    transform: translateX(2.5px);
+  }
+}
+
+/* ── Icons ── */
+.vb-icon-inner {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  transition: color 0.3s ease;
+}
+
+.vb-ring--active .vb-icon-inner {
+  color: #f59e0b;
+}
+
+.vb-icon-inner svg {
+  position: absolute;
+  transition: opacity 0.25s ease;
+}
+
+/* ── Divider ── */
+.vb-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 0.875rem 0 0;
+}
+
+/* ── Footer ── */
+.vb-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.vb-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #71717a;
+  transition: color 0.3s ease;
+}
+
+.vb-status--active {
+  color: #a1a1aa;
+}
+
+/* ── Status dot ── */
+.vb-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.vb-dot::before,
+.vb-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3f3f46;
+  transition: background 0.3s ease;
+}
+
+.vb-dot--active::before,
+.vb-dot--active::after {
+  background: #f59e0b;
+}
+
+.vb-dot--active::after {
+  animation: vbPulse 1.2s ease-out infinite;
+}
+
+@keyframes vbPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* ── Action buttons ── */
+.vb-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.vb-btn {
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.vb-btn--muted {
+  color: #52525b;
+}
+
+.vb-btn--muted:hover {
+  color: #a1a1aa;
+}
+
+.vb-btn--accent {
+  color: #deb3eb;
+}
+
+.vb-btn--accent:hover {
+  color: #e8c8f5;
+}

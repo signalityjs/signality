@@ -1,0 +1,32 @@
+.bl-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.bl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid #1f1f22;
+}
+
+.bl-row--last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.bl-row:first-child {
+  padding-top: 0;
+}
+
+.bl-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.bl-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-weight: 500;
+}

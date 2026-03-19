@@ -1,0 +1,48 @@
+.nw-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.nw-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid #1f1f22;
+}
+
+.nw-row--last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.nw-row:first-child {
+  padding-top: 0;
+}
+
+.nw-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.nw-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-weight: 500;
+}
+
+.nw-value--type {
+  text-transform: capitalize;
+}
+
+.nw-value--tag {
+  font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
+  font-size: 0.75rem;
+  color: #71717a;
+  font-weight: 400;
+  text-transform: lowercase;
+}
+
+.nw-value--on {
+  color: #22c55e;
+}

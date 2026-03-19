@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://signality.dev/
+    about: Check the documentation for usage of Signality utilities
+  - name: 💬 Discussions
+    url: https://github.com/signalityjs/signality/discussions
+    about: Ask questions and share ideas

@@ -1,0 +1,23 @@
+<ng-demo-wrapper [demoPath]="'mouse-position/mouse-position-demo'" [code]="importCode">
+  <!-- Cursor follower (fixed, follows mouse globally) -->
+  <div
+    class="mp-follower"
+    [class.mp-follower--visible]="isVisible()"
+    [style.left.px]="position().x"
+    [style.top.px]="position().y"
+  ></div>
+
+  <demo-card>
+    <!-- Info rows -->
+    <div class="mp-rows">
+      <div class="mp-row">
+        <span class="mp-label">X</span>
+        <span class="mp-value">{{ position().x }}px</span>
+      </div>
+      <div class="mp-row">
+        <span class="mp-label">Y</span>
+        <span class="mp-value">{{ position().y }}px</span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

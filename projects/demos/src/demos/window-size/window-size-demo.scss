@@ -1,0 +1,35 @@
+/* ── Info rows ── */
+.ws-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.ws-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.375rem 0;
+}
+
+.ws-row:first-child {
+  padding-top: 0;
+}
+
+.ws-row:last-child {
+  padding-bottom: 0;
+}
+
+.ws-row + .ws-row {
+  border-top: 1px solid #1f1f22;
+}
+
+.ws-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.ws-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}

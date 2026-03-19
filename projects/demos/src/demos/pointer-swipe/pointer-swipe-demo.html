@@ -1,0 +1,60 @@
+<ng-demo-wrapper [demoPath]="'pointer-swipe/pointer-swipe-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Swipe zone -->
+    <div
+      #swipeArea
+      class="ps-zone"
+      touch-action="none"
+      [class.ps-zone--active]="sw.isSwiping()"
+    >
+      @if (sw.isSwiping() && sw.direction() !== 'none') {
+        <svg
+          class="ps-arrow"
+          [style.transform]="'rotate(' + arrowRotation() + 'deg)'"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="19" x2="12" y2="5" />
+          <polyline points="5 12 12 5 19 12" />
+        </svg>
+      }
+      {{ sw.isSwiping() ? directionLabel() : 'Swipe here' }}
+    </div>
+
+    <!-- Divider -->
+    <div class="ps-divider"></div>
+
+    <!-- Info rows -->
+    <div class="ps-rows">
+      <div class="ps-row">
+        <span class="ps-label">Direction</span>
+        <span class="ps-value">{{ directionLabel() }}</span>
+      </div>
+      <div class="ps-row">
+        <span class="ps-label">Distance X</span>
+        <span class="ps-value">{{ sw.distanceX() }}px</span>
+      </div>
+      <div class="ps-row">
+        <span class="ps-label">Distance Y</span>
+        <span class="ps-value">{{ sw.distanceY() }}px</span>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="ps-divider"></div>
+
+    <!-- Footer -->
+    <div class="ps-footer">
+          <span class="ps-status" [class.ps-status--active]="sw.isSwiping()">
+            <span class="ps-dot" [class.ps-dot--active]="sw.isSwiping()"></span>
+            {{ sw.isSwiping() ? 'Swiping…' : 'Idle' }}
+          </span>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

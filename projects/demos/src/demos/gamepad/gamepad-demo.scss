@@ -1,0 +1,126 @@
+.gamepad-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.not-supported,
+.not-connected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.not-supported-text,
+.not-connected-text {
+  color: #a1a1aa;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.not-connected-hint {
+  color: #71717a;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.gamepad-icon {
+  color: #71717a;
+}
+
+.gamepad-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gamepad-name {
+  font-size: 0.75rem;
+  color: #e4e4e7;
+  word-break: break-all;
+}
+
+.buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.button-item {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #27272a;
+  border-radius: 4px;
+  transition: background 0.1s ease;
+}
+
+.button-item.pressed {
+  background: #deb3eb;
+}
+
+.button-index {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: #71717a;
+}
+
+.button-item.pressed .button-index {
+  color: #0f0f11;
+}
+
+.axes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.axis-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.axis-label {
+  font-size: 0.75rem;
+  color: #a1a1aa;
+  min-width: 40px;
+}
+
+.axis-bar {
+  flex: 1;
+  height: 8px;
+  background: #27272a;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.axis-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #3f3f46;
+  transform: translateX(-50%);
+}
+
+.axis-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: #deb3eb;
+}
+
+.axis-value {
+  font-size: 0.75rem;
+  color: #e4e4e7;
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+  text-align: right;
+}

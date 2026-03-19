@@ -1,0 +1,77 @@
+<ng-demo-wrapper [demoPath]="'online/online-demo'" [code]="importCode">
+  <demo-card>
+    <div class="on-wrap">
+      <!-- Icon ring -->
+      <div class="on-visual">
+        <div class="on-icon-ring-container">
+          <div class="on-radar" [class.on-radar--active]="isOnline()">
+            <div class="on-radar-ring on-radar-ring--1"></div>
+            <div class="on-radar-ring on-radar-ring--2"></div>
+            <div class="on-radar-ring on-radar-ring--3"></div>
+            <div
+              class="on-icon-ring"
+              [class.on-icon-ring--online]="isOnline()"
+              [class.on-icon-ring--offline]="!isOnline()"
+            >
+              <div class="on-icon-inner">
+                <!-- Online — WiFi signal -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="onlineOpacity()"
+                >
+                  <path class="on-arc on-arc--3" d="M1.42 9a16 16 0 0 1 21.16 0" />
+                  <path class="on-arc on-arc--2" d="M5 12.55a11 11 0 0 1 14.08 0" />
+                  <path class="on-arc on-arc--1" d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                  <circle
+                    class="on-dot"
+                    cx="12"
+                    cy="20"
+                    r="1"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                </svg>
+
+                <!-- Offline — WiFi with slash -->
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  [style.opacity]="offlineOpacity()"
+                >
+                  <line x1="2" y1="2" x2="22" y2="22" />
+                  <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55" />
+                  <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39" />
+                  <path d="M10.71 5.05A16 16 0 0 1 22.56 9" />
+                  <path d="M1.42 9a15.9 15.9 0 0 1 4.7-2.88" />
+                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                  <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="on-text">
+        <h3 class="on-title">{{ isOnline() ? 'Online' : 'Offline' }}</h3>
+        <p class="on-subtitle">
+          {{ isOnline() ? 'Connected to the network' : 'No network connection' }}
+        </p>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

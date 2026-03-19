@@ -1,0 +1,60 @@
+/* ── Resizable zone ── */
+.ro-zone {
+  height: 80px;
+  border: 1px dashed #27272a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #52525b;
+  resize: both;
+  overflow: hidden;
+  min-width: 120px;
+  min-height: 60px;
+  cursor: se-resize;
+  user-select: none;
+}
+
+/* ── Resize icon ── */
+.ro-resize-icon {
+  flex-shrink: 0;
+  color: #3f3f46;
+}
+
+/* ── Divider ── */
+.ro-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 0.875rem 0 0;
+}
+
+/* ── Info rows ── */
+.ro-rows {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.75rem;
+}
+
+.ro-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.375rem 0;
+}
+
+.ro-row + .ro-row {
+  border-top: 1px solid #1f1f22;
+}
+
+.ro-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.ro-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}

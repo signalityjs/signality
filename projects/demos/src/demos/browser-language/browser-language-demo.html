@@ -1,0 +1,18 @@
+<ng-demo-wrapper [demoPath]="'browser-language/browser-language-demo'" [code]="importCode">
+  <demo-card>
+    <div class="bl-rows">
+      <div class="bl-row">
+        <span class="bl-label">Language</span>
+        <span class="bl-value">{{ languageName() }}</span>
+      </div>
+      <div class="bl-row">
+        <span class="bl-label">Region</span>
+        <span class="bl-value">{{ regionName() }}</span>
+      </div>
+      <div class="bl-row bl-row--last">
+        <span class="bl-label">Tag</span>
+        <span class="bl-value">{{ language() }}</span>
+      </div>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

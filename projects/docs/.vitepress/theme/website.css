@@ -1,0 +1,128 @@
+:root {
+  /* base */
+  --vp-c-brand-1: #DEB3EB !important;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  color: #EEE;
+  font-family: Inter, sans-serif;
+  background: #0F0F11;
+}
+
+.VPNavBarSearch {
+  display: block !important;
+  padding: 0 !important;
+}
+
+.DocSearch-Button {
+  --docsearch-search-button-background: #18181B !important;
+
+  inline-size: -webkit-fill-available !important;
+  color: #A39FA8 !important;
+  border-radius: 6px !important;
+
+  &:hover {
+    background: #1A1A1D !important;
+  }
+}
+
+.DocSearch-Button-Keys, .DocSearch-Button-Placeholder {
+  display: inline-flex !important;
+  font-size: 13px !important;
+}
+
+/* Hide language label in code blocks */
+div[class*="language-"] .lang {
+  display: none;
+}
+
+/* Table styles - full width with rounded corners */
+.vp-doc table {
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow-x: auto;
+  background-color: transparent;
+  border: none;
+}
+
+/* Table cells - all borders including external ones */
+.vp-doc table th,
+.vp-doc table td {
+  border: 1px solid #232125;
+  padding: 0.75rem 1rem;
+  border-radius: 0 !important;
+}
+
+/* Remove double borders between cells - keep only right and bottom */
+.vp-doc table th + th,
+.vp-doc table td + td {
+  border-left: none;
+}
+
+.vp-doc table tr + tr th,
+.vp-doc table tr + tr td {
+  border-top: none;
+}
+
+.vp-doc th {
+  background: #19191C;
+  border-bottom: none !important;
+
+  &:first-of-type {
+    border-top-left-radius: 0.5rem !important;
+  }
+
+  &:last-of-type {
+    border-top-right-radius: 0.5rem !important;
+  }
+}
+
+.vp-doc tr {
+  background: #161618;
+
+  &:nth-child(2n) {
+    background-color: #19191C;
+  }
+
+  &:last-of-type {
+    td {
+      &:first-of-type {
+        border-bottom-left-radius: 0.5rem !important;
+      }
+
+      &:last-of-type {
+        border-bottom-right-radius: 0.5rem !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .vp-doc div[class*="language-"] {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vp-doc pre[class*="language-"] {
+    margin: 0;
+    border-radius: 8px;
+  }
+
+  .vp-code-group .tabs {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+}

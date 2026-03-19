@@ -1,0 +1,9 @@
+# Signality Documentation
+# https://signality.dev
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://signality.dev/sitemap.xml
+

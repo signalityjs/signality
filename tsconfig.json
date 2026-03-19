@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "useUnknownInCatchVariables": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "strictFunctionTypes": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictBindCallApply": true,
+    "moduleResolution": "node",
+    "target": "es2022",
+    "module": "esnext",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@signality/cdk-interop": ["projects/cdk-interop"],
+      "@signality/cdk-interop/*": ["projects/cdk-interop/*"],
+      "@signality/core": ["projects/core"],
+      "@signality/core/*": ["projects/core/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "strictStandalone": true,
+    "strictTemplates": true,
+    "extendedDiagnostics": {
+      "defaultCategory": "warning"
+    }
+  },
+  "include": ["projects/**/*.ts"],
+  "exclude": ["node_modules", "tmp", "dist"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "moduleResolution": "node10"
+    }
+  }
+}

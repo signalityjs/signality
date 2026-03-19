@@ -1,0 +1,106 @@
+.cp-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+/* ── Source textarea ── */
+.cp-source-wrap {
+  position: relative;
+}
+
+.cp-source {
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  background: #161618;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 0.75rem;
+  padding-right: 2.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #e4e4e7;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.cp-source::placeholder {
+  color: #3f3f46;
+}
+
+.cp-source:focus {
+  border-color: rgba(222, 179, 235, 0.3);
+}
+
+/* ── Inline copy icon button ── */
+.cp-copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #27272a;
+  background: #0f0f11;
+  color: #52525b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.cp-copy-btn:hover:not(:disabled) {
+  color: #e4e4e7;
+  background: #1a1a1d;
+  border-color: #3f3f46;
+}
+
+.cp-copy-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Divider ── */
+.cp-divider {
+  height: 1px;
+  background: #1a1a1d;
+}
+
+/* ── Clipboard read section ── */
+.cp-clipboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cp-clipboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cp-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #52525b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cp-clipboard-body {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #a1a1aa;
+  min-height: 1.4rem;
+  word-break: break-all;
+}
+
+.cp-empty {
+  color: #3f3f46;
+  font-style: italic;
+}

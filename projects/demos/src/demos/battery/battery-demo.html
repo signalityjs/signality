@@ -1,0 +1,52 @@
+<ng-demo-wrapper [demoPath]="'battery/battery-demo'" [code]="importCode">
+  @if (!bt.isSupported()) {
+    <demo-not-supported
+      title="Battery API Not Available"
+      description="Battery Status API is not supported in this browser."
+      [hints]="['Chrome 38+', 'Edge 79+', 'Opera 25+']"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="2" y="7" width="16" height="10" rx="2" />
+        <path d="M22 11v2" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <!-- Level + progress -->
+      <div class="bt-level">
+        <span class="bt-pct">
+          {{ pct() }}<span style="font-size: 1.375rem; margin-left: 0.125rem; opacity: 0.75">%</span>
+        </span>
+        <demo-progress [value]="pct()" [color]="levelColor()" [showValue]="false" />
+      </div>
+
+      <!-- Info rows -->
+      <div class="bt-rows">
+        <div class="bt-row">
+          <span class="bt-label">Charging</span>
+          <span class="bt-value">
+            <span class="bt-dot" [style.--dot-color]="levelColor()"></span>
+            {{ bt.charging() ? 'Yes' : 'No' }}
+          </span>
+        </div>
+        <div class="bt-row">
+          <span class="bt-label">Charging time</span>
+          <span class="bt-value">{{ formatTime(bt.chargingTime()) }}</span>
+        </div>
+        <div class="bt-row">
+          <span class="bt-label">Remaining</span>
+          <span class="bt-value">{{ formatTime(bt.dischargingTime()) }}</span>
+        </div>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

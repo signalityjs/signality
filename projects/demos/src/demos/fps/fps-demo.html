@@ -1,0 +1,30 @@
+<ng-demo-wrapper [demoPath]="'fps/fps-demo'" [code]="importCode">
+  <demo-card>
+    <!-- FPS display -->
+    <div class="fps-display">
+      <span class="fps-value">{{ fpsMonitor.fps() }}</span>
+      <span class="fps-unit">FPS</span>
+    </div>
+
+    <!-- Progress bar -->
+    <demo-progress
+      [value]="fpsMonitor.fps()"
+      [max]="60"
+      [color]="fpsColor()"
+      [showValue]="false"
+    />
+
+    <!-- Divider + footer -->
+    <div class="fps-divider"></div>
+
+    <div class="fps-footer">
+      <span class="fps-status" [class.fps-status--running]="fpsMonitor.isRunning()">
+        <span class="fps-dot" [class.fps-dot--running]="fpsMonitor.isRunning()"></span>
+        {{ fpsMonitor.isRunning() ? 'Running' : 'Stopped' }}
+      </span>
+      <button class="fps-btn" (click)="toggle()">
+        {{ fpsMonitor.isRunning() ? 'Stop' : 'Start' }}
+      </button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

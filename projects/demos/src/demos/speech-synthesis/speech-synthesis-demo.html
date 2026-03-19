@@ -1,0 +1,77 @@
+<ng-demo-wrapper [demoPath]="'speech-synthesis/speech-synthesis-demo'" [code]="importCode">
+  @if (!speech.isSupported()) {
+    <demo-not-supported
+      title="Not supported"
+      description="Speech Synthesis is not available in this browser."
+    >
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+        <line x1="12" y1="19" x2="12" y2="23" />
+        <line x1="8" y1="23" x2="16" y2="23" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <!-- Text input -->
+      <input demoInput class="ss-input" placeholder="Enter text to speak…" [(ngModel)]="text" />
+
+      <!-- Sliders -->
+      <div class="ss-sliders">
+        <div class="ss-slider">
+          <label class="ss-slider-label" for="rate-slider">Rate <span class="ss-slider-value">{{ rate() }}</span></label>
+          <input id="rate-slider" type="range" min="0.5" max="2" step="0.1" [value]="rate()"
+                 (input)="rate.set(+$any($event.target).value)" />
+        </div>
+        <div class="ss-slider">
+          <label class="ss-slider-label" for="pitch-slider">Pitch <span class="ss-slider-value">{{ pitch() }}</span></label>
+          <input id="pitch-slider" type="range" min="0" max="2" step="0.1" [value]="pitch()"
+                 (input)="pitch.set(+$any($event.target).value)" />
+        </div>
+      </div>
+
+      <!-- Divider + footer -->
+      <div class="ss-divider"></div>
+      <div class="ss-footer">
+        <!-- Speaking indicator -->
+        <div class="ss-status">
+          <div class="ss-wave" [class.ss-wave--active]="speech.isSpeaking()">
+            <span class="ss-bar"></span>
+            <span class="ss-bar"></span>
+            <span class="ss-bar"></span>
+          </div>
+          <span class="ss-label" [class.ss-label--speaking]="speech.isSpeaking()">
+              {{ speech.isSpeaking() ? 'Speaking…' : 'Idle' }}
+            </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="ss-actions">
+          <button
+            class="ss-btn ss-btn--stop"
+            [disabled]="!speech.isSpeaking()"
+            (click)="speech.stop()"
+          >
+            Stop
+          </button>
+          <button
+            class="ss-btn ss-btn--speak"
+            [disabled]="speech.isSpeaking() || !text"
+            (click)="speech.speak(text)"
+          >
+            Speak
+          </button>
+        </div>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>

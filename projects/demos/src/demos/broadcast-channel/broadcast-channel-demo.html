@@ -1,0 +1,69 @@
+<ng-demo-wrapper [demoPath]="'broadcast-channel/broadcast-channel-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Messages list -->
+    <div class="bc-messages">
+      @if (messages().length === 0) {
+        <span class="bc-empty">No messages yet. Open another tab to test.</span>
+      }
+      @for (msg of messages(); track msg.time) {
+        <div class="bc-msg">
+          <span class="bc-msg-text">{{ msg.text }}</span>
+          <span class="bc-msg-time">{{ msg.time.toLocaleTimeString() }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Divider -->
+    <div class="bc-divider"></div>
+
+    <!-- Send row -->
+    <div class="bc-send">
+      <input
+        demoInput
+        class="bc-input"
+        placeholder="Type a message…"
+        [(ngModel)]="messageText"
+        [disabled]="channel.isClosed()"
+        (keydown.enter)="sendMessage()"
+      />
+      <button
+        title="Send"
+        type="button"
+        class="bc-send-icon"
+        (click)="sendMessage()"
+        [class.bc-send-icon--sent]="isSending()"
+        [class.bc-send-icon--has-sent]="hasSent()"
+        [disabled]="channel.isClosed() || !messageText()"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M22 2 11 13" />
+          <path d="M22 2 15 22 11 13 2 9l20-7z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Divider -->
+    <div class="bc-divider"></div>
+
+    <!-- Footer: channel status + close -->
+    <div class="bc-footer">
+      <span class="bc-status" [class.bc-status--closed]="channel.isClosed()">
+        <span class="bc-dot" [class.bc-dot--closed]="channel.isClosed()"></span>
+        {{ channel.isClosed() ? 'Closed' : 'demo-channel' }}
+      </span>
+
+      @if (!channel.isClosed()) {
+        <button class="bc-btn bc-btn--close" (click)="channel.close()">Close</button>
+      }
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

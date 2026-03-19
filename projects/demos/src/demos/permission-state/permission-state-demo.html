@@ -1,0 +1,17 @@
+<ng-demo-wrapper [demoPath]="'permission-state/permission-state-demo'" [code]="importCode">
+  <demo-card>
+    <div class="ps-list">
+      @for (entry of permissions; track entry.name) {
+        <div class="ps-row">
+          <span class="ps-dot" [class]="'ps-dot--' + entry.state()"></span>
+          <span class="ps-name">{{ entry.name }}</span>
+          <span class="ps-value" [class]="'ps-value--' + entry.state()">{{ entry.state() }}</span>
+        </div>
+
+        @if (!$last) {
+          <div class="ps-divider"></div>
+        }
+      }
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

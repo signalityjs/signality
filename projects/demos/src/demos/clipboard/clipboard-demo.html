@@ -1,0 +1,91 @@
+<ng-demo-wrapper [demoPath]="'clipboard/clipboard-demo'" [code]="importCode">
+  @if (!cb.isSupported()) {
+    <demo-not-supported
+      title="Clipboard Not Available"
+      description="Clipboard API requires a secure origin (HTTPS) and a modern browser."
+      [hints]="['HTTPS required', 'Chrome 66+', 'Firefox 63+']"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="9" y="2" width="6" height="4" rx="1" />
+        <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <div class="cp-wrap">
+        <!-- Source textarea with inline copy button -->
+        <div class="cp-source-wrap">
+            <textarea
+              class="cp-source"
+              [(ngModel)]="text"
+              rows="3"
+              spellcheck="false"
+              placeholder="Type something to copy…"
+            ></textarea>
+          <button
+            type="button"
+            class="cp-copy-btn"
+            [disabled]="!text"
+            (click)="copy()"
+          >
+            @if (cb.copied()) {
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            } @else {
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+            }
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="cp-divider"></div>
+
+        <!-- Clipboard read section -->
+        <div class="cp-clipboard">
+          <div class="cp-clipboard-header">
+            <span class="cp-label">Clipboard</span>
+            <demo-button variant="ghost" size="sm" (click)="paste()">Paste</demo-button>
+          </div>
+          <div class="cp-clipboard-body">
+            @if (cb.text()) {
+              {{ cb.text() }}
+            } @else {
+              <span class="cp-empty">Nothing here yet</span>
+            }
+          </div>
+        </div>
+      </div>
+    </demo-card>
+  }
+</ng-demo-wrapper>
