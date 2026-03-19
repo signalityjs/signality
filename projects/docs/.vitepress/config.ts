@@ -159,9 +159,9 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
+          { text: 'AI Development', link: '/guide/ai-development' },
           { text: 'Getting Started', link: '/' },
           { text: 'Key Concepts', link: '/guide/key-concepts' },
-          { text: 'AI Development', link: '/guide/ai-development' },
         ],
       },
       {
@@ -198,7 +198,6 @@ export default defineConfig({
           { text: 'PermissionState', link: '/browser/permission-state' },
           { text: 'PictureInPicture', link: '/browser/picture-in-picture' },
           { text: 'ScreenOrientation', link: '/browser/screen-orientation' },
-          { text: 'WebShare', link: '/browser/web-share' },
           { text: 'SpeechRecognition', link: '/browser/speech-recognition' },
           { text: 'SpeechSynthesis', link: '/browser/speech-synthesis' },
           { text: 'Storage', link: '/browser/storage' },
@@ -206,6 +205,7 @@ export default defineConfig({
           { text: 'TextSelection', link: '/browser/text-selection' },
           { text: 'Vibration', link: '/browser/vibration' },
           { text: 'WebNotification', link: '/browser/web-notification' },
+          { text: 'WebShare', link: '/browser/web-share' },
           { text: 'WebWorker', link: '/browser/web-worker' },
           { text: 'WindowFocus', link: '/browser/window-focus' },
           { text: 'WindowSize', link: '/browser/window-size' },
