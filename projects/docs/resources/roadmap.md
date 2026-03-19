@@ -150,7 +150,7 @@ We're committed to building a comprehensive library of signal-first utilities th
 
 <div class="contribute-section">
   <p style="line-height: 24px; font-size: 15px;">
-    Have ideas for utilities or improvements? We welcome contributions from the community.
+    Have ideas for utilities or improvements? We welcome contributions from the community ;)
   </p>
   <a href="https://github.com/signalityjs/signality" target="_blank" class="contribute-button">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

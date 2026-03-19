@@ -1,27 +1,5 @@
 # AI Development
 
-<div style="display: flex; justify-content: center; margin: 2rem 0;">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="120"
-    height="120"
-    viewBox="0 0 120 120"
-    fill="none"
-  >
-    <circle cx="60" cy="60" r="50" fill="#1A1A1D" stroke="#DEB3EB" stroke-width="2"/>
-    <rect x="35" y="45" width="50" height="35" rx="8" fill="#DEB3EB"/>
-    <circle cx="48" cy="58" r="6" fill="#0F0F11"/>
-    <circle cx="72" cy="58" r="6" fill="#0F0F11"/>
-    <path d="M50 75 Q60 82 70 75" stroke="#0F0F11" stroke-width="3" stroke-linecap="round" fill="none"/>
-    <line x1="60" y1="35" x2="60" y2="20" stroke="#DEB3EB" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="60" cy="15" r="5" fill="#DEB3EB"/>
-    <rect x="30" y="55" width="8" height="15" rx="2" fill="#DEB3EB"/>
-    <rect x="82" y="55" width="8" height="15" rx="2" fill="#DEB3EB"/>
-    <rect x="45" y="15" width="4" height="12" rx="1" fill="#DEB3EB" opacity="0.5"/>
-    <rect x="71" y="15" width="4" height="12" rx="1" fill="#DEB3EB" opacity="0.5"/>
-  </svg>
-</div>
-
 Signality welcomes contributions from the community to improve the developer experience when working with Signality and AI agents.
 
 We believe the best integrations come from developers who actually use them. If you're passionate about enhancing AI-powered development workflows, your ideas and contributions can help shape how developers interact with Signality.

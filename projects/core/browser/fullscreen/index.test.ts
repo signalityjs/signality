@@ -21,6 +21,12 @@ describe(fullscreen.name, () => {
       configurable: true,
     });
 
+    Object.defineProperty(Element.prototype, 'requestFullscreen', {
+      value: jest.fn().mockResolvedValue(undefined),
+      writable: true,
+      configurable: true,
+    });
+
     requestFullscreenSpy = jest
       .spyOn(Element.prototype, 'requestFullscreen')
       .mockResolvedValue(undefined);

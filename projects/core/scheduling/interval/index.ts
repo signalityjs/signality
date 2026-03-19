@@ -1,7 +1,7 @@
 import { isSignal } from '@angular/core';
 import { NOOP_EFFECT_REF, setupContext, type Timer, toValue } from '@signality/core/internal';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
-import { watcher } from '@signality/core/reactivity/watcher';
+import { watcher, type WatcherRef } from '@signality/core/reactivity/watcher';
 
 export interface IntervalOptions extends WithInjector {
   /**
@@ -59,6 +59,7 @@ export function interval(
     }
 
     let intervalId: Timer;
+    let watcherRef: WatcherRef | null = null;
 
     const start = () => {
       clearInterval(intervalId);
@@ -68,12 +69,13 @@ export function interval(
     };
 
     if (isSignal(intervalMs)) {
-      watcher(intervalMs, start);
+      watcherRef = watcher(intervalMs, start);
     }
 
     const destroy = () => {
       clearInterval(intervalId);
       intervalId = undefined;
+      watcherRef?.destroy();
     };
 
     onCleanup(destroy);
