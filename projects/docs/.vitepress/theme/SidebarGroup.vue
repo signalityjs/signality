@@ -174,7 +174,7 @@ onMounted(async () => {
             <path d="M3 5h4"/>
             <path d="M17 19h4"/>
           </svg>
-          <!-- Roadmap icon - Target/Milestone -->
+          <!-- Roadmap icon - Flag/Milestone -->
           <svg
             v-if="item.text === 'Roadmap'"
             class="sidebar-icon"
@@ -188,9 +188,10 @@ onMounted(async () => {
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <circle cx="12" cy="12" r="10"/>
-            <circle cx="12" cy="12" r="6"/>
-            <circle cx="12" cy="12" r="2"/>
+            <path d="M4 22V4"/>
+            <path d="M4 4 L4 14 L14 9 L4 4"/>
+            <circle cx="18" cy="18" r="3"/>
+            <path d="M15 18 L18 18"/>
           </svg>
           <!-- GitHub icon -->
           <svg
