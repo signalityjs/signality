@@ -28,13 +28,13 @@
       <!-- Sliders -->
       <div class="ss-sliders">
         <div class="ss-slider">
-          <label class="ss-slider-label">Rate <span class="ss-slider-value">{{ rate() }}</span></label>
-          <input type="range" min="0.5" max="2" step="0.1" [value]="rate()"
+          <label class="ss-slider-label" for="rate-slider">Rate <span class="ss-slider-value">{{ rate() }}</span></label>
+          <input id="rate-slider" type="range" min="0.5" max="2" step="0.1" [value]="rate()"
                  (input)="rate.set(+$any($event.target).value)" />
         </div>
         <div class="ss-slider">
-          <label class="ss-slider-label">Pitch <span class="ss-slider-value">{{ pitch() }}</span></label>
-          <input type="range" min="0" max="2" step="0.1" [value]="pitch()"
+          <label class="ss-slider-label" for="pitch-slider">Pitch <span class="ss-slider-value">{{ pitch() }}</span></label>
+          <input id="pitch-slider" type="range" min="0" max="2" step="0.1" [value]="pitch()"
                  (input)="pitch.set(+$any($event.target).value)" />
         </div>
       </div>

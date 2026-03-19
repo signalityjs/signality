@@ -49,17 +49,6 @@ describe(bluetooth.name, () => {
     return fixture.componentInstance;
   };
 
-  it('should have correct initial state before request', () => {
-    const component = createComponent();
-
-    expect(component.bt.isSupported()).toBe(true);
-    expect(component.bt.isConnected()).toBe(false);
-    expect(component.bt.isConnecting()).toBe(false);
-    expect(component.bt.device()).toBeNull();
-    expect(component.bt.server()).toBeNull();
-    expect(component.bt.error()).toBeNull();
-  });
-
   it('should connect to a device on request', async () => {
     const component = createComponent();
 

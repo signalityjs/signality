@@ -131,7 +131,7 @@ export interface SpeechRecognitionRef {
 export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRecognitionRef {
   const { runInContext } = setupContext(options?.injector, speechRecognition);
 
-  return runInContext(({ isBrowser, injector, onCleanup }) => {
+  return runInContext(({ isBrowser, onCleanup }) => {
     const isSupported = constSignal(
       isBrowser && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
     );
