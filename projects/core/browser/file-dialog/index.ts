@@ -172,8 +172,16 @@ export function fileDialog(options?: FileDialogOptions): FileDialogRef {
         inputEl.value = '';
         inputEl.multiple = toValue(multiple);
         inputEl.accept = toValue(accept);
-        inputEl.webkitdirectory = toValue(directory);
-        inputEl.capture = toValue(capture);
+
+        const directoriesOnly = toValue(directory);
+        if (directoriesOnly) {
+          inputEl.webkitdirectory = true;
+        }
+
+        const captureValue = toValue(capture);
+        if (captureValue) {
+          inputEl.capture = captureValue;
+        }
 
         inputEl.click();
       });
