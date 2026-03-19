@@ -59,7 +59,6 @@ import { TextDirectionDemo } from './demos/text-direction/text-direction-demo';
 import { TextSelectionDemo } from './demos/text-selection/text-selection-demo';
 import { ThrottledDemo } from './demos/throttled/throttled-demo';
 import { VibrationDemo } from './demos/vibration/vibration-demo';
-import { WakeLockDemo } from './demos/wake-lock/wake-lock-demo';
 import { WebNotificationDemo } from './demos/web-notification/web-notification-demo';
 import { WebWorkerDemo } from './demos/web-worker/web-worker-demo';
 import { WindowFocusDemo } from './demos/window-focus/window-focus-demo';
@@ -115,7 +114,6 @@ const DEMOS = [
   { component: TextSelectionDemo, name: 'signality-demo-text-selection' },
   { component: ThrottledDemo, name: 'signality-demo-throttled' },
   { component: VibrationDemo, name: 'signality-demo-vibration' },
-  { component: WakeLockDemo, name: 'signality-demo-wake-lock' },
   { component: WebNotificationDemo, name: 'signality-demo-web-notification' },
   { component: WebWorkerDemo, name: 'signality-demo-web-worker' },
   { component: WindowFocusDemo, name: 'signality-demo-window-focus' },

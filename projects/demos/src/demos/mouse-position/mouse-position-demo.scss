@@ -30,6 +30,14 @@
   padding: 0.375rem 0;
 }
 
+.mp-row:first-child {
+  padding-top: 0;
+}
+
+.mp-row:last-child {
+  padding-bottom: 0;
+}
+
 .mp-row + .mp-row {
   border-top: 1px solid #1f1f22;
 }

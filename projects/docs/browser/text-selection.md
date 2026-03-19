@@ -67,58 +67,6 @@ The `textSelection()` function returns a `TextSelectionRef` object:
 
 ## Examples
 
-### Highlight toolbar
-
-```angular-ts
-import { Component, computed } from '@angular/core';
-import { textSelection, clipboard, webShare } from '@signality/core';
-
-@Component({
-  template: `
-    <article>
-      <p>Lorem ipsum dolor sit amet...</p>
-    </article>
-    
-    @if (hasSelection()) {
-      <div 
-        class="toolbar" 
-        [style.top.px]="toolbarPos().y"
-        [style.left.px]="toolbarPos().x"
-      >
-        <button (click)="copy()">Copy</button>
-        <button (click)="share()">Share</button>
-      </div>
-    }
-  `,
-})
-export class HighlightToolbar {
-  readonly selection = textSelection();
-  readonly cb = clipboard();
-  readonly shareApi = webShare();
-  
-  readonly hasSelection = computed(() => this.selection.text().length > 0);
-  
-  readonly toolbarPos = computed(() => {
-    const rects = this.selection.rects();
-    if (rects.length === 0) return { x: 0, y: 0 };
-    
-    const firstRect = rects[0];
-    return {
-      x: firstRect.left + firstRect.width / 2,
-      y: firstRect.top - 40,
-    };
-  });
-
-  async copy() {
-    await this.cb.copy(this.selection.text() ?? '');
-  }
-  
-  async share() {
-    await this.shareApi.share({ text: this.selection.text() ?? '' });
-  }
-}
-```
-
 ### Word counter
 
 ```angular-ts

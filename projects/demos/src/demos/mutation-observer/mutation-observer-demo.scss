@@ -43,6 +43,14 @@
   padding: 0.3125rem 0;
 }
 
+.mo-row:first-child {
+  padding-top: 0;
+}
+
+.mo-row:last-child {
+  padding-bottom: 0;
+}
+
 .mo-row + .mo-row {
   border-top: 1px solid #1f1f22;
 }

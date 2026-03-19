@@ -28,7 +28,6 @@ export * from '@signality/core/browser/storage';
 export * from '@signality/core/browser/text-direction';
 export * from '@signality/core/browser/text-selection';
 export * from '@signality/core/browser/vibration';
-export * from '@signality/core/browser/wake-lock';
 export * from '@signality/core/browser/web-notification';
 export * from '@signality/core/browser/web-share';
 export * from '@signality/core/browser/web-worker';

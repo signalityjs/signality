@@ -44,7 +44,6 @@ import { TextDirectionDemo } from '../demos/text-direction/text-direction-demo';
 import { TextSelectionDemo } from '../demos/text-selection/text-selection-demo';
 import { ThrottledDemo } from '../demos/throttled/throttled-demo';
 import { VibrationDemo } from '../demos/vibration/vibration-demo';
-import { WakeLockDemo } from '../demos/wake-lock/wake-lock-demo';
 import { WebNotificationDemo } from '../demos/web-notification/web-notification-demo';
 import { WebWorkerDemo } from '../demos/web-worker/web-worker-demo';
 import { WindowFocusDemo } from '../demos/window-focus/window-focus-demo';
@@ -106,7 +105,6 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
     TextSelectionDemo,
     ThrottledDemo,
     VibrationDemo,
-    WakeLockDemo,
     WebNotificationDemo,
     WebWorkerDemo,
     WindowFocusDemo,
@@ -335,11 +333,6 @@ import { WindowSizeDemo } from '../demos/window-size/window-size-demo';
       <section>
         <h2>Vibration Demo</h2>
         <demo-vibration />
-      </section>
-
-      <section>
-        <h2>Wake Lock Demo</h2>
-        <demo-wake-lock />
       </section>
 
       <section>

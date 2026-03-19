@@ -19,16 +19,5 @@
         <span class="mp-value">{{ position().y }}px</span>
       </div>
     </div>
-
-    <!-- Divider -->
-    <div class="mp-divider"></div>
-
-    <!-- Footer -->
-    <div class="mp-footer">
-      <span class="mp-status" [class.mp-status--active]="isVisible()">
-        <span class="mp-dot" [class.mp-dot--active]="isVisible()"></span>
-        {{ isVisible() ? 'Tracking' : 'Move your mouse' }}
-      </span>
-    </div>
   </demo-card>
 </ng-demo-wrapper>

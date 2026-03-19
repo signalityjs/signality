@@ -11,6 +11,14 @@
   padding: 0.375rem 0;
 }
 
+.sp-row:first-child {
+  padding-top: 0;
+}
+
+.sp-row:last-child {
+  padding-bottom: 0;
+}
+
 .sp-row + .sp-row {
   border-top: 1px solid #1f1f22;
 }
