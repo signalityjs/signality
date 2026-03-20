@@ -269,3 +269,11 @@ interface BluetoothDevice extends EventTarget {
   readonly watchingAdvertisements: boolean;
   addEventListener(type: 'gattserverdisconnected', listener: (ev: Event) => void): void;
 }
+
+interface Bluetooth {
+  requestDevice(options?: {
+    filters?: BluetoothLEScanFilter[];
+    acceptAllDevices?: boolean;
+    optionalServices?: BluetoothServiceUUID[];
+  }): Promise<BluetoothDevice>;
+}
