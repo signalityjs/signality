@@ -222,17 +222,17 @@ Utilities that return `*Ref` containers with methods are designed to be safely c
 All `*Ref` methods use `untracked()` internally when reading signals, ensuring that any signals accessed within these methods won't be registered as dependencies:
 
 ```typescript
-import { effect, signal } from '@angular/core';
-import { debounced, geolocation, geoPermission } from '@signality/core';
+import { effect } from '@angular/core';
+import { geolocation, permissionState } from '@signality/core';
 
 @Component({ /* ... */ })
 export class Demo {
-  readonly geoPermission = permissionState('geolocation');
+  readonly permission = permissionState('geolocation');
   readonly geo = geolocation(); // -> GeolocationRef
 
   constructor() {
     effect(() => {
-      if (this.geoPermission() === 'granted') {
+      if (this.permission() === 'granted') {
         this.geo.start(); // Safe to call - no hidden dependencies created // [!code highlight]
       }
     });
@@ -266,7 +266,8 @@ interface FullscreenOptions extends WithInjector {
 }
 
 interface FullscreenRef {
-  readonly isFullscreen: Signal<boolean>;
+  readonly isSupported: Signal<boolean>;
+  readonly isActive: Signal<boolean>;
   readonly enter: () => Promise<void>;
   readonly exit: () => Promise<void>;
   readonly toggle: () => Promise<void>;
@@ -282,16 +283,12 @@ Signality utilities are provided without prefixes like `use*` or `inject*` that 
 Angular's class-based architecture allows us to define properties in the instance scope with the same names as the imported factory functions:
 
 ```angular-ts
-export class Demo {
+export class Component {
   readonly battery = battery();
 }
 ```
 
 Since the utility architecture intentionally assumes that these functions will be called within the initialization context (field initializers, constructors), we don't add any unnecessary prefixes.
-
-**Utilities as blueprints:**
-
-Despite being factory functions, utilities should be thought of as **blueprints** by default. When you call a utility, you create an instance based on it that encapsulates the desired behavior within your component's instance scope.
 
 This design choice:
 
