@@ -1,6 +1,6 @@
 {
   "name": "@signality/core",
-  "version": "0.0.1-alpha.4",
+  "version": "0.1.0",
   "license": "MIT",
   "author": "Vyacheslav Borodin <https://github.com/vs-borodin>",
   "description": "A foundational toolkit for Angular Signals",
