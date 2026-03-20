@@ -1,5 +1,6 @@
 import { signal, type Signal, untracked } from '@angular/core';
 import {
+  assertElement,
   constSignal,
   getPipElement,
   NOOP_ASYNC_FN,
@@ -29,6 +30,10 @@ export interface PictureInPictureRef {
 
   /**
    * Enter Picture-in-Picture mode for the target video element.
+   *
+   * @throws {DOMException} `'NotAllowedError'` — the document is not allowed to use PiP
+   * @throws {DOMException} `'InvalidStateError'` — the video element has `disablePictureInPicture` attribute
+   * @throws {DOMException} `'NotSupportedError'` — Picture-in-Picture is not supported
    *
    * @see [HTMLVideoElement: requestPictureInPicture() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestPictureInPicture)
    */
@@ -98,21 +103,15 @@ export function pictureInPicture(
 
     const enter = async (): Promise<void> => {
       const targetEl = toElement.untracked(target);
-
-      try {
-        await targetEl?.requestPictureInPicture();
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(`[pictureInPicture] Failed to enter Picture-in-Picture mode.`, error);
-        }
-      }
+      assertElement(targetEl, 'pictureInPicture');
+      await targetEl.requestPictureInPicture();
     };
 
     const exit = async (): Promise<void> => {
       const targetEl = toElement.untracked(target);
       const pipEl = getPipElement(document);
 
-      if (targetEl && pipEl && targetEl === pipEl) {
+      if (targetEl === pipEl) {
         try {
           await document.exitPictureInPicture();
         } catch (error) {
