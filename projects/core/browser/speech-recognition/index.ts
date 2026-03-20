@@ -149,10 +149,10 @@ export function speechRecognition(options?: SpeechRecognitionOptions): SpeechRec
       };
     }
 
-    const win = window as unknown as WindowWithSpeechRecognition;
-    const SpeechRecognitionClass = win.SpeechRecognition || win.webkitSpeechRecognition;
+    const SpeechRecognitionClass =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
-    const recognition = new SpeechRecognitionClass();
+    const recognition: SpeechRecognition = new SpeechRecognitionClass();
 
     const {
       lang = 'en-US',
@@ -349,15 +349,4 @@ interface SpeechRecognition extends EventTarget {
   abort(): void;
   start(audioTrack?: MediaStreamTrack): void;
   stop(): void;
-}
-
-interface WindowWithSpeechRecognition extends Window {
-  SpeechRecognition: {
-    prototype: SpeechRecognition;
-    new (): SpeechRecognition;
-  };
-  webkitSpeechRecognition: {
-    prototype: SpeechRecognition;
-    new (): SpeechRecognition;
-  };
 }
