@@ -158,9 +158,8 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
       error.set(null);
 
       try {
-        const btDevice = await (navigator as NavigatorWithBluetooth).bluetooth.requestDevice(
-          requestOptions
-        );
+        const bt: Bluetooth = (navigator as any).bluetooth;
+        const btDevice = await bt.requestDevice(requestOptions);
 
         device.set(btDevice);
 
@@ -213,11 +212,11 @@ interface BluetoothDataFilter {
 }
 
 interface BluetoothManufacturerDataFilter extends BluetoothDataFilter {
-  companyIdentifier: number;
+  readonly companyIdentifier: number;
 }
 
 interface BluetoothServiceDataFilter extends BluetoothDataFilter {
-  service: BluetoothServiceUUID;
+  readonly service: BluetoothServiceUUID;
 }
 
 interface BluetoothLEScanFilter {
@@ -269,16 +268,4 @@ interface BluetoothDevice extends EventTarget {
   watchAdvertisements(options?: { signal?: AbortSignal }): Promise<void>;
   readonly watchingAdvertisements: boolean;
   addEventListener(type: 'gattserverdisconnected', listener: (ev: Event) => void): void;
-}
-
-interface NavigatorWithBluetooth extends Navigator {
-  readonly bluetooth: Bluetooth;
-}
-
-interface Bluetooth {
-  requestDevice(options?: {
-    filters?: BluetoothLEScanFilter[];
-    acceptAllDevices?: boolean;
-    optionalServices?: BluetoothServiceUUID[];
-  }): Promise<BluetoothDevice>;
 }
