@@ -21,65 +21,87 @@
     </demo-not-supported>
   } @else {
     <demo-card>
-      <div class="pip-wrap">
-        <!-- Hidden functional video -->
-        <video
-          #video
-          class="pip-video"
-          src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-          muted
-          loop
-          playsinline
-          (loadedmetadata)="onVideoLoaded()"
-        ></video>
+      <div class="pip-wrap" [class.pip-wrap--mobile]="isMobileDevice()">
+        <!-- Desktop video (hidden) -->
+        @if (!isMobileDevice()) {
+          <video
+            #video
+            class="pip-video"
+            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            muted
+            loop
+            playsinline
+          ></video>
+        }
 
-        <!-- Icon ring -->
-        <div class="pip-visual">
-          <div class="pip-radar" [class.pip-radar--active]="isActive()">
-            <div class="pip-radar-ring pip-radar-ring--1"></div>
-            <div class="pip-radar-ring pip-radar-ring--2"></div>
-            <div class="pip-radar-ring pip-radar-ring--3"></div>
-            <div
-              class="pip-icon-ring"
-              [class.pip-icon-ring--active]="isActive()"
-              [class.pip-icon-ring--idle]="!isActive()"
-            >
-              <div class="pip-icon-inner">
-                <svg
-                  width="26"
-                  height="26"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M11 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5" />
-                  <rect class="pip-float-rect" width="9" height="7" x="13" y="13" rx="1" />
-                </svg>
+        <!-- Mobile: visible video -->
+        @if (isMobileDevice()) {
+          <div class="pip-video-container">
+            <video
+              #video
+              class="pip-video-mobile"
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              controls
+              (playing)="onVideoLoaded()"
+              (pause)="onVideoLoaded()"
+              (ended)="onVideoLoaded()"
+            ></video>
+          </div>
+        }
+
+        <!-- Desktop: Icon ring -->
+        @if (!isMobileDevice()) {
+          <div class="pip-visual">
+            <div class="pip-radar" [class.pip-radar--active]="isActive()">
+              <div class="pip-radar-ring pip-radar-ring--1"></div>
+              <div class="pip-radar-ring pip-radar-ring--2"></div>
+              <div class="pip-radar-ring pip-radar-ring--3"></div>
+              <div
+                class="pip-icon-ring"
+                [class.pip-icon-ring--active]="isActive()"
+                [class.pip-icon-ring--idle]="!isActive()"
+              >
+                <div class="pip-icon-inner">
+                  <svg
+                    width="26"
+                    height="26"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M11 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5" />
+                    <rect class="pip-float-rect" width="9" height="7" x="13" y="13" rx="1" />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Text -->
-        <div class="pip-text">
-          <h3 class="pip-title">{{ isActive() ? 'Picture-in-Picture' : 'Inactive' }}</h3>
-          <p class="pip-subtitle">
-            {{
-              isActive()
-                ? 'Video is floating in a separate window'
-                : 'Float the video above other windows'
-            }}
-          </p>
-        </div>
+          <!-- Text -->
+          <div class="pip-text">
+            <h3 class="pip-title">{{ isActive() ? 'Picture-in-Picture' : 'Inactive' }}</h3>
+            <p class="pip-subtitle">
+              {{
+                isActive()
+                  ? 'Video is floating in a separate window'
+                  : 'Float the video above other windows'
+              }}
+            </p>
+          </div>
+        }
 
         <!-- Button -->
         <demo-button
           variant="secondary"
           size="sm"
-          [disabled]="!videoLoaded()"
+          [disabled]="isMobileDevice() ? !videoLoaded() : false"
           (click)="handleToggle()"
         >
           {{ isActive() ? 'Exit PiP' : 'Enter PiP' }}

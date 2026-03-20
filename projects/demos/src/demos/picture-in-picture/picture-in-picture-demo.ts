@@ -12,6 +12,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { pictureInPicture } from '@signality/core';
 import { DemoButton, DemoCard, DemoNotSupported, Wrapper } from '../../common';
 
+const MOBILE_REGEX = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+
 @Component({
   selector: 'demo-picture-in-picture',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,9 +29,18 @@ export class PictureInPictureDemo {
   readonly pip = pictureInPicture(this.video);
   readonly videoLoaded = signal(false);
   readonly isActive = this.pip.isActive;
+  readonly isMobileDevice = signal(false);
 
   constructor() {
+    effect(() => {
+      this.isMobileDevice.set(MOBILE_REGEX.test(navigator.userAgent));
+    });
+
     effect(async () => {
+      if (this.isMobileDevice()) {
+        return;
+      }
+
       const video = this.video()?.nativeElement;
       const pipActive = this.isActive;
 
