@@ -21,6 +21,7 @@
 
 /* ── Dot ── */
 .bp-dot {
+  position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -29,9 +30,34 @@
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.bp-dot--on {
+.bp-dot::before,
+.bp-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #3f3f46;
+  animation: none;
+}
+
+.bp-dot--on::before {
   background: #deb3eb;
-  box-shadow: 0 0 0 3px rgba(222, 179, 235, 0.18);
+}
+
+.bp-dot--on::after {
+  background: #deb3eb;
+  animation: bcPulse 2s ease-out infinite;
+}
+
+@keyframes bcPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
 }
 
 /* ── Query label ── */
@@ -52,10 +78,9 @@
 .bp-value {
   font-size: 0.8125rem;
   font-weight: 400;
-  color: #3f3f46;
+  color: #71717a;
   flex: 1;
   text-align: right;
-  font-variant-numeric: tabular-nums;
   transition: color 0.3s ease;
 }
 
