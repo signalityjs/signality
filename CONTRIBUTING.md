@@ -57,13 +57,13 @@ The documentation site is built with VitePress and includes interactive demos:
 ## Pull Request Process
 
 1. We follow [Conventional Commits](https://www.conventionalcommits.org/) in our commit messages with the following scopes:
-  - `core`: changes to the core package
-  - `cdk-interop`: changes to the cdk-interop package
-  - `demos`: changes to the demo components
-  - `docs`: changes to documentation
-  - `internal`: changes to internal utilities
 
-   Example: `feat(core): add new battery utility`
+- `core`: changes to the core package
+- `cdk-interop`: changes to the cdk-interop package
+- `demos`: changes to the demo components
+- `docs`: changes to documentation
+
+Example: `feat(core): add new battery utility`
 
 2. Take a look at our [Coding Standards](./CODING_STANDARDS.md) - these are guidelines to help maintain consistency
 
@@ -103,37 +103,3 @@ projects/
 ├── demos/             # Demo components
 └── docs/              # Documentation site
 ```
-
-## Testing
-
-We encourage including tests with new utilities to help ensure everything works as expected. Our testing infrastructure uses:
-
-- **Jest** for test runner
-- **Angular Testing Utilities** for component testing
-- **TestBed.runInInjectionContext** for utility testing (utilities are functions that use `inject()`, so they need to run within an injection context)
-
-Test files should be placed alongside implementation files with `.test.ts` extension.
-
-Example test structure:
-
-```typescript
-import { TestBed } from '@angular/core/testing';
-import { myUtility } from './index';
-
-describe('myUtility', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-  });
-
-  it('should work correctly', () => {
-    TestBed.runInInjectionContext(() => {
-      const result = myUtility();
-      // ... assertions
-    });
-  });
-});
-```
-
----
-
-We welcome all contributions, no matter how big or small! 🚀
