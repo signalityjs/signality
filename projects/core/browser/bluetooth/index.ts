@@ -158,7 +158,9 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
       error.set(null);
 
       try {
-        const btDevice = await navigator.bluetooth.requestDevice(requestOptions);
+        const btDevice = await (navigator as NavigatorWithBluetooth).bluetooth.requestDevice(
+          requestOptions
+        );
 
         device.set(btDevice);
 
@@ -193,4 +195,90 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
       disconnect,
     };
   });
+}
+
+/**
+ * Local type definitions for Web Bluetooth API.
+ *
+ * @remarks
+ * External `@types/web-bluetooth` package may conflict with user's other libraries
+ * or become outdated. For better DX, we define minimal required interfaces locally
+ * without polluting the global namespace with experimental APIs.
+ */
+type BluetoothServiceUUID = number | string;
+
+interface BluetoothDataFilter {
+  readonly dataPrefix?: BufferSource;
+  readonly mask?: BufferSource;
+}
+
+interface BluetoothManufacturerDataFilter extends BluetoothDataFilter {
+  companyIdentifier: number;
+}
+
+interface BluetoothServiceDataFilter extends BluetoothDataFilter {
+  service: BluetoothServiceUUID;
+}
+
+interface BluetoothLEScanFilter {
+  readonly name?: string;
+  readonly namePrefix?: string;
+  readonly services?: BluetoothServiceUUID[];
+  readonly manufacturerData?: BluetoothManufacturerDataFilter[];
+  readonly serviceData?: BluetoothServiceDataFilter[];
+}
+
+interface BluetoothRemoteGATTService extends EventTarget {
+  readonly device: BluetoothDevice;
+  readonly uuid: string;
+  readonly isPrimary: boolean;
+  getCharacteristic(
+    characteristic: BluetoothCharacteristicUUID
+  ): Promise<BluetoothRemoteGATTCharacteristic>;
+  getCharacteristics(
+    characteristic?: BluetoothCharacteristicUUID
+  ): Promise<BluetoothRemoteGATTCharacteristic[]>;
+}
+
+type BluetoothCharacteristicUUID = number | string;
+
+interface BluetoothRemoteGATTCharacteristic extends EventTarget {
+  readonly service: BluetoothRemoteGATTService;
+  readonly uuid: string;
+  readonly value?: DataView;
+  readValue(): Promise<DataView>;
+  writeValue(value: BufferSource): Promise<void>;
+  startNotifications(): Promise<BluetoothRemoteGATTCharacteristic>;
+  stopNotifications(): Promise<BluetoothRemoteGATTCharacteristic>;
+}
+
+interface BluetoothRemoteGATTServer {
+  readonly device: BluetoothDevice;
+  readonly connected: boolean;
+  connect(): Promise<BluetoothRemoteGATTServer>;
+  disconnect(): void;
+  getPrimaryService(service: BluetoothServiceUUID): Promise<BluetoothRemoteGATTService>;
+  getPrimaryServices(service?: BluetoothServiceUUID): Promise<BluetoothRemoteGATTService[]>;
+}
+
+interface BluetoothDevice extends EventTarget {
+  readonly id: string;
+  readonly name?: string;
+  readonly gatt?: BluetoothRemoteGATTServer;
+  forget(): Promise<void>;
+  watchAdvertisements(options?: { signal?: AbortSignal }): Promise<void>;
+  readonly watchingAdvertisements: boolean;
+  addEventListener(type: 'gattserverdisconnected', listener: (ev: Event) => void): void;
+}
+
+interface NavigatorWithBluetooth extends Navigator {
+  readonly bluetooth: Bluetooth;
+}
+
+interface Bluetooth {
+  requestDevice(options?: {
+    filters?: BluetoothLEScanFilter[];
+    acceptAllDevices?: boolean;
+    optionalServices?: BluetoothServiceUUID[];
+  }): Promise<BluetoothDevice>;
 }
