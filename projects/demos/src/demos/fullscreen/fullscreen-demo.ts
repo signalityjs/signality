@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { fullscreen } from '@signality/core';
-import { DemoButton, DemoCard, Wrapper } from '../../common';
+import { DemoButton, DemoCard, DemoNotSupported, Wrapper } from '../../common';
 
 @Component({
   selector: 'demo-fullscreen',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Wrapper, DemoCard, DemoButton],
+  imports: [Wrapper, DemoCard, DemoButton, DemoNotSupported],
   templateUrl: './fullscreen-demo.html',
   styleUrl: './fullscreen-demo.scss',
 })

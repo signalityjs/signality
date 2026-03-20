@@ -1,6 +1,29 @@
 <ng-demo-wrapper [demoPath]="'fullscreen/fullscreen-demo'" [code]="importCode">
-  <demo-card>
-    <div class="fs-wrap">
+  @if (!fs.isSupported()) {
+    <demo-not-supported
+      title="Fullscreen Not Available"
+      description="Fullscreen API is not supported in this browser."
+      [hints]="['Chrome 69+', 'Firefox 64+', 'Safari 11+']"
+    >
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="15 3 21 3 21 9" />
+        <polyline points="9 21 3 21 3 15" />
+        <line x1="21" y1="3" x2="14" y2="10" />
+        <line x1="3" y1="21" x2="10" y2="14" />
+      </svg>
+    </demo-not-supported>
+  } @else {
+    <demo-card>
+      <div class="fs-wrap">
       <!-- Icon ring -->
       <div class="fs-visual">
         <div class="fs-radar" [class.fs-radar--active]="isActive()">
@@ -69,11 +92,11 @@
       <demo-button
         variant="secondary"
         size="sm"
-        [disabled]="!fs.isSupported()"
         (click)="handleToggle()"
       >
         {{ isActive() ? 'Exit Fullscreen' : 'Enter Fullscreen' }}
       </demo-button>
-    </div>
-  </demo-card>
+      </div>
+    </demo-card>
+  }
 </ng-demo-wrapper>
