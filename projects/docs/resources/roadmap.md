@@ -20,7 +20,7 @@
   <h1 style="margin-top: 1.5rem; font-size: 2rem; font-weight: 700;">Signality Roadmap</h1>
 
   <p style="color: #a0a0a5; margin-top: 0.5rem; text-align: center; max-width: 360px;">
-    Signality recently launched in version <code>1.0</code> Here's what we're working on for 2026.
+    Signality recently launched in version <code>0.1.0</code> Here's what we're working on for 2026.
   </p>
 </div>
 
@@ -28,7 +28,7 @@
 
 We're committed to building a comprehensive library of signal-first utilities that make Angular development more intuitive and powerful. As an open source project, our roadmap reflects our current priorities and future direction.
 
-## 1.0 Released
+## 0.1.0 Released
 
 <div class="roadmap-section">
   <div class="roadmap-content">
@@ -43,7 +43,7 @@ We're committed to building a comprehensive library of signal-first utilities th
           <span class="status-badge released">Released</span>
           <span class="date">March 2026</span>
         </div>
-        <h3 style="display: flex; align-items: center; gap: 9px;"><svg style="filter: drop-shadow(rgba(151, 23, 231, 0.5) 0px 0px 8px) brightness(1.15); margin-left: 0.125rem" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M20.9839 8.88574C22.0992 9.99024 22.1078 11.7899 21.0034 12.9053L13.7993 20.1787C12.255 21.738 9.73959 21.7503 8.18018 20.2061L17.0034 10.8857L11.7095 9.25488L14.7681 2.73047L20.9839 8.88574ZM8.20361 1.82422C9.74796 0.264877 12.2643 0.252601 13.8237 1.79688L4.99951 11.1172L10.2944 12.748L7.23486 19.2725L1.02002 13.1172C-0.0953976 12.0126 -0.104152 10.213 1.00049 9.09766L8.20361 1.82422Z" fill="url(#paint0_roadmap)"/><path d="M20.9834 8.88574C22.0988 9.99033 22.1076 11.7899 21.0029 12.9053L13.7998 20.1787C12.2555 21.7381 9.7391 21.7503 8.17969 20.2061L17.0029 10.8857L11.709 9.25488L14.7686 2.73047L20.9834 8.88574ZM8.2041 1.82422C9.74845 0.264877 12.2638 0.252601 13.8232 1.79688L5 11.1172L10.2939 12.748L7.23535 19.2725L1.01953 13.1172C-0.0958138 12.0127 -0.104425 10.213 1 9.09766L8.2041 1.82422Z" fill="url(#paint1_roadmap)"/><defs><linearGradient id="paint0_roadmap" x1="3.1397" y1="18.5826" x2="26.3579" y2="4.96348" gradientUnits="userSpaceOnUse"><stop stop-color="#E40035"/><stop offset="0.24" stop-color="#F60A48"/><stop offset="0.352" stop-color="#F20755"/><stop offset="0.494" stop-color="#DC087D"/><stop offset="0.745" stop-color="#9717E7"/><stop offset="1" stop-color="#6C00F5"/></linearGradient><linearGradient id="paint1_roadmap" x1="4.69222" y1="2.73832" x2="14.704" y2="15.3673" gradientUnits="userSpaceOnUse"><stop stop-color="#FF31D9"/><stop offset="1" stop-color="#FF5BE1" stop-opacity="0"/></linearGradient></defs></svg>Signality 1.0</h3>
+        <h3 style="display: flex; align-items: center; gap: 9px;"><svg style="filter: drop-shadow(rgba(151, 23, 231, 0.5) 0px 0px 8px) brightness(1.15); margin-left: 0.125rem" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M20.9839 8.88574C22.0992 9.99024 22.1078 11.7899 21.0034 12.9053L13.7993 20.1787C12.255 21.738 9.73959 21.7503 8.18018 20.2061L17.0034 10.8857L11.7095 9.25488L14.7681 2.73047L20.9839 8.88574ZM8.20361 1.82422C9.74796 0.264877 12.2643 0.252601 13.8237 1.79688L4.99951 11.1172L10.2944 12.748L7.23486 19.2725L1.02002 13.1172C-0.0953976 12.0126 -0.104152 10.213 1.00049 9.09766L8.20361 1.82422Z" fill="url(#paint0_roadmap)"/><path d="M20.9834 8.88574C22.0988 9.99033 22.1076 11.7899 21.0029 12.9053L13.7998 20.1787C12.2555 21.7381 9.7391 21.7503 8.17969 20.2061L17.0029 10.8857L11.709 9.25488L14.7686 2.73047L20.9834 8.88574ZM8.2041 1.82422C9.74845 0.264877 12.2638 0.252601 13.8232 1.79688L5 11.1172L10.2939 12.748L7.23535 19.2725L1.01953 13.1172C-0.0958138 12.0127 -0.104425 10.213 1 9.09766L8.2041 1.82422Z" fill="url(#paint1_roadmap)"/><defs><linearGradient id="paint0_roadmap" x1="3.1397" y1="18.5826" x2="26.3579" y2="4.96348" gradientUnits="userSpaceOnUse"><stop stop-color="#E40035"/><stop offset="0.24" stop-color="#F60A48"/><stop offset="0.352" stop-color="#F20755"/><stop offset="0.494" stop-color="#DC087D"/><stop offset="0.745" stop-color="#9717E7"/><stop offset="1" stop-color="#6C00F5"/></linearGradient><linearGradient id="paint1_roadmap" x1="4.69222" y1="2.73832" x2="14.704" y2="15.3673" gradientUnits="userSpaceOnUse"><stop stop-color="#FF31D9"/><stop offset="1" stop-color="#FF5BE1" stop-opacity="0"/></linearGradient></defs></svg>Signality 0.1.0</h3>
         <p>The initial release of Signality — a comprehensive library of signal-first utilities for Angular. SSR-ready, type-safe, and designed for seamless reactive composition and DI-interop.</p>
         <div class="feature-tags">
           <span class="tag">Signals</span>
