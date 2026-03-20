@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jest", "node", "web-bluetooth", "dom-speech-recognition"],
+    "types": ["jest", "node"],
     "esModuleInterop": true,
     "emitDecoratorMetadata": true
   },
