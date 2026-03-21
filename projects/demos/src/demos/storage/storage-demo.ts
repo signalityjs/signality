@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { storage } from '@signality/core';
 import { DemoCard, DemoInput, DemoToggle, Wrapper } from '../../common';
@@ -20,6 +20,12 @@ export class StorageDemo {
     { label: 'local', value: 'local' as const },
     { label: 'session', value: 'session' as const },
   ];
+
+  readonly storageUrl = computed(() =>
+    this.storageType() === 'local'
+      ? 'https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage'
+      : 'https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage'
+  );
 
   get messageText(): string {
     return this.message();
