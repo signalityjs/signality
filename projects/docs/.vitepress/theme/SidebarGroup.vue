@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useData } from 'vitepress';
 
 interface SidebarItem {
@@ -46,6 +46,24 @@ const toggle = () => {
     isCollapsed.value = !isCollapsed.value;
   }
 };
+
+const githubStars = ref('0');
+
+onMounted(async () => {
+  if (props.item.text !== 'GitHub' && !props.item.items?.some(i => i.text === 'GitHub')) return;
+  try {
+    const res = await fetch('https://api.github.com/repos/signalityjs/signality');
+    if (res.ok) {
+      const data = await res.json();
+      const count: number = data.stargazers_count;
+      githubStars.value = count >= 1000
+        ? (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k'
+        : String(count);
+    }
+  } catch {
+    // silently ignore
+  }
+});
 </script>
 
 <template>
@@ -210,6 +228,24 @@ const toggle = () => {
             <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
           </svg>
           {{ item.text }}
+          <!-- GitHub stars badge -->
+          <span v-if="item.text === 'GitHub'" class="github-stars-badge">
+            <svg
+              class="github-star-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span class="github-stars-count">{{ githubStars }}</span>
+          </span>
         </span>
       </a>
       <!-- Nested items under a link -->
@@ -328,5 +364,47 @@ const toggle = () => {
   padding: 0.375rem 0;
   font-size: 0.8125rem;
   color: #666;
+}
+
+/* GitHub stars badge */
+.github-stars-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  color: #a0a0a5;
+  background: rgba(160, 160, 165, 0.1);
+  border: 1px solid rgba(160, 160, 165, 0.2);
+  border-radius: 0.375rem;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.sidebar-link:hover .github-stars-badge {
+  color: #e0e0e5;
+  background: rgba(224, 224, 229, 0.15);
+  border-color: rgba(224, 224, 229, 0.3);
+}
+
+.sidebar-link--active .github-stars-badge {
+  color: #deb3eb;
+  background: rgba(222, 179, 235, 0.15);
+  border-color: rgba(222, 179, 235, 0.3);
+}
+
+.github-star-icon {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: currentColor;
+}
+
+.github-stars-count {
+  line-height: 1;
+  white-space: nowrap;
 }
 </style>
