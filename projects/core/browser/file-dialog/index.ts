@@ -30,7 +30,10 @@ export interface FileDialogOptions extends WithInjector {
 
   /**
    * Whether to select directories instead of files.
-   * Uses the non-standard `webkitdirectory` attribute.
+   *
+   * Uses the `webkitdirectory` attribute, widely supported across all modern browsers.
+   *
+   * @see [webkitdirectory on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/webkitdirectory)
    * @default false
    */
   readonly directory?: MaybeSignal<boolean>;
