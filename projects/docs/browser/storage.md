@@ -89,27 +89,14 @@ Create custom serializers for special handling:
 ```angular-ts
 import { storage, type Serializer } from '@signality/core';
 
-const dateSerializer: Serializer<Date> = {
+const customDateSerializer: Serializer<Date> = {
   write: (date) => date.getTime().toString(),
   read: (str) => new Date(parseInt(str, 10)),
 };
 
 const timestamp = storage('timestamp', new Date(), {
-  serializer: dateSerializer,
+  serializer: customDateSerializer,
 });
-
-// Custom serializer with validation and defaults
-const userSerializer: Serializer<User> = {
-  write: (user) => JSON.stringify(user),
-  read: (str) => {
-    try {
-      const data = JSON.parse(str);
-      return { ...defaultUser, ...data }; // Merge with defaults
-    } catch {
-      return defaultUser;
-    }
-  },
-};
 ```
 
 ## Examples
@@ -124,7 +111,7 @@ type Theme = 'light' | 'dark' | 'system';
 
 @Component({
   template: `
-    <select [value]="theme()" (change)="theme.set($any($event.target).value)">
+    <select [(ngModel)]="theme">
       <option value="light">Light</option>
       <option value="dark">Dark</option>
       <option value="system">System</option>
@@ -132,12 +119,13 @@ type Theme = 'light' | 'dark' | 'system';
   `,
 })
 export class ThemeSelector {
-  readonly documentEl = inject(DOCUMENT).documentElement;
   readonly theme = storage<Theme>('theme', 'system');
   
   constructor() {
+    const { documentElement } = inject(DOCUMENT);
+  
     effect(() => {
-      this.documentEl.setAttribute('data-theme', this.theme());
+      documentElement.setAttribute('data-theme', this.theme());
     });
   }
 }
@@ -146,7 +134,7 @@ export class ThemeSelector {
 ### Shopping cart with complex types
 
 ```angular-ts
-import { Component, computed } from '@angular/core';
+import { Component } from '@angular/core';
 import { storage } from '@signality/core';
 
 interface CartItem {
@@ -158,16 +146,12 @@ interface CartItem {
 
 @Component({
   template: `
-    <p>Cart: {{ cart().length }} items ({{ total() | currency }})</p>
+    <p>Cart: {{ cart().length }} items</p>
     <button (click)="clearCart()">Clear Cart</button>
   `,
 })
 export class ShoppingCart {
-  readonly cart = storage<CartItem[]>('cart', []); // [!code highlight]
-  
-  readonly total = computed(() => 
-    this.cart().reduce((sum, item) => sum + item.price * item.quantity, 0)
-  );
+  readonly cart = storage<CartItem[]>('cart', []);
   
   addItem(item: CartItem) {
     this.cart.update(cart => {
