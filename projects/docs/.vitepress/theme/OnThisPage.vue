@@ -137,12 +137,13 @@ onUnmounted(() => {
             { 'on-this-page-link--active': activeId === header.id },
             { 'on-this-page-link--nested': header.level === 3 },
           ]"
+          :aria-current="activeId === header.id ? 'location' : undefined"
           @click.prevent.stop="scrollToHeader(header.id)"
         >
           {{ header.title }}
         </a>
       </nav>
-      <button v-if="hasScrolled" class="back-to-top" @click="scrollToTop">
+      <button v-if="hasScrolled" class="back-to-top" aria-label="Back to top" @click="scrollToTop">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"

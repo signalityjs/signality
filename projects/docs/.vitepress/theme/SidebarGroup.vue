@@ -73,6 +73,7 @@ onMounted(async () => {
         type="button"
         class="sidebar-group-header"
         :class="{ 'sidebar-group-header--active': hasActiveChild }"
+        :aria-expanded="!isCollapsed"
         @click="toggle"
       >
         <span class="sidebar-group-text">{{ item.text }}</span>
@@ -406,20 +407,4 @@ onMounted(async () => {
   line-height: 1;
   white-space: nowrap;
 }
-
-/* Nested depth styling */
-/* .sidebar-item--depth-1 > .sidebar-link,
-.sidebar-item--depth-1 > .sidebar-group-header {
-  padding-left: 0.5rem;
-}
-
-.sidebar-item--depth-2 > .sidebar-link,
-.sidebar-item--depth-2 > .sidebar-group-header {
-  padding-left: 1rem;
-}
-
-.sidebar-item--depth-3 > .sidebar-link,
-.sidebar-item--depth-3 > .sidebar-group-header {
-  padding-left: 1.5rem;
-} */
 </style>
