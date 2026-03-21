@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 # FileDialog
 
-Signal-based utility for programmatically opening the native file picker dialog. Creates a hidden `<input type="file">` element under the hood and manages its lifecycle automatically.
+Signal-based utility for programmatically opening the native file picker dialog.
 
 <Demo name="file-dialog" />
 
@@ -34,24 +34,24 @@ export class FileUploadComponent {
 
 ## Parameters
 
-| Param       | Type                              | Default | Description                                                                                 |
-|-------------|-----------------------------------|---------|---------------------------------------------------------------------------------------------|
-| `multiple`  | `MaybeSignal<boolean>`            | `true`  | Whether to allow selecting multiple files                                                   |
-| `accept`    | `MaybeSignal<string>`             | `'*'`   | Comma-separated accepted file types (MIME types, wildcards, or extensions)                  |
-| `capture`   | `MaybeSignal<string>`            | —       | Mobile capture source: `'user'` or `'environment'`                                          |
-| `directory` | `MaybeSignal<boolean>`           | `false` | Select directories instead of files (non-standard)                                          |
-| `validator` | `(file: File) => boolean`        | —       | Custom per-file validation predicate. When provided, `accept` is ignored                     |
-| `onReject`  | `(files: File[]) => void`         | —       | Callback invoked with rejected files after selection                                        |
-| `injector`  | `Injector`                        | —       | Optional injector for DI context                                                            |
+| Param       | Type                      | Default | Description                                                                |
+|-------------|---------------------------|---------|----------------------------------------------------------------------------|
+| `multiple`  | `MaybeSignal<boolean>`    | `true`  | Whether to allow selecting multiple files                                  |
+| `accept`    | `MaybeSignal<string>`     | `'*'`   | Comma-separated accepted file types (MIME types, wildcards, or extensions) |
+| `capture`   | `MaybeSignal<string>`     | —       | Mobile capture source: `'user'` or `'environment'`                         |
+| `directory` | `MaybeSignal<boolean>`    | `false` | Select directories instead of files                                        |
+| `validator` | `(file: File) => boolean` | —       | Custom per-file validation predicate. When provided, `accept` is ignored   |
+| `onReject`  | `(files: File[]) => void` | —       | Callback invoked with rejected files after selection                       |
+| `injector`  | `Injector`                | —       | Optional injector for DI context                                           |
 
 ## Return Value
 
 The `fileDialog()` function returns a `FileDialogRef` object:
 
-| Property | Type                     | Description                                                               |
-|----------|--------------------------|---------------------------------------------------------------------------|
-| `files`  | `WritableSignal<File[]>` | Selected files. Reset via `files.set([])` (also clears the input element) |
-| `open`   | `() => void`             | Open the file picker dialog                                               |
+| Property | Type                     | Description                               |
+|----------|--------------------------|-------------------------------------------|
+| `files`  | `WritableSignal<File[]>` | Selected files. Reset via `files.set([])` |
+| `open`   | `() => void`             | Open the file picker dialog               |
 
 ## Examples
 
@@ -92,6 +92,8 @@ export class PdfUpload {
 ```
 
 ### Directory selection
+
+> **Note:** The `directory` option uses the [webkitdirectory](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/webkitdirectory) attribute, widely supported across all modern browsers.
 
 ```angular-ts
 import { Component } from '@angular/core';
