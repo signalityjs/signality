@@ -15,6 +15,7 @@ const sourceUrl = computed(() => frontmatter.value.source as string | undefined)
     rel="noopener noreferrer"
     class="source-link"
     title="View source on GitHub"
+    aria-label="View source on GitHub"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -44,13 +45,13 @@ a.source-link {
   background: none;
   text-decoration: none;
   pointer-events: auto;
-
-  &:hover {
-    color: #deb3eb;
-  }
 }
 
-.source-link .source-link svg {
+a.source-link:hover {
+  color: #deb3eb;
+}
+
+.source-link svg {
   flex-shrink: 0;
 }
 </style>

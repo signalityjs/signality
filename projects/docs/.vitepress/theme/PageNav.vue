@@ -78,14 +78,14 @@ const nextPage = computed<FlatItem | null>(() => {
 
 <template>
   <nav v-if="prevPage || nextPage" class="page-nav">
-    <a v-if="prevPage" :href="prevPage.link" class="page-nav-link page-nav-link--prev">
+    <a v-if="prevPage" :href="prevPage.link" class="page-nav-link page-nav-link--prev" :aria-label="`Previous: ${prevPage.text}`">
       <span class="page-nav-label">Previous</span>
       <span class="page-nav-title">{{ prevPage.text }}</span>
     </a>
 
     <span v-else class="page-nav-spacer"></span>
 
-    <a v-if="nextPage" :href="nextPage.link" class="page-nav-link page-nav-link--next">
+    <a v-if="nextPage" :href="nextPage.link" class="page-nav-link page-nav-link--next" :aria-label="`Next: ${nextPage.text}`">
       <span class="page-nav-label">Next</span>
       <span class="page-nav-title">{{ nextPage.text }}</span>
     </a>
@@ -115,14 +115,13 @@ a.page-nav-link {
   min-width: 0;
   flex: 1 1 48%;
   max-width: 48%;
-
-  &:hover {
-    border-color: #deb3ec;
-    //background-color: rgba(151, 23, 231, 0.05);
-  }
 }
 
-.page-nav-link .page-nav-link--prev {
+a.page-nav-link:hover {
+  border-color: #deb3ec;
+}
+
+.page-nav-link--prev {
   align-items: flex-start;
 }
 
