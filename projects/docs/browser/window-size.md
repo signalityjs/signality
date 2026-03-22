@@ -1,5 +1,5 @@
 ---
-source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/window-size/index.ts
+source: https://github.com/signalityjs/signality/blob/main/projects/core/browser/window-size/index.ts
 ---
 
 # WindowSize

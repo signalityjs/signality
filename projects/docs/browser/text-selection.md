@@ -1,5 +1,5 @@
 ---
-source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/text-selection/index.ts
+source: https://github.com/signalityjs/signality/blob/main/projects/core/browser/text-selection/index.ts
 ---
 
 # TextSelection
