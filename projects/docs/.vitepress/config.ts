@@ -88,10 +88,9 @@ export default defineConfig({
     ['meta', { property: 'twitter:image', content: 'https://signality.dev/og-image.png' }],
 
     // Favicon (paths are relative to base)
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}favicon.ico` }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: `${base}apple-touch-icon.png` }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: `${base}favicon-32x32.png` }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: `${base}favicon-16x16.png` }],
-    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: `${base}apple-touch-icon.png` }],
     ['link', { rel: 'manifest', href: `${base}site.webmanifest` }],
 
     // Theme color
@@ -141,7 +140,6 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/' },
-      { text: 'API', link: '/api-reference' },
       {
         text: 'Links',
         items: [
