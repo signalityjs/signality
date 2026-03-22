@@ -35,6 +35,10 @@ body {
   font-size: 13px !important;
 }
 
+.vp-doc div[class*='language-'] {
+  transition: none !important;
+}
+
 /* Hide language label in code blocks */
 div[class*="language-"] .lang {
   display: none;
