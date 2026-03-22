@@ -1,14 +1,14 @@
-import {
-  afterRenderEffect,
-  type EffectCleanupRegisterFn,
-  inject,
-  type Signal,
-  signal,
-} from '@angular/core';
+import { afterRenderEffect, computed, inject, type Signal, signal } from '@angular/core';
 import { FocusMonitor, type FocusOrigin } from '@angular/cdk/a11y';
 import type { Subscription } from 'rxjs';
-import { MaybeElementSignal, onDisconnect, WithInjector } from '@signality/core';
-import { constSignal, NOOP_FN, setupContext, toElement } from '@signality/core/internal';
+import { MaybeElementSignal, WithInjector } from '@signality/core';
+import {
+  assertElement,
+  constSignal,
+  NOOP_FN,
+  setupContext,
+  toElement,
+} from '@signality/core/internal';
 
 export interface FocusMonitorOptions extends WithInjector {
   /**
@@ -79,7 +79,7 @@ export function focusMonitor(
 ): FocusMonitorRef {
   const { runInContext } = setupContext(options?.injector, focusMonitor);
 
-  return runInContext(({ isServer, onCleanup }) => {
+  return runInContext(({ isServer }) => {
     if (isServer) {
       return {
         origin: constSignal(null),
@@ -91,57 +91,42 @@ export function focusMonitor(
     const cdkMonitor = inject(FocusMonitor);
 
     const origin = signal<FocusOrigin>(null);
-    const isFocused = signal(false);
+    const isFocused = computed(() => origin() !== null);
 
-    let subscription: Subscription | undefined;
+    let subscription: Subscription | null = null;
 
     const startMonitoring = (el: HTMLElement) => {
       subscription?.unsubscribe();
-
-      subscription = cdkMonitor.monitor(el, options?.checkChildren).subscribe(focusOrigin => {
-        origin.set(focusOrigin);
-        isFocused.set(focusOrigin !== null);
-      });
+      subscription = cdkMonitor.monitor(el, options?.checkChildren).subscribe(origin.set);
     };
 
     const stopMonitoring = (el: HTMLElement) => {
       origin.set(null);
-      isFocused.set(false);
       subscription?.unsubscribe();
+      subscription = null;
       cdkMonitor.stopMonitoring(el);
     };
 
     const focusVia = (origin: FocusOrigin, options?: FocusOptions) => {
-      const el = toElement.untracked(target);
-
-      if (!el) {
-        if (ngDevMode) {
-          console.warn('[focusMonitor] Cannot focus: element is not available');
-        }
-        return;
-      }
-
+      const el = toElement.untracked(target)!;
+      ngDevMode && assertElement(el, 'focusVia');
       cdkMonitor.focusVia(el, origin, options);
     };
 
-    const setupMonitoring = (onCleanup: EffectCleanupRegisterFn) => {
-      const el = toElement(target);
+    afterRenderEffect({
+      read: onCleanup => {
+        const el = toElement(target);
 
-      if (el) {
-        startMonitoring(el);
-        onCleanup(() => stopMonitoring(el));
-      }
-    };
-
-    onCleanup(() => subscription?.unsubscribe());
-
-    afterRenderEffect({ read: setupMonitoring });
-
-    onDisconnect(target, stopMonitoring);
+        if (el) {
+          startMonitoring(el);
+          onCleanup(() => stopMonitoring(el));
+        }
+      },
+    });
 
     return {
       origin: origin.asReadonly(),
-      isFocused: isFocused.asReadonly(),
+      isFocused,
       focusVia,
     };
   });
