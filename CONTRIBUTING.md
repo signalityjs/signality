@@ -1,8 +1,8 @@
 # Contributing
 
-> Thank you for considering contributing to Signality! Your help is very much appreciated! 🎉
+> 🚀 **Signality v0.1 is here!** We're just getting started, and there's a long road ahead to 1.0. Your contributions can help shape its future — every help matters! All contributors will be featured on our website and in the README. Join us on this journey! 🎉
 
-We welcome contributions of all kinds - whether it's fixing bugs, adding features, improving documentation, or suggesting ideas. Every contribution helps make Signality better!
+We welcome contributions of all kinds - whether it's fixing bugs, adding features, improving documentation, or suggesting ideas.
 
 If you're planning a larger change, we'd love to hear about it first! You can open an issue or start a discussion to share your ideas and get feedback before diving in.
 
@@ -10,9 +10,9 @@ If you're planning a larger change, we'd love to hear about it first! You can op
 
 In order to make your contribution please make a fork of the repository. After you've pulled the code, follow these steps to kick-start the development:
 
-1. Run `pnpm install --frozen-lockfile` to install dependencies
-2. Run `pnpm demos:dev` to launch the demo app for local testing
-3. Run `pnpm docs:dev` to launch the documentation site locally
+1. Run `pnpm install` to install dependencies
+2. Run `pnpm docs:dev` to launch the documentation site locally
+3. Run `pnpm demos:dev` to launch the demo app for local testing
 
 ## Development Workflow
 
@@ -52,7 +52,6 @@ The documentation site is built with VitePress and includes interactive demos:
 
 - `pnpm docs:dev` - Start development server
 - `pnpm docs:build` - Build documentation
-- `pnpm docs:preview` - Preview built documentation
 
 ## Pull Request Process
 

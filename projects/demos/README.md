@@ -7,14 +7,12 @@ Interactive demo components for Signality utilities, built as Web Components (Cu
 ```
 demos/
 ├── src/
-│   ├── demos/           # Demo components
-│   │   ├── battery/
-│   │   │   └── battery-demo.ts
-│   │   └── ...
+│   ├── demos/           # Demo components (battery, clipboard, etc.)
+│   ├── common/          # Shared UI components (card, button, wrapper, etc.)
 │   ├── app/             # Dev app for local testing
 │   ├── main.ts          # Dev entry point
 │   ├── main.elements.ts # Custom Elements entry point
-│   └── styles.scss      # Shared styles
+│   └── styles.scss      # Global styles & design tokens
 ├── project.json
 └── README.md
 ```
@@ -45,12 +43,31 @@ This outputs to `projects/docs/public/demos/` for use in VitePress.
 // src/demos/battery/battery-demo.ts
 @Component({
   selector: 'demo-battery',
-  encapsulation: ViewEncapsulation.ShadowDom,
-  // ...
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [Wrapper, DemoCard, DemoButton],
+  templateUrl: './battery-demo.html',
+  styleUrl: './battery-demo.scss',
 })
 export class BatteryDemo {
-  // Use the utility
   readonly battery = battery();
+}
+```
+
+**For utilities that return `*Ref` with `.isSupported()`:**
+
+Check support in the template and show `<demo-not-supported>` when the API is unavailable:
+
+```html
+@if (!myUtility.isSupported()) {
+<demo-not-supported
+  title="API Not Available"
+  description="This feature is not supported in this browser."
+  [hints]="['Chrome 38+', 'Firefox 101+']"
+>
+  <!-- icon via ng-content -->
+</demo-not-supported>
+} @else {
+<!-- main demo content -->
 }
 ```
 
@@ -61,8 +78,8 @@ import { BatteryDemo } from './demos/battery/battery-demo';
 
 const DEMOS = [
   { component: BatteryDemo, name: 'signality-demo-battery' },
-  { component: BluetoothDemo, name: 'signality-demo-bluetooth' }, // Add here
-];
+  { component: ClipboardDemo, name: 'signality-demo-clipboard' }, // Add here
+] as const;
 ```
 
 3. Use in markdown documentation:
@@ -81,20 +98,20 @@ const DEMOS = [
 
 - Component selector: `demo-{utility}` (e.g., `demo-battery`)
 - Custom Element name: `signality-demo-{utility}` (e.g., `signality-demo-battery`)
+- All demos must use `ChangeDetectionStrategy.OnPush`
 
-## Styling
+## Common Components
 
-Each demo uses `ViewEncapsulation.ShadowDom` for style isolation. Define all styles within the component using the `:host` selector.
+Shared UI components available in `src/common/`:
 
-Use the design tokens from `styles.scss` for consistency:
+- `DemoCard` — card wrapper for demo content
+- `DemoButton` — styled button
+- `DemoInput` — styled input
+- `DemoNotSupported` — "Not supported" message component
+- `DemoBadge` — badge component
+- `DemoToggle` — toggle component
+- `DemoProgress` — progress bar component
+- `Wrapper` — layout wrapper with optional copy functionality
 
-```scss
-:host {
-  --demo-bg: #1a1a2e;
-  --demo-surface: #16213e;
-  --demo-border: #0f3460;
-  --demo-text: #e4e4e7;
-  --demo-primary: #6366f1;
-}
-```
+Import from `src/common/index.ts`.
 
