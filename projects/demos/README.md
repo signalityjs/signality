@@ -98,7 +98,6 @@ const DEMOS = [
 
 - Component selector: `demo-{utility}` (e.g., `demo-battery`)
 - Custom Element name: `signality-demo-{utility}` (e.g., `signality-demo-battery`)
-- All demos must use `ChangeDetectionStrategy.OnPush`
 
 ## Common Components
 
