@@ -155,5 +155,34 @@ describe(routerListener.name, () => {
       events.next(new NavigationStart(2, '/test2'));
       expect(component.count()).toBe(1);
     });
+
+    it('should handle destroy after once unsubscribes', () => {
+      @Component({ template: '' })
+      class OnceDestroyTestComponent {
+        readonly count = signal(0);
+        readonly listener = routerListener(
+          'navigationstart',
+          () => {
+            this.count.update(c => c + 1);
+          },
+          { once: true }
+        );
+      }
+
+      const fixture = TestBed.createComponent(OnceDestroyTestComponent);
+      const component = fixture.componentInstance;
+      fixture.detectChanges();
+
+      events.next(new NavigationStart(1, '/test1'));
+      expect(component.count()).toBe(1);
+
+      events.next(new NavigationStart(2, '/test2'));
+      expect(component.count()).toBe(1);
+
+      expect(() => component.listener.destroy()).not.toThrow();
+
+      events.next(new NavigationStart(3, '/test3'));
+      expect(component.count()).toBe(1);
+    });
   });
 });
