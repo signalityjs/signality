@@ -171,7 +171,6 @@ export function fileDialog(options?: FileDialogOptions): FileDialogRef {
     const open = (): void => {
       untracked(() => {
         inputEl ??= createInput();
-
         inputEl.value = '';
         inputEl.multiple = toValue(multiple);
         inputEl.accept = toValue(accept);
@@ -190,7 +189,7 @@ export function fileDialog(options?: FileDialogOptions): FileDialogRef {
       });
     };
 
-    const filters = [accept, multiple, validatorFn].filter(isSignal) as Signal<any>[];
+    const filters = [accept, multiple].filter(isSignal) as Signal<any>[];
 
     if (filters.length) {
       watcher(filters, () => processFiles(files()));
