@@ -60,7 +60,7 @@ export interface StorageOptions<T> extends CreateSignalOptions<T>, WithInjector 
    *
    * // Or with custom merge
    * const settings = storage('settings', defaultSettings, {
-   *   mergeResolver: (stored, initial) => deepMerge(stored, initial),
+   *   mergeResolver: (stored, initial) => deepMerge(initial, stored),
    * });
    * ```
    */

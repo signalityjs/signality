@@ -16,7 +16,7 @@ import { storage } from '@signality/core';
 
 @Component({
   template: `
-    <input [(ngModel)]="counter" />
+    <input type="number" [(ngModel)]="counter" />
     <p>Stored: {{ counter() }}</p>
   `,
 })
