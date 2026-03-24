@@ -89,7 +89,9 @@ export function favicon(options?: FaviconOptions): FaviconRef {
     const baseUrl = options?.baseUrl ?? appBaseHref ?? '';
 
     const getLinkElement = (): HTMLLinkElement => {
-      let link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]');
+      let link = document.querySelector<HTMLLinkElement>(
+        'link[rel*="icon"]:not([rel*="apple-touch-icon"])'
+      );
 
       if (!link) {
         link = document.createElement('link');
