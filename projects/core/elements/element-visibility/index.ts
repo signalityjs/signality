@@ -85,7 +85,7 @@ export function elementVisibility(
   options?: ElementVisibilityOptions
 ): Signal<ElementVisibilityValue> {
   const { runInContext } = setupContext(options?.injector, elementVisibility);
-  const initialValue = options?.initialValue ?? DEFAULT_VISIBILITY;
+  const initialValue = options?.initialValue ?? { isVisible: true, ratio: 1 };
 
   return runInContext(({ isServer }) => {
     if (isServer) {
@@ -126,13 +126,8 @@ export function elementVisibility(
 
     intersectionObserver(target, update, { threshold, root, rootMargin });
 
-    onDisconnect(target, () => visibility.set(initialValue));
+    onDisconnect(target, () => visibility.set({ isVisible: false, ratio: 0 }));
 
     return visibility;
   });
 }
-
-const DEFAULT_VISIBILITY: ElementVisibilityValue = {
-  isVisible: true,
-  ratio: 1,
-};
