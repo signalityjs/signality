@@ -161,6 +161,24 @@ const routeParams = queryParams<{ id: string }>({
 });
 ```
 
+## Event-based utilities
+
+Some utilities do not return a reactive state. Instead, they accept a **callback** to handle events. This approach lets you register **reactions** to run specific logic while abstracting away resource cleanup when the registration context is destroyed.
+
+```typescript
+import { Component } from '@angular/core';
+import { onLongPress } from '@signality/core';
+
+@Component({ /* ... */ })
+export class Demo {
+  constructor() {
+    onLongPress(this.el, event => {
+      this.showContextMenu(event);
+    });
+  }
+}
+```
+
 ## Context-aware execution
 
 Signality utilities are aware of their execution context and adapt accordingly:
@@ -173,6 +191,7 @@ Signality utilities are aware of their execution context and adapt accordingly:
 All utilities automatically handle server-side rendering. You never need to wrap utilities in `isPlatformBrowser()` checks:
 
 ```typescript
+import { Component } from '@angular/core';
 import { battery } from '@signality/core';
 
 @Component({ /* ... */ })
@@ -198,6 +217,7 @@ Utilities that operate with browser APIs that don't yet have widespread support 
 - **SSR behavior** — On the server, all browser utilities are safe by default and are considered "not supported"
 
 ```angular-ts
+import { Component } from '@angular/core';
 import { eyeDropper } from '@signality/core';
 
 @Component({ 
@@ -222,7 +242,7 @@ Utilities that return `*Ref` containers with methods are designed to be safely c
 All `*Ref` methods use `untracked()` internally when reading signals, ensuring that any signals accessed within these methods won't be registered as dependencies:
 
 ```typescript
-import { effect } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { geolocation, permissionState } from '@signality/core';
 
 @Component({ /* ... */ })
