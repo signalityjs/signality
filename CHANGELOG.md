@@ -1,3 +1,15 @@
+## 0.1.2 (2026-03-28)
+
+### 🚀 Features
+
+- **core:** `elementFocus` add writable focus control ([7ab9166](https://github.com/signalityjs/signality/commit/7ab9166))
+
+### 🩹 Fixes
+
+- **core:** `elementVisibility` properly reset visibility signal on element disconnect ([9c8a765](https://github.com/signalityjs/signality/commit/9c8a765))
+- **core:** `favicon` exclude apple-touch-icon from favicon selection ([ee86446](https://github.com/signalityjs/signality/commit/ee86446))
+- **core:** `elementSize` properly reset size signal on element disconnect ([15086e6](https://github.com/signalityjs/signality/commit/15086e6))
+
 ## 0.1.1 (2026-03-20)
 
 ### 🩹 Fixes
