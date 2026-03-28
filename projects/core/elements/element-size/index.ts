@@ -81,7 +81,7 @@ export function elementSize(
 
     resizeObserver(target, updateSize, options);
 
-    onDisconnect(target, () => size.set(initialValue));
+    onDisconnect(target, () => size.set(DEFAULT_SIZE));
 
     return size;
   });
