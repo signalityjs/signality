@@ -2,14 +2,13 @@ import { Component, ElementRef, inject, signal, viewChild } from '@angular/core'
 import { TestBed } from '@angular/core/testing';
 import { elementFocus } from './index';
 
-// @TODO: add tests with focusVisible
 describe(elementFocus.name, () => {
   describe('with reactive target (signal query)', () => {
     describe('focus state tracking', () => {
       @Component({ template: '<input #input />' })
       class TestComponent {
         readonly input = viewChild<ElementRef>('input');
-        readonly isFocused = elementFocus(this.input);
+        readonly childFocused = elementFocus(this.input);
       }
 
       function createComponent() {
@@ -17,27 +16,27 @@ describe(elementFocus.name, () => {
         fixture.detectChanges();
         return {
           component: fixture.componentInstance,
-          target: fixture.nativeElement.querySelector('input'),
+          focusableChildEl: fixture.nativeElement.querySelector('input'),
         };
       }
 
       it('should be false initially', () => {
         const { component } = createComponent();
 
-        expect(component.isFocused()).toBe(false);
+        expect(component.childFocused()).toBe(false);
       });
 
       it('should handle multiple focus cycles', () => {
-        const { component, target } = createComponent();
+        const { component, focusableChildEl } = createComponent();
 
-        target.dispatchEvent(new FocusEvent('focus'));
-        expect(component.isFocused()).toBe(true);
+        focusableChildEl.dispatchEvent(new FocusEvent('focus'));
+        expect(component.childFocused()).toBe(true);
 
-        target.dispatchEvent(new FocusEvent('blur'));
-        expect(component.isFocused()).toBe(false);
+        focusableChildEl.dispatchEvent(new FocusEvent('blur'));
+        expect(component.childFocused()).toBe(false);
 
-        target.dispatchEvent(new FocusEvent('focus'));
-        expect(component.isFocused()).toBe(true);
+        focusableChildEl.dispatchEvent(new FocusEvent('focus'));
+        expect(component.childFocused()).toBe(true);
       });
     });
 
@@ -45,15 +44,15 @@ describe(elementFocus.name, () => {
       it('should reset to false when element is destroyed', () => {
         @Component({
           template: `
-            @if (show()) {
+            @if (childShown()) {
             <input #input />
             }
           `,
         })
         class ConditionalComponent {
           readonly input = viewChild<ElementRef>('input');
-          readonly isFocused = elementFocus(this.input);
-          readonly show = signal(true);
+          readonly childFocused = elementFocus(this.input);
+          readonly childShown = signal(true);
         }
 
         const fixture = TestBed.createComponent(ConditionalComponent);
@@ -61,12 +60,12 @@ describe(elementFocus.name, () => {
         const element = fixture.nativeElement.querySelector('input');
         element.dispatchEvent(new FocusEvent('focus'));
 
-        expect(fixture.componentInstance.isFocused()).toBe(true);
+        expect(fixture.componentInstance.childFocused()).toBe(true);
 
-        fixture.componentInstance.show.set(false);
+        fixture.componentInstance.childShown.set(false);
         fixture.detectChanges();
 
-        expect(fixture.componentInstance.isFocused()).toBe(false);
+        expect(fixture.componentInstance.childFocused()).toBe(false);
       });
     });
   });
@@ -84,7 +83,7 @@ describe(elementFocus.name, () => {
         fixture.detectChanges();
         return {
           component: fixture.componentInstance,
-          target: fixture.nativeElement,
+          componentHostEl: fixture.nativeElement,
         };
       }
 
@@ -95,15 +94,15 @@ describe(elementFocus.name, () => {
       });
 
       it('should handle multiple focus cycles', () => {
-        const { component, target } = createComponent();
+        const { component, componentHostEl } = createComponent();
 
-        target.dispatchEvent(new FocusEvent('focus'));
+        componentHostEl.dispatchEvent(new FocusEvent('focus'));
         expect(component.isFocused()).toBe(true);
 
-        target.dispatchEvent(new FocusEvent('blur'));
+        componentHostEl.dispatchEvent(new FocusEvent('blur'));
         expect(component.isFocused()).toBe(false);
 
-        target.dispatchEvent(new FocusEvent('focus'));
+        componentHostEl.dispatchEvent(new FocusEvent('focus'));
         expect(component.isFocused()).toBe(true);
       });
     });
@@ -129,6 +128,100 @@ describe(elementFocus.name, () => {
 
         expect(fixture.componentInstance.isFocused()).toBe(false);
       });
+    });
+  });
+
+  describe('focus control via set()', () => {
+    @Component({ template: '<input #input />' })
+    class TestComponent {
+      readonly input = viewChild<ElementRef>('input');
+      readonly childFocused = elementFocus(this.input);
+    }
+
+    function createComponent() {
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+      return {
+        component: fixture.componentInstance,
+        focusableChildEl: fixture.nativeElement.querySelector('input') as HTMLInputElement,
+      };
+    }
+
+    it('should set focus when set(true) is called', () => {
+      const { component, focusableChildEl } = createComponent();
+
+      component.childFocused.set(true);
+
+      expect(focusableChildEl).toBe(document.activeElement);
+      expect(component.childFocused()).toBe(true);
+    });
+
+    it('should remove focus when set(false) is called', () => {
+      const { component, focusableChildEl } = createComponent();
+
+      focusableChildEl.focus();
+      expect(component.childFocused()).toBe(true);
+
+      component.childFocused.set(false);
+
+      expect(focusableChildEl).not.toBe(document.activeElement);
+      expect(component.childFocused()).toBe(false);
+    });
+
+    it('should not call focus() if already focused', () => {
+      const { component, focusableChildEl } = createComponent();
+
+      focusableChildEl.focus();
+      const spy = jest.spyOn(focusableChildEl, 'focus');
+
+      component.childFocused.set(true);
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should not call blur() if not focused', () => {
+      const { component, focusableChildEl } = createComponent();
+      const spy = jest.spyOn(focusableChildEl, 'blur');
+
+      component.childFocused.set(false);
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should support update() method', () => {
+      const { component } = createComponent();
+
+      component.childFocused.set(true);
+      expect(component.childFocused()).toBe(true);
+
+      component.childFocused.update(v => !v);
+      expect(component.childFocused()).toBe(false);
+    });
+  });
+
+  describe('preventScroll option', () => {
+    @Component({ template: '<input #input />' })
+    class TestComponent {
+      readonly input = viewChild<ElementRef>('input');
+      readonly childFocused = elementFocus(this.input, { preventScroll: true });
+    }
+
+    function createComponent() {
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+      return {
+        component: fixture.componentInstance,
+        focusableChildEl: fixture.nativeElement.querySelector('input') as HTMLInputElement,
+      };
+    }
+
+    it('should call focus with preventScroll option', () => {
+      const { component, focusableChildEl } = createComponent();
+      const spy = jest.spyOn(focusableChildEl, 'focus');
+
+      component.childFocused.set(true);
+
+      expect(spy).toHaveBeenCalledWith({ preventScroll: true });
     });
   });
 });

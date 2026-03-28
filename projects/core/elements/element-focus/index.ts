@@ -1,5 +1,5 @@
-import { type CreateSignalOptions, signal, type Signal } from '@angular/core';
-import { constSignal, setupContext } from '@signality/core/internal';
+import { type CreateSignalOptions, signal, type WritableSignal } from '@angular/core';
+import { proxySignal, setupContext, toElement } from '@signality/core/internal';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 import { onDisconnect } from '@signality/core/elements/on-disconnect';
@@ -14,24 +14,29 @@ export interface ElementFocusOptions extends CreateSignalOptions<boolean>, WithI
    * @default false
    */
   readonly focusVisible?: boolean;
+
+  /**
+   * Prevent scrolling to the element when it is focused.
+   * @default false
+   */
+  readonly preventScroll?: boolean;
 }
 
 /**
  * Reactive tracking of focus state on an element.
- * Detects when an element gains or loses focus.
+ * Detects when an element gains or loses focus, and allows programmatically setting focus.
  *
  * @param target - The element to track focus state on
- * @param options - Optional configuration including focusVisible mode and injector
- * @returns A signal that is `true` when the element has focus
+ * @param options - Optional configuration including focusVisible, preventScroll and injector
+ * @returns A writable signal that is `true` when the element has focus
  *
  * @example
  * ```typescript
  * @Component({
  *   template: `
  *     <input #input [class.focused]="isFocused()" />
- *     @if (isFocused()) {
- *       <p>Input is focused</p>
- *     }
+ *     <button (click)="isFocused.set(true)">Focus Input</button>
+ *     <button (click)="isFocused.set(false)">Blur Input</button>
  *   `
  * })
  * export class FocusDemo {
@@ -43,15 +48,17 @@ export interface ElementFocusOptions extends CreateSignalOptions<boolean>, WithI
 export function elementFocus(
   target: MaybeElementSignal<HTMLElement>,
   options?: ElementFocusOptions
-): Signal<boolean> {
+): WritableSignal<boolean> {
   const { runInContext } = setupContext(options?.injector, elementFocus);
 
   return runInContext(({ isServer }) => {
     if (isServer) {
-      return constSignal(false);
+      return signal(false, options);
     }
 
     const focusVisible = options?.focusVisible ?? false;
+    const preventScroll = options?.preventScroll ?? false;
+
     const focused = signal<boolean>(false, options);
 
     listener(target, 'focus', e => {
@@ -62,8 +69,21 @@ export function elementFocus(
       focused.set(false);
     });
 
-    onDisconnect(target, () => focused.set(false));
+    onDisconnect(target, () => {
+      focused.set(false);
+    });
 
-    return focused.asReadonly();
+    return proxySignal(focused, {
+      set: (value: boolean) => {
+        const el = toElement(target);
+        const hasFocus = el?.matches(':focus') ?? false;
+
+        if (value && !hasFocus) {
+          el?.focus({ preventScroll });
+        } else if (!value && hasFocus) {
+          el?.blur();
+        }
+      },
+    });
   });
 }
