@@ -42,8 +42,7 @@ export interface FileDialogOptions extends WithInjector {
    * Custom validation predicate called for each selected file.
    * Return `true` to keep the file, `false` to reject it.
    *
-   * When provided, the `accept` option is ignored — the validator
-   * takes full responsibility for deciding which files are valid.
+   * When provided, `accept` only affects native browser filtering, not per-file validation.
    *
    * @example
    * ```typescript
