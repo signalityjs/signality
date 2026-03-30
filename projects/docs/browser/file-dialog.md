@@ -34,15 +34,15 @@ export class FileUploadComponent {
 
 ## Parameters
 
-| Param       | Type                      | Default | Description                                                                |
-|-------------|---------------------------|---------|----------------------------------------------------------------------------|
-| `multiple`  | `MaybeSignal<boolean>`    | `true`  | Whether to allow selecting multiple files                                  |
-| `accept`    | `MaybeSignal<string>`     | `'*'`   | Comma-separated accepted file types (MIME types, wildcards, or extensions) |
-| `capture`   | `MaybeSignal<string>`     | —       | Mobile capture source: `'user'` or `'environment'`                         |
-| `directory` | `MaybeSignal<boolean>`    | `false` | Select directories instead of files                                        |
-| `validator` | `(file: File) => boolean` | —       | Custom per-file validation predicate. When provided, `accept` is ignored   |
-| `onReject`  | `(files: File[]) => void` | —       | Callback invoked with rejected files after selection                       |
-| `injector`  | `Injector`                | —       | Optional injector for DI context                                           |
+| Param       | Type                                                                      | Default | Description                                                                                                                                                              |
+|-------------|---------------------------------------------------------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `multiple`  | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt) | `true`  | Whether to allow selecting multiple files                                                                                                                                |
+| `accept`    | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)  | `'*'`   | Comma-separated accepted file types (MIME types, wildcards, or extensions) — see [accept](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/accept) |
+| `capture`   | [`MaybeSignal<string>`](/reference/utility-types#maybesignal-lt-type-gt)  | —       | Mobile capture source: `'user'` or `'environment'` — see [capture](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture)                                 |
+| `directory` | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt) | `false` | Select directories instead of files — see [webkitdirectory](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/webkitdirectory)                           |
+| `validator` | `(file: File) => boolean`                                                 | —       | Custom per-file validation predicate. When provided, `accept` only affects native browser filtering, not per-file validation                                             |
+| `onReject`  | `(files: File[]) => void`                                                 | —       | Callback invoked with rejected files after selection                                                                                                                     |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                       | —       | Optional injector for DI context                                                                                                                                         |
 
 ## Return Value
 
