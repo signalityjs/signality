@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/utiliti
 
 # ToElement
 
-Converts a [`MaybeElementSignal`](/reference/utility-types#maybeelementsignallttypegt) to a raw DOM element. Handles element refs, signals, and plain elements uniformly.
+Converts a [`MaybeElementSignal`](/reference/utility-types#maybeelementsignal-lt-type-gt) to a raw DOM element. Handles element refs, signals, and plain elements uniformly.
 
 ## Usage
 
@@ -12,25 +12,9 @@ Converts a [`MaybeElementSignal`](/reference/utility-types#maybeelementsignalltt
 import { signal } from '@angular/core';
 import { toElement } from '@signality/core';
 
-const button = signal<HTMLButtonElement | null>(null);
+const elementRef = signal<ElementRef<HTMLElement> | null>(null);
 
-toElement(button);     // HTMLButtonElement | null
-toElement(button());   // HTMLButtonElement | null
-```
-
-## Signature
-
-```typescript
-interface ToElementFn {
-  <T extends Element>(element: T | ElementRef<T>): T;
-  <T extends Element>(element: Signal<T | ElementRef<T> | null>): T | null;
-  <T extends Element>(element: Signal<T | ElementRef<T> | undefined>): T | undefined;
-  <T extends Element>(element: Signal<T | ElementRef<T> | null | undefined>): T | null | undefined;
-  <T extends Element>(element: T | ElementRef<T> | Signal<T | ElementRef<T> | null | undefined>):
-    | T
-    | null
-    | undefined;
-}
+toElement(elementRef); // HTMLElement | null // [!code highlight]
 ```
 
 ## With `untracked`
@@ -45,14 +29,12 @@ const buttonRef = signal<ElementRef<HTMLButtonElement> | null>(null);
 
 effect(() => {
   // This effect tracks buttonRef
-  const el = toElement(buttonRef);
-  console.log('Button:', el);
+  console.log('Tracked:', toElement(buttonRef));
 });
 
 effect(() => {
   // This effect does NOT track buttonRef
-  const el = toElement.untracked(buttonRef);
-  console.log('Button (untracked):', el);
+  console.log('Untracked:', toElement.untracked(buttonRef)); // [!code highlight]
 });
 ```
 
@@ -71,25 +53,12 @@ import { toElement } from '@signality/core';
   `,
 })
 export class InputFocus {
-  readonly inputRef = viewChild<HTMLInputElement>('input');
+  readonly inputRef = viewChild.required('input', { read: ElementRef });
 
   focusInput() {
-    const input = toElement(this.inputRef);
-    input?.focus();
+    toElement(this.inputRef).focus();
   }
 }
-```
-
-### Type-safe element access
-
-```angular-ts
-import { signal } from '@angular/core';
-import { toElement } from '@signality/core';
-
-const divSignal = signal<HTMLDivElement | null>(null);
-
-// Type-safe: returns HTMLDivElement | null
-const div = toElement(divSignal);
 ```
 
 ## Type Definitions
@@ -102,10 +71,19 @@ type MaybeElementSignal<T extends Element> =
   | Signal<T | ElementRef<T> | undefined>
   | Signal<T | ElementRef<T> | null | undefined>;
 
-interface ToElementFn {
+interface ToElementFn extends ToElementBase {
+  untracked: ToElementBase;
+}
+
+interface ToElementBase {
   <T extends Element>(element: T | ElementRef<T>): T;
   <T extends Element>(element: Signal<T | ElementRef<T> | null>): T | null;
-  // ... more overloads
+  <T extends Element>(element: Signal<T | ElementRef<T> | undefined>): T | undefined;
+  <T extends Element>(element: Signal<T | ElementRef<T> | null | undefined>): T | null | undefined;
+  <T extends Element>(element: T | ElementRef<T> | Signal<T | ElementRef<T> | null | undefined>):
+    | T
+    | null
+    | undefined;
 }
 ```
 
