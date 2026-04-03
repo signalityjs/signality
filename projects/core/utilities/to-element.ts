@@ -1,7 +1,7 @@
 import { type ElementRef, type Signal } from '@angular/core';
+import { unrefElement } from '@signality/core/internal';
 import type { MaybeElementSignal } from '@signality/core/types';
 import { toValue } from './to-value';
-import { unrefElement } from '@signality/core/internal/utils/unref-element';
 
 export interface ToElementFn extends ToElementBase {
   untracked: ToElementBase;
