@@ -1,5 +1,6 @@
 import { afterEveryRender, afterRenderEffect, DestroyRef, ElementRef, inject } from '@angular/core';
-import { isQuerySignal, NOOP_EFFECT_REF, setupContext, toElement } from '@signality/core/internal';
+import { isQuerySignal, NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
+import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 
 export type OnDisconnectOptions = WithInjector;

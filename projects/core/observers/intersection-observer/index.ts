@@ -3,13 +3,8 @@ import {
   type CreateEffectOptions,
   type EffectCleanupRegisterFn,
 } from '@angular/core';
-import {
-  assertElement,
-  NOOP_EFFECT_REF,
-  setupContext,
-  toElement,
-  toValue,
-} from '@signality/core/internal';
+import { assertElement, NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
+import { toElement, toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface IntersectionObserverInitOptions

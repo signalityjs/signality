@@ -1,5 +1,6 @@
 import { isSignal, type Signal, signal, untracked } from '@angular/core';
-import { constSignal, NOOP_FN, setupContext, toValue } from '@signality/core/internal';
+import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { watcher } from '@signality/core/reactivity/watcher';
 import { permissionState } from '@signality/core/browser/permission-state';

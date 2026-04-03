@@ -1,12 +1,6 @@
 import { isSignal, type Signal, signal, type WritableSignal } from '@angular/core';
-import {
-  constSignal,
-  isAcceptedFile,
-  isNodeWithin,
-  setupContext,
-  toElement,
-  toValue,
-} from '@signality/core/internal';
+import { constSignal, isAcceptedFile, isNodeWithin, setupContext } from '@signality/core/internal';
+import { toElement, toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 import { onDisconnect } from '@signality/core/elements/on-disconnect';

@@ -1,7 +1,7 @@
 import { type ElementRef, type Signal } from '@angular/core';
+import { unrefElement } from '@signality/core/internal';
 import type { MaybeElementSignal } from '@signality/core/types';
 import { toValue } from './to-value';
-import { unrefElement } from './unref-element';
 
 export interface ToElementFn extends ToElementBase {
   untracked: ToElementBase;
@@ -18,7 +18,6 @@ export interface ToElementBase {
     | undefined;
 }
 
-// @TODO: Consider moving it out of internal
 export const toElement: ToElementFn = (() => {
   const fn = toElementFn as ToElementFn;
   fn.untracked = v => toElementFn(v, true);

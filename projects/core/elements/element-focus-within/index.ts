@@ -1,5 +1,6 @@
 import { type CreateSignalOptions, signal, type Signal } from '@angular/core';
-import { constSignal, setupContext, toElement } from '@signality/core/internal';
+import { constSignal, setupContext } from '@signality/core/internal';
+import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 import { onDisconnect } from '@signality/core/elements/on-disconnect';

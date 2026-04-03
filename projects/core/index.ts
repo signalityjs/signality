@@ -6,3 +6,4 @@ export * from '@signality/core/elements';
 export * from '@signality/core/router';
 export * from '@signality/core/forms';
 export * from '@signality/core/types';
+export * from '@signality/core/utilities';

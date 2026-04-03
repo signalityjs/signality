@@ -1,5 +1,6 @@
 import { CreateSignalOptions, signal, WritableSignal } from '@angular/core';
-import { createToken, proxySignal, setupContext, toElement } from '@signality/core/internal';
+import { createToken, proxySignal, setupContext } from '@signality/core/internal';
+import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { mutationObserver } from '@signality/core/observers/mutation-observer';
 

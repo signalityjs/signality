@@ -269,6 +269,13 @@ export default defineConfig({
         items: [{ text: 'Cva', link: '/forms/cva' }],
       },
       {
+        text: 'Utilities',
+        items: [
+          { text: 'ToElement', link: '/utilities/to-element' },
+          { text: 'ToValue', link: '/utilities/to-value' },
+        ],
+      },
+      {
         text: 'CDK Interop',
         items: [
           { text: 'FocusMonitor', link: '/cdk-interop/focus-monitor' },

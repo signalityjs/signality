@@ -1,5 +1,6 @@
 import { type CreateSignalOptions, effect, type Signal, signal } from '@angular/core';
-import { constSignal, setupContext, toValue, type Union } from '@signality/core/internal';
+import { constSignal, setupContext, type Union } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 
