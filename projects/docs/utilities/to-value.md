@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/utiliti
 
 # ToValue
 
-Unwraps a [`MaybeSignal`](/reference/utility-types#maybesignallttypegt) value. If the input is a signal, it returns the signal's value; otherwise, it returns the input as-is.
+Unwraps a [`MaybeSignal`](/reference/utility-types#maybesignal-lt-type-gt) value. If the input is a signal, it returns the signal's value; otherwise, it returns the input as-is.
 
 This utility is useful when you need to handle both signal and non-signal values uniformly.
 
@@ -15,19 +15,10 @@ import { signal } from '@angular/core';
 import { toValue } from '@signality/core';
 
 const plainValue = 42;
-const mySignal = signal(42);
+const signalValue = signal(42);
 
-toValue(plainValue); // 42
-toValue(mySignal);    // 42
-```
-
-## Signature
-
-```typescript
-interface ToValueFn {
-  <T>(maybeSignal: MaybeSignal<T>): T;
-  untracked: <T>(maybeSignal: MaybeSignal<T>) => T;
-}
+toValue(plainValue);  // 42 // [!code highlight]
+toValue(signalValue); // 42 // [!code highlight]
 ```
 
 ## With `untracked`
@@ -47,32 +38,8 @@ effect(() => {
 
 effect(() => {
   // This effect does NOT track count
-  console.log('Untracked:', toValue.untracked(count));
+  console.log('Untracked:', toValue.untracked(count)); // [!code highlight]
 });
-```
-
-## Examples
-
-### Using with template refs
-
-```angular-ts
-import { Component, viewChild } from '@angular/core';
-import { toValue } from '@signality/core';
-
-@Component({
-  template: `
-    <input #input />
-    <button (click)="logValue()">Log value</button>
-  `,
-})
-export class InputLogger {
-  readonly inputRef = viewChild<HTMLInputElement>('input');
-
-  logValue() {
-    // Works with both element refs and plain values
-    console.log(toValue(this.inputRef)?.value);
-  }
-}
 ```
 
 ## Type Definitions
