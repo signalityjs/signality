@@ -26,6 +26,9 @@
 
 A collection of atomic utilities for building reactive compositions in [Angular](https://angular.dev).
 
+> **Signality v0.1 is here!** 🎉  
+> Help us test it in your projects — minor versions may include API refinements as we fine-tune the library based on real-world feedback.
+
 ## Overview
 
 **Key Features:**
@@ -35,9 +38,6 @@ A collection of atomic utilities for building reactive compositions in [Angular]
 - **SSR-compatible** — browser APIs are guarded with safe defaults on the server
 - **Reactive inputs** — seamlessly handles static and reactive values
 - **Tree-Shakable** — only the code you use ends up in your bundle
-
-> **Signality v0.1 is here!** 🎉  
-> Help us test it in your projects — minor versions may include API refinements as we fine-tune the library based on real-world feedback.
 
 ## Framework Compatibility
 
