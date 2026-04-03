@@ -1,5 +1,6 @@
 import { isSignal } from '@angular/core';
-import { NOOP_EFFECT_REF, setupContext, type Timer, toValue } from '@signality/core/internal';
+import { NOOP_EFFECT_REF, setupContext, type Timer } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { watcher, type WatcherRef } from '@signality/core/reactivity/watcher';
 

@@ -1,4 +1,5 @@
-import { NOOP_EFFECT_REF, setupContext, toElement } from '@signality/core/internal';
+import { NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
+import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 

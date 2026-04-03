@@ -1,11 +1,6 @@
 import { type Signal, signal } from '@angular/core';
-import {
-  constSignal,
-  isWindow,
-  setupContext,
-  type Timer,
-  toElement,
-} from '@signality/core/internal';
+import { constSignal, isWindow, setupContext, type Timer } from '@signality/core/internal';
+import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { throttleCallback } from '@signality/core/scheduling/throttle-callback';
 import { listener } from '@signality/core/browser/listener';

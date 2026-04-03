@@ -11,9 +11,9 @@ import {
   assertEventTarget,
   NOOP_EFFECT_REF,
   setupContext,
-  toValue,
   unrefElement,
 } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 
 export type ListenerOptions = WithInjector;

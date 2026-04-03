@@ -1,5 +1,6 @@
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
-import { setupContext, type Timer, toValue } from '@signality/core/internal';
+import { setupContext, type Timer } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 
 /**
  * Creates a throttled version of a callback function.

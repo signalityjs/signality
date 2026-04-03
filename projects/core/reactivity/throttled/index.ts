@@ -5,7 +5,8 @@ import {
   type Signal,
   type WritableSignal,
 } from '@angular/core';
-import { proxySignal, setupContext, toValue } from '@signality/core/internal';
+import { proxySignal, setupContext } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, SignalValue, WithInjector } from '@signality/core/types';
 import { throttleCallback } from '@signality/core/scheduling/throttle-callback';
 import { watcher } from '@signality/core/reactivity/watcher';

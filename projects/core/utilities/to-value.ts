@@ -6,7 +6,6 @@ export interface ToValueFn {
   untracked: <T>(maybeSignal: MaybeSignal<T>) => T;
 }
 
-// @TODO: Consider moving it out of internal
 export const toValue: ToValueFn = (() => {
   const fn = toValueFn as ToValueFn;
   fn.untracked = v => toValueFn(v, true);

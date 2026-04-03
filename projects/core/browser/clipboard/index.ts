@@ -1,11 +1,6 @@
 import { type Signal, signal } from '@angular/core';
-import {
-  constSignal,
-  NOOP_ASYNC_FN,
-  setupContext,
-  type Timer,
-  toValue,
-} from '@signality/core/internal';
+import { constSignal, NOOP_ASYNC_FN, setupContext, type Timer } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 
 export interface ClipboardOptions extends WithInjector {

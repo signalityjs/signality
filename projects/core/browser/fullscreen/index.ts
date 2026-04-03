@@ -1,5 +1,6 @@
 import { signal, type Signal, untracked } from '@angular/core';
-import { constSignal, NOOP_ASYNC_FN, setupContext, toElement } from '@signality/core/internal';
+import { constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/internal';
+import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 

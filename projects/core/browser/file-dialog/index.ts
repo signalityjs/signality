@@ -1,5 +1,6 @@
 import { isSignal, type Signal, signal, untracked, type WritableSignal } from '@angular/core';
-import { isAcceptedFile, NOOP_FN, setupContext, toValue } from '@signality/core/internal';
+import { isAcceptedFile, NOOP_FN, setupContext } from '@signality/core/internal';
+import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { watcher } from '@signality/core/reactivity/watcher';
 

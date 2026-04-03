@@ -7,9 +7,9 @@ import {
   assertElement,
   NOOP_EFFECT_REF,
   setupContext,
-  toElement,
-  toValue,
+  unrefElement,
 } from '@signality/core/internal';
+import { toElement, toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
 export interface ResizeObserverInitOptions extends Omit<CreateEffectOptions, 'allowSignalWrites'> {
