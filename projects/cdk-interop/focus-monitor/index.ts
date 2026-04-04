@@ -1,9 +1,8 @@
 import { afterRenderEffect, computed, inject, type Signal, signal } from '@angular/core';
 import { FocusMonitor, type FocusOrigin } from '@angular/cdk/a11y';
 import type { Subscription } from 'rxjs';
-import { MaybeElementSignal, WithInjector } from '@signality/core';
+import { MaybeElementSignal, toElement, WithInjector } from '@signality/core';
 import { assertElement, constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
-import { toElement } from '@signality/core/utilities';
 
 export interface FocusMonitorOptions extends WithInjector {
   /**
