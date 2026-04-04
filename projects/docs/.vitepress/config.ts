@@ -271,6 +271,7 @@ export default defineConfig({
       {
         text: 'Utilities',
         items: [
+          { text: 'GenerateId', link: '/utilities/generate-id' },
           { text: 'ToValue', link: '/utilities/to-value' },
           { text: 'ToElement', link: '/utilities/to-element' },
         ],
