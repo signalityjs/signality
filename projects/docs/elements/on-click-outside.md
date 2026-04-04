@@ -28,13 +28,13 @@ import { onClickOutside } from '@signality/core';
 })
 export class ClickOutsideDemo {
   readonly dropdown = viewChild<ElementRef>('dropdown');
-  readonly trigger = viewChild<ElementRef>('dropdown');
+  readonly trigger = viewChild<ElementRef>('trigger');
   readonly isOpen = signal(true);
 
   constructor() {
     onClickOutside(this.dropdown, () => { // [!code highlight]
-      this.isOpen.set(false);
-    }, { ignore: [this.trigger] });
+      this.isOpen.set(false); // [!code highlight]
+    }, { ignore: [this.trigger] }); // [!code highlight]
   }
 }
 ```
