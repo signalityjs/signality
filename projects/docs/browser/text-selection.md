@@ -49,9 +49,10 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 The `TextSelectionOptions` extends `WithInjector`:
 
-| Option     | Type                                                | Description                      |
-|------------|-----------------------------------------------------|----------------------------------|
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context |
+| Option     | Type                                                | Description                                                                                                                    |
+|------------|-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `root`     | `MaybeElementSignal<Element>`                       | Optional element to track selection within. When provided, only selections entirely contained within this element are tracked. |
+| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context                                                                                               |
 
 ## Return Value
 
@@ -67,82 +68,31 @@ The `textSelection()` function returns a `TextSelectionRef` object:
 
 ## Examples
 
-### Word counter
-
-```angular-ts
-import { Component, computed } from '@angular/core';
-import { textSelection } from '@signality/core';
-
-@Component({
-  template: `
-    <textarea>
-      Type or paste text here, then select portions to count.
-    </textarea>
-    
-    <div class="stats">
-      @if (hasSelection()) {
-        <p>Selected: {{ wordCount() }} words, {{ charCount() }} characters</p>
-      }
-    </div>
-  `,
-})
-export class SelectionCounter {
-  readonly selection = textSelection();
-  
-  readonly charCount = computed(() => this.selection.text().length);
-  readonly hasSelection = computed(() => this.charCount() > 0);
-  
-  readonly wordCount = computed(() => {
-    const text = this.selection.text().trim();
-    if (!text) return 0;
-    return text.split(/\s+/).length;
-  });
-}
-```
-
 ### Quote selection
 
-```angular-ts
-import { Component, computed, signal } from '@angular/core';
-import { textSelection } from '@signality/core';
+Use the `root` option to track selections only within a specific element:
 
-interface Quote {
-  text: string;
-  savedAt: number;
-}
+```angular-ts
+import { Component, ElementRef, viewChild } from '@angular/core';
+import { textSelection } from '@signality/core';
 
 @Component({
   template: `
-    <article>
+    <article #root>
       <p>Select text to save as a quote...</p>
     </article>
-    
     @if (selection.text()) {
       <button (click)="saveQuote()">Save Quote</button>
     }
-    
-    <div class="saved-quotes">
-      <h3>Saved Quotes</h3>
-      @for (quote of quotes(); track quote.savedAt) {
-        <blockquote>{{ quote.text }}</blockquote>
-      }
-    </div>
-  `,
+  `
 })
 export class QuoteCollector {
-  readonly selection = textSelection();
-  readonly quotes = signal<Quote[]>([]);
+  readonly root = viewChild('root', { read: ElementRef });
+  readonly selection = textSelection({ root: this.root }); // [!code highlight]
   
   saveQuote() {
     const text = this.selection.text().trim();
-    if (text) {
-      this.quotes.update(quotes => [
-        ...quotes,
-        { text, savedAt: Date.now() }
-      ]);
-      
-      this.selection.clear(); // [!code highlight]
-    }
+    // ...
   }
 }
 ```
@@ -160,7 +110,9 @@ On the server, signals initialize with safe defaults:
 ## Type Definitions
 
 ```typescript
-type TextSelectionOptions = WithInjector;
+interface TextSelectionOptions extends WithInjector {
+  readonly root?: MaybeElementSignal<Element>;
+}
 
 interface TextSelectionRef {
   readonly text: Signal<string>;
