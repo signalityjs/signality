@@ -3,13 +3,23 @@ import {
   ALWAYS_FALSE_FN,
   constSignal,
   createToken,
+  isNodeWithin,
   NOOP_FN,
   setupContext,
 } from '@signality/core/internal';
-import type { WithInjector } from '@signality/core/types';
+import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
+import { toElement } from '@signality/core/utilities';
 import { listener, setupSync } from '@signality/core/browser/listener';
+import { onDisconnect } from '@signality/core/elements/on-disconnect';
 
-export type TextSelectionOptions = WithInjector;
+export interface TextSelectionOptions extends WithInjector {
+  /**
+   * Element to track selection within.
+   * When provided, only selections entirely contained within this element are tracked.
+   * @default document (all selections)
+   */
+  readonly root?: MaybeElementSignal<Element>;
+}
 
 export interface TextSelectionRef {
   /** The selected text content */
@@ -64,19 +74,48 @@ export function textSelection(options?: TextSelectionOptions): TextSelectionRef 
       };
     }
 
-    const selection = signal<Selection | null>(window.getSelection(), { equal: ALWAYS_FALSE_FN });
+    const root = options?.root;
+
+    const getSelection = (): Selection | null => {
+      const sel = window.getSelection();
+      if (!root || !sel) {
+        return sel;
+      }
+
+      const rootEl = toElement(root);
+      if (rootEl && isSelectionWithinRoot(sel, rootEl)) {
+        return sel;
+      } else {
+        return null;
+      }
+    };
+
+    const selection = signal<Selection | null>(getSelection(), {
+      equal: ALWAYS_FALSE_FN,
+    });
+
     const text = computed(() => selection()?.toString() ?? '');
+
     const ranges = computed<Range[]>(() => {
       const sel = selection();
       return sel ? getRangesFromSelection(sel) : [];
     });
+
     const rects = computed(() => ranges().map(range => range.getBoundingClientRect()));
 
-    const clear = () => window.getSelection()?.removeAllRanges();
+    const clear = () => {
+      window.getSelection()?.removeAllRanges();
+    };
 
     setupSync(() => {
-      listener(document, 'selectionchange', () => selection.set(window.getSelection()));
+      listener(document, 'selectionchange', () => {
+        selection.set(getSelection());
+      });
     });
+
+    if (root) {
+      onDisconnect(root, () => selection.set(null));
+    }
 
     return {
       selection: selection.asReadonly(),
@@ -93,4 +132,12 @@ export const TEXT_SELECTION = /* @__PURE__ */ createToken(textSelection);
 function getRangesFromSelection(selection: Selection): Range[] {
   const rangeCount = selection.rangeCount ?? 0;
   return Array.from({ length: rangeCount }, (_, i) => selection.getRangeAt(i));
+}
+
+function isSelectionWithinRoot(selection: Selection, rootEl: Element): boolean {
+  if (selection.rangeCount === 0) {
+    return false;
+  }
+  const { startContainer, endContainer } = selection.getRangeAt(0);
+  return isNodeWithin(startContainer, rootEl) && isNodeWithin(endContainer, rootEl);
 }
