@@ -12,6 +12,13 @@ const route = useRoute();
 const { frontmatter } = useData();
 const sidebarOpen = ref(false);
 
+const pagesWithoutOnThisPage = ['/changelog'];
+
+const showOnThisPage = computed(() => {
+  if (isLanding.value) return false;
+  return !pagesWithoutOnThisPage.some(path => route.path.includes(path));
+});
+
 // Check if we're on the landing page
 const isLanding = computed(() => frontmatter.value.layout === 'landing');
 
@@ -94,7 +101,7 @@ watch(
     </main>
 
     <!-- Table of Contents (Right) -->
-    <OnThisPage v-if="!isLanding" />
+    <OnThisPage v-if="showOnThisPage" />
   </div>
 </template>
 

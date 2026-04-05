@@ -1,3 +1,9 @@
+---
+editLinkUrl: https://github.com/signalityjs/signality/blob/main/CHANGELOG.md
+---
+
+# Changelog
+
 ## 0.1.3 (2026-04-05)
 
 ### 🚀 Features

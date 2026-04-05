@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress';
 import tailwind from '@tailwindcss/vite';
 import { demosWatcher } from './plugins/demos-watcher';
+import { changelogCopy } from './plugins/changelog-copy';
 
 const base = process.env.VITEPRESS_BASE || '/';
 const cloudflareToken = process.env.CLOUDFLARE_ANALYTICS_TOKEN;
@@ -145,10 +146,7 @@ export default defineConfig({
         items: [
           { text: 'GitHub', link: 'https://github.com/signalityjs/signality' },
           { text: 'npm', link: 'https://www.npmjs.com/package/@signality/core' },
-          {
-            text: 'Changelog',
-            link: 'https://github.com/signalityjs/signality/blob/main/CHANGELOG.md',
-          },
+          { text: 'Changelog', link: '/resources/changelog' },
         ],
       },
     ],
@@ -167,6 +165,7 @@ export default defineConfig({
         items: [
           { text: 'GitHub', link: 'https://github.com/signalityjs/signality' },
           { text: 'Roadmap', link: '/resources/roadmap' },
+          { text: 'Changelog', link: '/resources/changelog' },
         ],
       },
       {
@@ -307,7 +306,7 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [tailwind(), demosWatcher()],
+    plugins: [tailwind(), demosWatcher(), changelogCopy()],
     server: {
       host: process.env.VITEPRESS_HOST || 'localhost',
       watch: {
