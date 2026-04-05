@@ -159,13 +159,18 @@ export function storage<T>(
       }
     };
 
-    const dispatchStorageEvent = (oldValue: string | null, newValue: string | null) => {
+    const dispatchStorageEvent = (
+      key: string,
+      oldValue: string | null,
+      newValue: string | null
+    ) => {
       window.dispatchEvent(
         new StorageEvent('storage', {
-          storageArea: targetStorage,
-          key: toValue(key),
+          key,
           oldValue,
           newValue,
+          storageArea: targetStorage,
+          url: window.location.href,
         })
       );
     };
@@ -178,12 +183,12 @@ export function storage<T>(
 
         if (value == null) {
           targetStorage.removeItem(storageKey);
-          dispatchStorageEvent(oldValue, null);
+          dispatchStorageEvent(storageKey, oldValue, null);
         } else {
           const serialized = serializer.write(value);
           if (oldValue !== serialized) {
             targetStorage.setItem(storageKey, serialized);
-            dispatchStorageEvent(oldValue, serialized);
+            dispatchStorageEvent(storageKey, oldValue, serialized);
           }
         }
       } catch (error) {
