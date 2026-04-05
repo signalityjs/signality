@@ -1,5 +1,5 @@
 import type { Plugin } from 'vitepress';
-import { copyFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
 export function changelogCopy(): Plugin {
@@ -21,8 +21,16 @@ export function changelogCopy(): Plugin {
         mkdirSync(destDir, { recursive: true });
       }
 
-      copyFileSync(src, dest);
-      console.log('[changelog-copy] Copied CHANGELOG.md to resources/changelog.md');
+      const content = readFileSync(src, 'utf-8');
+      const frontmatter = `---
+editLinkUrl: https://github.com/signalityjs/signality/blob/main/CHANGELOG.md
+---
+
+# Changelog
+`;
+
+      writeFileSync(dest, frontmatter + content, 'utf-8');
+      console.log('[changelog-copy] Copied CHANGELOG.md to resources/changelog.md with frontmatter');
     },
   };
 }
