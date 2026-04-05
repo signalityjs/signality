@@ -2,9 +2,16 @@
 import { computed } from 'vue';
 import { useData } from 'vitepress';
 
-const { page, site } = useData();
+const { page, site, frontmatter } = useData();
 
 const editLink = computed(() => {
+  if (frontmatter.value.editLinkUrl) {
+    return {
+      url: frontmatter.value.editLinkUrl,
+      text: site.value.themeConfig.editLink?.text || 'Edit this page on GitHub',
+    };
+  }
+
   const editLinkConfig = site.value.themeConfig.editLink;
   if (!editLinkConfig || !page.value.relativePath) {
     return null;
@@ -13,7 +20,6 @@ const editLink = computed(() => {
   const pattern = editLinkConfig.pattern || '';
   const text = editLinkConfig.text || 'Edit this page';
 
-  // Replace :path with the actual file path
   const editUrl = pattern.replace(/:path/g, page.value.relativePath);
 
   return {

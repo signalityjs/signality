@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useData } from 'vitepress';
+import { isNew } from '../config/new-items';
 
 interface SidebarItem {
   text: string;
@@ -194,6 +195,25 @@ onMounted(async () => {
             <circle cx="18" cy="18" r="3"/>
             <path d="M15 18 L18 18"/>
           </svg>
+          <!-- Changelog icon - Scroll -->
+          <svg
+            v-if="item.text === 'Changelog'"
+            class="sidebar-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4"/>
+            <path d="M19 17V5a2 2 0 0 0-2-2H4"/>
+            <path d="M15 8h-5"/>
+            <path d="M15 12h-5"/>
+          </svg>
           <!-- GitHub icon -->
           <svg
             v-if="item.text === 'GitHub'"
@@ -228,6 +248,9 @@ onMounted(async () => {
             <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
           </svg>
           {{ item.text }}
+
+          <!-- New indicator -->
+          <span v-if="item.link && isNew(item.link)" class="new-indicator"></span>
           <!-- GitHub stars badge -->
           <span v-if="item.text === 'GitHub'" class="github-stars-badge">
             <svg
@@ -406,5 +429,39 @@ onMounted(async () => {
 .github-stars-count {
   line-height: 1;
   white-space: nowrap;
+}
+
+/* New indicator - green pulsing dot */
+.new-indicator {
+  position: relative;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+.new-indicator::before,
+.new-indicator::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.new-indicator::after {
+  animation: newPulse 2s ease-out infinite;
+}
+
+@keyframes newPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
 }
 </style>

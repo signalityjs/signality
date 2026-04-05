@@ -13,20 +13,20 @@
 
 ### 🚀 Features
 
-- **core:** `elementFocus` add writable focus control ([7ab9166](https://github.com/signalityjs/signality/commit/7ab9166))
+- **core:** `elementFocus` add writable focus control ([#100](https://github.com/signalityjs/signality/pull/100))
 
 ### 🩹 Fixes
 
-- **core:** `elementVisibility` properly reset visibility signal on element disconnect ([9c8a765](https://github.com/signalityjs/signality/commit/9c8a765))
-- **core:** `favicon` exclude apple-touch-icon from favicon selection ([ee86446](https://github.com/signalityjs/signality/commit/ee86446))
-- **core:** `elementSize` properly reset size signal on element disconnect ([15086e6](https://github.com/signalityjs/signality/commit/15086e6))
+- **core:** `elementVisibility` properly reset visibility signal on element disconnect ([#93](https://github.com/signalityjs/signality/pull/93))
+- **core:** `favicon` exclude apple-touch-icon from favicon selection ([#95](https://github.com/signalityjs/signality/pull/95))
+- **core:** `elementSize` properly reset size signal on element disconnect ([#98](https://github.com/signalityjs/signality/pull/98))
 
 ## 0.1.1 (2026-03-20)
 
 ### 🩹 Fixes
 
-- **core:** ensure bluetooth and speech-recognition types work without `skipLibCheck` ([0438feb](https://github.com/signalityjs/signality/commit/0438feb))
-- **core:** `pictureInPicture.enter()` assert element and propagate errors to caller ([8859c53](https://github.com/signalityjs/signality/commit/8859c53))
+- **core:** ensure bluetooth and speech-recognition types work without `skipLibCheck` ([#72](https://github.com/signalityjs/signality/pull/72))
+- **core:** `pictureInPicture.enter()` assert element and propagate errors to caller ([#75](https://github.com/signalityjs/signality/pull/75))
 
 ## 0.1.0 (2026-03-20)
 
