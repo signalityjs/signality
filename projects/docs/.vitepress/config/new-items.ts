@@ -1,5 +1,7 @@
 export const NEW_ITEMS = [
-  '/elements/element-focus'
+  '/browser/text-selection',
+  '/elements/element-focus',
+  '/utilities/generate-id'
 ];
 
 export function isNew(link: string): boolean {
