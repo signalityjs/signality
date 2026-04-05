@@ -1,3 +1,14 @@
+## 0.1.3 (2026-04-05)
+
+### 🚀 Features
+
+- **core:** `generateId` add new utility for creating unique IDs ([#108](https://github.com/signalityjs/signality/pull/108))
+- **core:** `textSelection` add root option to track selections only within a specific element ([#110](https://github.com/signalityjs/signality/pull/110))
+
+### 🩹 Fixes
+
+- **core:** `storage` dispatch storage event to sync signals with same key in same session ([#115](https://github.com/signalityjs/signality/pull/115))
+
 ## 0.1.2 (2026-03-28)
 
 ### 🚀 Features
