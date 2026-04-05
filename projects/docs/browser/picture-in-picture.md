@@ -11,7 +11,7 @@ Reactive wrapper around the [Picture-in-Picture API](https://developer.mozilla.o
 ## Usage
 
 ```angular-ts
-import { Component, viewChild } from '@angular/core';
+import { Component, viewChild, ElementRef } from '@angular/core';
 import { pictureInPicture } from '@signality/core';
 
 @Component({
@@ -24,7 +24,7 @@ import { pictureInPicture } from '@signality/core';
   `,
 })
 export class PiPDemo {
-  readonly video = viewChild<HTMLVideoElement>('video');
+  readonly video = viewChild<ElementRef>('video');
   readonly pip = pictureInPicture(this.video); // [!code highlight]
 }
 ```
