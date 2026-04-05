@@ -28,7 +28,7 @@
     "prettier": "prettier --check projects --cache",
     "test": "nx run-many -t test --all",
     "docs:dev": "pnpm demos:build && node scripts/watch-docs.js && vitepress dev projects/docs",
-    "docs:build": "pnpm demos:build && node scripts/changelog-copy.js && vitepress build projects/docs",
+    "docs:build": "pnpm demos:build && ts-node ./scripts/changelog.ts && vitepress build projects/docs",
     "demos:dev": "nx serve demos",
     "demos:build": "nx run demos:buildElements --configuration=production",
     "demos:watch": "nx watch --projects=demos -- nx run demos:buildElements --configuration=development",
