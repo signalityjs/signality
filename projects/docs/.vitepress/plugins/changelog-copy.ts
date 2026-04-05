@@ -6,9 +6,11 @@ export function changelogCopy(): Plugin {
   return {
     name: 'changelog-copy',
     enforce: 'pre',
-    buildStart() {
-      const src = resolve(process.cwd(), 'CHANGELOG.md');
-      const destDir = resolve(process.cwd(), 'projects/docs/resources');
+    configResolved(config) {
+      const root = config.root;
+
+      const src = resolve(root, '../../CHANGELOG.md');
+      const destDir = resolve(root, 'resources');
       const dest = resolve(destDir, 'changelog.md');
 
       if (!existsSync(src)) {
