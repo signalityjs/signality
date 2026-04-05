@@ -39,6 +39,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Generated docs files
+/projects/docs/resources/changelog.md
+
 .nx/cache
 .nx/workspace-data
 
