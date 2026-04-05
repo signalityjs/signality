@@ -1,4 +1,5 @@
 export const NEW_ITEMS = [
+  '/resources/changelog',
   '/browser/text-selection',
   '/elements/element-focus',
   '/utilities/generate-id'
