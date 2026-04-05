@@ -65,6 +65,13 @@ export interface ListenerFunction {
     options?: ListenerOptions
   ): ListenerRef;
 
+  <E extends string>(
+    target: MaybeSignal<MediaQueryList>,
+    event: MaybeSignal<E>,
+    handler: (this: MediaQueryList, e: MediaQueryListEvent) => any,
+    options?: ListenerOptions
+  ): ListenerRef;
+
   <EventType = Event>(
     target: MaybeSignal<EventTarget> | MaybeElementSignal<Element>,
     event: MaybeSignal<string>,
