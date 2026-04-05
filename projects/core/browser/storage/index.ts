@@ -118,27 +118,16 @@ export function storage<T>(
   const { runInContext } = setupContext(options?.injector, storage);
 
   return runInContext(({ isServer }) => {
-    if (isServer) {
+    const type = options?.type ?? 'local';
+
+    if (isServer || !storageAvailable(type)) {
       return signal(initialValue, options);
     }
 
-    const storageType = options?.type ?? 'local';
+    const targetStorage = type === 'local' ? window.localStorage : window.sessionStorage;
     const serializer = resolveSerializer(initialValue, options);
 
-    const getStorage = (): Storage | null => {
-      const type = storageType === 'local' ? 'localStorage' : 'sessionStorage';
-
-      if (!storageAvailable(type)) {
-        if (ngDevMode) {
-          console.warn(`[storage] ${type} is not available or accessible`);
-        }
-        return null;
-      }
-
-      return window[type];
-    };
-
-    const mergeWithInitial = (storedValue: T) => {
+    const processValue = (storedValue: T) => {
       if (options?.mergeResolver) {
         return options.mergeResolver(storedValue, initialValue);
       }
@@ -151,14 +140,8 @@ export function storage<T>(
     };
 
     const readValue = (storageKey: string): T => {
-      const storage = getStorage();
-
-      if (storage === null) {
-        return initialValue;
-      }
-
       try {
-        const raw = storage.getItem(storageKey);
+        const raw = targetStorage.getItem(storageKey);
 
         if (raw === null) {
           if (initialValue != null) {
@@ -167,31 +150,46 @@ export function storage<T>(
           return initialValue;
         }
 
-        const parsed = serializer.read(raw);
-        return mergeWithInitial(parsed);
+        return processValue(serializer.read(raw));
       } catch (error) {
         if (ngDevMode) {
           console.warn(`[storage] Failed to deserialize value for key "${key}"`, error);
         }
-
         return initialValue;
       }
     };
 
+    const dispatchStorageEvent = (
+      key: string,
+      oldValue: string | null,
+      newValue: string | null
+    ) => {
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key,
+          oldValue,
+          newValue,
+          storageArea: targetStorage,
+          url: window.location.href,
+        })
+      );
+    };
+
     const writeValue = (value: T): void => {
-      const storage = getStorage();
       const storageKey = toValue(key);
 
-      if (storage === null) {
-        return;
-      }
-
       try {
+        const oldValue = targetStorage.getItem(storageKey);
+
         if (value == null) {
-          storage.removeItem(storageKey);
+          targetStorage.removeItem(storageKey);
+          dispatchStorageEvent(storageKey, oldValue, null);
         } else {
           const serialized = serializer.write(value);
-          storage.setItem(storageKey, serialized);
+          if (oldValue !== serialized) {
+            targetStorage.setItem(storageKey, serialized);
+            dispatchStorageEvent(storageKey, oldValue, serialized);
+          }
         }
       } catch (error) {
         if (ngDevMode) {
@@ -206,31 +204,29 @@ export function storage<T>(
 
     const state = signal<T>(readValue(toValue(key)), options);
 
-    if (storageType === 'local') {
-      setupSync(() => {
-        listener(window, 'storage', event => {
-          const currentKey = toValue(key);
+    setupSync(() => {
+      listener(window, 'storage', event => {
+        const currentKey = toValue(key);
 
-          if (event.key === currentKey && event.storageArea === window.localStorage) {
-            try {
-              const newValue =
-                event.newValue === null
-                  ? initialValue
-                  : mergeWithInitial(serializer.read(event.newValue));
+        if (event.key === currentKey && event.storageArea === targetStorage) {
+          try {
+            const newValue =
+              event.newValue === null
+                ? initialValue
+                : processValue(serializer.read(event.newValue));
 
-              state.set(newValue);
-            } catch (error) {
-              if (ngDevMode) {
-                console.warn(
-                  `[storage] Failed to sync value from other tab for key "${event.key}"`,
-                  error
-                );
-              }
+            state.set(newValue);
+          } catch (error) {
+            if (ngDevMode) {
+              console.warn(
+                `[storage] Failed to sync value from other tab for key "${event.key}"`,
+                error
+              );
             }
           }
-        });
+        }
       });
-    }
+    });
 
     if (isSignal(key)) {
       watcher(key, newKey => state.set(readValue(newKey)));
@@ -349,11 +345,11 @@ function inferSerializerType<T>(value: T): keyof typeof Serializers {
   }
 }
 
-function storageAvailable(type: 'localStorage' | 'sessionStorage'): boolean {
+function storageAvailable(type: 'local' | 'session'): boolean {
   let storage: Storage | undefined;
 
   try {
-    storage = window[type];
+    storage = window[`${type}Storage`];
     const testKey = '__storage_test__';
     storage.setItem(testKey, testKey);
     storage.removeItem(testKey);

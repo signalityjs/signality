@@ -3,13 +3,26 @@
     <!-- Toggle + Input -->
     <div class="st-input-row">
       <demo-toggle [options]="storageOptions" [value]="storageType" />
-      <input
-        demoInput
-        class="st-input"
-        size="sm"
-        placeholder="Type something to persist..."
-        [(ngModel)]="messageText"
-      />
+
+      @if (storageType() === 'local') {
+        <input
+          demoInput
+          class="st-input"
+          size="sm"
+          placeholder="Type something to persist..."
+          [(ngModel)]="localMessage"
+        />
+      }
+
+      @if (storageType() === 'session') {
+        <input
+          demoInput
+          class="st-input"
+          size="sm"
+          placeholder="Type something to persist..."
+          [(ngModel)]="sessionMessage"
+        />
+      }
     </div>
 
     <div class="st-divider"></div>

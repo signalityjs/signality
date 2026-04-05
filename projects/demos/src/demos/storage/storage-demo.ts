@@ -14,7 +14,8 @@ export class StorageDemo {
   readonly importCode = `import { storage } from '@signality/core'`;
 
   readonly storageType = storage<'local' | 'session'>('demo-storage-type', 'local');
-  readonly message = storage<string>('demo-storage-message', '', { type: this.storageType() });
+  readonly localMessage = storage('demo-local-storage-message', '', { type: 'local' });
+  readonly sessionMessage = storage('demo-session-storage-message', '', { type: 'session' });
 
   readonly storageOptions = [
     { label: 'local', value: 'local' as const },
@@ -27,15 +28,8 @@ export class StorageDemo {
       : 'https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage'
   );
 
-  get messageText(): string {
-    return this.message();
-  }
-
-  set messageText(value: string) {
-    this.message.set(value);
-  }
-
   clear(): void {
-    this.message.set('');
+    this.localMessage.set('');
+    this.sessionMessage.set('');
   }
 }
