@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitepress';
 import tailwind from '@tailwindcss/vite';
 import { demosWatcher } from './plugins/demos-watcher';
-import { changelogCopy } from './plugins/changelog-copy';
 
 const base = process.env.VITEPRESS_BASE || '/';
 const cloudflareToken = process.env.CLOUDFLARE_ANALYTICS_TOKEN;
@@ -306,7 +305,7 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [tailwind(), demosWatcher(), changelogCopy()],
+    plugins: [tailwind(), demosWatcher()],
     server: {
       host: process.env.VITEPRESS_HOST || 'localhost',
       watch: {
