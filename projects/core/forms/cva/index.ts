@@ -217,4 +217,4 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
   });
 }
 
-const UNSET_VALUE: unique symbol = /* @__PURE__ */ Symbol('Cva#UNSET');
+const UNSET_VALUE: unique symbol = Symbol('Cva#UNSET');
