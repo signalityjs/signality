@@ -96,47 +96,25 @@ export function clipboard(options?: ClipboardOptions): ClipboardRef {
     let copiedTimeout: Timer;
 
     const copy = async (value: string): Promise<void> => {
-      try {
-        await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(value);
 
-        text.set(value);
-        copied.set(true);
+      text.set(value);
+      copied.set(true);
 
-        if (copiedTimeout) {
-          clearTimeout(copiedTimeout);
-        }
-
-        copiedTimeout = setTimeout(() => {
-          copied.set(false);
-          copiedTimeout = undefined;
-        }, toValue.untracked(copiedDuration));
-      } catch (error) {
-        copied.set(false);
-        if (ngDevMode) {
-          console.warn(
-            `[clipboard] Failed to copy text to clipboard. ` +
-              `This may be due to permission denied or clipboard access failed.`,
-            error
-          );
-        }
+      if (copiedTimeout) {
+        clearTimeout(copiedTimeout);
       }
+
+      copiedTimeout = setTimeout(() => {
+        copied.set(false);
+        copiedTimeout = undefined;
+      }, toValue.untracked(copiedDuration));
     };
 
     const paste = async (): Promise<string> => {
-      try {
-        const value = await navigator.clipboard.readText();
-        text.set(value);
-        return value;
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(
-            `[clipboard] Failed to read text from clipboard. ` +
-              `This may be due to permission denied or clipboard access failed.`,
-            error
-          );
-        }
-        return '';
-      }
+      const value = await navigator.clipboard.readText();
+      text.set(value);
+      return value;
     };
 
     onCleanup(() => {
