@@ -1,5 +1,5 @@
 ---
-source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/mouse/index.ts
+source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/mouse-position/index.ts
 ---
 
 # MousePosition
