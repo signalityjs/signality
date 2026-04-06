@@ -104,11 +104,9 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
       errors = signal(null),
     } = options;
 
-    let initialValue: T | typeof UNSET_VALUE = UNSET_VALUE;
+    let initialValue: T = UNSET_VALUE as never;
 
-    waitForValue(value).then(v => {
-      initialValue = v;
-    });
+    waitForValue(value).then(val => (initialValue = val));
 
     const cvaRef: CvaRef<T> = {
       value,
@@ -123,7 +121,7 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
         if (initialValue === UNSET_VALUE) {
           throw new Error(
             ngDevMode
-              ? '[cva]: cannot reset before the initial value is resolved. ' +
+              ? '[cva] Cannot reset before the initial value is resolved. ' +
                 'Avoid calling `reset()` synchronously during initialization.'
               : ''
           );
