@@ -19,9 +19,16 @@ import { ALWAYS_FALSE_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { watcher } from '@signality/core/reactivity/watcher';
 
-export type CvaOptions<T> = Omit<Partial<MakeWritable<CvaRef<T>>>, 'value'> &
-  Pick<CvaRef<T>, 'value'> &
-  WithInjector;
+export interface CvaOptions<T> extends WithInjector {
+  readonly value: WritableSignal<T>;
+  readonly touched?: WritableSignal<boolean>;
+  readonly disabled?: WritableSignal<boolean>;
+  readonly required?: WritableSignal<boolean>;
+  readonly invalid?: WritableSignal<boolean>;
+  readonly pending?: WritableSignal<boolean>;
+  readonly dirty?: WritableSignal<boolean>;
+  readonly errors?: WritableSignal<ValidationErrors | null>;
+}
 
 export interface CvaRef<T> {
   readonly value: WritableSignal<T>;
@@ -195,7 +202,3 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
     return cvaRef;
   });
 }
-
-type MakeWritable<T extends object> = {
-  [K in keyof T]: T[K] extends Signal<infer U> ? WritableSignal<U> : never;
-};

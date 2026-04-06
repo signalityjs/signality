@@ -31,7 +31,7 @@ import { cva } from '@signality/core';
   `,
 })
 export class CurrencyInput {
-  readonly value = model<number>(0);
+  readonly value = model(0);
   readonly cva = cva({ value: this.value }); // [!code highlight]
 
   readonly displayValue = computed(() => {
@@ -214,6 +214,17 @@ The `cva()` utility automatically integrates with Angular's form system:
 ## Type Definitions
 
 ```typescript
+interface CvaOptions<T> extends WithInjector {
+  readonly value: WritableSignal<T>;
+  readonly touched?: WritableSignal<boolean>;
+  readonly disabled?: WritableSignal<boolean>;
+  readonly required?: WritableSignal<boolean>;
+  readonly invalid?: WritableSignal<boolean>;
+  readonly pending?: WritableSignal<boolean>;
+  readonly dirty?: WritableSignal<boolean>;
+  readonly errors?: WritableSignal<ValidationErrors | null>;
+}
+
 interface CvaRef<T> {
   readonly value: WritableSignal<T>;
   readonly touched: WritableSignal<boolean>;
@@ -225,10 +236,6 @@ interface CvaRef<T> {
   readonly errors: Signal<ValidationErrors | null>;
   readonly reset: () => void;
 }
-
-type CvaOptions<T> = Omit<Partial<MakeWritable<CvaRef<T>>>, 'value'> &
-  Pick<CvaRef<T>, 'value'> &
-  WithInjector;
 
 function cva<T>(options: CvaOptions<T>): CvaRef<T>;
 ```
