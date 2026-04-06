@@ -9,7 +9,7 @@ Converts a [`MaybeElementSignal`](/reference/utility-types#maybeelementsignal-lt
 ## Usage
 
 ```angular-ts
-import { signal } from '@angular/core';
+import { signal, ElementRef } from '@angular/core';
 import { toElement } from '@signality/core';
 
 const elementRef = signal<ElementRef<HTMLElement> | null>(null);

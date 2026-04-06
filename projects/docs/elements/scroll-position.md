@@ -1,5 +1,5 @@
 ---
-source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/scroll/index.ts
+source: https://github.com/signalityjs/signality/blob/main/projects/core/elements/scroll-position/index.ts
 ---
 
 # ScrollPosition
