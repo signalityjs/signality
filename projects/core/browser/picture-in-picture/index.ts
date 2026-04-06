@@ -31,10 +31,6 @@ export interface PictureInPictureRef {
   /**
    * Enter Picture-in-Picture mode for the target video element.
    *
-   * @throws {DOMException} `'NotAllowedError'` — the document is not allowed to use PiP
-   * @throws {DOMException} `'InvalidStateError'` — the video element has `disablePictureInPicture` attribute
-   * @throws {DOMException} `'NotSupportedError'` — Picture-in-Picture is not supported
-   *
    * @see [HTMLVideoElement: requestPictureInPicture() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/requestPictureInPicture)
    */
   readonly enter: () => Promise<void>;
@@ -73,7 +69,7 @@ export interface PictureInPictureRef {
  *   `
  * })
  * export class PiPDemo {
- *   readonly video = viewChild<HTMLVideoElement>('video');
+ *   readonly video = viewChild<ElementRef>('video');
  *   readonly pip = pictureInPicture(this.video);
  * }
  * ```
@@ -103,22 +99,16 @@ export function pictureInPicture(
 
     const enter = async (): Promise<void> => {
       const targetEl = toElement.untracked(target);
-      assertElement(targetEl, 'pictureInPicture');
-      await targetEl.requestPictureInPicture();
+      ngDevMode && assertElement(targetEl, 'pictureInPicture');
+      await targetEl?.requestPictureInPicture();
     };
 
     const exit = async (): Promise<void> => {
       const targetEl = toElement.untracked(target);
+      ngDevMode && assertElement(targetEl, 'pictureInPicture');
       const pipEl = getPipElement(document);
-
       if (targetEl === pipEl) {
-        try {
-          await document.exitPictureInPicture();
-        } catch (error) {
-          if (ngDevMode) {
-            console.warn(`[pictureInPicture] Failed to exit Picture-in-Picture mode.`, error);
-          }
-        }
+        await document.exitPictureInPicture();
       }
     };
 
@@ -146,8 +136,9 @@ export function pictureInPicture(
               error
             );
           }
+        } finally {
+          isActive.set(false);
         }
-        isActive.set(false);
       }
     });
 
