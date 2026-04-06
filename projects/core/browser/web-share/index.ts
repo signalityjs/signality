@@ -87,8 +87,8 @@ export function webShare(options?: WithInjector): WebShareRef {
       } catch (error) {
         // user canceled, or share failed
         // AbortError is expected when a user cancels
-        if (ngDevMode && (error as Error).name !== 'AbortError') {
-          console.warn(`[webShare] Failed to share content.`, error);
+        if ((error as Error).name !== 'AbortError') {
+          throw error;
         }
       } finally {
         isSharing.set(false);
@@ -96,14 +96,7 @@ export function webShare(options?: WithInjector): WebShareRef {
     };
 
     const canShare = (data?: ShareData): boolean => {
-      try {
-        return navigator.canShare(data);
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(`[webShare] Failed to check if content can be shared.`, error);
-        }
-        return false;
-      }
+      return navigator.canShare(data);
     };
 
     return {
