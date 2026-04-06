@@ -80,15 +80,8 @@ export function gamepad(options?: WithInjector): GamepadRef {
     }
 
     const getGamepads = () => {
-      try {
-        const pads = navigator.getGamepads();
-        return [...pads];
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(`[gamepad] Failed to get gamepads.`, error);
-        }
-        return [];
-      }
+      const pads = navigator.getGamepads();
+      return [...pads];
     };
 
     const gamepads = signal<(Gamepad | null)[]>(getGamepads());
