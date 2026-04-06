@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, map, startWith, switchMap, timer } from 'rxjs';
-import { ALWAYS_FALSE_FN, setupContext } from '@signality/core/internal';
+import { ALWAYS_FALSE_FN, setupContext, waitForValue } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { watcher } from '@signality/core/reactivity/watcher';
 
@@ -89,8 +89,6 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
     const ngControl = inject(NgControl, { self: true, optional: true });
     const ngModelRequired = inject(RequiredValidator, { self: true, optional: true });
 
-    const initialValue = options.value();
-
     const {
       value,
       // Use ALWAYS_FALSE_FN to ensure touched signal always triggers watcher updates.
@@ -106,6 +104,12 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
       errors = signal(null),
     } = options;
 
+    let initialValue: T | typeof UNSET_VALUE = UNSET_VALUE;
+
+    waitForValue(value).then(v => {
+      initialValue = v;
+    });
+
     const cvaRef: CvaRef<T> = {
       value,
       touched,
@@ -115,7 +119,17 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
       pending: pending.asReadonly(),
       dirty: dirty.asReadonly(),
       errors: errors.asReadonly(),
-      reset: () => value.set(initialValue),
+      reset: () => {
+        if (initialValue === UNSET_VALUE) {
+          throw new Error(
+            ngDevMode
+              ? '[cva]: cannot reset before the initial value is resolved. ' +
+                'Avoid calling `reset()` synchronously during initialization.'
+              : ''
+          );
+        }
+        value.set(initialValue);
+      },
     };
 
     if (!ngControl) {
@@ -202,3 +216,5 @@ export function cva<T>(options: CvaOptions<T>): CvaRef<T> {
     return cvaRef;
   });
 }
+
+const UNSET_VALUE: unique symbol = /* @__PURE__ */ Symbol('Cva#UNSET');
