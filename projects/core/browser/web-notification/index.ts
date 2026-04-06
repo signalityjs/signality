@@ -119,16 +119,9 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
     };
 
     const requestPermission = async (): Promise<NotificationPermission> => {
-      try {
-        const result = await Notification.requestPermission();
-        permission.set(result);
-        return result;
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(`[webNotification] Failed to request notification permission.`, error);
-        }
-        return permission();
-      }
+      const result = await Notification.requestPermission();
+      permission.set(result);
+      return result;
     };
 
     const close = (): void => {
@@ -137,14 +130,8 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
       const current = notification();
 
       if (current) {
-        try {
-          current.onclose = null;
-          current.close();
-        } catch (error) {
-          if (ngDevMode) {
-            console.warn(`[webNotification] Failed to close notification.`, error);
-          }
-        }
+        current.onclose = null;
+        current.close();
         notification.set(null);
       }
     };
@@ -157,31 +144,22 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
 
         close();
 
-        try {
-          const { autoClose, ...defaults } = options ?? {};
-          const mergedOptions = { ...defaults, ...overrides };
+        const { autoClose, ...defaults } = options ?? {};
+        const mergedOptions = { ...defaults, ...overrides };
 
-          const instance = new Notification(title, mergedOptions);
+        const instance = new Notification(title, mergedOptions);
+        instance.onclose = () => {
+          clearAutoClose();
+          notification.set(null);
+        };
+        notification.set(instance);
 
-          instance.onclose = () => {
-            clearAutoClose();
-            notification.set(null);
-          };
-
-          notification.set(instance);
-
-          const autoCloseMs = toValue(autoClose);
-          if (autoCloseMs && autoCloseMs > 0) {
-            autoCloseTimeout = setTimeout(close, autoCloseMs);
-          }
-
-          return instance;
-        } catch (error) {
-          if (ngDevMode) {
-            console.warn(`[webNotification] Failed to show notification.`, error);
-          }
-          return undefined;
+        const autoCloseMs = toValue(autoClose);
+        if (autoCloseMs && autoCloseMs > 0) {
+          autoCloseTimeout = setTimeout(close, autoCloseMs);
         }
+
+        return instance;
       });
     };
 
