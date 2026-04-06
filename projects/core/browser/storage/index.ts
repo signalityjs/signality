@@ -140,23 +140,16 @@ export function storage<T>(
     };
 
     const readValue = (storageKey: string): T => {
-      try {
-        const raw = targetStorage.getItem(storageKey);
+      const raw = targetStorage.getItem(storageKey);
 
-        if (raw === null) {
-          if (initialValue != null) {
-            writeValue(initialValue);
-          }
-          return initialValue;
-        }
-
-        return processValue(serializer.read(raw));
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(`[storage] Failed to deserialize value for key "${key}"`, error);
+      if (raw === null) {
+        if (initialValue != null) {
+          writeValue(initialValue);
         }
         return initialValue;
       }
+
+      return processValue(serializer.read(raw));
     };
 
     const dispatchStorageEvent = (
@@ -177,27 +170,16 @@ export function storage<T>(
 
     const writeValue = (value: T): void => {
       const storageKey = toValue(key);
+      const oldValue = targetStorage.getItem(storageKey);
 
-      try {
-        const oldValue = targetStorage.getItem(storageKey);
-
-        if (value == null) {
-          targetStorage.removeItem(storageKey);
-          dispatchStorageEvent(storageKey, oldValue, null);
-        } else {
-          const serialized = serializer.write(value);
-          if (oldValue !== serialized) {
-            targetStorage.setItem(storageKey, serialized);
-            dispatchStorageEvent(storageKey, oldValue, serialized);
-          }
-        }
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(
-            `[storage] Failed to write value for key "${storageKey}". ` +
-              `This may be due to storage quota exceeded or serialization error.`,
-            error
-          );
+      if (value == null) {
+        targetStorage.removeItem(storageKey);
+        dispatchStorageEvent(storageKey, oldValue, null);
+      } else {
+        const serialized = serializer.write(value);
+        if (oldValue !== serialized) {
+          targetStorage.setItem(storageKey, serialized);
+          dispatchStorageEvent(storageKey, oldValue, serialized);
         }
       }
     };
@@ -205,25 +187,14 @@ export function storage<T>(
     const state = signal<T>(readValue(toValue(key)), options);
 
     setupSync(() => {
-      listener(window, 'storage', event => {
-        const currentKey = toValue(key);
+      listener(window, 'storage', e => {
+        const currKey = toValue(key);
 
-        if (event.key === currentKey && event.storageArea === targetStorage) {
-          try {
-            const newValue =
-              event.newValue === null
-                ? initialValue
-                : processValue(serializer.read(event.newValue));
+        if (e.key === currKey && e.storageArea === targetStorage) {
+          const newValue =
+            e.newValue === null ? initialValue : processValue(serializer.read(e.newValue));
 
-            state.set(newValue);
-          } catch (error) {
-            if (ngDevMode) {
-              console.warn(
-                `[storage] Failed to sync value from other tab for key "${event.key}"`,
-                error
-              );
-            }
-          }
+          state.set(newValue);
         }
       });
     });

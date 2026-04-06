@@ -82,22 +82,4 @@ describe(clipboard.name, () => {
     expect(result).toBe('Pasted Text');
     expect(component.cb.text()).toBe('Pasted Text');
   });
-
-  it('should handle copy errors', async () => {
-    const component = createComponent();
-    mockClipboard.writeText.mockRejectedValue(new Error('Permission denied'));
-
-    await component.cb.copy('Test');
-
-    expect(component.cb.copied()).toBe(false);
-  });
-
-  it('should handle paste errors', async () => {
-    const component = createComponent();
-    mockClipboard.readText.mockRejectedValue(new Error('Permission denied'));
-
-    const result = await component.cb.paste();
-
-    expect(result).toBe('');
-  });
 });

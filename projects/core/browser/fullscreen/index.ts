@@ -1,5 +1,5 @@
 import { signal, type Signal, untracked } from '@angular/core';
-import { constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/internal';
+import { assertElement, constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
@@ -109,29 +109,17 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
 
     const enter = async (): Promise<void> => {
       const el = toElement.untracked(target);
-
-      if (el && document.fullscreenElement !== el) {
-        try {
-          await el.requestFullscreen();
-        } catch (error) {
-          if (ngDevMode) {
-            console.warn(`[fullscreen] Failed to enter fullscreen mode.`, error);
-          }
-        }
+      ngDevMode && assertElement(el, 'fullscreen');
+      if (document.fullscreenElement !== el) {
+        await el?.requestFullscreen();
       }
     };
 
     const exit = async (): Promise<void> => {
       const el = toElement.untracked(target);
-
-      if (el && document.fullscreenElement === el) {
-        try {
-          await document.exitFullscreen();
-        } catch (error) {
-          if (ngDevMode) {
-            console.warn(`[fullscreen] Failed to exit fullscreen mode.`, error);
-          }
-        }
+      ngDevMode && assertElement(el, 'fullscreen');
+      if (document.fullscreenElement === el) {
+        await document.exitFullscreen();
       }
     };
 

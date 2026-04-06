@@ -53,13 +53,4 @@ describe(eyeDropper.name, () => {
     await component.picker.open();
     expect(component.picker.sRGBHex()).toBe('#0000ff');
   });
-
-  it('should handle errors', async () => {
-    const component = createComponent();
-    mockEyeDropper.open.mockRejectedValue(new Error('User cancelled'));
-
-    await component.picker.open();
-
-    expect(component.picker.sRGBHex()).toBe('');
-  });
 });

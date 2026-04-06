@@ -96,12 +96,8 @@ export function eyeDropper(options?: EyeDropperOptions): EyeDropperRef {
         const result = await eyeDropper.open({ signal: abortController.signal });
         sRGBHex.set(result.sRGBHex);
       } catch (error) {
-        if (ngDevMode) {
-          console.warn(
-            `[eyeDropper] Failed to open eyedropper. ` +
-              `This may be due to user cancellation or an error occurred.`,
-            error
-          );
+        if ((error as Error).name !== 'AbortError') {
+          throw error;
         }
       } finally {
         abortController = null;

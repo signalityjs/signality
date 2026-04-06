@@ -93,42 +93,29 @@ export function vibration(options?: VibrationOptions): VibrationRef {
     const vibrate = (vibratePattern?: number | number[]) => {
       const resolvedPattern = vibratePattern ?? toValue.untracked(options?.pattern) ?? 200;
 
-      try {
-        const result = navigator.vibrate(resolvedPattern);
+      const result = navigator.vibrate(resolvedPattern);
 
-        isVibrating.set(result);
+      isVibrating.set(result);
 
-        const duration = Array.isArray(resolvedPattern)
-          ? resolvedPattern.reduce((a, b) => a + b, 0)
-          : resolvedPattern;
+      const duration = Array.isArray(resolvedPattern)
+        ? resolvedPattern.reduce((a, b) => a + b, 0)
+        : resolvedPattern;
 
-        if (result && duration > 0) {
-          if (vibrateTimeout) {
-            clearTimeout(vibrateTimeout);
-          }
-
-          vibrateTimeout = setTimeout(() => {
-            isVibrating.set(false);
-            vibrateTimeout = undefined;
-          }, duration);
+      if (result && duration > 0) {
+        if (vibrateTimeout) {
+          clearTimeout(vibrateTimeout);
         }
-      } catch (error) {
-        isVibrating.set(false);
-        if (ngDevMode) {
-          console.warn(`[vibration] Failed to vibrate device.`, error);
-        }
+
+        vibrateTimeout = setTimeout(() => {
+          isVibrating.set(false);
+          vibrateTimeout = undefined;
+        }, duration);
       }
     };
 
     const stop = () => {
-      try {
-        navigator.vibrate(0);
-        isVibrating.set(false);
-      } catch (error) {
-        if (ngDevMode) {
-          console.warn(`[vibration] Failed to stop vibration.`, error);
-        }
-      }
+      navigator.vibrate(0);
+      isVibrating.set(false);
 
       if (vibrateTimeout) {
         clearTimeout(vibrateTimeout);
