@@ -27,17 +27,17 @@ describe(cva.name, () => {
     const createComponent = () => {
       const fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
-      return fixture.componentInstance;
+      return { fixture, cmp: fixture.componentInstance };
     };
 
     it('should expose the provided value signal', () => {
-      const cmp = createComponent();
+      const { cmp } = createComponent();
 
       expect(cmp.cva.value()).toBe('initial');
     });
 
     it('should start with untouched, enabled, not required, valid, not pending, pristine state', () => {
-      const cmp = createComponent();
+      const { cmp } = createComponent();
 
       expect(cmp.cva.touched()).toBe(false);
       expect(cmp.cva.disabled()).toBe(false);
@@ -49,11 +49,40 @@ describe(cva.name, () => {
     });
 
     it('should update value when set externally', () => {
-      const cmp = createComponent();
+      const { cmp } = createComponent();
 
       cmp.value.set('updated');
 
       expect(cmp.cva.value()).toBe('updated');
+    });
+
+    describe('reset()', () => {
+      it('should throw error when called before first change detection cycle completes', () => {
+        const { cmp } = createComponent();
+
+        expect(() => cmp.cva.reset()).toThrow();
+      });
+
+      it('should reset value to initial after initial value is resolved', async () => {
+        const { cmp, fixture } = createComponent();
+
+        await fixture.whenStable();
+
+        expect(() => cmp.cva.reset()).not.toThrow();
+        expect(cmp.cva.value()).toBe('initial');
+      });
+
+      it('should reset value that was modified after initialization', async () => {
+        const { cmp, fixture } = createComponent();
+
+        await fixture.whenStable();
+
+        cmp.cva.value.set('modified');
+        expect(cmp.cva.value()).toBe('modified');
+
+        cmp.cva.reset();
+        expect(cmp.cva.value()).toBe('initial');
+      });
     });
   });
 
