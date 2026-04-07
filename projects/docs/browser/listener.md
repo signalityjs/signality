@@ -133,7 +133,7 @@ listener.self.stop(element, 'click', handler);
 
 ## Return Value
 
-Returns a `ListenerRef` (alias for `EffectRef`) that can be used to manually destroy the listenerer.
+Returns a `ListenerRef` that can be used to manually destroy the listenerer.
 
 ## Examples
 
@@ -249,7 +249,7 @@ export interface ListenerRef {
 function listener<E extends keyof WindowEventMap>(
   target: Window,
   event: MaybeSignal<E>,
-  handler: (e: WindowEventMap[E]) => any,
+  handler: (this: Window, e: WindowEventMap[E]) => any,
   options?: ListenerOptions
 ): ListenerRef;
 
@@ -257,7 +257,15 @@ function listener<E extends keyof WindowEventMap>(
 function listener<E extends keyof DocumentEventMap>(
   target: Document,
   event: MaybeSignal<E>,
-  handler: (e: DocumentEventMap[E]) => any,
+  handler: (this: Document, e: DocumentEventMap[E]) => any,
+  options?: ListenerOptions
+): ListenerRef;
+
+// ShadowRoot events
+function listener<E extends keyof ShadowRootEventMap>(
+  target: MaybeSignal<ShadowRoot>,
+  event: MaybeSignal<E>,
+  handler: (this: ShadowRoot, e: ShadowRootEventMap[E]) => any,
   options?: ListenerOptions
 ): ListenerRef;
 
@@ -265,7 +273,7 @@ function listener<E extends keyof DocumentEventMap>(
 function listener<T extends HTMLElement, E extends keyof HTMLElementEventMap>(
   target: MaybeElementSignal<T>,
   event: MaybeSignal<E>,
-  handler: (e: HTMLElementEventMap[E]) => any,
+  handler: (this: T, e: HTMLElementEventMap[E]) => any,
   options?: ListenerOptions
 ): ListenerRef;
 
@@ -273,13 +281,29 @@ function listener<T extends HTMLElement, E extends keyof HTMLElementEventMap>(
 function listener<T extends SVGElement, E extends keyof SVGElementEventMap>(
   target: MaybeElementSignal<T>,
   event: MaybeSignal<E>,
-  handler: (e: SVGElementEventMap[E]) => any,
+  handler: (this: T, e: SVGElementEventMap[E]) => any,
+  options?: ListenerOptions
+): ListenerRef;
+
+// MediaQueryList events
+function listener<E extends string>(
+  target: MaybeSignal<MediaQueryList>,
+  event: MaybeSignal<E>,
+  handler: (this: MediaQueryList, e: MediaQueryListEvent) => any,
+  options?: ListenerOptions
+): ListenerRef;
+
+// Custom event target
+function listener<Names extends string>(
+  target: MaybeSignal<InferEventTarget<Names>>,
+  event: MaybeSignal<Names>,
+  handler: (e: Event) => void,
   options?: ListenerOptions
 ): ListenerRef;
 
 // Generic events
 function listener<EventType = Event>(
-  target: MaybeElementSignal<HTMLElement>,
+  target: MaybeSignal<EventTarget> | MaybeElementSignal<Element>,
   event: MaybeSignal<string>,
   handler: (e: EventType) => void,
   options?: ListenerOptions
