@@ -107,15 +107,15 @@ import { mediaQuery } from '@signality/core';
 
 @Component({ /* ... */ })
 export class AccessibilitySettings {
-  readonly document = inject(DOCUMENT);
+  readonly body = inject(DOCUMENT).body;
   readonly prefersHighContrast = mediaQuery('(prefers-contrast: more)');
   
   constructor() {
     effect(() => {
       if (this.prefersHighContrast()) {
-        this.document.body.classList.add('high-contrast');
+        this.body.classList.add('high-contrast');
       } else {
-        this.document.body.classList.remove('high-contrast');
+        this.body.classList.remove('high-contrast');
       }
     });
   }

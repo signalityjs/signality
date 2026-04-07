@@ -119,13 +119,12 @@ type Theme = 'light' | 'dark' | 'system';
   `,
 })
 export class ThemeSelector {
+  readonly docEl = inject(DOCUMENT).documentElement;
   readonly theme = storage<Theme>('theme', 'system');
   
   constructor() {
-    const { documentElement } = inject(DOCUMENT);
-  
     effect(() => {
-      documentElement.setAttribute('data-theme', this.theme());
+      this.docEl.setAttribute('data-theme', this.theme());
     });
   }
 }
