@@ -1,5 +1,11 @@
 import { type Signal, signal, untracked } from '@angular/core';
-import { constSignal, NOOP_FN, setupContext, type Timer } from '@signality/core/internal';
+import {
+  constSignal,
+  NOOP_ASYNC_FN,
+  NOOP_FN,
+  setupContext,
+  type Timer,
+} from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 
@@ -39,14 +45,14 @@ export interface WebNotificationRef {
    *
    * @see [Notification: requestPermission() on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/requestPermission_static)
    */
-  readonly requestPermission: () => Promise<NotificationPermission>;
+  readonly requestPermission: () => Promise<void>;
 
   /**
    * Show a notification. Automatically closes the previous one. Per-call options override constructor defaults.
    *
    * @see [Notification() constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification)
    */
-  readonly show: (title: string, options?: NotificationOptions) => Notification | undefined;
+  readonly show: (title: string, options?: NotificationOptions) => void;
 
   /**
    * Close the currently active notification.
@@ -102,8 +108,8 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
         isSupported,
         permission: constSignal('denied'),
         notification: constSignal(null),
-        requestPermission: async () => 'denied',
-        show: () => undefined,
+        requestPermission: NOOP_ASYNC_FN,
+        show: NOOP_FN,
         close: NOOP_FN,
       };
     }
@@ -113,21 +119,20 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
 
     let autoCloseTimeout: Timer;
 
-    const clearAutoClose = () => {
+    const cancelAutoClose = () => {
       clearTimeout(autoCloseTimeout);
       autoCloseTimeout = undefined;
     };
 
-    const requestPermission = async (): Promise<NotificationPermission> => {
+    const requestPermission = async (): Promise<void> => {
       const result = await Notification.requestPermission();
       permission.set(result);
-      return result;
     };
 
-    const close = (): void => {
-      clearAutoClose();
+    const close = () => {
+      cancelAutoClose();
 
-      const current = notification();
+      const current = untracked(notification);
 
       if (current) {
         current.onclose = null;
@@ -136,31 +141,24 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
       }
     };
 
-    const show = (title: string, overrides?: NotificationOptions): Notification | undefined => {
-      return untracked(() => {
-        if (permission() !== 'granted') {
-          return undefined;
-        }
+    const show = (title: string, overrides?: NotificationOptions) => {
+      if (untracked(permission) !== 'granted') {
+        return;
+      }
 
-        close();
+      const { autoClose, ...defaults } = options ?? {};
+      const mergedOptions = { ...defaults, ...overrides };
+      const instance = new Notification(title, mergedOptions);
+      instance.onclose = () => {
+        cancelAutoClose();
+        notification.set(null);
+      };
+      notification.set(instance);
 
-        const { autoClose, ...defaults } = options ?? {};
-        const mergedOptions = { ...defaults, ...overrides };
-
-        const instance = new Notification(title, mergedOptions);
-        instance.onclose = () => {
-          clearAutoClose();
-          notification.set(null);
-        };
-        notification.set(instance);
-
-        const autoCloseMs = toValue(autoClose);
-        if (autoCloseMs && autoCloseMs > 0) {
-          autoCloseTimeout = setTimeout(close, autoCloseMs);
-        }
-
-        return instance;
-      });
+      const autoCloseMs = toValue(autoClose);
+      if (autoCloseMs && autoCloseMs > 0) {
+        autoCloseTimeout = setTimeout(close, autoCloseMs);
+      }
     };
 
     onCleanup(close);
