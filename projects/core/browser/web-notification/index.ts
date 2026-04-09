@@ -8,6 +8,8 @@ import {
 } from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
+import { watcher } from '@signality/core/reactivity';
+import { permissionState } from '@signality/core/browser/permission-state';
 
 export interface WebNotificationOptions extends NotificationOptions, WithInjector {
   /**
@@ -163,6 +165,14 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
     };
 
     onCleanup(close);
+
+    watcher(permissionState('notifications'), state => {
+      permission.set(state === 'prompt' ? 'default' : state);
+
+      if (state === 'denied') {
+        close();
+      }
+    });
 
     return {
       isSupported,
