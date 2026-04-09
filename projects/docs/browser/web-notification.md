@@ -98,8 +98,8 @@ The `webNotification()` function returns a `WebNotificationRef` object:
 | `isSupported`       | `Signal<boolean>`                                | Whether Notifications API is supported     |
 | `permission`        | `Signal<NotificationPermission>`                 | Current permission state                   |
 | `notification`      | `Signal<Notification \| null>`                   | Current active notification instance       |
-| `requestPermission` | `() => Promise<NotificationPermission>`          | Request notification permission            |
-| `show`              | `(title, options?) => Notification \| undefined` | Show a notification (auto-closes previous) |
+| `requestPermission` | `() => Promise<void>`                          | Request notification permission            |
+| `show`              | `(title, options?) => void`                     | Show a notification (auto-closes previous) |
 | `close`             | `() => void`                                     | Close the current notification             |
 
 ## Examples
@@ -146,9 +146,8 @@ On the server, signals initialize with safe defaults:
 - `isSupported` → `false`
 - `permission` → `'denied'`
 - `notification` → `null`
-- `requestPermission` → returns `'denied'`
-- `show` → returns `undefined`
-- `close` → no-op function
+- `requestPermission` → no-op async function
+- `show`, `close` → no-op functions
 
 ## Type Definitions
 
@@ -161,8 +160,8 @@ interface WebNotificationRef {
   readonly isSupported: Signal<boolean>;
   readonly permission: Signal<NotificationPermission>;
   readonly notification: Signal<Notification | null>;
-  readonly requestPermission: () => Promise<NotificationPermission>;
-  readonly show: (title: string, options?: NotificationOptions) => Notification | undefined;
+  readonly requestPermission: () => Promise<void>;
+  readonly show: (title: string, options?: NotificationOptions) => void;
   readonly close: () => void;
 }
 
