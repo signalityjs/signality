@@ -48,7 +48,7 @@ export interface WebNotificationRef {
   readonly requestPermission: () => Promise<void>;
 
   /**
-   * Show a notification. Automatically closes the previous one. Per-call options override constructor defaults.
+   * Show a notification.
    *
    * @see [Notification() constructor on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Notification)
    */
@@ -146,13 +146,14 @@ export function webNotification(options?: WebNotificationOptions): WebNotificati
         return;
       }
 
-      const { autoClose, ...defaults } = options ?? {};
-      const mergedOptions = { ...defaults, ...overrides };
-      const instance = new Notification(title, mergedOptions);
+      const { autoClose, ...defaultOptions } = options ?? {};
+      const instance = new Notification(title, { ...defaultOptions, ...overrides });
+
       instance.onclose = () => {
         cancelAutoClose();
         notification.set(null);
       };
+
       notification.set(instance);
 
       const autoCloseMs = toValue(autoClose);
