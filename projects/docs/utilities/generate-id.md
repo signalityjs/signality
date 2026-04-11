@@ -6,6 +6,8 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/utiliti
 
 Creates a unique ID string with optional prefix.
 
+<Demo name="generate-id" />
+
 ## Usage
 
 ```angular-ts
@@ -39,6 +41,26 @@ export class TextField {
 ## Return Value
 
 Returns a string ID with optional prefix, e.g., `"app-12345"` or `"user-12345"`.
+
+## Examples
+
+### Using outside of the injection context
+
+By default, `generateId()` must be called within the [injection context](https://angular.dev/guide/di/dependency-injection-context) (e.g., as a field initializer). To invoke it outside — such as in an event handler — pass an [`Injector`](https://angular.dev/api/core/Injector) instance explicitly as an argument:
+
+```angular-ts
+import { Component, inject, INJECTOR } from '@angular/core';
+import { generateId } from '@signality/core';
+
+@Component({ ... })
+export class MyComponent {
+  readonly injector = inject(INJECTOR); // [!code ++]
+  
+  generateId(): void {
+    const id = generateId({ injector: this.injector }); // [!code highlight]
+  }
+}
+```
 
 ## Type Definitions
 
