@@ -176,6 +176,7 @@ export default defineConfig({
           { text: 'BroadcastChannel', link: '/browser/broadcast-channel' },
           { text: 'BrowserLanguage', link: '/browser/browser-language' },
           { text: 'Clipboard', link: '/browser/clipboard' },
+          { text: 'DevicePixelRatio', link: '/browser/device-pixel-ratio' },
           { text: 'DevicePosture', link: '/browser/device-posture' },
           { text: 'DisplayMedia', link: '/browser/display-media' },
           { text: 'EyeDropper', link: '/browser/eye-dropper' },
