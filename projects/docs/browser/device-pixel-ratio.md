@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 # DevicePixelRatio
 
-Reactive wrapper around [wiAdd a titlendow.devicePixelRatio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio). Track device pixel ratio changes (zoom level or display density) with Angular signals.
+Reactive wrapper around [window.devicePixelRatio](https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio). Track device pixel ratio changes (zoom level or display density) with Angular signals.
 
 <Demo name="device-pixel-ratio" />
 
