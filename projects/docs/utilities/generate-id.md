@@ -46,7 +46,7 @@ Returns a string ID with optional prefix, e.g., `"app-12345"` or `"user-12345"`.
 
 ### Using outside of the injection context
 
-By default, `generateId()` must be called within the [injection context](https://angular.dev/guide/di/dependency-injection-context) (e.g., as a field initializer). To invoke it outside — such as in an event handler — pass an [`Injector`](https://angular.dev/api/core/Injector) instance explicitly as an argument.
+By default, `generateId()` must be called within the [injection context](https://angular.dev/guide/di/dependency-injection-context) (e.g., as a field initializer). To invoke it outside — such as in an event handler — pass an [`Injector`](https://angular.dev/api/core/Injector) instance explicitly as an argument:
 
 ```angular-ts
 import { Component, inject, INJECTOR } from '@angular/core';
