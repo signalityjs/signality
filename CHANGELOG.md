@@ -1,3 +1,23 @@
+## 0.2.0 (2026-04-11)
+
+### 🚀 Features
+
+- **core:** `listener` add MediaQueryListEvent overload ([#124](https://github.com/signalityjs/signality/pull/124))
+- ⚠️  **core:** change utilities error handling to propagate errors by default ([#126](https://github.com/signalityjs/signality/pull/126))
+- **core:** `cva` replace generic CvaOptions type with explicit interface for better readability ([#128](https://github.com/signalityjs/signality/pull/128))
+- ⚠️  **core:** `webNotification` simplify api by removing return values ([#137](https://github.com/signalityjs/signality/pull/137))
+- **core:** `devicePixelRatio` add new utility ([#141](https://github.com/signalityjs/signality/pull/141))
+
+### 🩹 Fixes
+
+- **core:** `cva` prevent errors when required signal accessed ([#130](https://github.com/signalityjs/signality/pull/130))
+- **core:** `webNotification` sync permission with browser permission changes ([#139](https://github.com/signalityjs/signality/pull/139))
+
+### ⚠️  Breaking Changes
+
+- **core:** `requestPermission()` now returns Promise<void> instead of
+- **core:** utilities no longer catch and log errors internally"
+
 ## 0.1.3 (2026-04-05)
 
 ### 🚀 Features
