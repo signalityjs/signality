@@ -1,0 +1,41 @@
+.dpr-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.dpr-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.375rem 0;
+}
+
+.dpr-row:first-child {
+  padding-top: 0;
+}
+
+.dpr-row:last-child {
+  padding-bottom: 0;
+}
+
+.dpr-row + .dpr-row {
+  border-top: 1px solid #1f1f22;
+}
+
+.dpr-label {
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+
+.dpr-value {
+  font-size: 0.8125rem;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+
+.dpr-hint {
+  font-size: 0.75rem;
+  color: #52525b;
+  margin: 0.75rem 0 0 0;
+  text-align: center;
+}

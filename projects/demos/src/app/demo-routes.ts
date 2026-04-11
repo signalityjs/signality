@@ -46,6 +46,14 @@ export const DEMO_ROUTES: Route[] = [
     loadComponent: () => import('../demos/debounced/debounced-demo').then(m => m.DebouncedDemo),
   },
   {
+    path: 'device-pixel-ratio',
+    title: 'DevicePixelRatio',
+    loadComponent: () =>
+      import('../demos/device-pixel-ratio/device-pixel-ratio-demo').then(
+        m => m.DevicePixelRatioDemo
+      ),
+  },
+  {
     path: 'device-posture',
     title: 'DevicePosture',
     loadComponent: () =>

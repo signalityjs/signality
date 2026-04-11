@@ -1,0 +1,13 @@
+<ng-demo-wrapper [demoPath]="'device-pixel-ratio/device-pixel-ratio-demo'" [code]="importCode">
+  <demo-card>
+    <div class="dpr-rows">
+      <div class="dpr-row">
+        <span class="dpr-label">Device Pixel Ratio</span>
+        <span class="dpr-value">{{ pixelRatio() }}x</span>
+      </div>
+    </div>
+    <p class="dpr-hint">
+      Try zooming in/out or moving the window to a different monitor to see changes.
+    </p>
+  </demo-card>
+</ng-demo-wrapper>

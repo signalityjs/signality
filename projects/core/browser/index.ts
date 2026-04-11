@@ -4,6 +4,7 @@ export * from '@signality/core/browser/breakpoints';
 export * from '@signality/core/browser/broadcast-channel';
 export * from '@signality/core/browser/browser-language';
 export * from '@signality/core/browser/clipboard';
+export * from '@signality/core/browser/device-pixel-ratio';
 export * from '@signality/core/browser/device-posture';
 export * from '@signality/core/browser/display-media';
 export * from '@signality/core/browser/eye-dropper';

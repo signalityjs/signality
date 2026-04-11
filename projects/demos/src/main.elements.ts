@@ -65,6 +65,7 @@ import { WebWorkerDemo } from './demos/web-worker/web-worker-demo';
 import { WindowFocusDemo } from './demos/window-focus/window-focus-demo';
 import { WindowSizeDemo } from './demos/window-size/window-size-demo';
 import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
+import { DevicePixelRatioDemo } from './demos/device-pixel-ratio/device-pixel-ratio-demo';
 
 const DEMOS = [
   { component: ActiveElementDemo, name: 'signality-demo-active-element' },
@@ -75,6 +76,7 @@ const DEMOS = [
   { component: BrowserLanguageDemo, name: 'signality-demo-browser-language' },
   { component: ClipboardDemo, name: 'signality-demo-clipboard' },
   { component: DebouncedDemo, name: 'signality-demo-debounced' },
+  { component: DevicePixelRatioDemo, name: 'signality-demo-device-pixel-ratio' },
   { component: DevicePostureDemo, name: 'signality-demo-device-posture' },
   { component: DisplayMediaDemo, name: 'signality-demo-display-media' },
   { component: DropzoneDemo, name: 'signality-demo-dropzone' },
