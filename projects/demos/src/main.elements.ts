@@ -66,6 +66,7 @@ import { WindowFocusDemo } from './demos/window-focus/window-focus-demo';
 import { WindowSizeDemo } from './demos/window-size/window-size-demo';
 import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
 import { DevicePixelRatioDemo } from './demos/device-pixel-ratio/device-pixel-ratio-demo';
+import { GenerateIdDemo } from './demos/generate-id/generate-id-demo';
 
 const DEMOS = [
   { component: ActiveElementDemo, name: 'signality-demo-active-element' },
@@ -90,6 +91,7 @@ const DEMOS = [
   { component: FaviconDemo, name: 'signality-demo-favicon' },
   { component: FpsDemo, name: 'signality-demo-fps' },
   { component: FullscreenDemo, name: 'signality-demo-fullscreen' },
+  { component: GenerateIdDemo, name: 'signality-demo-generate-id' },
   { component: GamepadDemo, name: 'signality-demo-gamepad' },
   { component: GeolocationDemo, name: 'signality-demo-geolocation' },
   { component: IntervalDemo, name: 'signality-demo-interval' },

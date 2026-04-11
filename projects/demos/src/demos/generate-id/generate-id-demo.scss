@@ -1,0 +1,46 @@
+.gid-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  border: 1px dashed #27272a;
+  border-radius: 8px;
+}
+
+.gid-value {
+  font-size: 0.875rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: #a1a1aa;
+  letter-spacing: -0.02em;
+}
+
+.gid-divider {
+  height: 1px;
+  background: #1f1f22;
+  margin: 1rem 0;
+}
+
+.gid-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gid-btn {
+  padding: 0.5rem 1rem;
+  background: #a1a1aa;
+  border: none;
+  border-radius: 6px;
+  color: #18181b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #d4d4d8;
+  }
+
+  &:active {
+    background: #71717a;
+  }
+}

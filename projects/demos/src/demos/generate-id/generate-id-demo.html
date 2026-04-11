@@ -1,0 +1,23 @@
+<ng-demo-wrapper [demoPath]="'generate-id/generate-id-demo'" [code]="importCode">
+  <demo-card>
+    <div class="gid-display">
+      <span class="gid-value">{{ currentId() }}</span>
+    </div>
+
+    <div class="gid-divider"></div>
+
+    <div class="gid-controls">
+      <input
+        demoInput
+        placeholder="Prefix"
+        [(ngModel)]="prefix"
+      />
+      <demo-button
+        variant="primary"
+        (click)="generate()"
+      >
+        Generate
+      </demo-button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>

@@ -132,6 +132,12 @@ export const DEMO_ROUTES: Route[] = [
     loadComponent: () => import('../demos/fullscreen/fullscreen-demo').then(m => m.FullscreenDemo),
   },
   {
+    path: 'generate-id',
+    title: 'GenerateId',
+    loadComponent: () =>
+      import('../demos/generate-id/generate-id-demo').then(m => m.GenerateIdDemo),
+  },
+  {
     path: 'gamepad',
     title: 'Gamepad',
     loadComponent: () => import('../demos/gamepad/gamepad-demo').then(m => m.GamepadDemo),
