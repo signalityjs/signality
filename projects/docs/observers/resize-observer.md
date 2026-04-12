@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/observe
 
 # ResizeObserver
 
-Low-level utility for observing element size changes using the [ResizeObserver API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver). Provides fine-grained control over observation lifecycle.
+Reactive element size change detection using the [ResizeObserver API](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) with automatic lifecycle management.
 
 <Demo name="resize-observer" />
 
@@ -12,7 +12,7 @@ Low-level utility for observing element size changes using the [ResizeObserver A
 
 ### Single element observation
 
-Observe a single element by passing it as the first parameter:
+Observe a single element by passing it as the first argument:
 
 ```angular-ts
 import { Component, inject, ElementRef } from '@angular/core';

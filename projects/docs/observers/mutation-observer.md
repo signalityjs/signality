@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/observe
 
 # MutationObserver
 
-Low-level utility for observing DOM tree changes using the [MutationObserver API](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver). Provides fine-grained control over observation lifecycle.
+Reactive DOM mutation detection using the [MutationObserver API](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) with automatic lifecycle management.
 
 <Demo name="mutation-observer" />
 
@@ -16,7 +16,7 @@ For type safety, this utility accepts only `Element` rather than `Node`, even th
 
 ### Single element observation
 
-Observe a single element by passing it as the first parameter:
+Observe a single element by passing it as the first argument:
 
 ```angular-ts
 import { Component, inject, ElementRef } from '@angular/core';

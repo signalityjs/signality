@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/observe
 
 # IntersectionObserver
 
-Low-level utility for observing element intersection with viewport using the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver). Provides fine-grained control over observation lifecycle.
+Reactive element intersection detection using the [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver) with automatic lifecycle management.
 
 <Demo name="intersection-observer" />
 
@@ -12,7 +12,7 @@ Low-level utility for observing element intersection with viewport using the [In
 
 ### Single element observation
 
-Observe a single element by passing it as the first parameter:
+Observe a single element by passing it as the first argument:
 
 ```angular-ts
 import { Component, inject, ElementRef } from '@angular/core';
@@ -83,7 +83,7 @@ export class ReactiveOptions {
   
   readonly observer = intersectionObserver(
     this.box,
-    entries => { /* callback */ },
+    entries => { /* ... */ },
     {
       root: this.root, // Reactive root element
       rootMargin: this.rootMargin, // Reactive margin
