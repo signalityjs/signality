@@ -3,7 +3,7 @@
     <!-- Messages list -->
     <div class="bc-messages">
       @if (messages().length === 0) {
-        <span class="bc-empty">No messages yet. Open another tab to test.</span>
+        <span class="bc-empty" [class.bc-empty--hint]="showHint()">No messages yet. Open another tab to test.</span>
       }
       @for (msg of messages(); track msg.time) {
         <div class="bc-msg">

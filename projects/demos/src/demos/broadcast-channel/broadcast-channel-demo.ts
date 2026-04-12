@@ -24,6 +24,7 @@ export class BroadcastChannelDemo {
   readonly messages = signal<Message[]>([]);
   readonly isSending = signal(false);
   readonly hasSent = signal(false);
+  readonly showHint = signal(false);
 
   constructor() {
     effect(() => {
@@ -44,6 +45,11 @@ export class BroadcastChannelDemo {
       this.isSending.set(true);
       this.hasSent.set(true);
       setTimeout(() => this.isSending.set(false), 350);
+
+      if (this.messages().length === 0) {
+        this.showHint.set(true);
+        setTimeout(() => this.showHint.set(false), 1500);
+      }
     }
   }
 }

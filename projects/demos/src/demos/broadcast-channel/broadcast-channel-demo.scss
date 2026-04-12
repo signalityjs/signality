@@ -14,6 +14,25 @@
   color: #52525b;
 }
 
+.bc-empty--hint {
+  animation: bcHintFlash 1.5s ease-in-out;
+}
+
+@keyframes bcHintFlash {
+  0% {
+    color: #52525b;
+  }
+  30% {
+    color: #deb3eb;
+  }
+  60% {
+    color: #deb3eb;
+  }
+  100% {
+    color: #52525b;
+  }
+}
+
 .bc-msg {
   display: flex;
   justify-content: space-between;
