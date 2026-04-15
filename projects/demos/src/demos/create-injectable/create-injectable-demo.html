@@ -1,0 +1,11 @@
+<ng-demo-wrapper [demoPath]="'create-injectable/create-injectable-demo'" [code]="importCode">
+  <demo-card>
+    <demo-button variant="primary" (click)="counter.increment()">+</demo-button>
+
+    <ul>
+      <li>count: {{ counter.count() }}</li>
+
+      <li>doubled: {{ counter.doubled() }}</li>
+    </ul>
+  </demo-card>
+</ng-demo-wrapper>
