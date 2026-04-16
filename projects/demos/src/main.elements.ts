@@ -8,9 +8,9 @@
  * Example: <signality-demo-battery />
  */
 
-import { ApplicationRef, provideZonelessChangeDetection } from '@angular/core';
-import { createCustomElement } from '@angular/elements';
 import { createApplication } from '@angular/platform-browser';
+import { createCustomElement } from '@angular/elements';
+import { ApplicationRef, provideZonelessChangeDetection } from '@angular/core';
 
 import { ActiveElementDemo } from './demos/active-element/active-element-demo';
 import { BatteryDemo } from './demos/battery/battery-demo';
@@ -19,55 +19,54 @@ import { BreakpointsDemo } from './demos/breakpoints/breakpoints-demo';
 import { BroadcastChannelDemo } from './demos/broadcast-channel/broadcast-channel-demo';
 import { BrowserLanguageDemo } from './demos/browser-language/browser-language-demo';
 import { ClipboardDemo } from './demos/clipboard/clipboard-demo';
-import { CreateInjectableDemo } from './demos/create-injectable/create-injectable-demo'; // [!code ++]
 import { DebouncedDemo } from './demos/debounced/debounced-demo';
-import { DevicePixelRatioDemo } from './demos/device-pixel-ratio/device-pixel-ratio-demo';
 import { DevicePostureDemo } from './demos/device-posture/device-posture-demo';
 import { DisplayMediaDemo } from './demos/display-media/display-media-demo';
 import { DropzoneDemo } from './demos/dropzone/dropzone-demo';
-import { ElementFocusWithinDemo } from './demos/element-focus-within/element-focus-within-demo';
+import { EyeDropperDemo } from './demos/eye-dropper/eye-dropper-demo';
+import { FileDialogDemo } from './demos/file-dialog/file-dialog-demo';
 import { ElementFocusDemo } from './demos/element-focus/element-focus-demo';
+import { ElementFocusWithinDemo } from './demos/element-focus-within/element-focus-within-demo';
 import { ElementHoverDemo } from './demos/element-hover/element-hover-demo';
 import { ElementSizeDemo } from './demos/element-size/element-size-demo';
 import { ElementVisibilityDemo } from './demos/element-visibility/element-visibility-demo';
-import { EyeDropperDemo } from './demos/eye-dropper/eye-dropper-demo';
 import { FaviconDemo } from './demos/favicon/favicon-demo';
-import { FileDialogDemo } from './demos/file-dialog/file-dialog-demo';
 import { FpsDemo } from './demos/fps/fps-demo';
 import { FullscreenDemo } from './demos/fullscreen/fullscreen-demo';
 import { GamepadDemo } from './demos/gamepad/gamepad-demo';
-import { GenerateIdDemo } from './demos/generate-id/generate-id-demo';
 import { GeolocationDemo } from './demos/geolocation/geolocation-demo';
-import { InputModalityDemo } from './demos/input-modality/input-modality-demo';
-import { IntersectionObserverDemo } from './demos/intersection-observer/intersection-observer-demo';
 import { IntervalDemo } from './demos/interval/interval-demo';
 import { LongPressDemo } from './demos/long-press/long-press-demo';
+import { InputModalityDemo } from './demos/input-modality/input-modality-demo';
+import { IntersectionObserverDemo } from './demos/intersection-observer/intersection-observer-demo';
+import { MutationObserverDemo } from './demos/mutation-observer/mutation-observer-demo';
+import { ResizeObserverDemo } from './demos/resize-observer/resize-observer-demo';
 import { MediaQueryDemo } from './demos/media-query/media-query-demo';
 import { MousePositionDemo } from './demos/mouse-position/mouse-position-demo';
-import { MutationObserverDemo } from './demos/mutation-observer/mutation-observer-demo';
 import { NetworkDemo } from './demos/network/network-demo';
 import { OnClickOutsideDemo } from './demos/on-click-outside/on-click-outside-demo';
 import { OnlineDemo } from './demos/online/online-demo';
 import { PageVisibilityDemo } from './demos/page-visibility/page-visibility-demo';
 import { PermissionStateDemo } from './demos/permission-state/permission-state-demo';
 import { PictureInPictureDemo } from './demos/picture-in-picture/picture-in-picture-demo';
-import { PointerSwipeDemo } from './demos/pointer-swipe/pointer-swipe-demo';
-import { ResizeObserverDemo } from './demos/resize-observer/resize-observer-demo';
-import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
 import { ScrollPositionDemo } from './demos/scroll/scroll-position-demo';
+import { WebShareDemo } from './demos/web-share/web-share-demo';
 import { SpeechRecognitionDemo } from './demos/speech-recognition/speech-recognition-demo';
 import { SpeechSynthesisDemo } from './demos/speech-synthesis/speech-synthesis-demo';
 import { StorageDemo } from './demos/storage/storage-demo';
+import { PointerSwipeDemo } from './demos/pointer-swipe/pointer-swipe-demo';
 import { SwipeDemo } from './demos/swipe/swipe-demo';
 import { TextDirectionDemo } from './demos/text-direction/text-direction-demo';
 import { TextSelectionDemo } from './demos/text-selection/text-selection-demo';
 import { ThrottledDemo } from './demos/throttled/throttled-demo';
 import { VibrationDemo } from './demos/vibration/vibration-demo';
 import { WebNotificationDemo } from './demos/web-notification/web-notification-demo';
-import { WebShareDemo } from './demos/web-share/web-share-demo';
 import { WebWorkerDemo } from './demos/web-worker/web-worker-demo';
 import { WindowFocusDemo } from './demos/window-focus/window-focus-demo';
 import { WindowSizeDemo } from './demos/window-size/window-size-demo';
+import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
+import { DevicePixelRatioDemo } from './demos/device-pixel-ratio/device-pixel-ratio-demo';
+import { GenerateIdDemo } from './demos/generate-id/generate-id-demo';
 
 const DEMOS = [
   { component: ActiveElementDemo, name: 'signality-demo-active-element' },
@@ -93,7 +92,6 @@ const DEMOS = [
   { component: FpsDemo, name: 'signality-demo-fps' },
   { component: FullscreenDemo, name: 'signality-demo-fullscreen' },
   { component: GenerateIdDemo, name: 'signality-demo-generate-id' },
-  { component: CreateInjectableDemo, name: 'signality-demo-create-injectable' }, // [!code ++]
   { component: GamepadDemo, name: 'signality-demo-gamepad' },
   { component: GeolocationDemo, name: 'signality-demo-geolocation' },
   { component: IntervalDemo, name: 'signality-demo-interval' },

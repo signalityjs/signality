@@ -6,8 +6,6 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/utiliti
 
 Creates a set of utility functions to manage Angular dependency injection in a typed and simplified way. It replaces traditional class-based services with a more functional and flexible approach.
 
-<Demo name="create-injectable" />
-
 ## Usage
 
 ```angular-ts

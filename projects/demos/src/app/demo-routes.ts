@@ -132,12 +132,6 @@ export const DEMO_ROUTES: Route[] = [
     loadComponent: () => import('../demos/fullscreen/fullscreen-demo').then(m => m.FullscreenDemo),
   },
   {
-    path: 'create-injectable',
-    title: 'CreateInjectable',
-    loadComponent: () =>
-      import('../demos/create-injectable/create-injectable-demo').then(m => m.CreateInjectableDemo),
-  },
-  {
     path: 'generate-id',
     title: 'GenerateId',
     loadComponent: () =>
