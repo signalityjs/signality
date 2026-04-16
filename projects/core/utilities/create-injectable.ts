@@ -17,8 +17,6 @@ export type CreateInjectableReturn<Arguments extends any[], InjectReturn> = Read
   ]
 >;
 
-export type InjectedType<T> = T extends CreateInjectableReturn<any[], infer R> ? R : never;
-
 type Factory<Arguments extends any[], Return> = (...args: Arguments) => Return;
 
 type OptionalArgs<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
