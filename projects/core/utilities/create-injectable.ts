@@ -127,7 +127,5 @@ function createInjectableFn<Arguments extends any[], Return>(
     return runInContext(() => inject(injectionToken, injectOptions));
   }
 
-  Object.defineProperty(injectFn, 'name', { value: `inject${description}` });
-
   return [injectFn, provideFn, injectionToken];
 }
