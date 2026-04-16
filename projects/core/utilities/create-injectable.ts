@@ -1,4 +1,4 @@
-import { inject, InjectionToken, InjectOptions, Provider } from '@angular/core';
+import { inject, InjectionToken, InjectOptions, isDevMode, Provider } from '@angular/core';
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
@@ -112,7 +112,7 @@ function createInjectableFn<Arguments extends any[], Return>(
   root = false
 ): CreateInjectableReturn<Arguments, Return> {
   const injectionToken = new InjectionToken<Return>(
-    description,
+    isDevMode() ? description : '',
     root ? { providedIn: 'root', factory } : undefined
   );
 
