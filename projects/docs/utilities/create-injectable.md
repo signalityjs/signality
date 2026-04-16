@@ -9,24 +9,22 @@ Creates a set of utility functions to manage Angular dependency injection in a t
 ## Usage
 
 ```angular-ts
-import { signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { createInjectable } from '@signality/core';
 
 export const [injectCounter, provideCounter] = createInjectable( // [!code highlight]
-  'Counter', // [!code highlight]
-  (initialValue = 0) => { // [!code highlight]
-    const count = signal(initialValue); // [!code highlight]
-    const doubled = computed(() => count() * 2); // [!code highlight]
-    // [!code highlight]
+  'Counter',
+  (initialValue = 0) => {
+    const count = signal(initialValue);
+    const doubled = computed(() => count() * 2);
 
-    function increment() { // [!code highlight]
-      count.update((v) => v + 1); // [!code highlight]
-    } // [!code highlight]
-    // [!code highlight]
+    function increment() {
+      count.update((v) => v + 1);
+    }
 
-    return { count: count.asReadonly(), doubled, increment }; // [!code highlight]
-  } // [!code highlight]
-); // [!code highlight]
+    return { count: count.asReadonly(), doubled, increment };
+  }
+);
 
 @Component({
   selector: 'app-counter',
@@ -47,21 +45,20 @@ export class CounterComponent {
 The `root` variant creates an injectable that is provided in the application root by default. This is ideal for global, tree-shakable singletons.
 
 ```angular-ts
-import { signal, computed } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { createInjectable } from '@signality/core';
+import { AuthGateway } from './auth-gateway';
 
 export const [injectAuth] = createInjectable.root('Auth', () => { // [!code highlight]
-  const user = signal<string | null>(null); // [!code highlight]
-  const isLoggedIn = computed(() => Boolean(user())); // [!code highlight]
-  // [!code highlight]
+  const authGateway = inject(AuthGateway);
 
-  return { user: user.asReadonly(), isLoggedIn }; // [!code highlight]
-}); // [!code highlight]
+  const me = rxResource({ stream: () => authGateway.getUserMe() });
 
-@Component({ ... })
-export class MyComponent {
-  readonly auth = injectAuth(); // [!code highlight]
-}
+  const isAdmin = computed(() => me().hasValue() && me.value().roles.includes('admin'));
+
+  return { userMe: me.asReadonly(), isAdmin };
+});
+
 ```
 
 ## Parameters
@@ -89,9 +86,9 @@ Even if an injectable is defined with `.root`, you can still provide it manually
 
 ```angular-ts
 const [injectConfig, provideConfig] = createInjectable.root( // [!code highlight]
-  'Config', // [!code highlight]
-  (apiUrl = 'https://api.example.com') => ({ apiUrl }) // [!code highlight]
-); // [!code highlight]
+  'Config',
+  (apiUrl = 'https://api.example.com') => ({ apiUrl }) //
+);
 
 @Component({
   providers: [
@@ -121,7 +118,7 @@ export class ManualInjection {
 
 ## Type Definitions
 
-```typescript
+```ts
 export type CreateInjectableReturn<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
@@ -138,8 +135,8 @@ interface CreateInjectableFn {
 
   root: <Arguments extends any[], Return>(
     description: string,
-    factory: (...args: RootArguments<Arguments>) => Return
-  ) => CreateInjectableReturn<RootArguments<Arguments>, Return>;
+    factory: (...args: OptionalArgs<Arguments>) => Return
+  ) => CreateInjectableReturn<OptionalArgs<Arguments>, Return>;
 }
 ```
 

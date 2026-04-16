@@ -21,7 +21,7 @@ export type InjectedType<T> = T extends CreateInjectableReturn<any[], infer R> ?
 
 type Factory<Arguments extends any[], Return> = (...args: Arguments) => Return;
 
-type RootArguments<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
+type OptionalArgs<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
 
 export interface CreateInjectableFn {
   /**
@@ -93,8 +93,8 @@ export interface CreateInjectableFn {
    */
   root: <Arguments extends any[], Return>(
     description: string,
-    factory: (...args: RootArguments<Arguments>) => Return
-  ) => CreateInjectableReturn<RootArguments<Arguments>, Return>;
+    factory: (...args: OptionalArgs<Arguments>) => Return
+  ) => CreateInjectableReturn<OptionalArgs<Arguments>, Return>;
 }
 
 export const createInjectable: CreateInjectableFn = (() => {
