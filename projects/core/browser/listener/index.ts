@@ -1,12 +1,10 @@
 import {
   afterRenderEffect,
-  type CreateEffectOptions,
-  effect,
+  EffectCleanupFn,
   type EffectCleanupRegisterFn,
-  type EffectRef,
+  isSignal,
   untracked,
 } from '@angular/core';
-import { type BaseEffectNode, SIGNAL } from '@angular/core/primitives/signals';
 import {
   assertEventTarget,
   NOOP_EFFECT_REF,
@@ -137,7 +135,7 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
 
   const { runInContext } = setupContext(options?.injector, listenerImpl);
 
-  return runInContext(({ isServer }) => {
+  return runInContext(({ isServer, onCleanup }) => {
     if (isServer) {
       return NOOP_EFFECT_REF;
     }
@@ -184,13 +182,22 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
       });
     };
 
-    let effectRef: EffectRef;
-
     if (isSyncSetupRequired) {
-      effectRef = syncEffect(setupListener);
-    } else {
-      effectRef = afterRenderEffect({ read: setupListener });
+      let cleanupFn: EffectCleanupFn | null = null;
+
+      const destroy = () => cleanupFn?.();
+      const reactiveConsumerNeeded = isSignal(maybeReactiveTarget) || isSignal(maybeReactiveEvent);
+
+      setupListener(fn => (cleanupFn = fn));
+
+      onCleanup(destroy);
+
+      if (!reactiveConsumerNeeded) {
+        return { destroy };
+      }
     }
+
+    const effectRef = afterRenderEffect({ read: setupListener });
 
     return { destroy: () => effectRef.destroy() };
   });
@@ -223,22 +230,6 @@ function createModifier(applied: InternalListenerOptions): ListenerFunction {
       return createModifier({ ...applied, [prop]: true });
     },
   });
-}
-
-function syncEffect(
-  effectFn: (onCleanup: EffectCleanupRegisterFn) => void,
-  options?: CreateEffectOptions
-): EffectRef {
-  const effectRef = effect(effectFn, options);
-  const effectNode: BaseEffectNode = (effectRef as any)[SIGNAL];
-  try {
-    effectNode.run();
-  } catch (error) {
-    if (ngDevMode) {
-      console.warn('[syncEffect] Failed to run effectFn synchronously', error);
-    }
-  }
-  return effectRef;
 }
 
 interface InternalListenerOptions {
