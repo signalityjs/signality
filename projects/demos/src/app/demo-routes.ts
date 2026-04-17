@@ -326,4 +326,12 @@ export const DEMO_ROUTES: Route[] = [
     loadComponent: () =>
       import('../demos/window-size/window-size-demo').then(m => m.WindowSizeDemo),
   },
+  {
+    path: 'size-fn-virtual-scroll',
+    title: 'SizeFnVirtualScroll',
+    loadComponent: () =>
+      import('../demos/size-fn-virtual-scroll/size-fn-virtual-scroll-demo').then(
+        m => m.SizeFnVirtualScrollDemo
+      ),
+  },
 ];

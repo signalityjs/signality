@@ -3,7 +3,8 @@ export const NEW_ITEMS = [
   '/browser/text-selection',
   '/browser/device-pixel-ratio',
   '/elements/element-focus',
-  '/utilities/generate-id'
+  '/utilities/generate-id',
+  '/cdk-interop/virtual-scroll/size-fn-virtual-scroll'
 ];
 
 export function isNew(link: string): boolean {
