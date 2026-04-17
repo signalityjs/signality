@@ -1,74 +1,33 @@
 name: '🚀 Feature Request'
 description: 'Suggest a new utility or enhancement'
-labels: ['enhancement']
 
 body:
-  - type: markdown
+  - type: dropdown
+    id: affected-packages
     attributes:
-      value: |
-        Thank you for contributing to Signality!
-
-        Before submitting a new request, please check if a similar feature has already been discussed or implemented.
-
-        Feature requests that describe a clear use case and motivation are more likely to be accepted and prioritized.
+      label: Which @signality/* package(s) are relevant/related to the feature request?
+      options:
+        - core
+        - cdk-interop
+      multiple: true
 
   - type: textarea
     id: description
     attributes:
-      label: Feature Description
-      description: Briefly describe the feature or enhancement you are requesting.
-      placeholder: 'Example: Add reactive wrapper for Web Speech API.'
-    validations:
-      required: true
-
-  - type: textarea
-    id: use-case
-    attributes:
-      label: Use Case and Justification
-      description: |
-        What problem does this feature solve?
-        Please describe a real-world scenario where this feature would be useful.
-      placeholder: 'Example: Voice-controlled applications need reactive access to speech recognition state and results.'
+      label: Description
     validations:
       required: true
 
   - type: textarea
     id: proposed-solution
     attributes:
-      label: Proposed Solution or API
-      description: |
-        Describe how the feature could be implemented or exposed via the API.
-        Code snippets or template examples are very helpful.
-      placeholder: |
-        Example:
-        const speech = speechRecognition({
-          lang: 'en-US',
-          continuous: true,
-        });
-
-        // Reactive signals
-        speech.isListening();
-        speech.transcript();
-        speech.error();
-
-        // Actions
-        speech.start();
-        speech.stop();
+      label: Proposed solution
     validations:
       required: true
 
   - type: textarea
-    id: alternatives
+    id: alternatives-considered
     attributes:
-      label: Considered Alternatives
-      description: |
-        Have you tried workarounds or other approaches to achieve similar behavior?
-      placeholder: 'Example: Tried using Web Speech API directly, but managing subscriptions and cleanup is cumbersome.'
-
-  - type: textarea
-    id: resources
-    attributes:
-      label: Additional Information
-      description: |
-        Add any related links, screenshots, or references to similar implementations.
-      placeholder: 'Example: Similar to VueUse useSpeechRecognition - https://vueuse.org/core/useSpeechRecognition/'
+      label: Alternatives considered
+    validations:
+      required: true
