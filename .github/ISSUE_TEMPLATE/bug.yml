@@ -65,7 +65,7 @@ body:
         - Other
         - N/A (SSR issue)
     validations:
-      required: true
+      required: false
 
   - type: dropdown
     id: operating_system
@@ -79,7 +79,7 @@ body:
         - iOS
         - Android
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: additional
