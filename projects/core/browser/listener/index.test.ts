@@ -1,397 +1,545 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { listener, setupSync } from './index';
+import { listener } from './index';
+
+function click(element: HTMLElement, options?: MouseEventInit): MouseEvent {
+  const event = new MouseEvent('click', { bubbles: true, cancelable: true, ...options });
+  element.dispatchEvent(event);
+  return event;
+}
 
 describe(listener.name, () => {
-  describe('with reactive target (signal query)', () => {
-    @Component({
-      template: '<button #btn>Click me</button>',
-    })
-    class TestComponent {
-      readonly btn = viewChild<ElementRef>('btn');
-
+  describe('reactive target (signal query)', () => {
+    @Component({ template: '<button #btn>Click me</button>' })
+    class HostComponent {
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
       clickCount = 0;
 
       constructor() {
-        listener(this.btn, 'click', () => {
-          this.clickCount++;
-        });
+        listener(this.btn, 'click', () => this.clickCount++);
       }
     }
 
-    function createComponent() {
-      const fixture = TestBed.createComponent(TestComponent);
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();
 
       return {
-        cmp: fixture.componentInstance,
-        target: fixture.nativeElement.querySelector('button'),
+        component: fixture.componentInstance,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
       };
     }
 
-    it('should attach event listener', () => {
-      const { cmp, target } = createComponent();
+    it('attaches the event listener', () => {
+      const { component, button } = setup();
 
-      target.click();
+      click(button);
 
-      expect(cmp.clickCount).toBe(1);
+      expect(component.clickCount).toBe(1);
     });
 
-    it('should handle multiple events', () => {
-      const { cmp, target } = createComponent();
+    it('handles repeated events', () => {
+      const { component, button } = setup();
+      const CLICK_COUNT = 3;
 
-      target.click();
-      target.click();
-      target.click();
+      for (let i = 0; i < CLICK_COUNT; i++) {
+        click(button);
+      }
 
-      expect(cmp.clickCount).toBe(3);
+      expect(component.clickCount).toBe(CLICK_COUNT);
     });
   });
 
-  describe('with non-reactive target (ElementRef)', () => {
-    @Component({
-      template: '<button>Click me</button>',
-    })
-    class TestComponent {
+  describe('non-reactive target (injected ElementRef)', () => {
+    @Component({ template: '<button>Click me</button>' })
+    class HostComponent {
       readonly elementRef = inject(ElementRef);
       clickCount = 0;
 
       constructor() {
-        listener(this.elementRef, 'click', () => {
-          this.clickCount++;
-        });
+        listener(this.elementRef, 'click', () => this.clickCount++);
       }
     }
 
-    function createComponent() {
-      const fixture = TestBed.createComponent(TestComponent);
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();
-      return { cmp: fixture.componentInstance, hostEl: fixture.nativeElement };
+
+      return {
+        component: fixture.componentInstance,
+        host: fixture.nativeElement as HTMLElement,
+      };
     }
 
-    it('should attach event listener to host element', () => {
-      const { cmp, hostEl } = createComponent();
+    it('attaches the event listener to the host element', () => {
+      const { component, host } = setup();
 
-      hostEl.click();
+      click(host);
 
-      expect(cmp.clickCount).toBe(1);
+      expect(component.clickCount).toBe(1);
     });
   });
 
-  describe('with window target (global object)', () => {
+  describe('window target', () => {
     @Component({ template: '' })
-    class TestComponent {
+    class HostComponent {
       resizeCount = 0;
 
       constructor() {
-        setupSync(() => {
-          listener(window, 'resize', () => {
-            this.resizeCount++;
-          });
-        });
+        listener(window, 'resize', () => this.resizeCount++);
       }
     }
 
-    function createComponent() {
-      const fixture = TestBed.createComponent(TestComponent);
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();
-      return { cmp: fixture.componentInstance };
+      return { component: fixture.componentInstance };
     }
 
-    it('should attach event listener to window', () => {
-      const { cmp } = createComponent();
+    it('attaches the event listener to window', () => {
+      const { component } = setup();
 
       window.dispatchEvent(new Event('resize'));
 
-      expect(cmp.resizeCount).toBe(1);
+      expect(component.resizeCount).toBe(1);
     });
   });
 
-  describe('with document target (global object)', () => {
-    @Component({
-      template: '',
-    })
-    class TestComponent {
+  describe('document target', () => {
+    @Component({ template: '' })
+    class HostComponent {
       clickCount = 0;
 
       constructor() {
-        setupSync(() => {
-          listener(document, 'click', () => {
-            this.clickCount++;
-          });
+        listener(document, 'click', () => this.clickCount++);
+      }
+    }
+
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
+      return { component: fixture.componentInstance };
+    }
+
+    it('attaches the event listener to document', () => {
+      const { component } = setup();
+
+      click(document.documentElement);
+
+      expect(component.clickCount).toBe(1);
+    });
+  });
+
+  describe('modifier: capture', () => {
+    @Component({ template: '<div #parent><button #child>Click</button></div>' })
+    class HostComponent {
+      readonly parent = viewChild<ElementRef<HTMLDivElement>>('parent');
+      readonly child = viewChild<ElementRef<HTMLButtonElement>>('child');
+      events: string[] = [];
+
+      constructor() {
+        listener.capture(this.parent, 'click', () => this.events.push('parent-capture'));
+        listener(this.child, 'click', () => this.events.push('child-bubble'));
+      }
+    }
+
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
+
+      return {
+        component: fixture.componentInstance,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
+      };
+    }
+
+    it('fires the capture listener before the bubble listener', () => {
+      const { component, button } = setup();
+
+      click(button);
+
+      expect(component.events).toEqual(['parent-capture', 'child-bubble']);
+    });
+  });
+
+  describe('modifier: prevent', () => {
+    @Component({ template: '<a #link href="#test">Link</a>' })
+    class HostComponent {
+      readonly link = viewChild<ElementRef<HTMLAnchorElement>>('link');
+
+      constructor() {
+        listener.prevent(this.link, 'click', () => {
+          /* empty */
         });
       }
     }
 
-    function createComponent() {
-      const fixture = TestBed.createComponent(TestComponent);
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();
-      return { cmp: fixture.componentInstance };
+
+      return {
+        anchor: fixture.nativeElement.querySelector('a') as HTMLAnchorElement,
+      };
     }
 
-    it('should attach event listener to document', () => {
-      const { cmp } = createComponent();
+    it('prevents the default browser action', () => {
+      const { anchor } = setup();
 
-      document.dispatchEvent(new MouseEvent('click'));
+      const event = click(anchor);
 
-      expect(cmp.clickCount).toBe(1);
+      expect(event.defaultPrevented).toBe(true);
     });
   });
 
-  describe('modifiers', () => {
-    describe('capture', () => {
-      @Component({
-        template: '<div #parent><button #child>Click</button></div>',
-      })
-      class TestComponent {
-        readonly parent = viewChild<ElementRef>('parent');
-        readonly child = viewChild<ElementRef>('child');
-        events: string[] = [];
+  describe('modifier: stop', () => {
+    @Component({ template: '<div #parent><button #child>Click</button></div>' })
+    class HostComponent {
+      readonly parent = viewChild<ElementRef<HTMLDivElement>>('parent');
+      readonly child = viewChild<ElementRef<HTMLButtonElement>>('child');
+      childClicked = false;
+      parentClicked = false;
 
-        constructor() {
-          listener.capture(this.parent, 'click', () => {
-            this.events.push('parent-capture');
-          });
-          listener(this.child, 'click', () => {
-            this.events.push('child');
-          });
-        }
+      constructor() {
+        listener.stop(this.child, 'click', () => (this.childClicked = true));
+        listener(this.parent, 'click', () => (this.parentClicked = true));
       }
+    }
 
-      function createComponent() {
-        const fixture = TestBed.createComponent(TestComponent);
-        fixture.detectChanges();
-        return {
-          cmp: fixture.componentInstance,
-          childEl: fixture.nativeElement.querySelector('button'),
-        };
-      }
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
 
-      it('should execute capture listener first', () => {
-        const { cmp, childEl } = createComponent();
+      return {
+        component: fixture.componentInstance,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
+        parentEl: fixture.nativeElement.querySelector('div') as HTMLDivElement,
+      };
+    }
 
-        childEl.click();
+    it('still invokes the handler on the target element', () => {
+      const { component, button } = setup();
 
-        expect(cmp.events).toEqual(['parent-capture', 'child']);
-      });
+      click(button);
+
+      expect(component.childClicked).toBe(true);
     });
 
-    describe('prevent', () => {
-      @Component({
-        template: '<a #link href="#test">Link</a>',
-      })
-      class TestComponent {
-        readonly link = viewChild<ElementRef>('link');
-        defaultPrevented = false;
+    it('stops the event from bubbling to ancestor listeners', () => {
+      const { component, button } = setup();
 
-        constructor() {
-          listener.prevent(this.link, 'click', e => {
-            this.defaultPrevented = e.defaultPrevented;
-          });
-        }
+      click(button);
+
+      expect(component.parentClicked).toBe(false);
+    });
+  });
+
+  describe('modifier: self', () => {
+    @Component({ template: '<div #parent><button #child>Click</button></div>' })
+    class HostComponent {
+      readonly parent = viewChild<ElementRef<HTMLDivElement>>('parent');
+      parentClickCount = 0;
+
+      constructor() {
+        listener.self(this.parent, 'click', () => this.parentClickCount++);
       }
+    }
 
-      function createComponent() {
-        const fixture = TestBed.createComponent(TestComponent);
-        fixture.detectChanges();
-        return { cmp: fixture.componentInstance, linkEl: fixture.nativeElement.querySelector('a') };
-      }
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
 
-      it('should prevent default action', () => {
-        const { cmp, linkEl } = createComponent();
+      return {
+        component: fixture.componentInstance,
+        parentEl: fixture.nativeElement.querySelector('div') as HTMLDivElement,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
+      };
+    }
 
-        linkEl.click();
+    it('does not trigger when the event originates from a child element', () => {
+      const { component, button } = setup();
 
-        expect(cmp.defaultPrevented).toBe(true);
-      });
+      click(button);
+
+      expect(component.parentClickCount).toBe(0);
     });
 
-    describe('stop', () => {
-      @Component({
-        template: '<div #parent><button #child>Click</button></div>',
-      })
-      class TestComponent {
-        readonly parent = viewChild<ElementRef>('parent');
-        readonly child = viewChild<ElementRef>('child');
+    it('triggers when the event originates from the element itself', () => {
+      const { component, parentEl } = setup();
 
-        parentClicked = false;
+      click(parentEl);
 
-        constructor() {
-          listener.stop(this.child, 'click', () => {
-            /* empty */
-          });
-          listener(this.parent, 'click', () => {
-            this.parentClicked = true;
-          });
-        }
+      expect(component.parentClickCount).toBe(1);
+    });
+  });
+
+  describe('modifier: once', () => {
+    @Component({ template: '<button #btn>Click me</button>' })
+    class HostComponent {
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
+      clickCount = 0;
+
+      constructor() {
+        listener.once(this.btn, 'click', () => this.clickCount++);
       }
+    }
 
-      function createComponent() {
-        const fixture = TestBed.createComponent(TestComponent);
-        fixture.detectChanges();
-        return {
-          cmp: fixture.componentInstance,
-          childEl: fixture.nativeElement.querySelector('button'),
-        };
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
+
+      return {
+        component: fixture.componentInstance,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
+      };
+    }
+
+    it('invokes the handler only on the first event', () => {
+      const { component, button } = setup();
+
+      click(button);
+      click(button);
+      click(button);
+
+      expect(component.clickCount).toBe(1);
+    });
+  });
+
+  describe('combined modifiers (prevent + stop)', () => {
+    @Component({ template: '<div #parent><a #link href="#test">Link</a></div>' })
+    class HostComponent {
+      readonly link = viewChild<ElementRef<HTMLAnchorElement>>('link');
+      readonly parent = viewChild<ElementRef<HTMLDivElement>>('parent');
+      linkClicked = false;
+      parentClicked = false;
+
+      constructor() {
+        listener.prevent.stop(this.link, 'click', () => (this.linkClicked = true));
+        listener(this.parent, 'click', () => (this.parentClicked = true));
       }
+    }
 
-      it('should stop event propagation', () => {
-        const { cmp, childEl } = createComponent();
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
 
-        childEl.click();
+      return {
+        component: fixture.componentInstance,
+        anchor: fixture.nativeElement.querySelector('a') as HTMLAnchorElement,
+      };
+    }
 
-        expect(cmp.parentClicked).toBe(false);
-      });
+    it('invokes the handler', () => {
+      const { component, anchor } = setup();
+
+      click(anchor);
+
+      expect(component.linkClicked).toBe(true);
     });
 
-    describe('self', () => {
-      @Component({
-        template: '<div #parent><button #child>Click</button></div>',
-      })
-      class TestComponent {
-        readonly parent = viewChild<ElementRef>('parent');
-        parentClickCount = 0;
+    it('prevents the default browser action', () => {
+      const { anchor } = setup();
 
-        constructor() {
-          listener.self(this.parent, 'click', () => {
-            this.parentClickCount++;
-          });
-        }
-      }
+      const event = click(anchor);
 
-      function createComponent() {
-        const fixture = TestBed.createComponent(TestComponent);
-        fixture.detectChanges();
-        return {
-          cmp: fixture.componentInstance,
-          parentEl: fixture.nativeElement.querySelector('div'),
-          childEl: fixture.nativeElement.querySelector('button'),
-        };
-      }
-
-      it('should only trigger when event.target is element itself', () => {
-        const { cmp, parentEl, childEl } = createComponent();
-
-        childEl.click();
-        expect(cmp.parentClickCount).toBe(0);
-
-        parentEl.click();
-        expect(cmp.parentClickCount).toBe(1);
-      });
+      expect(event.defaultPrevented).toBe(true);
     });
 
-    describe('combined modifiers', () => {
-      @Component({
-        template: '<div #parent><a #link href="#test">Link</a></div>',
-      })
-      class TestComponent {
-        readonly link = viewChild<ElementRef>('link');
-        readonly parent = viewChild<ElementRef>('parent');
-        linkClicked = false;
-        parentClicked = false;
+    it('stops the event from reaching ancestor listeners', () => {
+      const { component, anchor } = setup();
 
-        constructor() {
-          listener.prevent.stop(this.link, 'click', () => {
-            this.linkClicked = true;
-          });
-          listener(this.parent, 'click', () => {
-            this.parentClicked = true;
-          });
-        }
-      }
+      click(anchor);
 
-      function createComponent() {
-        const fixture = TestBed.createComponent(TestComponent);
-        fixture.detectChanges();
-        return { cmp: fixture.componentInstance, linkEl: fixture.nativeElement.querySelector('a') };
-      }
-
-      it('should apply multiple modifiers', () => {
-        const { cmp, linkEl } = createComponent();
-
-        const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
-        linkEl.dispatchEvent(clickEvent);
-
-        expect(cmp.linkClicked).toBe(true);
-        expect(cmp.parentClicked).toBe(false);
-        expect(clickEvent.defaultPrevented).toBe(true);
-      });
+      expect(component.parentClicked).toBe(false);
     });
   });
 
   describe('reactive event name', () => {
-    @Component({
-      template: '<button #btn>Button</button>',
-    })
-    class TestComponent {
-      readonly btn = viewChild<ElementRef>('btn');
+    @Component({ template: '<button #btn>Button</button>' })
+    class HostComponent {
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
       readonly eventName = signal<'click' | 'dblclick'>('click');
       eventCount = 0;
 
       constructor() {
-        listener(this.btn, this.eventName, () => {
-          this.eventCount++;
-        });
+        listener(this.btn, this.eventName, () => this.eventCount++);
       }
     }
 
-    function createComponent() {
-      const fixture = TestBed.createComponent(TestComponent);
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();
+
       return {
-        cmp: fixture.componentInstance,
-        childEl: fixture.nativeElement.querySelector('button'),
+        component: fixture.componentInstance,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
       };
     }
 
-    it('should update listener when event name changes', () => {
-      const { cmp, childEl } = createComponent();
+    it('listens to the initial event name', () => {
+      const { component, button } = setup();
 
-      childEl.click();
-      expect(cmp.eventCount).toBe(1);
+      click(button);
 
-      cmp.eventName.set('dblclick');
+      expect(component.eventCount).toBe(1);
+    });
+
+    it('switches to the new event name after the signal changes', () => {
+      const { component, button } = setup();
+
+      component.eventName.set('dblclick');
       TestBed.tick();
-      childEl.click();
 
-      expect(cmp.eventCount).toBe(1);
+      button.dispatchEvent(new MouseEvent('dblclick'));
 
-      childEl.dispatchEvent(new MouseEvent('dblclick'));
+      expect(component.eventCount).toBe(1);
+    });
 
-      expect(cmp.eventCount).toBe(2);
+    it('removes the old event listener after the event name changes', () => {
+      const { component, button } = setup();
+
+      component.eventName.set('dblclick');
+      TestBed.tick();
+
+      // Firing the previous event name must no longer increment the counter
+      click(button);
+
+      expect(component.eventCount).toBe(0);
     });
   });
 
-  describe('destroy', () => {
+  describe('reactive target changes', () => {
     @Component({
-      template: '<button #btn>Click me</button>',
+      template: `
+        @if (showButton()) {
+        <button #btn>Click me</button>
+        }
+      `,
     })
-    class TestComponent {
-      readonly btn = viewChild<ElementRef>('btn');
+    class HostComponent {
+      readonly showButton = signal(true);
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
       clickCount = 0;
-      ref = listener(this.btn, 'click', () => {
-        this.clickCount++;
-      });
+
+      ref = listener(this.btn, 'click', () => this.clickCount++);
     }
 
-    function createComponent() {
-      const fixture = TestBed.createComponent(TestComponent);
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
       fixture.detectChanges();
+
       return {
-        cmp: fixture.componentInstance,
-        childEl: fixture.nativeElement.querySelector('button'),
+        component: fixture.componentInstance,
+        fixture,
+        getButton: () => fixture.nativeElement.querySelector('button') as HTMLButtonElement | null,
       };
     }
 
-    it('should remove listener when destroyed', () => {
-      const { cmp, childEl } = createComponent();
+    it('reattaches the listener when the target re-enters the DOM', () => {
+      const { component, fixture, getButton } = setup();
 
-      childEl.click();
-      expect(cmp.clickCount).toBe(1);
+      click(getButton()!);
+      expect(component.clickCount).toBe(1);
 
-      cmp.ref.destroy();
-      childEl.click();
-      expect(cmp.clickCount).toBe(1);
+      component.showButton.set(false);
+      fixture.detectChanges();
+
+      component.showButton.set(true);
+      fixture.detectChanges();
+      click(getButton()!);
+
+      expect(component.clickCount).toBe(2);
+    });
+
+    it('stops receiving events when the target is removed from the DOM', () => {
+      const { component, fixture, getButton } = setup();
+
+      click(getButton()!);
+      expect(component.clickCount).toBe(1);
+
+      component.showButton.set(false);
+      fixture.detectChanges();
+
+      // No element to click; counter must remain unchanged
+      expect(getButton()).toBeNull();
+      expect(component.clickCount).toBe(1);
+    });
+  });
+
+  describe('null / undefined target', () => {
+    @Component({ template: '' })
+    class HostComponent {
+      readonly target = signal<ElementRef | null>(null);
+      clickCount = 0;
+
+      constructor() {
+        listener(this.target, 'click', () => this.clickCount++);
+      }
+    }
+
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
+      return { component: fixture.componentInstance };
+    }
+
+    it('does not throw when the target is null', () => {
+      expect(() => setup()).not.toThrow();
+    });
+
+    it('does not invoke the handler when the target is null', () => {
+      const { component } = setup();
+
+      document.dispatchEvent(new MouseEvent('click'));
+
+      expect(component.clickCount).toBe(0);
+    });
+  });
+
+  describe('ListenerRef.destroy()', () => {
+    @Component({ template: '<button #btn>Click me</button>' })
+    class HostComponent {
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
+      clickCount = 0;
+      readonly ref = listener(this.btn, 'click', () => this.clickCount++);
+    }
+
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
+
+      return {
+        component: fixture.componentInstance,
+        button: fixture.nativeElement.querySelector('button') as HTMLButtonElement,
+      };
+    }
+
+    it('stops the listener after destroy() is called', () => {
+      const { component, button } = setup();
+
+      click(button);
+      expect(component.clickCount).toBe(1);
+
+      component.ref.destroy();
+      click(button);
+
+      expect(component.clickCount).toBe(1);
+    });
+
+    it('is idempotent — calling destroy() multiple times does not throw', () => {
+      const { component, button } = setup();
+
+      click(button);
+      expect(component.clickCount).toBe(1);
+
+      expect(() => {
+        component.ref.destroy();
+        component.ref.destroy();
+        component.ref.destroy();
+      }).not.toThrow();
+
+      click(button);
+      expect(component.clickCount).toBe(1);
     });
   });
 });
