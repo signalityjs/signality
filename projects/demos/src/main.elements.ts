@@ -67,6 +67,7 @@ import { WindowSizeDemo } from './demos/window-size/window-size-demo';
 import { ScreenOrientationDemo } from './demos/screen-orientation/screen-orientation-demo';
 import { DevicePixelRatioDemo } from './demos/device-pixel-ratio/device-pixel-ratio-demo';
 import { GenerateIdDemo } from './demos/generate-id/generate-id-demo';
+import { SizeFnVirtualScrollDemo } from './demos/size-fn-virtual-scroll/size-fn-virtual-scroll-demo';
 
 const DEMOS = [
   { component: ActiveElementDemo, name: 'signality-demo-active-element' },
@@ -124,6 +125,7 @@ const DEMOS = [
   { component: WebWorkerDemo, name: 'signality-demo-web-worker' },
   { component: WindowFocusDemo, name: 'signality-demo-window-focus' },
   { component: WindowSizeDemo, name: 'signality-demo-window-size' },
+  { component: SizeFnVirtualScrollDemo, name: 'signality-demo-size-fn-virtual-scroll' },
 ] as const;
 
 (async () => {

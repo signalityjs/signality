@@ -1,0 +1,62 @@
+.size-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & > input {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .label {
+    font-size: 0.8125rem;
+    color: #71717a;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.scroll-to {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+
+  & > input {
+    max-width: 150px;
+    margin-right: 10px;
+  }
+}
+
+.btn {
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #deb3eb;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #e8c8f5;
+  }
+
+  &:disabled {
+    color: #52525b;
+    cursor: default;
+  }
+}
+
+cdk-virtual-scroll-viewport {
+  height: 400px;
+  margin-top: 20px;
+  border: 1px solid #71717a;
+  border-radius: 4px;
+  color: #e4e4e7;
+}
+
+.item {
+  border: 1px solid #71717a;
+  border-radius: 4px;
+  margin: 0 5px;
+}

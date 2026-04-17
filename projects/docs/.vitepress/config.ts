@@ -281,6 +281,15 @@ export default defineConfig({
           { text: 'FocusMonitor', link: '/cdk-interop/focus-monitor' },
           { text: 'InputModality', link: '/cdk-interop/input-modality' },
           { text: 'LiveAnnouncer', link: '/cdk-interop/live-announcer' },
+          {
+            text: 'VirtualScroll', 
+            items: [
+              {
+                text: 'SizeFnVirtualScroll',
+                link: '/cdk-interop/virtual-scroll/size-fn-virtual-scroll'
+              }
+            ]
+          },
         ],
       },
       {

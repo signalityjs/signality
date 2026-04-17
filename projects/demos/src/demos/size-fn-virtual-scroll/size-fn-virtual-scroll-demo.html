@@ -1,0 +1,36 @@
+<ng-demo-wrapper [demoPath]="'size-fn-virtual-scroll/size-fn-virtual-scroll-demo'" [code]="importCode">
+  <demo-card>
+    <div class="size-controls">
+      <span class="label">evenItemSize</span>
+      <input type="number" min="0" demoInput placeholder="Even items size" [(ngModel)]="evenItemSize" />
+      <span class="label">oddItemSize</span>
+      <input type="number" min="0" demoInput placeholder="Odd items size" [(ngModel)]="oddItemSize" />
+      <span class="label">gap</span>
+      <input type="number" min="0" demoInput placeholder="Gap" [(ngModel)]="gap" />
+      <span class="label">paddingTop</span>
+      <input type="number" min="0" demoInput placeholder="Padding top" [(ngModel)]="paddingTop" />
+      <span class="label">paddingBottom</span>
+      <input type="number" min="0" demoInput placeholder="Padding bottom" [(ngModel)]="paddingBottom" />
+    </div>
+    <div class="scroll-to">
+      <input #scrollToNgModel="ngModel" type="number" demoInput placeholder="Index to scroll to" min="0" [max]="items.length - 1" [(ngModel)]="indexToScrollTo" />
+      <button class="btn" [disabled]="!scrollToNgModel.valid" (click)="viewport.scrollToIndex(indexToScrollTo())">Scroll To Index</button>
+    </div>
+    <cdk-virtual-scroll-viewport #viewport
+      [itemSizeFn]="itemSizeFn()"
+      [gap]="gap()"
+      [paddingTop]="paddingTop()"
+      [paddingBottom]="paddingBottom()"
+    >
+      <div
+        *cdkVirtualFor="let item of items; let i = index; let last = last; let first = first"
+        class="item"
+        [style.height.px]="itemSizeFn()(i, items.length)"
+        [style.margin-bottom.px]="last ? paddingBottom() : gap()"
+        [style.margin-top.px]="first ? paddingTop() : 0"
+      >
+        {{ item }}
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </demo-card>
+</ng-demo-wrapper>
