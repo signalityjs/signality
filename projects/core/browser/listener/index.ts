@@ -198,7 +198,6 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
     }
 
     const effectRef = afterRenderEffect({ read: setupListener });
-
     return { destroy: () => effectRef.destroy() };
   });
 }
