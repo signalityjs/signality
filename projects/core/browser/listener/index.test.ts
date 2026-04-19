@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { listener } from './index';
+import { listener, setupSync } from './index';
 
 function click(element: HTMLElement, options?: MouseEventInit): MouseEvent {
   const event = new MouseEvent('click', { bubbles: true, cancelable: true, ...options });
@@ -12,8 +12,8 @@ describe(listener.name, () => {
   describe('reactive target (signal query)', () => {
     @Component({ template: '<button #btn>Click me</button>' })
     class HostComponent {
-      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
       clickCount = 0;
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
 
       constructor() {
         listener(this.btn, 'click', () => this.clickCount++);
@@ -53,11 +53,10 @@ describe(listener.name, () => {
   describe('non-reactive target (injected ElementRef)', () => {
     @Component({ template: '<button>Click me</button>' })
     class HostComponent {
-      readonly elementRef = inject(ElementRef);
       clickCount = 0;
 
       constructor() {
-        listener(this.elementRef, 'click', () => this.clickCount++);
+        listener(inject(ElementRef), 'click', () => this.clickCount++);
       }
     }
 
@@ -357,9 +356,9 @@ describe(listener.name, () => {
   describe('reactive event name', () => {
     @Component({ template: '<button #btn>Button</button>' })
     class HostComponent {
+      eventCount = 0;
       readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
       readonly eventName = signal<'click' | 'dblclick'>('click');
-      eventCount = 0;
 
       constructor() {
         listener(this.btn, this.eventName, () => this.eventCount++);
@@ -417,11 +416,10 @@ describe(listener.name, () => {
       `,
     })
     class HostComponent {
+      clickCount = 0;
       readonly showButton = signal(true);
       readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
-      clickCount = 0;
-
-      ref = listener(this.btn, 'click', () => this.clickCount++);
+      readonly listener = listener(this.btn, 'click', () => this.clickCount++);
     }
 
     function setup() {
@@ -469,8 +467,8 @@ describe(listener.name, () => {
   describe('null / undefined target', () => {
     @Component({ template: '' })
     class HostComponent {
-      readonly target = signal<ElementRef | null>(null);
       clickCount = 0;
+      readonly target = signal<ElementRef | null>(null);
 
       constructor() {
         listener(this.target, 'click', () => this.clickCount++);
@@ -490,7 +488,7 @@ describe(listener.name, () => {
     it('does not invoke the handler when the target is null', () => {
       const { component } = setup();
 
-      document.dispatchEvent(new MouseEvent('click'));
+      click(document.documentElement);
 
       expect(component.clickCount).toBe(0);
     });
@@ -499,9 +497,9 @@ describe(listener.name, () => {
   describe('ListenerRef.destroy()', () => {
     @Component({ template: '<button #btn>Click me</button>' })
     class HostComponent {
-      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
       clickCount = 0;
-      readonly ref = listener(this.btn, 'click', () => this.clickCount++);
+      readonly btn = viewChild<ElementRef<HTMLButtonElement>>('btn');
+      readonly listener = listener(this.btn, 'click', () => this.clickCount++);
     }
 
     function setup() {
@@ -520,26 +518,67 @@ describe(listener.name, () => {
       click(button);
       expect(component.clickCount).toBe(1);
 
-      component.ref.destroy();
+      component.listener.destroy();
       click(button);
-
       expect(component.clickCount).toBe(1);
     });
 
-    it('is idempotent — calling destroy() multiple times does not throw', () => {
+    it('calling destroy() multiple times does not throw', () => {
       const { component, button } = setup();
 
       click(button);
       expect(component.clickCount).toBe(1);
-
       expect(() => {
-        component.ref.destroy();
-        component.ref.destroy();
-        component.ref.destroy();
+        component.listener.destroy();
+        component.listener.destroy();
+        component.listener.destroy();
       }).not.toThrow();
 
       click(button);
       expect(component.clickCount).toBe(1);
+    });
+  });
+
+  describe('setupSync', () => {
+    it('registers listener synchronously without render cycle', () => {
+      let eventCount = 0;
+
+      TestBed.runInInjectionContext(() => {
+        setupSync(() => {
+          listener(document, 'custom-event', () => eventCount++);
+        });
+      });
+
+      document.dispatchEvent(new Event('custom-event'));
+
+      expect(eventCount).toBe(1);
+    });
+
+    it('returns ListenerRef that can destroy the sync listener', () => {
+      let eventCount = 0;
+
+      const listenerRef = TestBed.runInInjectionContext(() => {
+        return setupSync(() => listener(document, 'custom-event', () => eventCount++));
+      });
+
+      document.dispatchEvent(new Event('custom-event'));
+      expect(eventCount).toBe(1);
+
+      listenerRef.destroy();
+      document.dispatchEvent(new Event('custom-event'));
+      expect(eventCount).toBe(1);
+    });
+
+    it('without setupSync, listener is not registered synchronously', () => {
+      let eventCount = 0;
+
+      TestBed.runInInjectionContext(() => {
+        listener(document, 'custom-event', () => eventCount++);
+      });
+
+      document.dispatchEvent(new Event('custom-event'));
+
+      expect(eventCount).toBe(0);
     });
   });
 });
