@@ -47,11 +47,11 @@ export function fragment(options?: FragmentOptions): WritableSignal<string | nul
     const writableFragment = linkedSignal(() => fragment());
 
     effect(() => {
-      const updated = writableFragment() ?? undefined;
+      const updated = writableFragment();
       // to prevent a navigation on initialization if the URL already has a fragment
       if (updated !== fragment())
         router.navigate([], {
-          fragment: updated,
+          fragment: updated ?? undefined,
           replaceUrl: options?.replaceUrl,
           queryParamsHandling: 'preserve',
         });
