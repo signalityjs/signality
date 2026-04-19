@@ -9,7 +9,7 @@ interface InjectFn<Return> {
 
 type ProvideFn<Arguments extends any[]> = (...args: Arguments) => Provider;
 
-export type CreateInjectableReturn<Arguments extends any[], InjectReturn> = Readonly<
+export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
     provideFn: ProvideFn<Arguments>,
@@ -51,7 +51,7 @@ export interface CreateInjectableFn {
   <Arguments extends any[], Return>(
     description: string,
     factory: Factory<Arguments, Return>
-  ): CreateInjectableReturn<Arguments, Return>;
+  ): CreateInjectableRef<Arguments, Return>;
 
   /**
    * Creates an injectable that is provided at the application root by default (`providedIn: 'root'`).
@@ -92,7 +92,7 @@ export interface CreateInjectableFn {
   root: <Arguments extends any[], Return>(
     description: string,
     factory: (...args: OptionalArgs<Arguments>) => Return
-  ) => CreateInjectableReturn<OptionalArgs<Arguments>, Return>;
+  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
 }
 
 export const createInjectable: CreateInjectableFn = (() => {
@@ -108,7 +108,7 @@ function createInjectableFn<Arguments extends any[], Return>(
   description: string,
   factory: Factory<Arguments, Return>,
   root = false
-): CreateInjectableReturn<Arguments, Return> {
+): CreateInjectableRef<Arguments, Return> {
   const injectionToken = new InjectionToken<Return>(
     isDevMode() ? description : '',
     root ? { providedIn: 'root', factory } : undefined

@@ -119,7 +119,7 @@ export class ManualInjection {
 ## Type Definitions
 
 ```ts
-export type CreateInjectableReturn<Arguments extends any[], InjectReturn> = Readonly<
+export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
     provideFn: ProvideFn<Arguments>,
@@ -131,12 +131,12 @@ interface CreateInjectableFn {
   <Arguments extends any[], Return>(
     description: string,
     factory: Factory<Arguments, Return>
-  ): CreateInjectableReturn<Arguments, Return>;
+  ): CreateInjectableRef<Arguments, Return>;
 
   root: <Arguments extends any[], Return>(
     description: string,
     factory: (...args: OptionalArgs<Arguments>) => Return
-  ) => CreateInjectableReturn<OptionalArgs<Arguments>, Return>;
+  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
 }
 ```
 
