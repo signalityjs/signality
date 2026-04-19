@@ -1,16 +1,24 @@
-import { type CreateSignalOptions, inject, type Signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {
+  effect,
+  inject,
+  linkedSignal,
+  type CreateSignalOptions,
+  type WritableSignal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, type NavigationExtras } from '@angular/router';
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
-export type FragmentOptions = CreateSignalOptions<string | null> & WithInjector;
+export type FragmentOptions = CreateSignalOptions<string | null> &
+  WithInjector &
+  Pick<NavigationExtras, 'replaceUrl'>;
 
 /**
  * Reactive wrapper around the [Angular Router](https://angular.dev/guide/routing) URL fragment.
  *
- * @param options - Optional configuration including signal options and injector
- * @returns A signal containing the current URL fragment (without #), or null
+ * @param options - Optional configuration including signal options, injector and navigation behavior
+ * @returns A writable signal containing the current URL fragment (without #), or null
  *
  * @example
  * ```typescript
@@ -28,12 +36,27 @@ export type FragmentOptions = CreateSignalOptions<string | null> & WithInjector;
  * }
  * ```
  */
-export function fragment(options?: FragmentOptions): Signal<string | null> {
+export function fragment(options?: FragmentOptions): WritableSignal<string | null> {
   const { runInContext } = setupContext(options?.injector, fragment);
 
   return runInContext(() => {
+    const router = inject(Router);
     const { fragment: fragmentChanges, snapshot } = inject(ActivatedRoute);
 
-    return toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment });
+    const fragment = toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment });
+    const writableFragment = linkedSignal(() => fragment());
+
+    effect(() => {
+      const updated = writableFragment() ?? undefined;
+      // to prevent a navigation on initialization if the URL already has a fragment
+      if (updated !== fragment())
+        router.navigate([], {
+          fragment: updated,
+          replaceUrl: options?.replaceUrl,
+          queryParamsHandling: 'preserve',
+        });
+    });
+
+    return writableFragment;
   });
 }
