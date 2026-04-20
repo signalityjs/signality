@@ -1,13 +1,7 @@
-import {
-  effect,
-  inject,
-  linkedSignal,
-  type CreateSignalOptions,
-  type WritableSignal,
-} from '@angular/core';
+import { inject, linkedSignal, type CreateSignalOptions, type WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, type NavigationExtras } from '@angular/router';
-import { setupContext } from '@signality/core/internal';
+import { proxySignal, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
 export type FragmentOptions = CreateSignalOptions<string | null> &
@@ -43,20 +37,19 @@ export function fragment(options?: FragmentOptions): WritableSignal<string | nul
     const router = inject(Router);
     const { fragment: fragmentChanges, snapshot } = inject(ActivatedRoute);
 
-    const fragment = toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment });
-    const writableFragment = linkedSignal(() => fragment());
+    const fragment = linkedSignal(
+      toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment })
+    );
 
-    effect(() => {
-      const updated = writableFragment();
-      // to prevent a navigation on initialization if the URL already has a fragment
-      if (updated !== fragment())
-        router.navigate([], {
-          fragment: updated ?? undefined,
+    return proxySignal(fragment, {
+      set: async (fragment, source) => {
+        const succeeded = await router.navigate([], {
+          fragment: fragment ?? undefined,
           replaceUrl: options?.replaceUrl,
           queryParamsHandling: 'preserve',
         });
+        if (succeeded) source.set(fragment);
+      },
     });
-
-    return writableFragment;
   });
 }
