@@ -20,7 +20,7 @@ export interface SignalProxyHandler<T> {
 export function proxySignal<T>(
   source: WritableSignal<T>,
   handler: SignalProxyHandler<T>,
-  options?: CreateSignalOptions<T>
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): WritableSignal<T>;
 
 /**
@@ -29,14 +29,13 @@ export function proxySignal<T>(
  */
 export function proxySignal<T>(
   source: Signal<T>,
-  handler: Omit<SignalProxyHandler<T>, 'set'>,
-  options?: CreateSignalOptions<T>
+  handler: Omit<SignalProxyHandler<T>, 'set'>
 ): Signal<T>;
 
 export function proxySignal<T>(
   source: Signal<T> | WritableSignal<T>,
   handler: SignalProxyHandler<T>,
-  options?: CreateSignalOptions<T>
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): WritableSignal<T> | Signal<T> {
   const hooks = writableHooks(source, handler, options);
 
@@ -55,7 +54,7 @@ export function proxySignal<T>(
 function writableHooks<T>(
   source: WritableSignal<T> | Signal<T>,
   handler: SignalProxyHandler<T>,
-  options?: CreateSignalOptions<T>
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): Record<string, ((...args: any[]) => any) | undefined> {
   const isWritable = 'set' in source && typeof source.set === 'function';
   const hooks: Record<string, ((...args: any[]) => any) | undefined> = {};
