@@ -1,13 +1,8 @@
-import {
-  afterRenderEffect,
-  EffectCleanupFn,
-  type EffectCleanupRegisterFn,
-  isSignal,
-  untracked,
-} from '@angular/core';
+import { afterRenderEffect, isSignal, untracked } from '@angular/core';
 import {
   assertEventTarget,
   NOOP_EFFECT_REF,
+  NOOP_FN,
   setupContext,
   unrefElement,
 } from '@signality/core/internal';
@@ -132,7 +127,6 @@ export function setupSync<T>(listenerFactoryExecFn: () => T): T {
 
 function listenerImpl(applied: InternalListenerOptions, ...args: any[]): ListenerRef {
   const options = args[3] as ListenerOptions | undefined;
-
   const { runInContext } = setupContext(options?.injector, listenerImpl);
 
   return runInContext(({ isServer, onCleanup }) => {
@@ -162,13 +156,13 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
       untracked(() => handler.call(this, event));
     };
 
-    const setupListener = (onCleanup: EffectCleanupRegisterFn) => {
+    const setupListener = () => {
       const raw = toValue(maybeReactiveTarget);
       const target = unrefElement(raw);
       const event = toValue(maybeReactiveEvent);
 
       if (!target) {
-        return;
+        return NOOP_FN;
       }
 
       if (ngDevMode) {
@@ -177,27 +171,27 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
 
       target.addEventListener(event, untrackedHandler, nativeOptions);
 
-      onCleanup(() => {
+      return () => {
         target.removeEventListener(event, untrackedHandler, nativeOptions);
-      });
+      };
     };
 
     if (isSyncSetupRequired) {
-      let cleanupFn: EffectCleanupFn | null = null;
-
-      const destroy = () => cleanupFn?.();
-      const reactiveConsumerNeeded = isSignal(maybeReactiveTarget) || isSignal(maybeReactiveEvent);
-
-      setupListener(fn => (cleanupFn = fn));
-
+      const destroy = setupListener();
       onCleanup(destroy);
 
+      const reactiveConsumerNeeded = isSignal(maybeReactiveTarget) || isSignal(maybeReactiveEvent);
       if (!reactiveConsumerNeeded) {
         return { destroy };
       }
     }
 
-    const effectRef = afterRenderEffect({ read: setupListener });
+    const effectRef = afterRenderEffect({
+      read: onCleanup => {
+        onCleanup(setupListener());
+      },
+    });
+
     return { destroy: () => effectRef.destroy() };
   });
 }
