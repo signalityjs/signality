@@ -2,6 +2,7 @@ import {
   type CreateSignalOptions,
   type Signal,
   untracked,
+  type ValueEqualityFn,
   type WritableSignal,
 } from '@angular/core';
 
@@ -64,9 +65,17 @@ function writableHooks<T>(
   }
 
   if (handler.set) {
+    // Angular stores the internal SignalNode (which holds `equal`) under [SIGNAL].
+    // We try to locate it indirectly via symbol-keyed property scan to avoid
+    // a hard dependency on the internal symbol export.
+    const sourceSignalNode = Object.getOwnPropertySymbols(source)
+      .map(s => (source as any)[s])
+      .find((node): node is { equal?: ValueEqualityFn<T> } => typeof node?.equal === 'function');
+    const equalFn = options?.equal ?? sourceSignalNode?.equal;
+
     const set = (value: T) => {
       untracked(() => {
-        if (!options?.equal?.(source(), value)) {
+        if (!equalFn?.(source(), value)) {
           handler.set!(value, source);
         }
       });
