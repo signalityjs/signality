@@ -142,4 +142,69 @@ describe('proxySignal', () => {
       expect(source()).toBe(8); // (3+1)*2
     });
   });
+
+  describe('equal option', () => {
+    it('does not update source when equal returns true', () => {
+      const source = signal({ x: 1 });
+      const proxy = proxySignal(
+        source,
+        { set: (v, s) => s.set(v) },
+        { equal: (a, b) => a.x === b.x }
+      );
+
+      const before = source();
+      proxy.set({ x: 1 });
+
+      expect(before).toBe(source());
+    });
+
+    it('updates source when equal returns false', () => {
+      const source = signal({ x: 1 });
+      const proxy = proxySignal(
+        source,
+        { set: (v, s) => s.set(v) },
+        { equal: (a, b) => a.x === b.x }
+      );
+
+      proxy.set({ x: 2 });
+
+      expect(source().x).toBe(2);
+    });
+  });
+
+  describe('equal inheritance from source', () => {
+    it('inherits equal from source signal and skips set when values are considered equal', () => {
+      const source = signal({ x: 1 }, { equal: (a, b) => a.x === b.x });
+      const proxy = proxySignal(source, { set: (v, s) => s.set(v) });
+
+      const before = source();
+      proxy.set({ x: 1 });
+
+      expect(source()).toBe(before);
+    });
+
+    it('inherits equal from source signal and updates when values are considered not equal', () => {
+      const source = signal({ x: 1 }, { equal: (a, b) => a.x === b.x });
+      const proxy = proxySignal(source, { set: (v, s) => s.set(v) });
+
+      proxy.set({ x: 2 });
+
+      expect(source().x).toBe(2);
+    });
+
+    it('options.equal takes precedence over source equal', () => {
+      const source = signal({ x: 1, y: 1 }, { equal: (a, b) => a.x === b.x });
+      const proxy = proxySignal(
+        source,
+        { set: (v, s) => s.set(v) },
+        { equal: (a, b) => a.y === b.y }
+      );
+
+      const before = source();
+      // x differs but y is the same — proxy equal should win and skip the set
+      proxy.set({ x: 2, y: 1 });
+
+      expect(source()).toBe(before);
+    });
+  });
 });
