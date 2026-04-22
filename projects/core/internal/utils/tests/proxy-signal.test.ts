@@ -1,4 +1,5 @@
-import { signal } from '@angular/core';
+import { effect, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { proxySignal } from '../proxy-signal';
 
 describe('proxySignal', () => {
@@ -10,7 +11,7 @@ describe('proxySignal', () => {
       expect(proxy()).toBe(1);
     });
 
-    it('intercepts get and returns a transformed value', () => {
+    it('returns transformed value via get handler', () => {
       const source = signal(1);
       const proxy = proxySignal(source, { get: s => s() * 2 });
 
@@ -53,6 +54,27 @@ describe('proxySignal', () => {
       proxy.update(v => v * 2);
 
       expect(source()).toBe(6);
+    });
+
+    it('set does not track dependencies', () => {
+      const source = signal(1);
+      const dep = signal(1);
+      const proxy = proxySignal(source, { set: (v, s) => s.set(dep() + v) });
+      const effectSpy = jest.fn();
+
+      TestBed.runInInjectionContext(() => {
+        effect(() => {
+          proxy.set(10);
+          effectSpy();
+        });
+      });
+
+      TestBed.tick();
+      expect(effectSpy).toHaveBeenCalledTimes(1);
+
+      dep.set(10);
+      TestBed.tick();
+      expect(effectSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -108,6 +130,16 @@ describe('proxySignal', () => {
       source.set(4);
 
       expect(proxy2()).toBe(10); // (4+1)*2
+    });
+
+    it('composes set handlers in order', () => {
+      const source = signal(0);
+      const proxy1 = proxySignal(source, { set: (v, s) => s.set(v * 2) });
+      const proxy2 = proxySignal(proxy1, { set: (v, s) => s.set(v + 1) });
+
+      proxy2.set(3);
+
+      expect(source()).toBe(8); // (3+1)*2
     });
   });
 });
