@@ -65,9 +65,8 @@ function writableHooks<T>(
   }
 
   if (handler.set) {
-    // Angular stores the internal SignalNode (which holds `equal`) under [SIGNAL].
-    // We try to locate it indirectly via symbol-keyed property scan to avoid
-    // a hard dependency on the internal symbol export.
+    // The internal SignalNode (which holds `equal`) is stored under [SIGNAL].
+    // We scan symbol-keyed properties to find it rather than importing the private [SIGNAL] directly.
     const sourceSignalNode = Object.getOwnPropertySymbols(source)
       .map(s => (source as any)[s])
       .find((node): node is { equal?: ValueEqualityFn<T> } => typeof node?.equal === 'function');
