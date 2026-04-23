@@ -63,25 +63,42 @@ function writableHooks<T>(
     return hooks;
   }
 
+  if (handler.get) {
+    const get = handler.get.bind(handler);
+
+    let readonlyFn: Signal<T> | undefined;
+    hooks['asReadonly'] = () => {
+      return (readonlyFn ??= proxySignal(source.asReadonly(), { get }));
+    };
+
+    if (!handler.set) {
+      hooks['update'] = (fn: (value: T) => T) => {
+        const currentValue = untracked(() => get(source));
+        source.set(fn(currentValue));
+      };
+
+      return hooks;
+    }
+  }
+
   if (handler.set) {
-    const equal = options?.equal ?? Object.is;
+    const equalFn = options?.equal ?? Object.is;
+    const valueFn = handler.get ? () => handler.get!(source) : source;
+
     const set = (value: T) => {
       untracked(() => {
-        if (!equal(source(), value)) {
+        const currentValue = valueFn();
+        if (!equalFn(currentValue, value)) {
           handler.set!(value, source);
         }
       });
     };
 
     hooks['set'] = set;
-    hooks['update'] = (fn: (value: T) => T) => set(fn(untracked(source)));
-  }
-
-  if (handler.get) {
-    const get = handler.get!.bind(handler);
-    let readonlyFn: Signal<T> | undefined;
-
-    hooks['asReadonly'] = () => (readonlyFn ??= proxySignal(source.asReadonly(), { get }));
+    hooks['update'] = (fn: (value: T) => T) => {
+      const currentValue = valueFn();
+      set(fn(currentValue));
+    };
   }
 
   return hooks;

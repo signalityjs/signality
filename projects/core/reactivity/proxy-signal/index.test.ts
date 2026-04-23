@@ -171,4 +171,68 @@ describe('proxySignal', () => {
       expect(source().x).toBe(2);
     });
   });
+
+  describe('get + set interaction', () => {
+    it('update passes transformed value to fn ("proxy.set(proxy())" is "proxy.update(v => v)")', () => {
+      const source = signal(5);
+      const proxy = proxySignal(source, {
+        get: s => s() * 2, // external value: 10
+        set: (v, s) => s.set(v),
+      });
+
+      proxy.update(v => v + 1); // fn receives 10, returns 11
+
+      expect(source()).toBe(11);
+    });
+
+    it('equal compares transformed values, skips set when externally equal', () => {
+      const source = signal('  hello  ');
+      const proxy = proxySignal(
+        source,
+        {
+          get: s => s().trim(), // external value: "hello"
+          set: (v, s) => s.set(v),
+        },
+        { equal: (a, b) => a === b }
+      );
+
+      const before = source();
+      proxy.set('hello'); // get(source) = "hello", value = "hello" → equal → skip
+
+      expect(source()).toBe(before); // source remains unchanged
+    });
+
+    it('equal compares transformed values, calls set when externally different', () => {
+      const source = signal('  hello  ');
+      const proxy = proxySignal(
+        source,
+        {
+          get: s => s().trim(),
+          set: (v, s) => s.set(v),
+        },
+        { equal: (a, b) => a === b }
+      );
+
+      proxy.set('world');
+
+      expect(source()).toBe('world');
+    });
+
+    it('update uses transformed value and respects equal', () => {
+      const source = signal(10);
+      const proxy = proxySignal(
+        source,
+        {
+          get: s => s() / 2, // external value: 5
+          set: (v, s) => s.set(v),
+        },
+        { equal: (a, b) => a === b }
+      );
+
+      const before = source();
+      proxy.update(v => v); // fn(5) = 5, equal(5, 5) → skip
+
+      expect(source()).toBe(before);
+    });
+  });
 });
