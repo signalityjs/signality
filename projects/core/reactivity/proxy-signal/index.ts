@@ -96,7 +96,7 @@ function writableHooks<T>(
 
     hooks['set'] = set;
     hooks['update'] = (fn: (value: T) => T) => {
-      const currentValue = valueFn();
+      const currentValue = untracked(valueFn);
       set(fn(currentValue));
     };
   }

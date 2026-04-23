@@ -76,6 +76,27 @@ describe('proxySignal', () => {
       TestBed.tick();
       expect(effectSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('update does not track dependencies', () => {
+      const source = signal(1);
+      const dep = signal(1);
+      const proxy = proxySignal(source, { set: (v, s) => s.set(dep() + v) });
+      const effectSpy = jest.fn();
+
+      TestBed.runInInjectionContext(() => {
+        effect(() => {
+          proxy.update(() => 10);
+          effectSpy();
+        });
+      });
+
+      TestBed.tick();
+      expect(effectSpy).toHaveBeenCalledTimes(1);
+
+      dep.set(10);
+      TestBed.tick();
+      expect(effectSpy).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('asReadonly', () => {
