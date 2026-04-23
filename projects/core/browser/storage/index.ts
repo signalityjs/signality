@@ -208,8 +208,8 @@ export function storage<T>(
       source,
       {
         set: (value: T) => {
-          source.set(value);
           writeValue(value);
+          source.set(value);
         },
       },
       { equal: options?.equal }

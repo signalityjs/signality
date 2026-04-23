@@ -52,8 +52,8 @@ export function title(options?: TitleOptions): WritableSignal<string> {
       source,
       {
         set: value => {
-          source.set(value);
           html.setTitle(value);
+          source.set(value);
         },
       },
       { equal: options?.equal }
