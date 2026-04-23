@@ -64,9 +64,10 @@ function writableHooks<T>(
   }
 
   if (handler.set) {
+    const equal = options?.equal ?? Object.is;
     const set = (value: T) => {
       untracked(() => {
-        if (!options?.equal?.(source(), value)) {
+        if (!equal(source(), value)) {
           handler.set!(value, source);
         }
       });
