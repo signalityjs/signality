@@ -86,7 +86,7 @@ export function debounced(
       watcher(valueOrSignal, set);
       return output.asReadonly();
     } else {
-      return proxySignal(output, { set });
+      return proxySignal(output, { set }, { equal: options?.equal });
     }
   });
 }

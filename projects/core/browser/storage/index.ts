@@ -184,7 +184,7 @@ export function storage<T>(
       }
     };
 
-    const state = signal<T>(readValue(toValue(key)), options);
+    const source = signal<T>(readValue(toValue(key)), options);
 
     setupSync(() => {
       listener(window, 'storage', e => {
@@ -194,21 +194,25 @@ export function storage<T>(
           const newValue =
             e.newValue === null ? initialValue : processValue(serializer.read(e.newValue));
 
-          state.set(newValue);
+          source.set(newValue);
         }
       });
     });
 
     if (isSignal(key)) {
-      watcher(key, newKey => state.set(readValue(newKey)));
+      watcher(key, newKey => source.set(readValue(newKey)));
     }
 
-    return proxySignal(state, {
-      set: (value: T) => {
-        state.set(value);
-        writeValue(value);
+    return proxySignal(
+      source,
+      {
+        set: (value: T) => {
+          source.set(value);
+          writeValue(value);
+        },
       },
-    });
+      { equal: options?.equal }
+    );
   });
 }
 

@@ -66,13 +66,17 @@ export function textDirection(options?: TextDirectionOptions): WritableSignal<Te
       attributeFilter: ['dir'],
     });
 
-    return proxySignal(dir, {
-      set: value => {
-        const el = toElement(target);
-        el?.setAttribute('dir', value);
-        dir.set(value);
+    return proxySignal(
+      dir,
+      {
+        set: value => {
+          const el = toElement(target);
+          el?.setAttribute('dir', value);
+          dir.set(value);
+        },
       },
-    });
+      { equal: options?.equal }
+    );
   });
 }
 
