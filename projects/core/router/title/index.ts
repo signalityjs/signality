@@ -40,19 +40,22 @@ export function title(options?: TitleOptions): WritableSignal<string> {
     const route = inject(ActivatedRoute);
     const html = inject(Title);
 
+    const source = linkedSignal(
+      toSignal<string, string>(route.title.pipe(filter(Boolean)), {
+        initialValue: route.snapshot.title || html.getTitle(),
+      }),
+      { ...options }
+    );
+
     return proxySignal(
-      linkedSignal(
-        toSignal<string, string>(route.title.pipe(filter(Boolean)), {
-          initialValue: route.snapshot.title || html.getTitle(),
-        }),
-        { ...options }
-      ),
+      source,
       {
-        set: (value, source) => {
-          html.setTitle(value);
+        set: value => {
           source.set(value);
+          html.setTitle(value);
         },
-      }
+      },
+      { equal: options?.equal }
     );
   });
 }

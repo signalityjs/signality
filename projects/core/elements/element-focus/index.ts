@@ -74,17 +74,21 @@ export function elementFocus(
       focused.set(false);
     });
 
-    return proxySignal(focused, {
-      set: (value: boolean) => {
-        const el = toElement(target);
-        const hasFocus = el?.matches(':focus') ?? false;
+    return proxySignal(
+      focused,
+      {
+        set: value => {
+          const el = toElement(target);
+          const hasFocus = el?.matches(':focus') ?? false;
 
-        if (value && !hasFocus) {
-          el?.focus({ preventScroll });
-        } else if (!value && hasFocus) {
-          el?.blur();
-        }
+          if (value && !hasFocus) {
+            el?.focus({ preventScroll });
+          } else if (!value && hasFocus) {
+            el?.blur();
+          }
+        },
       },
-    });
+      { equal: options?.equal }
+    );
   });
 }
