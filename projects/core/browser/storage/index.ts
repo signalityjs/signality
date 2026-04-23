@@ -1,9 +1,10 @@
 import { type CreateSignalOptions, isSignal, signal, type WritableSignal } from '@angular/core';
-import { isPlainObject, proxySignal, setupContext } from '@signality/core/internal';
+import { isPlainObject, setupContext } from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 import { watcher } from '@signality/core/reactivity/watcher';
+import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
 export interface StorageOptions<T> extends CreateSignalOptions<T>, WithInjector {
   /**

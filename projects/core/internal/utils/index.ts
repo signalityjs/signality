@@ -7,6 +7,5 @@ export * from './wait-for-value';
 export * from './is-query-signal';
 export * from './is-plain-object';
 export * from './const-signal';
-export * from './proxy-signal';
 export * from './unref-element';
 export * from './files/index';
