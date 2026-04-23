@@ -57,7 +57,7 @@ function writableHooks<T>(
   options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): Record<string, ((...args: any[]) => any) | undefined> {
   const isWritable = 'set' in source && typeof source.set === 'function';
-  const hooks: Record<string, ((...args: any[]) => any) | undefined> = {};
+  const hooks: Record<string, ((...args: any[]) => any) | undefined> = Object.create(null);
 
   if (!isWritable) {
     return hooks;
