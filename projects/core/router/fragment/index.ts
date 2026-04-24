@@ -1,16 +1,18 @@
-import { type CreateSignalOptions, inject, type Signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { inject, linkedSignal, type CreateSignalOptions, type WritableSignal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { setupContext } from '@signality/core/internal';
+import { ActivatedRoute, Router, type NavigationExtras } from '@angular/router';
+import { proxySignal, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
-export type FragmentOptions = CreateSignalOptions<string | null> & WithInjector;
+export type FragmentOptions = CreateSignalOptions<string | null> &
+  WithInjector &
+  Pick<NavigationExtras, 'replaceUrl'>;
 
 /**
  * Reactive wrapper around the [Angular Router](https://angular.dev/guide/routing) URL fragment.
  *
- * @param options - Optional configuration including signal options and injector
- * @returns A signal containing the current URL fragment (without #), or null
+ * @param options - Optional configuration including signal options, injector and navigation behavior
+ * @returns A writable signal containing the current URL fragment (without #), or null
  *
  * @example
  * ```typescript
@@ -28,12 +30,26 @@ export type FragmentOptions = CreateSignalOptions<string | null> & WithInjector;
  * }
  * ```
  */
-export function fragment(options?: FragmentOptions): Signal<string | null> {
+export function fragment(options?: FragmentOptions): WritableSignal<string | null> {
   const { runInContext } = setupContext(options?.injector, fragment);
 
   return runInContext(() => {
+    const router = inject(Router);
     const { fragment: fragmentChanges, snapshot } = inject(ActivatedRoute);
 
-    return toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment });
+    const fragment = linkedSignal(
+      toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment })
+    );
+
+    return proxySignal(fragment, {
+      set: async (fragment, source) => {
+        const succeeded = await router.navigate([], {
+          fragment: fragment ?? undefined,
+          replaceUrl: options?.replaceUrl,
+          queryParamsHandling: 'preserve',
+        });
+        if (succeeded) source.set(fragment);
+      },
+    });
   });
 }

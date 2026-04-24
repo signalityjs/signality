@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/router/
 
 # Fragment
 
-Reactive wrapper around Angular Router's [URL fragment](https://angular.dev/api/router/ActivatedRoute#fragment). Access the hash fragment as a signal.
+Reactive wrapper around Angular Router's [URL fragment](https://angular.dev/api/router/ActivatedRoute#fragment). Access the hash fragment as a writable signal.
 
 ## Usage
 
@@ -37,15 +37,45 @@ export class ProductPage {
 
 The `FragmentOptions` extends [`CreateSignalOptions<string | null>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                                                                              | Default | Description                                                                                        |
-|-------------|-----------------------------------------------------------------------------------|---------|----------------------------------------------------------------------------------------------------|
-| `equal`     | [`ValueEqualityFn<string \| null>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                                                                          | -       | Debug name for the signal (development only)                                                       |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                               | -       | Optional injector for DI context                                                                   |
+| Option       | Type                                                                              | Default | Description                                                                                                                                                                                     |
+|--------------|-----------------------------------------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `equal`      | [`ValueEqualityFn<string \| null>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))                                                                                              |
+| `debugName`  | `string`                                                                          | -       | Debug name for the signal (development only)                                                                                                                                                    |
+| `injector`   | [`Injector`](https://angular.dev/api/core/Injector)                               | -       | Optional injector for DI context                                                                                                                                                                |
+| `replaceUrl` | `boolean`                                                                         | `false` | When `true`, updating the fragment will replace the current state in history. ([see more](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState)) |
 
 ## Return Value
 
-Returns a `Signal<string | null>` containing the current URL fragment (without the `#`), or `null` if no fragment exists.
+Returns a `WritableSignal<string | null>` containing the current URL fragment (without the `#`), or `null` if no fragment exists.
+
+## Examples
+
+### With `{ replaceUrl: true }`
+
+```angular-ts
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { fragment } from '@signality/core';
+
+@Component({
+  imports: [FormsModule],
+  template: `
+    <nav>
+      <!-- Same as <select [ngModel]="fragment()" (ngModelChange)="fragment.set($event)"> -->
+      <select [(ngModel)]="fragment"> <!-- [!code highlight] -->
+        <option value="section-1">Section 1</option>
+        <option value="section-2">Section 2</option>
+      </select>
+    </nav>
+
+    <section id="section-1">...</section>
+    <section id="section-2">...</section>
+  `,
+})
+export class ProductPage {
+  readonly fragment = fragment({ replaceUrl: true }); // [!code highlight]
+}
+```
 
 ## SSR Compatibility
 
@@ -54,9 +84,11 @@ On the server, the signal initializes with the fragment from the [snapshot](http
 ## Type Definitions
 
 ```typescript
-type FragmentOptions = CreateSignalOptions<string | null> & WithInjector;
+type FragmentOptions = CreateSignalOptions<string | null> &
+  WithInjector &
+  Pick<NavigationExtras, 'replaceUrl'>;
 
-function fragment(options?: FragmentOptions): Signal<string | null>;
+function fragment(options?: FragmentOptions): WritableSignal<string | null>;
 ```
 
 ## Related
