@@ -5,99 +5,59 @@ import {
   type WritableSignal,
 } from '@angular/core';
 
-export interface SignalProxyHandler<T> {
-  get?(source: Signal<T>): T;
-  set?(value: T, source: WritableSignal<T>): void;
-}
+export type SignalProxyHandler<T, R = T> =
+  | { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void }
+  | { get?: never; set?: (value: R, source: WritableSignal<T>) => void };
 
-/**
- * Creates a proxy wrapper around a {@link WritableSignal} that intercepts get and set operations.
- * The proxy allows transforming values on read and write, composing multiple signal utilities.
- *
- * @param source - Source writable signal to wrap
- * @param handler - Handler object with optional get/set transformations
- * @param options - Optional configuration including custom equality function
- * @returns A writable signal proxy with transformed get/set behavior
- *
- * @example
- * ```typescript
- * import { signal } from '@angular/core';
- * import { proxySignal } from '@signality/core';
- *
- * export function debouncedSignal<T>(initialValue: T, delayMs: number): WritableSignal<T> {
- *   const source = signal(initialValue);
- *
- *   let timeoutId: ReturnType<typeof setTimeout> | null = null;
- *
- *   return proxySignal(source, {
- *     set: value => {
- *       if (timeoutId) clearTimeout(timeoutId);
- *       timeoutId = setTimeout(() => source.set(value), delayMs);
- *     }
- *   });
- * }
- *
- * const searchQuery = debouncedSignal('', 300);
- * searchQuery.set('query');  // actual update after 300ms
- * ```
- */
+export function proxySignal<T, R>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<R>, 'equal'>
+): WritableSignal<R>;
+
+export function proxySignal<T, R>(
+  source: Signal<T>,
+  handler: { get: (source: Signal<T>) => R; set?: never },
+  options?: Pick<CreateSignalOptions<R>, 'equal'>
+): Signal<R>;
+
 export function proxySignal<T>(
   source: WritableSignal<T>,
-  handler: SignalProxyHandler<T>,
+  handler: { get?: never; set?: (value: T, source: WritableSignal<T>) => void },
   options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): WritableSignal<T>;
 
-/**
- * Creates a proxy wrapper around a {@link Signal} that intercepts get operations.
- * The proxy allows transforming values on read only, composing multiple signal utilities.
- *
- * @param source - Source readonly signal to wrap
- * @param handler - Handler object with optional get transformation (set not allowed for readonly)
- * @returns A readonly signal proxy with transformed get behavior
- *
- * @example
- * ```typescript
- * import { signal } from '@angular/core';
- * import { proxySignal } from '@signality/core';
- *
- * export function withDefault<T>(source: Signal<T | undefined>, defaultValue: T): Signal<T> {
- *   return proxySignal(source, {
- *     get: s => s() ?? defaultValue
- *   });
- * }
- *
- * const tab = signal<string | undefined>('home');
- * const safeTab = withDefault(tab, 'default-tab');
- * ```
- */
 export function proxySignal<T>(
   source: Signal<T>,
-  handler: Omit<SignalProxyHandler<T>, 'set'>
+  handler: { get?: never; set?: never },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): Signal<T>;
 
-export function proxySignal<T>(
+export function proxySignal<T, R = T>(
   source: Signal<T> | WritableSignal<T>,
-  handler: SignalProxyHandler<T>,
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
-): WritableSignal<T> | Signal<T> {
+  handler: SignalProxyHandler<T, R>,
+  options?: Pick<CreateSignalOptions<R>, 'equal'>
+): WritableSignal<R> | Signal<R> {
   const hooks = writableHooks(source, handler, options);
 
-  return new Proxy(source, {
+  return new Proxy(source as object, {
     apply(target, thisArg, args) {
-      return handler.get ? handler.get(target) : Reflect.apply(target, thisArg, args);
+      return handler.get
+        ? handler.get(target as Signal<T>)
+        : Reflect.apply(target as (...a: unknown[]) => unknown, thisArg, args);
     },
     get(target, prop, receiver) {
       return typeof prop === 'string' && prop in hooks
         ? hooks[prop]
         : Reflect.get(target, prop, receiver);
     },
-  });
+  }) as WritableSignal<R> | Signal<R>;
 }
 
-function writableHooks<T>(
+function writableHooks<T, R>(
   source: WritableSignal<T> | Signal<T>,
-  handler: SignalProxyHandler<T>,
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  handler: SignalProxyHandler<T, R>,
+  options?: Pick<CreateSignalOptions<R>, 'equal'>
 ): Record<string, ((...args: any[]) => any) | undefined> {
   const isWritable = 'set' in source && typeof source.set === 'function';
   const hooks: Record<string, ((...args: any[]) => any) | undefined> = Object.create(null);
@@ -109,15 +69,15 @@ function writableHooks<T>(
   if (handler.get) {
     const get = handler.get.bind(handler);
 
-    let readonlyFn: Signal<T> | undefined;
+    let readonlyFn: Signal<R> | undefined;
     hooks['asReadonly'] = () => {
       return (readonlyFn ??= proxySignal(source.asReadonly(), { get }));
     };
 
     if (!handler.set) {
-      hooks['update'] = (fn: (value: T) => T) => {
+      hooks['update'] = (fn: (value: R) => R) => {
         const currentValue = untracked(() => get(source));
-        source.set(fn(currentValue));
+        source.set(fn(currentValue) as unknown as T);
       };
 
       return hooks;
@@ -126,9 +86,9 @@ function writableHooks<T>(
 
   if (handler.set) {
     const equalFn = options?.equal ?? Object.is;
-    const valueFn = handler.get ? () => handler.get!(source) : source;
+    const valueFn = handler.get ? () => handler.get!(source) : () => source() as unknown as R;
 
-    const set = (value: T) => {
+    const set = (value: R) => {
       untracked(() => {
         const currentValue = valueFn();
         if (!equalFn(currentValue, value)) {
@@ -138,7 +98,7 @@ function writableHooks<T>(
     };
 
     hooks['set'] = set;
-    hooks['update'] = (fn: (value: T) => T) => {
+    hooks['update'] = (fn: (value: R) => R) => {
       const currentValue = untracked(valueFn);
       set(fn(currentValue));
     };

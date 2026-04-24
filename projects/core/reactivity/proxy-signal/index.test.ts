@@ -1,6 +1,6 @@
 import { effect, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { proxySignal } from '../proxy-signal';
+import { proxySignal, SignalProxyHandler } from '../proxy-signal';
 
 describe('proxySignal', () => {
   describe('get handler', () => {
@@ -254,6 +254,73 @@ describe('proxySignal', () => {
       proxy.update(v => v); // fn(5) = 5, equal(5, 5) → skip
 
       expect(source()).toBe(before);
+    });
+  });
+
+  describe('type transformation (T -> R)', () => {
+    const csvHandler: SignalProxyHandler<string, string[]> = {
+      get: s => s().split(','),
+      set: (v, s) => s.set(v.join(',')),
+    };
+
+    it('transforms on read', () => {
+      const source = signal('a,b,c');
+      const proxy = proxySignal(source, csvHandler);
+
+      expect(proxy()).toEqual(['a', 'b', 'c']);
+    });
+
+    it('reverse-transforms on set', () => {
+      const source = signal('');
+      const proxy = proxySignal(source, csvHandler);
+
+      proxy.set(['x', 'y', 'z']);
+
+      expect(source()).toBe('x,y,z');
+    });
+
+    it('stays consistent across reads and writes', () => {
+      const source = signal('');
+      const proxy = proxySignal(source, csvHandler);
+
+      proxy.set(['a', 'b']);
+
+      expect(proxy()).toEqual(['a', 'b']);
+    });
+
+    it('update receives and saves transformed value', () => {
+      const source = signal('a,b');
+      const proxy = proxySignal(source, csvHandler);
+
+      proxy.update(items => [...items, 'c']);
+
+      expect(source()).toBe('a,b,c');
+      expect(proxy()).toEqual(['a', 'b', 'c']);
+    });
+
+    it('reflects source changes', () => {
+      const source = signal('a,b');
+      const proxy = proxySignal(source, csvHandler);
+
+      source.set('x,y,z');
+
+      expect(proxy()).toEqual(['x', 'y', 'z']);
+    });
+
+    it('asReadonly applies transform', () => {
+      const source = signal('a,b');
+      const proxy = proxySignal(source, csvHandler);
+
+      expect(proxy.asReadonly()()).toEqual(['a', 'b']);
+    });
+
+    it('asReadonly reflects source changes', () => {
+      const source = signal('a,b');
+      const proxy = proxySignal(source, csvHandler);
+
+      source.set('x,y');
+
+      expect(proxy.asReadonly()()).toEqual(['x', 'y']);
     });
   });
 });
