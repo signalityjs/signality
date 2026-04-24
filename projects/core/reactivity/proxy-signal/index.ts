@@ -5,17 +5,41 @@ import {
   type WritableSignal,
 } from '@angular/core';
 
-/**
- * @internal
- */
 export interface SignalProxyHandler<T> {
   get?(source: Signal<T>): T;
   set?(value: T, source: WritableSignal<T>): void;
 }
 
 /**
- * Creates a proxy wrapper around a {@link WritableSignal}
- * @internal
+ * Creates a proxy wrapper around a {@link WritableSignal} that intercepts get and set operations.
+ * The proxy allows transforming values on read and write, composing multiple signal utilities.
+ *
+ * @param source - Source writable signal to wrap
+ * @param handler - Handler object with optional get/set transformations
+ * @param options - Optional configuration including custom equality function
+ * @returns A writable signal proxy with transformed get/set behavior
+ *
+ * @example
+ * ```typescript
+ * import { signal } from '@angular/core';
+ * import { proxySignal } from '@signality/core';
+ *
+ * export function debouncedSignal<T>(initialValue: T, delayMs: number): WritableSignal<T> {
+ *   const source = signal(initialValue);
+ *
+ *   let timeoutId: ReturnType<typeof setTimeout> | null = null;
+ *
+ *   return proxySignal(source, {
+ *     set: value => {
+ *       if (timeoutId) clearTimeout(timeoutId);
+ *       timeoutId = setTimeout(() => source.set(value), delayMs);
+ *     }
+ *   });
+ * }
+ *
+ * const searchQuery = debouncedSignal('', 300);
+ * searchQuery.set('query');  // actual update after 300ms
+ * ```
  */
 export function proxySignal<T>(
   source: WritableSignal<T>,
@@ -24,8 +48,27 @@ export function proxySignal<T>(
 ): WritableSignal<T>;
 
 /**
- * Creates a proxy wrapper around a {@link Signal}
- * @internal
+ * Creates a proxy wrapper around a {@link Signal} that intercepts get operations.
+ * The proxy allows transforming values on read only, composing multiple signal utilities.
+ *
+ * @param source - Source readonly signal to wrap
+ * @param handler - Handler object with optional get transformation (set not allowed for readonly)
+ * @returns A readonly signal proxy with transformed get behavior
+ *
+ * @example
+ * ```typescript
+ * import { signal } from '@angular/core';
+ * import { proxySignal } from '@signality/core';
+ *
+ * export function withDefault<T>(source: Signal<T | undefined>, defaultValue: T): Signal<T> {
+ *   return proxySignal(source, {
+ *     get: s => s() ?? defaultValue
+ *   });
+ * }
+ *
+ * const tab = signal<string | undefined>('home');
+ * const safeTab = withDefault(tab, 'default-tab');
+ * ```
  */
 export function proxySignal<T>(
   source: Signal<T>,
