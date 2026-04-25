@@ -4,84 +4,64 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/reactiv
 
 # ProxySignal
 
-Creates a proxy wrapper around a signal that intercepts get and set operations.
+Creates a proxy wrapper around a signal that intercepts get and set operations, enabling bidirectional value transformations.
 
 ## Usage
 
-### Get handler
+### Custom scheduling
 
-Transform values when reading from a signal:
+Intercept `set` calls to add custom behavior — debounce, throttle, validation, etc.:
+
+```angular-ts
+import { signal } from '@angular/core';
+import { debounceCallback, proxySignal } from '@signality/core';
+
+function debounced<T>(initialValue: T, timeMs: number) {
+  const source = signal(initialValue);
+  const set = debounceCallback(source.set, timeMs);
+  return proxySignal(source, { set });
+}
+
+const search = debounced('', 300);
+search.set('query'); // actual update happens after 300ms of inactivity
+```
+
+### Type transformation
+
+Use `get` + `set` together for bidirectional transformation:
 
 ```angular-ts
 import { signal } from '@angular/core';
 import { proxySignal } from '@signality/core';
 
-const source = signal(1);
+const source = signal('a,b,c');
 const proxy = proxySignal(source, {
-  get: s => s() * 2  // transform on read: 1 → 2, 5 → 10
+  get: s => s().split(','),      // string → string[]
+  set: (v, s) => s.set(v.join(',')) // string[] → string
 });
 
-source.set(5);
-proxy();        // 10
+proxy();              // ['a', 'b', 'c']
+proxy.set(['x', 'y']);// source becomes 'x,y'
+proxy();              // ['x', 'y']
 ```
 
-### Set handler
 
-Transform values when writing to a signal:
-
-```angular-ts
-import { signal } from '@angular/core';
-import { proxySignal } from '@signality/core';
-
-const source = signal(0);
-const proxy = proxySignal(source, {
-  set: (v, s) => s.set(v * 2)  // transform on write: 3 → source becomes 6
-});
-
-proxy.set(3);
-source();       // 6
-```
-
-### Get + Set handlers
-
-Combine both for bidirectional transformations:
-
-```angular-ts
-import { signal } from '@angular/core';
-import { proxySignal } from '@signality/core';
-
-const source = signal('  hello  ');
-const proxy = proxySignal(source, {
-  get: s => s().trim(),       // external: "  hello  " → "hello"
-  set: (v, s) => s.set(v)     // no transform on write
-});
-
-source();       // "  hello  "
-proxy();        // "hello" (trimmed on read)
-
-proxy.set(' world ');
-source();       // " world " (stored as-is)
-proxy();        // "world" (trimmed on read)
-```
 
 ## Parameters
 
-| Parameter | Type                                    | Description                                   |
-|-----------|-----------------------------------------|-----------------------------------------------|
-| `source`  | `Signal<T>` or `WritableSignal<T>`      | Source signal to wrap                         |
-| `handler` | `SignalProxyHandler<T>`                 | Handler with optional get/set transformations |
-| `options` | `Pick<CreateSignalOptions<T>, 'equal'>` | Optional equality function                    |
-
-## Handler Interface
-
-The `SignalProxyHandler<T>` interface defines the transformation hooks:
-
-| Property | Type                                            | Description                                       |
-|----------|-------------------------------------------------|---------------------------------------------------|
-| `get`    | `(source: Signal<T>) => T`                      | Transforms value on read. Receives source signal. |
-| `set`    | `(value: T, source: WritableSignal<T>) => void` | Transforms value on write.                        |
+| Parameter | Type                                    | Description                                        |
+|-----------|-----------------------------------------|----------------------------------------------------|
+| `source`  | `Signal<T>` or `WritableSignal<T>`      | Source signal to wrap                              |
+| `handler` | `ProxySignalHandler<T, R>`              | Handler with optional get/set transformations      |
+| `options` | `Pick<CreateSignalOptions<R>, 'equal'>` | Optional equality function (for transformed value) |
 
 ## Options
+
+::: warning `equal` applies to the proxy handler, not the source signal
+The `equal` option **does not** propagate to the original source signal. It is used exclusively by the proxy's `set` and `update` methods to compare **transformed values** — that is, the result of calling `handler.get` on the current source value.
+
+By default, `Object.is` is used (the source signal's own `equal` option is ignored).
+:::
 
 | Option  | Type                                                                 | Description                                          |
 |---------|----------------------------------------------------------------------|------------------------------------------------------|
@@ -94,27 +74,75 @@ The `SignalProxyHandler<T>` interface defines the transformation hooks:
 
 ## Examples
 
-@TODO
+### Type transformation
+
+Transform between different representations on read and write:
+
+```angular-ts
+import { signal } from '@angular/core';
+import { proxySignal } from '@signality/core';
+
+const source = signal('a,b,c');
+const proxy = proxySignal(source, {
+  get: s => s().split(','),   // string → string[]
+  set: (v, s) => s.set(v.join(','))  // string[] → string
+});
+
+proxy();              // ['a', 'b', 'c']
+proxy.set(['x', 'y']);// source becomes 'x,y'
+proxy();              // ['x', 'y']
+```
+
+### Custom debounced signal
+
+Build a debounced signal using `proxySignal` and `debounceCallback`:
+
+```angular-ts
+import { signal } from '@angular/core';
+import { debounceCallback, proxySignal } from '@signality/core';
+
+function myDebounced<T>(initialValue: T, timeMs: number) {
+  const source = signal(initialValue);
+  const set = debounceCallback(source.set, timeMs);
+  return proxySignal(source, { set });
+}
+
+const debouncedValue = myDebounced('', 300);
+
+debouncedValue.set('hello');
+// ...after 300ms of inactivity...
+// output signal is updated
+```
 
 ## Type Definitions
 
 ```typescript
-interface SignalProxyHandler<T> {
-  get?(source: Signal<T>): T;
-  set?(value: T, source: WritableSignal<T>): void;
-}
+export type ProxySignalHandler<T, R = T> =
+  | { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void }
+  | { get?: never; set?: (value: R, source: WritableSignal<T>) => void };
 
-// Overload 1: Writable signal (get + set allowed)
+function proxySignal<T, R>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<R>, 'equal'>
+): WritableSignal<R>;
+
+function proxySignal<T, R>(
+  source: Signal<T>,
+  handler: { get: (source: Signal<T>) => R; set?: never },
+  options?: Pick<CreateSignalOptions<R>, 'equal'>
+): Signal<R>;
+
 function proxySignal<T>(
   source: WritableSignal<T>,
-  handler: SignalProxyHandler<T>,
+  handler: { get?: never; set?: (value: T, source: WritableSignal<T>) => void },
   options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): WritableSignal<T>;
 
-// Overload 2: Readonly signal (get only)
 function proxySignal<T>(
   source: Signal<T>,
-  handler: Omit<SignalProxyHandler<T>, 'set'>
+  handler: { get?: never; set?: never },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): Signal<T>;
 ```
 
