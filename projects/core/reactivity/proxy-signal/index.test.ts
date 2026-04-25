@@ -1,6 +1,6 @@
 import { effect, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { proxySignal, SignalProxyHandler } from '../proxy-signal';
+import { proxySignal, ProxySignalHandler } from '../proxy-signal';
 
 describe('proxySignal', () => {
   describe('get handler', () => {
@@ -258,7 +258,7 @@ describe('proxySignal', () => {
   });
 
   describe('type transformation (T -> R)', () => {
-    const csvHandler: SignalProxyHandler<string, string[]> = {
+    const csvHandler: ProxySignalHandler<string, string[]> = {
       get: s => s().split(','),
       set: (v, s) => s.set(v.join(',')),
     };

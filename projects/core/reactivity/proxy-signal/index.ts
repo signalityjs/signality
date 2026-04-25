@@ -5,7 +5,7 @@ import {
   type WritableSignal,
 } from '@angular/core';
 
-export type SignalProxyHandler<T, R = T> =
+export type ProxySignalHandler<T, R = T> =
   | { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void }
   | { get?: never; set?: (value: R, source: WritableSignal<T>) => void };
 
@@ -35,7 +35,7 @@ export function proxySignal<T>(
 
 export function proxySignal<T, R = T>(
   source: Signal<T> | WritableSignal<T>,
-  handler: SignalProxyHandler<T, R>,
+  handler: ProxySignalHandler<T, R>,
   options?: Pick<CreateSignalOptions<R>, 'equal'>
 ): WritableSignal<R> | Signal<R> {
   const hooks = writableHooks(source, handler, options);
@@ -56,7 +56,7 @@ export function proxySignal<T, R = T>(
 
 function writableHooks<T, R>(
   source: WritableSignal<T> | Signal<T>,
-  handler: SignalProxyHandler<T, R>,
+  handler: ProxySignalHandler<T, R>,
   options?: Pick<CreateSignalOptions<R>, 'equal'>
 ): Record<string, ((...args: any[]) => any) | undefined> {
   const isWritable = 'set' in source && typeof source.set === 'function';
