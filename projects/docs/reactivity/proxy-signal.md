@@ -16,15 +16,15 @@ Update logic customization enables you to define custom behavior for `set()` or 
 import { signal } from '@angular/core';
 import { proxySignal } from '@signality/core';
 
-function debouncedSignal<T>(initialValue: T, timeMs: number) {
+function debouncedSignal<T>(initialValue: T, ms: number): WritableSignal<T> {
   const source = signal(initialValue);
   let timeoutId: ReturnType<typeof setTimeout>;
 
   return proxySignal(source, {
     set: (value, target) => { // [!code highlight]
       clearTimeout(timeoutId);  // [!code highlight]
-      timeoutId = setTimeout(() => target.set(value), timeMs); // [!code highlight]
-    }, // [!code highlight]
+      timeoutId = setTimeout(() => target.set(value), ms); // [!code highlight]
+    } // [!code highlight]
   });
 }
 ```
