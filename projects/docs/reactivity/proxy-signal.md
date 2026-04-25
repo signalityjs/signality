@@ -4,27 +4,68 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/reactiv
 
 # ProxySignal
 
-Creates a proxy wrapper around a signal that intercepts get and set operations, enabling bidirectional value transformations.
+Creates a wrapper around a signal that intercepts get and set operations.
 
 ## Usage
 
-### Custom scheduling
+Provides explicit control over signal get (dependency tracking) and set (update triggering) operations, while preserving the standard [WritableSignal](https://angular.dev/api/core/WritableSignal) or [Signal](https://angular.dev/api/core/Signal) interface.
 
-Intercept `set` calls to add custom behavior — debounce, throttle, validation, etc.:
+Update logic customization enables you to define custom behavior for `set()` or `update()` calls on the created signal. For instance, this can be used for scheduler configuration:
 
 ```angular-ts
 import { signal } from '@angular/core';
-import { debounceCallback, proxySignal } from '@signality/core';
+import { proxySignal } from '@signality/core';
 
-function debounced<T>(initialValue: T, timeMs: number) {
+function debouncedSignal<T>(initialValue: T, timeMs: number) {
   const source = signal(initialValue);
-  const set = debounceCallback(source.set, timeMs);
-  return proxySignal(source, { set });
-}
+  let timeoutId: ReturnType<typeof setTimeout>;
 
-const search = debounced('', 300);
-search.set('query'); // actual update happens after 300ms of inactivity
+  return proxySignal(source, {
+    set: (value, target) => { // [!code highlight]
+      clearTimeout(timeoutId);  // [!code highlight]
+      timeoutId = setTimeout(() => target.set(value), timeMs); // [!code highlight]
+    }, // [!code highlight]
+  });
+}
 ```
+
+Now you can use `debouncedSignal` to create signals with delayed updates:
+
+```angular-ts
+const search = debouncedSignal('', 300);
+search.set('query'); // actual update happens after 300ms of inactivity // [!code highlight]
+```
+
+::: tip Note
+Signality uses `proxySignal` internally in utilities like [Debounced](/reactivity/debounced) and [Throttled](/reactivity/throttled) to implement scheduling behavior.
+:::
+
+## Parameters
+
+| Parameter | Type                                    | Description                                            |
+|-----------|-----------------------------------------|--------------------------------------------------------|
+| `source`  | `Signal<T>` or `WritableSignal<T>`      | Source signal to wrap                                  |
+| `handler` | `ProxySignalHandler<T, R>`              | Handler with optional get/set transformations          |
+| `options` | `Pick<CreateSignalOptions<R>, 'equal'>` | Optional configuration (see [Options](#options) below) |
+
+## Options
+
+::: warning `equal` applies to the proxy handler, not the source signal
+The `equal` option **does not** propagate to the original source signal. It is used exclusively by the proxy's `set` and `update` methods to compare **transformed values** — that is, the result of calling `handler.get` on the current source value.
+
+By default, `Object.is` is used.
+:::
+
+| Option  | Type                                                                 | Description              |
+|---------|----------------------------------------------------------------------|--------------------------|
+| `equal` | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function |
+
+## Return Value
+
+- When passed a **writable signal** → returns `WritableSignal<T>`
+- When passed a **readonly signal** → returns `Signal<T>`
+
+## Examples
 
 ### Type transformation
 
@@ -36,82 +77,13 @@ import { proxySignal } from '@signality/core';
 
 const source = signal('a,b,c');
 const proxy = proxySignal(source, {
-  get: s => s().split(','),      // string → string[]
-  set: (v, s) => s.set(v.join(',')) // string[] → string
+  get: s => s().split(','), // string → string[] // [!code highlight]
+  set: (v, s) => s.set(v.join(',')) // string[] → string // [!code highlight]
 });
 
-proxy();              // ['a', 'b', 'c']
-proxy.set(['x', 'y']);// source becomes 'x,y'
-proxy();              // ['x', 'y']
-```
-
-
-
-## Parameters
-
-| Parameter | Type                                    | Description                                        |
-|-----------|-----------------------------------------|----------------------------------------------------|
-| `source`  | `Signal<T>` or `WritableSignal<T>`      | Source signal to wrap                              |
-| `handler` | `ProxySignalHandler<T, R>`              | Handler with optional get/set transformations      |
-| `options` | `Pick<CreateSignalOptions<R>, 'equal'>` | Optional equality function (for transformed value) |
-
-## Options
-
-::: warning `equal` applies to the proxy handler, not the source signal
-The `equal` option **does not** propagate to the original source signal. It is used exclusively by the proxy's `set` and `update` methods to compare **transformed values** — that is, the result of calling `handler.get` on the current source value.
-
-By default, `Object.is` is used (the source signal's own `equal` option is ignored).
-:::
-
-| Option  | Type                                                                 | Description                                          |
-|---------|----------------------------------------------------------------------|------------------------------------------------------|
-| `equal` | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function to skip unnecessary updates |
-
-## Return Value
-
-- When passed a **writable signal** → returns `WritableSignal<T>` with proxy behavior
-- When passed a **readonly signal** → returns `Signal<T>` (readonly)
-
-## Examples
-
-### Type transformation
-
-Transform between different representations on read and write:
-
-```angular-ts
-import { signal } from '@angular/core';
-import { proxySignal } from '@signality/core';
-
-const source = signal('a,b,c');
-const proxy = proxySignal(source, {
-  get: s => s().split(','),   // string → string[]
-  set: (v, s) => s.set(v.join(','))  // string[] → string
-});
-
-proxy();              // ['a', 'b', 'c']
-proxy.set(['x', 'y']);// source becomes 'x,y'
-proxy();              // ['x', 'y']
-```
-
-### Custom debounced signal
-
-Build a debounced signal using `proxySignal` and `debounceCallback`:
-
-```angular-ts
-import { signal } from '@angular/core';
-import { debounceCallback, proxySignal } from '@signality/core';
-
-function myDebounced<T>(initialValue: T, timeMs: number) {
-  const source = signal(initialValue);
-  const set = debounceCallback(source.set, timeMs);
-  return proxySignal(source, { set });
-}
-
-const debouncedValue = myDebounced('', 300);
-
-debouncedValue.set('hello');
-// ...after 300ms of inactivity...
-// output signal is updated
+proxy(); // ['a', 'b', 'c']
+proxy.set(['x', 'y']); // source becomes 'x,y'
+proxy(); // ['x', 'y']
 ```
 
 ## Type Definitions
