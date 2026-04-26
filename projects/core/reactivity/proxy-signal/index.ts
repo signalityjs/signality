@@ -6,8 +6,26 @@ import {
 } from '@angular/core';
 
 export type ProxySignalHandler<T, R = T> =
-  | { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void }
-  | { get?: never; set?: (value: R, source: WritableSignal<T>) => void };
+  | {
+      readonly get: (source: Signal<T>) => R;
+      readonly set: (value: R, source: WritableSignal<T>) => void;
+    }
+  | {
+      readonly get: (source: Signal<T>) => T;
+      readonly set?: (value: T, source: WritableSignal<T>) => void;
+    }
+  | {
+      readonly get?: never;
+      readonly set: (value: T, source: WritableSignal<T>) => void;
+    }
+  | {
+      readonly get: (source: Signal<T>) => R;
+      readonly set?: never;
+    }
+  | {
+      readonly get?: never;
+      readonly set?: never;
+    };
 
 /**
  * Creates a writable proxy signal with bidirectional value transformation.
@@ -29,9 +47,35 @@ export type ProxySignalHandler<T, R = T> =
  */
 export function proxySignal<T, R>(
   source: WritableSignal<T>,
-  handler: { get: (source: Signal<T>) => R; set?: (value: R, source: WritableSignal<T>) => void },
+  handler: { get: (source: Signal<T>) => R; set: (value: R, source: WritableSignal<T>) => void },
   options?: Pick<CreateSignalOptions<R>, 'equal'>
 ): WritableSignal<R>;
+
+/**
+ * Creates a writable proxy signal that transforms values on read
+ * and optionally writes back to the source.
+ *
+ * @param source - Source signal to wrap
+ * @param handler - Object with `get` transform and optional `set` for write-back
+ * @param options - Optional `{ equal }` for custom equality comparison
+ * @returns WritableSignal that transforms reads and optionally writes
+ *
+ * @example
+ * ```typescript
+ * const source = signal('hello');
+ * const proxy = proxySignal(source, {
+ *   get: s => s().toUpperCase(),
+ *   set: (v, s) => s.set(v.toLowerCase())
+ * });
+ * console.log(proxy()); // 'HELLO'
+ * proxy.set('WORLD'); // source becomes 'world'
+ * ```
+ */
+export function proxySignal<T>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => T; set?: (value: T, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
+): WritableSignal<T>;
 
 /**
  * Creates a readonly proxy signal that transforms the source value on read.
@@ -41,7 +85,7 @@ export function proxySignal<T, R>(
  * @param options - Optional `{ equal }` for custom equality comparison
  * @returns Signal that returns transformed values
  *
- * @example withDefault:
+ * @example
  * ```typescript
  * const userName = signal<string | undefined>('Alice');
  * const name = proxySignal(userName, {
@@ -65,7 +109,7 @@ export function proxySignal<T, R>(
  * @param options - Optional `{ equal }` for custom equality comparison
  * @returns WritableSignal that transforms writes
  *
- * @example debouncedSignal:
+ * @example
  * ```typescript
  * const debouncedSignal = <T>(initialValue: T, delayMs: number) => {
  *   const source = signal(initialValue);
@@ -82,7 +126,13 @@ export function proxySignal<T, R>(
  */
 export function proxySignal<T>(
   source: WritableSignal<T>,
-  handler: { get?: never; set?: (value: T, source: WritableSignal<T>) => void },
+  handler: { get?: never; set: (value: T, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
+): WritableSignal<T>;
+
+export function proxySignal<T>(
+  source: WritableSignal<T>,
+  handler: { get?: never; set?: never },
   options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): WritableSignal<T>;
 
@@ -95,7 +145,7 @@ export function proxySignal<T>(
 export function proxySignal<T, R = T>(
   source: Signal<T> | WritableSignal<T>,
   handler: ProxySignalHandler<T, R>,
-  options?: Pick<CreateSignalOptions<R>, 'equal'>
+  options?: Pick<CreateSignalOptions<T | R>, 'equal'>
 ): WritableSignal<R> | Signal<R> {
   const hooks = writableHooks(source, handler, options);
 
@@ -113,13 +163,13 @@ export function proxySignal<T, R = T>(
   }) as WritableSignal<R> | Signal<R>;
 }
 
-function writableHooks<T, R>(
-  source: WritableSignal<T> | Signal<T>,
-  handler: ProxySignalHandler<T, R>,
-  options?: Pick<CreateSignalOptions<R>, 'equal'>
+function writableHooks(
+  source: WritableSignal<any> | Signal<any>,
+  handler: ProxySignalHandler<any, any>,
+  options?: Pick<CreateSignalOptions<any>, 'equal'>
 ): Record<string, ((...args: any[]) => any) | undefined> {
   const isWritable = 'set' in source && typeof source.set === 'function';
-  const hooks: Record<string, ((...args: any[]) => any) | undefined> = Object.create(null);
+  const hooks = Object.create(null);
 
   if (!isWritable) {
     return hooks;
@@ -128,26 +178,27 @@ function writableHooks<T, R>(
   if (handler.get) {
     const get = handler.get.bind(handler);
 
-    let readonlyFn: Signal<R> | undefined;
+    let readonlyFn: Signal<any> | undefined;
     hooks['asReadonly'] = () => {
       return (readonlyFn ??= proxySignal(source.asReadonly(), { get }));
     };
 
     if (!handler.set) {
-      hooks['update'] = (fn: (value: R) => R) => {
+      // We must patch `update` so that proxy.update(v => v) equals proxy.set(proxy()),
+      // even though there's no `set` handler to reverse the transformed value.
+      hooks['update'] = (fn: (value: any) => any) => {
         const currentValue = untracked(() => get(source));
-        source.set(fn(currentValue) as unknown as T);
+        source.set(fn(currentValue));
       };
-
       return hooks;
     }
   }
 
   if (handler.set) {
     const equalFn = options?.equal ?? Object.is;
-    const valueFn = handler.get ? () => handler.get!(source) : () => source() as unknown as R;
+    const valueFn = handler.get ? () => handler.get(source) : () => source();
 
-    const set = (value: R) => {
+    const set = (value: any) => {
       untracked(() => {
         const currentValue = valueFn();
         if (!equalFn(currentValue, value)) {
@@ -157,7 +208,7 @@ function writableHooks<T, R>(
     };
 
     hooks['set'] = set;
-    hooks['update'] = (fn: (value: R) => R) => {
+    hooks['update'] = (fn: (value: any) => any) => {
       const currentValue = untracked(valueFn);
       set(fn(currentValue));
     };
