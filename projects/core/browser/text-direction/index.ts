@@ -66,7 +66,7 @@ export function textDirection(options?: TextDirectionOptions): WritableSignal<Te
       el?.setAttribute('dir', value);
     };
 
-    const dir = signal<TextDirection>(initialValue);
+    const dir = signal<TextDirection>(getDir(), options);
 
     mutationObserver(target, () => dir.set(getDir()), {
       attributes: true,
