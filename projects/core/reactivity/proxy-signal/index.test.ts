@@ -1,4 +1,4 @@
-import { effect, signal } from '@angular/core';
+import { effect, signal, type WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { proxySignal, type ProxySignalHandler } from '../proxy-signal';
 
@@ -417,7 +417,7 @@ describe(proxySignal.name, () => {
     describe('type coercion (string <-> string[])', () => {
       const csvHandler: ProxySignalHandler<string, string[]> = {
         get: s => s().split(','),
-        set: (v, s) => s.set(v.join(',')),
+        set: (v: string[], s: WritableSignal<string>) => s.set(v.join(',')),
       };
 
       it('transforms on read', () => {
