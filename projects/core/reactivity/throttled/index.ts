@@ -5,11 +5,12 @@ import {
   type Signal,
   type WritableSignal,
 } from '@angular/core';
-import { proxySignal, setupContext } from '@signality/core/internal';
+import { setupContext } from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, SignalValue, WithInjector } from '@signality/core/types';
 import { throttleCallback } from '@signality/core/scheduling/throttle-callback';
 import { watcher } from '@signality/core/reactivity/watcher';
+import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
 export type ThrottledOptions<T> = CreateSignalOptions<T> & WithInjector;
 
@@ -89,7 +90,7 @@ export function throttled(
       watcher(valueOrSignal, set);
       return output.asReadonly();
     } else {
-      return proxySignal(output, { set });
+      return proxySignal(output, { set }, { equal: options?.equal });
     }
   });
 }

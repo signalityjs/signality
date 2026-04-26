@@ -1,8 +1,9 @@
 import { CreateSignalOptions, signal, WritableSignal } from '@angular/core';
-import { createToken, proxySignal, setupContext } from '@signality/core/internal';
+import { createToken, setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { mutationObserver } from '@signality/core/observers/mutation-observer';
+import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
 /**
  * Possible text direction values matching the HTML `dir` attribute.
@@ -66,13 +67,17 @@ export function textDirection(options?: TextDirectionOptions): WritableSignal<Te
       attributeFilter: ['dir'],
     });
 
-    return proxySignal(dir, {
-      set: value => {
-        const el = toElement(target);
-        el?.setAttribute('dir', value);
-        dir.set(value);
+    return proxySignal(
+      dir,
+      {
+        set: value => {
+          const el = toElement(target);
+          el?.setAttribute('dir', value);
+          dir.set(value);
+        },
       },
-    });
+      { equal: options?.equal }
+    );
   });
 }
 

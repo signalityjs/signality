@@ -1,9 +1,10 @@
 import { type CreateSignalOptions, signal, type WritableSignal } from '@angular/core';
-import { proxySignal, setupContext } from '@signality/core/internal';
+import { setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 import { onDisconnect } from '@signality/core/elements/on-disconnect';
+import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
 export interface ElementFocusOptions extends CreateSignalOptions<boolean>, WithInjector {
   /**
@@ -74,17 +75,21 @@ export function elementFocus(
       focused.set(false);
     });
 
-    return proxySignal(focused, {
-      set: (value: boolean) => {
-        const el = toElement(target);
-        const hasFocus = el?.matches(':focus') ?? false;
+    return proxySignal(
+      focused,
+      {
+        set: value => {
+          const el = toElement(target);
+          const hasFocus = el?.matches(':focus') ?? false;
 
-        if (value && !hasFocus) {
-          el?.focus({ preventScroll });
-        } else if (!value && hasFocus) {
-          el?.blur();
-        }
+          if (value && !hasFocus) {
+            el?.focus({ preventScroll });
+          } else if (!value && hasFocus) {
+            el?.blur();
+          }
+        },
       },
-    });
+      { equal: options?.equal }
+    );
   });
 }

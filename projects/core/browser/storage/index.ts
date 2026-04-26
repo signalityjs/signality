@@ -1,9 +1,10 @@
 import { type CreateSignalOptions, isSignal, signal, type WritableSignal } from '@angular/core';
-import { isPlainObject, proxySignal, setupContext } from '@signality/core/internal';
+import { isPlainObject, setupContext } from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 import { watcher } from '@signality/core/reactivity/watcher';
+import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
 export interface StorageOptions<T> extends CreateSignalOptions<T>, WithInjector {
   /**
@@ -184,7 +185,7 @@ export function storage<T>(
       }
     };
 
-    const state = signal<T>(readValue(toValue(key)), options);
+    const source = signal<T>(readValue(toValue(key)), options);
 
     setupSync(() => {
       listener(window, 'storage', e => {
@@ -194,21 +195,25 @@ export function storage<T>(
           const newValue =
             e.newValue === null ? initialValue : processValue(serializer.read(e.newValue));
 
-          state.set(newValue);
+          source.set(newValue);
         }
       });
     });
 
     if (isSignal(key)) {
-      watcher(key, newKey => state.set(readValue(newKey)));
+      watcher(key, newKey => source.set(readValue(newKey)));
     }
 
-    return proxySignal(state, {
-      set: (value: T) => {
-        state.set(value);
-        writeValue(value);
+    return proxySignal(
+      source,
+      {
+        set: (value: T) => {
+          writeValue(value);
+          source.set(value);
+        },
       },
-    });
+      { equal: options?.equal }
+    );
   });
 }
 

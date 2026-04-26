@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
-import { proxySignal, setupContext } from '@signality/core/internal';
+import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
+import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
 export type TitleOptions = CreateSignalOptions<string> & WithInjector;
 
@@ -40,19 +41,22 @@ export function title(options?: TitleOptions): WritableSignal<string> {
     const route = inject(ActivatedRoute);
     const html = inject(Title);
 
+    const source = linkedSignal(
+      toSignal<string, string>(route.title.pipe(filter(Boolean)), {
+        initialValue: route.snapshot.title || html.getTitle(),
+      }),
+      { ...options }
+    );
+
     return proxySignal(
-      linkedSignal(
-        toSignal<string, string>(route.title.pipe(filter(Boolean)), {
-          initialValue: route.snapshot.title || html.getTitle(),
-        }),
-        { ...options }
-      ),
+      source,
       {
-        set: (value, source) => {
+        set: value => {
           html.setTitle(value);
           source.set(value);
         },
-      }
+      },
+      { equal: options?.equal }
     );
   });
 }
