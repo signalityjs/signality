@@ -10,7 +10,7 @@ Creates a wrapper around a signal that intercepts get and set operations.
 
 Provides explicit control over signal get (dependency tracking) and set (update triggering) operations, while preserving the standard [WritableSignal](https://angular.dev/api/core/WritableSignal) or [Signal](https://angular.dev/api/core/Signal) interface.
 
-Update logic customization enables you to define custom behavior for `set()` or `update()` calls on the created signal. For instance, this can be used for scheduler configuration:
+Update logic customization enables you to define custom behavior for `set()` or `update()` calls on the created signal. For example, to implement custom scheduling:
 
 ```angular-ts
 import { signal } from '@angular/core';
