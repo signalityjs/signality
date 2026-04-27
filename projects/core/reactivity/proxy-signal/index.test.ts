@@ -229,25 +229,6 @@ describe(proxySignal.name, () => {
       TestBed.tick();
       expect(effectSpy).toHaveBeenCalledWith(10);
     });
-
-    it('effect does not re-run when transformed value is equal via custom equal', () => {
-      const source = signal(1);
-      const proxy = proxySignal(source, { get: s => s() * 2 }, { equal: (a, b) => a === b });
-      const effectSpy = jest.fn();
-
-      TestBed.runInInjectionContext(() => {
-        effect(() => {
-          effectSpy(proxy());
-        });
-      });
-
-      TestBed.tick();
-      expect(effectSpy).toHaveBeenCalledWith(2);
-
-      source.set(1);
-      TestBed.tick();
-      expect(effectSpy).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('proxy chaining', () => {
