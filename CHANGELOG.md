@@ -1,3 +1,15 @@
+## 0.3.0 (2026-04-27)
+
+### 🚀 Features
+
+- **core:** `createInjectable` add new utility ([#152](https://github.com/signalityjs/signality/pull/152))
+- **core:** `fragment` is now a WritableSignal ([#160](https://github.com/signalityjs/signality/pull/160))
+- **core:** `proxySignal` add new utility ([#166](https://github.com/signalityjs/signality/pull/166))
+
+### 🩹 Fixes
+
+- **core:** `textDirection` correctly sync initial state from the DOM for reactive targets ([#167](https://github.com/signalityjs/signality/pull/167))
+
 ## 0.2.0 (2026-04-11)
 
 ### 🚀 Features
