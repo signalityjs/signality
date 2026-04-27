@@ -10,7 +10,7 @@ Creates a wrapper around a signal that intercepts get and set operations.
 
 Provides explicit control over signal get (dependency tracking) and set (update triggering) operations, while preserving the standard [WritableSignal](https://angular.dev/api/core/WritableSignal) or [Signal](https://angular.dev/api/core/Signal) interface.
 
-Update logic customization enables you to define custom behavior for `set()` or `update()` calls on the created signal. For instance, this can be used for scheduler configuration:
+Update logic customization enables you to define custom behavior for `set()` or `update()` calls on the created signal. For example, to implement custom scheduling:
 
 ```angular-ts
 import { signal } from '@angular/core';
@@ -91,10 +91,16 @@ proxy(); // ['x', 'y']
 ```typescript
 export type ProxySignalHandler<T, R = T> =
   | { readonly get: (source: Signal<T>) => R; readonly set: (value: R, source: WritableSignal<T>) => void }
-  | { readonly get: (source: Signal<T>) => T; readonly set?: (value: T, source: WritableSignal<T>) => void }
-  | { readonly get?: never; readonly set: (value: T, source: WritableSignal<T>) => void }
+  | { readonly get: (source: Signal<T>) => T; readonly set: (value: T, source: WritableSignal<T>) => void }
   | { readonly get: (source: Signal<T>) => R; readonly set?: never }
+  | { readonly get?: never; readonly set: (value: T, source: WritableSignal<T>) => void }
   | { readonly get?: never; readonly set?: never };
+
+function proxySignal<T>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => T; set: (value: T, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
+): WritableSignal<T>;
 
 function proxySignal<T, R>(
   source: WritableSignal<T>,
@@ -104,14 +110,14 @@ function proxySignal<T, R>(
 
 function proxySignal<T>(
   source: WritableSignal<T>,
-  handler: { get: (source: Signal<T>) => T; set?: (value: T, source: WritableSignal<T>) => void },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  handler: { get: (source: Signal<T>) => T; set?: never },
+  options?: never
 ): WritableSignal<T>;
 
 function proxySignal<T, R>(
   source: Signal<T>,
   handler: { get: (source: Signal<T>) => R; set?: never },
-  options?: Pick<CreateSignalOptions<R>, 'equal'>
+  options?: never
 ): Signal<R>;
 
 function proxySignal<T>(
@@ -123,13 +129,13 @@ function proxySignal<T>(
 function proxySignal<T>(
   source: WritableSignal<T>,
   handler: { get?: never; set?: never },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  options?: never
 ): WritableSignal<T>;
 
 function proxySignal<T>(
   source: Signal<T>,
   handler: { get?: never; set?: never },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  options?: never
 ): Signal<T>;
 ```
 

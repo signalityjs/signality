@@ -12,10 +12,6 @@ export type ProxySignalHandler<T, R = T> =
     }
   | {
       readonly get: (source: Signal<T>) => T;
-      readonly set?: (value: T, source: WritableSignal<T>) => void;
-    }
-  | {
-      readonly get?: never;
       readonly set: (value: T, source: WritableSignal<T>) => void;
     }
   | {
@@ -24,106 +20,37 @@ export type ProxySignalHandler<T, R = T> =
     }
   | {
       readonly get?: never;
+      readonly set: (value: T, source: WritableSignal<T>) => void;
+    }
+  | {
+      readonly get?: never;
       readonly set?: never;
     };
 
-/**
- * Creates a writable proxy signal with bidirectional value transformation.
- *
- * @param source - Source signal to wrap
- * @param handler - Object with `get` and `set` handlers
- * @param options - Optional `{ equal }` for custom equality comparison
- * @returns WritableSignal with transformed values
- *
- * @example Type coercion (string <-> string[]):
- * ```typescript
- * const source = signal('a,b,c');
- * const proxy = proxySignal(source, {
- *   get: s => s().split(','),
- *   set: (v, s) => s.set(v.join(','))
- * });
- * proxy.set(['x', 'y', 'z']); // source becomes 'x,y,z'
- * ```
- */
+export function proxySignal<T>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => T; set: (value: T, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
+): WritableSignal<T>;
+
 export function proxySignal<T, R>(
   source: WritableSignal<T>,
   handler: { get: (source: Signal<T>) => R; set: (value: R, source: WritableSignal<T>) => void },
   options?: Pick<CreateSignalOptions<R>, 'equal'>
 ): WritableSignal<R>;
 
-/**
- * Creates a writable proxy signal that transforms values on read
- * and optionally writes back to the source.
- *
- * @param source - Source signal to wrap
- * @param handler - Object with `get` transform and optional `set` for write-back
- * @param options - Optional `{ equal }` for custom equality comparison
- * @returns WritableSignal that transforms reads and optionally writes
- *
- * @example
- * ```typescript
- * const source = signal('hello');
- * const proxy = proxySignal(source, {
- *   get: s => s().toUpperCase(),
- *   set: (v, s) => s.set(v.toLowerCase())
- * });
- * console.log(proxy()); // 'HELLO'
- * proxy.set('WORLD'); // source becomes 'world'
- * ```
- */
 export function proxySignal<T>(
   source: WritableSignal<T>,
-  handler: { get: (source: Signal<T>) => T; set?: (value: T, source: WritableSignal<T>) => void },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  handler: { get: (source: Signal<T>) => T; set?: never },
+  options?: never
 ): WritableSignal<T>;
 
-/**
- * Creates a readonly proxy signal that transforms the source value on read.
- *
- * @param source - Source signal (readonly or writable)
- * @param handler - Object with `get` handler
- * @param options - Optional `{ equal }` for custom equality comparison
- * @returns Signal that returns transformed values
- *
- * @example
- * ```typescript
- * const userName = signal<string | undefined>('Alice');
- * const name = proxySignal(userName, {
- *   get: s => s() ?? 'Anonymous'
- * });
- * userName.set(undefined);
- * console.log(name()); // 'Anonymous'
- * ```
- */
 export function proxySignal<T, R>(
   source: Signal<T>,
   handler: { get: (source: Signal<T>) => R; set?: never },
-  options?: Pick<CreateSignalOptions<R>, 'equal'>
+  options?: never
 ): Signal<R>;
 
-/**
- * Creates a writable proxy signal that transforms values on write only.
- *
- * @param source - Source signal to wrap
- * @param handler - Object with `set` handler
- * @param options - Optional `{ equal }` for custom equality comparison
- * @returns WritableSignal that transforms writes
- *
- * @example
- * ```typescript
- * const debouncedSignal = <T>(initialValue: T, delayMs: number) => {
- *   const source = signal(initialValue);
- *   let timeoutId: ReturnType<typeof setTimeout> | null = null;
- *
- *   return proxySignal(source, {
- *     set: value => {
- *       if (timeoutId) clearTimeout(timeoutId);
- *       timeoutId = setTimeout(() => source.set(value), delayMs);
- *     }
- *   });
- * };
- * ```
- */
 export function proxySignal<T>(
   source: WritableSignal<T>,
   handler: { get?: never; set: (value: T, source: WritableSignal<T>) => void },
@@ -133,13 +60,13 @@ export function proxySignal<T>(
 export function proxySignal<T>(
   source: WritableSignal<T>,
   handler: { get?: never; set?: never },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  options?: never
 ): WritableSignal<T>;
 
 export function proxySignal<T>(
   source: Signal<T>,
   handler: { get?: never; set?: never },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  options?: never
 ): Signal<T>;
 
 export function proxySignal<T, R = T>(

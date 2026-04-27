@@ -229,25 +229,6 @@ describe(proxySignal.name, () => {
       TestBed.tick();
       expect(effectSpy).toHaveBeenCalledWith(10);
     });
-
-    it('effect does not re-run when transformed value is equal via custom equal', () => {
-      const source = signal(1);
-      const proxy = proxySignal(source, { get: s => s() * 2 }, { equal: (a, b) => a === b });
-      const effectSpy = jest.fn();
-
-      TestBed.runInInjectionContext(() => {
-        effect(() => {
-          effectSpy(proxy());
-        });
-      });
-
-      TestBed.tick();
-      expect(effectSpy).toHaveBeenCalledWith(2);
-
-      source.set(1);
-      TestBed.tick();
-      expect(effectSpy).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('proxy chaining', () => {
@@ -300,7 +281,7 @@ describe(proxySignal.name, () => {
   });
 
   describe('equality comparison', () => {
-    it('does not update source when equal returns true', () => {
+    it('set does not update source when equal returns true', () => {
       const source = signal({ x: 1 });
       const proxy = proxySignal(
         source,
@@ -314,7 +295,7 @@ describe(proxySignal.name, () => {
       expect(before).toBe(source());
     });
 
-    it('updates source when equal returns false', () => {
+    it('set updates source when equal returns false', () => {
       const source = signal({ x: 1 });
       const proxy = proxySignal(
         source,
@@ -327,18 +308,35 @@ describe(proxySignal.name, () => {
       expect(source().x).toBe(2);
     });
 
-    it('update respects equality check', () => {
-      const source = signal(5);
-      const proxy = proxySignal(source, { set: (v, s) => s.set(v) }, { equal: (a, b) => a === b });
+    it('update does not update source when equal returns true', () => {
+      const source = signal({ x: 1 });
+      const proxy = proxySignal(
+        source,
+        { set: (v, s) => s.set(v) },
+        { equal: (a, b) => a.x === b.x }
+      );
 
       const before = source();
-      proxy.update(v => v);
+      proxy.update(() => ({ x: 1 }));
 
-      expect(source()).toBe(before);
+      expect(before).toBe(source());
+    });
+
+    it('update updates source when equal returns false', () => {
+      const source = signal({ x: 1 });
+      const proxy = proxySignal(
+        source,
+        { set: (v, s) => s.set(v) },
+        { equal: (a, b) => a.x === b.x }
+      );
+
+      proxy.update(v => ({ x: v.x + 1 }));
+
+      expect(source().x).toBe(2);
     });
   });
 
-  describe('transform roundtrip', () => {
+  describe('get and set transformation composition', () => {
     it('update passes transformed value to fn', () => {
       const source = signal(5);
       const proxy = proxySignal(source, {
