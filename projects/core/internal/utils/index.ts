@@ -4,7 +4,6 @@ export * from './assert';
 export * from './context';
 export * from './create-token';
 export * from './wait-for-value';
-export * from './is-query-signal';
 export * from './is-plain-object';
 export * from './const-signal';
 export * from './unref-element';

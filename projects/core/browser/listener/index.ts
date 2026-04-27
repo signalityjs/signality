@@ -1,15 +1,8 @@
-import {
-  afterRenderEffect,
-  type CreateEffectOptions,
-  effect,
-  type EffectCleanupRegisterFn,
-  type EffectRef,
-  untracked,
-} from '@angular/core';
-import { type BaseEffectNode, SIGNAL } from '@angular/core/primitives/signals';
+import { afterRenderEffect, isSignal, untracked } from '@angular/core';
 import {
   assertEventTarget,
   NOOP_EFFECT_REF,
+  NOOP_FN,
   setupContext,
   unrefElement,
 } from '@signality/core/internal';
@@ -134,10 +127,9 @@ export function setupSync<T>(listenerFactoryExecFn: () => T): T {
 
 function listenerImpl(applied: InternalListenerOptions, ...args: any[]): ListenerRef {
   const options = args[3] as ListenerOptions | undefined;
-
   const { runInContext } = setupContext(options?.injector, listenerImpl);
 
-  return runInContext(({ isServer }) => {
+  return runInContext(({ isServer, onCleanup }) => {
     if (isServer) {
       return NOOP_EFFECT_REF;
     }
@@ -164,13 +156,13 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
       untracked(() => handler.call(this, event));
     };
 
-    const setupListener = (onCleanup: EffectCleanupRegisterFn) => {
+    const setupListener = () => {
       const raw = toValue(maybeReactiveTarget);
       const target = unrefElement(raw);
       const event = toValue(maybeReactiveEvent);
 
       if (!target) {
-        return;
+        return NOOP_FN;
       }
 
       if (ngDevMode) {
@@ -179,18 +171,26 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
 
       target.addEventListener(event, untrackedHandler, nativeOptions);
 
-      onCleanup(() => {
+      return () => {
         target.removeEventListener(event, untrackedHandler, nativeOptions);
-      });
+      };
     };
 
-    let effectRef: EffectRef;
-
     if (isSyncSetupRequired) {
-      effectRef = syncEffect(setupListener);
-    } else {
-      effectRef = afterRenderEffect({ read: setupListener });
+      const destroy = setupListener();
+      onCleanup(destroy);
+
+      const reactiveConsumerNeeded = isSignal(maybeReactiveTarget) || isSignal(maybeReactiveEvent);
+      if (!reactiveConsumerNeeded) {
+        return { destroy };
+      }
     }
+
+    const effectRef = afterRenderEffect({
+      read: onCleanup => {
+        onCleanup(setupListener());
+      },
+    });
 
     return { destroy: () => effectRef.destroy() };
   });
@@ -223,22 +223,6 @@ function createModifier(applied: InternalListenerOptions): ListenerFunction {
       return createModifier({ ...applied, [prop]: true });
     },
   });
-}
-
-function syncEffect(
-  effectFn: (onCleanup: EffectCleanupRegisterFn) => void,
-  options?: CreateEffectOptions
-): EffectRef {
-  const effectRef = effect(effectFn, options);
-  const effectNode: BaseEffectNode = (effectRef as any)[SIGNAL];
-  try {
-    effectNode.run();
-  } catch (error) {
-    if (ngDevMode) {
-      console.warn('[syncEffect] Failed to run effectFn synchronously', error);
-    }
-  }
-  return effectRef;
 }
 
 interface InternalListenerOptions {

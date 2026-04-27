@@ -1,5 +1,5 @@
 import { afterEveryRender, afterRenderEffect, DestroyRef, ElementRef, inject } from '@angular/core';
-import { isQuerySignal, NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
+import { NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 
@@ -60,9 +60,8 @@ export function onDisconnect<T extends Element>(
       return NOOP_EFFECT_REF;
     }
 
-    // (1) Host element check
-    // if we are inside a directive and the target element is its host,
-    // then we hook into the directive's lifecycle via its DestroyRef
+    // If we are inside a directive and the target element is its host,
+    // then we hook into the directive's lifecycle via its DestroyRef.
     const hostElRef = inject(ElementRef, { optional: true, self: true });
     if (hostElRef) {
       const targetEl = toElement(target);
@@ -73,37 +72,35 @@ export function onDisconnect<T extends Element>(
       }
     }
 
-    // (2) Query signal check (viewChild/contentChild)
-    // if target is a query signal, we rely on its automatic state transition
-    // managed by Angular's change detection, calling callback at render completion timing
-    if (isQuerySignal(target)) {
-      const effectRef = afterRenderEffect({
-        read: onCleanup => {
-          const targetEl = toElement(target);
-
-          if (targetEl) {
-            onCleanup(() => {
-              if (!targetEl.isConnected) callback(targetEl);
-            });
-          }
-        },
-      });
-
-      return { destroy: () => effectRef.destroy() };
-    }
-
-    // (3) Fallback
-    // for any DOM target (reactive or non-reactive), we assume the value was
-    // manually read from the DOM. Therefore, we perform isConnected check after
-    // every render cycle to detect disconnection
-    // @TODO: document the behavior of state transitions when the target is reactive
-    const afterRenderRef = afterEveryRender({
-      read: () => {
+    const effectRef = afterRenderEffect({
+      read: onCleanup => {
         const targetEl = toElement(target);
-        if (targetEl && !targetEl.isConnected) callback(targetEl);
+
+        if (targetEl) {
+          onCleanup(() => {
+            if (!targetEl.isConnected) {
+              callback(targetEl);
+            }
+          });
+        }
       },
     });
 
-    return { destroy: () => afterRenderRef.destroy() };
+    const afterRenderRef = afterEveryRender({
+      read: () => {
+        const targetEl = toElement(target);
+
+        if (targetEl && !targetEl.isConnected) {
+          callback(targetEl);
+        }
+      },
+    });
+
+    return {
+      destroy: () => {
+        effectRef.destroy();
+        afterRenderRef.destroy();
+      },
+    };
   });
 }
