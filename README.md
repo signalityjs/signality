@@ -26,7 +26,7 @@
 
 A collection of atomic utilities for building reactive compositions in [Angular](https://angular.dev).
 
-> **Signality v0.2 is here!** 🎉  
+> **Signality v0.3 is here!** 🎉  
 > Help us test it in your projects — minor versions may include API refinements as we fine-tune the library based on real-world feedback.
 
 ## Overview
