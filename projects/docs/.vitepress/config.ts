@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitepress';
 import tailwind from '@tailwindcss/vite';
+import { defineConfig } from 'vitepress';
 import { demosWatcher } from './plugins/demos-watcher';
 
 const base = process.env.VITEPRESS_BASE || '/';
@@ -239,6 +239,7 @@ export default defineConfig({
         text: 'Reactivity',
         items: [
           { text: 'Debounced', link: '/reactivity/debounced' },
+          { text: 'ProxySignal', link: '/reactivity/proxy-signal' },
           { text: 'Throttled', link: '/reactivity/throttled' },
           { text: 'Watcher', link: '/reactivity/watcher' },
         ],
@@ -270,6 +271,7 @@ export default defineConfig({
       {
         text: 'Utilities',
         items: [
+          { text: 'CreateInjectable', link: '/utilities/create-injectable' },
           { text: 'GenerateId', link: '/utilities/generate-id' },
           { text: 'ToValue', link: '/utilities/to-value' },
           { text: 'ToElement', link: '/utilities/to-element' },

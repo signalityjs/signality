@@ -1,9 +1,6 @@
 export const NEW_ITEMS = [
-  '/resources/changelog',
-  '/browser/text-selection',
-  '/browser/device-pixel-ratio',
-  '/elements/element-focus',
-  '/utilities/generate-id'
+  '/reactivity/proxy-signal',
+  '/utilities/create-injectable',
 ];
 
 export function isNew(link: string): boolean {
