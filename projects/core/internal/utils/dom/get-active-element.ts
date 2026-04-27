@@ -1,3 +1,6 @@
+/**
+ * @internal
+ */
 export function getActiveElement(document: Document): Element | null {
   let activeElement = document.activeElement;
 

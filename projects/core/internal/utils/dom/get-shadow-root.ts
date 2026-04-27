@@ -1,3 +1,6 @@
+/**
+ * @internal
+ */
 export function getShadowRoot(element: Element | null): ShadowRoot | null {
   const rootNode = element?.getRootNode ? element.getRootNode() : null;
 

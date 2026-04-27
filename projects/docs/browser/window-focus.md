@@ -1,5 +1,5 @@
 ---
-source: https://github.com/nicolo-ribaudo/signality/blob/main/projects/core/browser/window-focus/index.ts
+source: https://github.com/signalityjs/signality/blob/main/projects/core/browser/window-focus/index.ts
 ---
 
 # WindowFocus
@@ -108,6 +108,8 @@ On the server, the signal initializes with `true`.
 type WindowFocusOptions = CreateSignalOptions<boolean> & WithInjector;
 
 function windowFocus(options?: WindowFocusOptions): Signal<boolean>;
+
+const WINDOW_FOCUS: InjectionToken<Signal<boolean>>;
 ```
 
 ## Related

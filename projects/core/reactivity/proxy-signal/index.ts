@@ -31,7 +31,7 @@ export type ProxySignalHandler<T, R = T> =
  * Creates a writable proxy signal with bidirectional value transformation.
  *
  * @param source - Source signal to wrap
- * @param handler - Object with `get` transform and optional `set` handler
+ * @param handler - Object with `get` and `set` handlers
  * @param options - Optional `{ equal }` for custom equality comparison
  * @returns WritableSignal with transformed values
  *
@@ -80,8 +80,8 @@ export function proxySignal<T>(
 /**
  * Creates a readonly proxy signal that transforms the source value on read.
  *
- * @param source - Source signal (may be readonly or writable)
- * @param handler - Object with `get` transform function
+ * @param source - Source signal (readonly or writable)
+ * @param handler - Object with `get` handler
  * @param options - Optional `{ equal }` for custom equality comparison
  * @returns Signal that returns transformed values
  *
@@ -105,7 +105,7 @@ export function proxySignal<T, R>(
  * Creates a writable proxy signal that transforms values on write only.
  *
  * @param source - Source signal to wrap
- * @param handler - Object with `set` handler function
+ * @param handler - Object with `set` handler
  * @param options - Optional `{ equal }` for custom equality comparison
  * @returns WritableSignal that transforms writes
  *

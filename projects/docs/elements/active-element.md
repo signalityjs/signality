@@ -154,6 +154,8 @@ On the server, the signal initializes with `null`.
 type ActiveElementOptions = CreateSignalOptions<Element | null> & WithInjector;
 
 function activeElement(options?: ActiveElementOptions): Signal<Element | null>;
+
+const ACTIVE_ELEMENT: InjectionToken<Signal<Element | null>>;
 ```
 
 ## Related

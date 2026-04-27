@@ -148,4 +148,6 @@ interface FpsRef {
 }
 
 function fps(options?: FpsOptions): FpsRef;
+
+const FPS: InjectionToken<FpsRef>;
 ```

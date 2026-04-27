@@ -3,6 +3,7 @@
  * Used for SSR compatibility when returning method functions in Ref objects that should do nothing on the server.
  *
  * Example: `close: NOOP_FN` in {@link WebNotificationRef}
+ * @internal
  */
 export const NOOP_FN: (...args: any[]) => void = () => {
   /* empty */
@@ -13,6 +14,7 @@ export const NOOP_FN: (...args: any[]) => void = () => {
  * Used for SSR compatibility when returning async method functions in Ref objects that should do nothing on the server.
  *
  * Example: `share: NOOP_ASYNC_FN` in {@link WebShareRef}
+ * @internal
  */
 export const NOOP_ASYNC_FN = () => Promise.resolve();
 
@@ -22,6 +24,7 @@ export const NOOP_ASYNC_FN = () => Promise.resolve();
  * that cannot run on the server. Prevents errors when calling destroy() on server-rendered refs.
  *
  * Example: `return NOOP_EFFECT_REF` in {@link resizeObserver}
+ * @internal
  */
 export const NOOP_EFFECT_REF = { destroy: NOOP_FN };
 
@@ -31,5 +34,6 @@ export const NOOP_EFFECT_REF = { destroy: NOOP_FN };
  * and we need to detect changes even when the object structure appears the same.
  *
  * Example: `signal<Selection | null>(null, { equal: ALWAYS_FALSE_FN })` in {@link textSelection}
+ * @internal
  */
 export const ALWAYS_FALSE_FN = () => false;

@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/utiliti
 
 # CreateInjectable
 
-Creates a set of utility functions to manage Angular dependency injection in a typed and simplified way. It replaces traditional class-based services with a more functional and flexible approach.
+Defines a typed factory function for creating injectable dependencies that return a tuple of injection utilities. Offers an alternative to class-based Angular services with functional, composable dependency factories.
 
 ## Usage
 
@@ -19,7 +19,7 @@ export const [injectCounter, provideCounter] = createInjectable( // [!code highl
     const doubled = computed(() => count() * 2);
 
     function increment() {
-      count.update((v) => v + 1);
+      count.update(v => v + 1);
     }
 
     return { count: count.asReadonly(), doubled, increment };
@@ -42,7 +42,7 @@ export class CounterComponent {
 
 ## `createInjectable.root`
 
-The `root` variant creates an injectable that is provided in the application root by default. This is ideal for global, tree-shakable singletons.
+The `root` variant creates an injectable that is provided in the application root by default.
 
 ```angular-ts
 import { computed, inject } from '@angular/core';
@@ -54,7 +54,9 @@ export const [injectAuth] = createInjectable.root('Auth', () => { // [!code high
 
   const me = rxResource({ stream: () => authGateway.getUserMe() });
 
-  const isAdmin = computed(() => me().hasValue() && me.value().roles.includes('admin'));
+  const isAdmin = computed(() => {
+    return me().hasValue() && me.value().roles.includes('admin');
+  });
 
   return { userMe: me.asReadonly(), isAdmin };
 });
@@ -64,7 +66,7 @@ export const [injectAuth] = createInjectable.root('Auth', () => { // [!code high
 ## Parameters
 
 | Parameter     | Type       | Description                                                                     |
-| ------------- | ---------- | ------------------------------------------------------------------------------- |
+|---------------|------------|---------------------------------------------------------------------------------|
 | `description` | `string`   | A descriptive label for the underlying `InjectionToken` (useful for debugging). |
 | `factory`     | `Function` | A factory function that defines the injectable's logic.                         |
 
@@ -73,7 +75,7 @@ export const [injectAuth] = createInjectable.root('Auth', () => { // [!code high
 Returns a tuple containing:
 
 | Index | Name             | Description                                                   |
-| ----- | ---------------- | ------------------------------------------------------------- |
+|-------|------------------|---------------------------------------------------------------|
 | `0`   | `injectFn`       | A function to retrieve the instance (equivalent to `inject`). |
 | `1`   | `provideFn`      | A function to provide the injectable in a `providers` array.  |
 | `2`   | `injectionToken` | The underlying Angular `InjectionToken`.                      |
@@ -119,7 +121,7 @@ export class ManualInjection {
 ## Type Definitions
 
 ```ts
-export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
+type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
     provideFn: ProvideFn<Arguments>,
@@ -130,12 +132,12 @@ export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonl
 interface CreateInjectableFn {
   <Arguments extends any[], Return>(
     description: string,
-    factory: Factory<Arguments, Return>
+    factory: Factory<Arguments, Return>,
   ): CreateInjectableRef<Arguments, Return>;
 
   root: <Arguments extends any[], Return>(
     description: string,
-    factory: (...args: OptionalArgs<Arguments>) => Return
+    factory: (...args: OptionalArgs<Arguments>) => Return,
   ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
 }
 ```

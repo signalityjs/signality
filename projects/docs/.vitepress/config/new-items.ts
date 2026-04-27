@@ -1,5 +1,6 @@
 export const NEW_ITEMS = [
   '/reactivity/proxy-signal',
+  '/router/fragment',
   '/utilities/create-injectable',
 ];
 

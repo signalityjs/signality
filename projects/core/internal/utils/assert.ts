@@ -1,5 +1,8 @@
 import { isElement, isEventTarget } from './dom';
 
+/**
+ * @internal
+ */
 export function assertElement(value: unknown, source: string): asserts value is Element {
   if (!isElement(value)) {
     throw new Error(
@@ -11,6 +14,9 @@ export function assertElement(value: unknown, source: string): asserts value is 
   }
 }
 
+/**
+ * @internal
+ */
 export function assertEventTarget(value: unknown, source: string): asserts value is EventTarget {
   if (!isEventTarget(value)) {
     throw new Error(

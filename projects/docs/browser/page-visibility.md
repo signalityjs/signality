@@ -106,4 +106,6 @@ On the server, the signal initializes with `'visible'`.
 type PageVisibilityOptions = CreateSignalOptions<DocumentVisibilityState> & WithInjector;
 
 function pageVisibility(options?: PageVisibilityOptions): Signal<DocumentVisibilityState>;
+
+const PAGE_VISIBILITY: InjectionToken<Signal<DocumentVisibilityState>>;
 ```

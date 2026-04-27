@@ -145,6 +145,8 @@ export class SaveButton {
 type InputModalityOptions = CreateSignalOptions<InputModality> & WithInjector;
 
 function inputModality(options?: InputModalityOptions): Signal<InputModality>;
+
+const INPUT_MODALITY: InjectionToken<Signal<InputModality>>;
 ```
 
 ## Related

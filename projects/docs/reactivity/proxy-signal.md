@@ -21,9 +21,9 @@ function debouncedSignal<T>(initialValue: T, ms: number): WritableSignal<T> {
   let timeoutId: ReturnType<typeof setTimeout>;
 
   return proxySignal(source, {
-    set: (value, target) => { // [!code highlight]
+    set: (value, source) => { // [!code highlight]
       clearTimeout(timeoutId);  // [!code highlight]
-      timeoutId = setTimeout(() => target.set(value), ms); // [!code highlight]
+      timeoutId = setTimeout(() => source.set(value), ms); // [!code highlight]
     } // [!code highlight]
   });
 }

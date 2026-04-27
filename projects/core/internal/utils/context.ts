@@ -9,6 +9,9 @@ import {
 } from '@angular/core';
 import { IS_BROWSER, IS_MOBILE, IS_SERVER } from '../providers';
 
+/**
+ * @internal
+ */
 export interface ContextRef {
   readonly injector: Injector;
   readonly isServer: boolean;
@@ -17,6 +20,9 @@ export interface ContextRef {
   readonly onCleanup: (cleanupFn: () => void) => void;
 }
 
+/**
+ * @internal
+ */
 export interface SetupContextRef {
   runInContext<T>(fn: (context: ContextRef) => T): T;
 }
