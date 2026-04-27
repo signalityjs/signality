@@ -91,22 +91,22 @@ proxy(); // ['x', 'y']
 ```typescript
 export type ProxySignalHandler<T, R = T> =
   | { readonly get: (source: Signal<T>) => R; readonly set: (value: R, source: WritableSignal<T>) => void }
-  | { readonly get: (source: Signal<T>) => T; readonly set?: (value: T, source: WritableSignal<T>) => void }
-  | { readonly get?: never; readonly set: (value: T, source: WritableSignal<T>) => void }
+  | { readonly get: (source: Signal<T>) => T; readonly set: (value: T, source: WritableSignal<T>) => void }
   | { readonly get: (source: Signal<T>) => R; readonly set?: never }
+  | { readonly get?: never; readonly set: (value: T, source: WritableSignal<T>) => void }
   | { readonly get?: never; readonly set?: never };
+
+function proxySignal<T>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => T; set: (value: T, source: WritableSignal<T>) => void },
+  options?: Pick<CreateSignalOptions<T>, 'equal'>
+): WritableSignal<T>;
 
 function proxySignal<T, R>(
   source: WritableSignal<T>,
   handler: { get: (source: Signal<T>) => R; set: (value: R, source: WritableSignal<T>) => void },
   options?: Pick<CreateSignalOptions<R>, 'equal'>
 ): WritableSignal<R>;
-
-function proxySignal<T>(
-  source: WritableSignal<T>,
-  handler: { get: (source: Signal<T>) => T; set?: (value: T, source: WritableSignal<T>) => void },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
-): WritableSignal<T>;
 
 function proxySignal<T>(
   source: WritableSignal<T>,
