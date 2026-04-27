@@ -12,15 +12,15 @@ export type ProxySignalHandler<T, R = T> =
     }
   | {
       readonly get: (source: Signal<T>) => T;
-      readonly set?: (value: T, source: WritableSignal<T>) => void;
-    }
-  | {
-      readonly get?: never;
       readonly set: (value: T, source: WritableSignal<T>) => void;
     }
   | {
       readonly get: (source: Signal<T>) => R;
       readonly set?: never;
+    }
+  | {
+      readonly get?: never;
+      readonly set: (value: T, source: WritableSignal<T>) => void;
     }
   | {
       readonly get?: never;
