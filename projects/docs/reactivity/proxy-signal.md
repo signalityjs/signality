@@ -108,10 +108,16 @@ function proxySignal<T>(
   options?: Pick<CreateSignalOptions<T>, 'equal'>
 ): WritableSignal<T>;
 
+function proxySignal<T>(
+  source: WritableSignal<T>,
+  handler: { get: (source: Signal<T>) => T; set?: never },
+  options?: never
+): WritableSignal<T>;
+
 function proxySignal<T, R>(
   source: Signal<T>,
   handler: { get: (source: Signal<T>) => R; set?: never },
-  options?: Pick<CreateSignalOptions<R>, 'equal'>
+  options?: never
 ): Signal<R>;
 
 function proxySignal<T>(
@@ -123,13 +129,13 @@ function proxySignal<T>(
 function proxySignal<T>(
   source: WritableSignal<T>,
   handler: { get?: never; set?: never },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  options?: never
 ): WritableSignal<T>;
 
 function proxySignal<T>(
   source: Signal<T>,
   handler: { get?: never; set?: never },
-  options?: Pick<CreateSignalOptions<T>, 'equal'>
+  options?: never
 ): Signal<T>;
 ```
 
