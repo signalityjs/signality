@@ -156,6 +156,8 @@ On the server, the signal initializes with `true`.
 type OnlineOptions = CreateSignalOptions<boolean> & WithInjector;
 
 function online(options?: OnlineOptions): Signal<boolean>;
+
+const ONLINE: InjectionToken<Signal<boolean>>;
 ```
 
 ## Related

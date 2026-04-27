@@ -160,5 +160,7 @@ interface NetworkRef {
 }
 
 function network(options?: NetworkOptions): NetworkRef;
+
+const NETWORK: InjectionToken<NetworkRef>;
 ```
 

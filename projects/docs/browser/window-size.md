@@ -148,6 +148,8 @@ interface WindowSizeOptions extends CreateSignalOptions<WindowSizeValue>, WithIn
 }
 
 function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue>;
+
+const WINDOW_SIZE: InjectionToken<Signal<WindowSizeValue>>;
 ```
 
 ## Related

@@ -100,6 +100,8 @@ const pixelRatio = devicePixelRatio({
 type DevicePixelRatioOptions = CreateSignalOptions<number> & WithInjector;
 
 function devicePixelRatio(options?: DevicePixelRatioOptions): Signal<number>;
+
+const DEVICE_PIXEL_RATIO: InjectionToken<Signal<number>>;
 ```
 
 ## Related

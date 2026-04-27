@@ -123,4 +123,6 @@ interface TextSelectionRef {
 }
 
 function textSelection(options?: TextSelectionOptions): TextSelectionRef;
+
+const TEXT_SELECTION: InjectionToken<TextSelectionRef>;
 ```

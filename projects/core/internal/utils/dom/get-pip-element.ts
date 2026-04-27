@@ -1,3 +1,6 @@
+/**
+ * @internal
+ */
 export function getPipElement(document: Document): Element | null {
   let pipElement = document.pictureInPictureElement;
 

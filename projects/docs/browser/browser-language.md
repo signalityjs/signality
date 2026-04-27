@@ -144,6 +144,8 @@ interface BrowserLanguageOptions extends CreateSignalOptions<string>,
 }
 
 function browserLanguage(options?: BrowserLanguageOptions): Signal<string>;
+
+const BROWSER_LANGUAGE: InjectionToken<Signal<string>>;
 ```
 
 ## Related

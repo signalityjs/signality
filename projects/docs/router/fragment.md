@@ -37,11 +37,11 @@ export class ProductPage {
 
 The `FragmentOptions` extends [`CreateSignalOptions<string | null>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option       | Type                                                                              | Default | Description                                                                                                                                                                                     |
-|--------------|-----------------------------------------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `equal`      | [`ValueEqualityFn<string \| null>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))                                                                                              |
-| `debugName`  | `string`                                                                          | -       | Debug name for the signal (development only)                                                                                                                                                    |
-| `injector`   | [`Injector`](https://angular.dev/api/core/Injector)                               | -       | Optional injector for DI context                                                                                                                                                                |
+| Option       | Type                                                                              | Default | Description                                                                                                                                                       |
+|--------------|-----------------------------------------------------------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `equal`      | [`ValueEqualityFn<string \| null>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))                                                                |
+| `debugName`  | `string`                                                                          | -       | Debug name for the signal (development only)                                                                                                                      |
+| `injector`   | [`Injector`](https://angular.dev/api/core/Injector)                               | -       | Optional injector for DI context                                                                                                                                  |
 | `replaceUrl` | `boolean`                                                                         | `false` | When `true`, updating the fragment will replace the current state in history. ([see more](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState)) |
 
 ## Return Value
@@ -61,7 +61,6 @@ import { fragment } from '@signality/core';
   imports: [FormsModule],
   template: `
     <nav>
-      <!-- Same as <select [ngModel]="fragment()" (ngModelChange)="fragment.set($event)"> -->
       <select [(ngModel)]="fragment"> <!-- [!code highlight] -->
         <option value="section-1">Section 1</option>
         <option value="section-2">Section 2</option>

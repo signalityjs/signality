@@ -126,6 +126,8 @@ interface TextDirectionOptions extends CreateSignalOptions<TextDirection>, WithI
 }
 
 function textDirection(options?: TextDirectionOptions): WritableSignal<TextDirection>;
+
+const TEXT_DIRECTION: InjectionToken<WritableSignal<TextDirection>>;
 ```
 
 ## Related

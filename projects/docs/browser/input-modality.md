@@ -149,7 +149,7 @@ type InputModality = 'keyboard' | 'mouse' | 'touch' | null;
 
 function inputModality(options?: WithInjector): Signal<InputModality>;
 
-export const INPUT_MODALITY: InjectionToken<Signal<InputModality>>;
+const INPUT_MODALITY: InjectionToken<Signal<InputModality>>;
 ```
 
 ## Related

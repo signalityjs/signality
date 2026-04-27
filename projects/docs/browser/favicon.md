@@ -209,4 +209,6 @@ interface FaviconRef {
 }
 
 function favicon(options?: FaviconOptions): FaviconRef;
+
+const FAVICON: InjectionToken<FaviconRef>;
 ```

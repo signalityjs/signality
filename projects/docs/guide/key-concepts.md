@@ -52,7 +52,7 @@ type MaybeSignal<T> = T | Signal<T>;
 For instance, this enables utilities to work seamlessly with both reactive queries and non-reactive elements obtained through `inject()`:
 
 ```typescript
-import { viewChild, ElementRef } from '@angular/core';
+import { Component, inject, viewChild, ElementRef } from '@angular/core';
 import { elementSize } from '@signality/core';
 
 @Component({ /* ... */ })
@@ -80,7 +80,7 @@ Signality completely abstracts away manual resource cleanup. All resources are a
 All utilities must be called within Angular's [injection context](https://angular.dev/guide/di/dependency-injection-context#) (constructors, field initializers, etc.). If you need to use a utility outside this context, you can pass an `injector` option. Signality uses Angular's `DestroyRef` internally to register cleanup callbacks automatically.
 
 ```typescript
-import { inject, ElementRef } from '@angular/core';
+import { Component, inject, ElementRef } from '@angular/core';
 import { resizeObserver, routerListener } from '@signality/core';
 
 @Component({ /* ... */ })
