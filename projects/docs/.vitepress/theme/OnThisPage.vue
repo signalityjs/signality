@@ -13,6 +13,9 @@ const headers = ref<Header[]>([]);
 const activeId = ref<string>('');
 const hasScrolled = ref(false);
 
+let isScrolling = false;
+let scrollTimeout: ReturnType<typeof setTimeout>;
+
 function extractHeaders() {
   if (!inBrowser) return;
 
@@ -49,7 +52,7 @@ function onScroll() {
 
   hasScrolled.value = window.scrollY > 50;
 
-  if (headers.value.length === 0) return;
+  if (isScrolling || headers.value.length === 0) return;
 
   const scrollY = window.scrollY;
   const windowHeight = window.innerHeight;
@@ -80,6 +83,14 @@ function onScroll() {
 
 function scrollToHeader(id: string) {
   if (!inBrowser) return;
+
+  activeId.value = id;
+  isScrolling = true;
+
+  if (scrollTimeout) {
+    clearTimeout(scrollTimeout);
+  }
+
   const el = document.getElementById(id);
   if (el) {
     const y = el.getBoundingClientRect().top + window.scrollY - 80;
@@ -89,6 +100,10 @@ function scrollToHeader(id: string) {
       behavior: 'smooth'
     });
   }
+
+  scrollTimeout = setTimeout(() => {
+    isScrolling = false;
+  }, 500);
 }
 
 function scrollToTop() {
@@ -119,6 +134,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (inBrowser) {
     window.removeEventListener('scroll', onScroll);
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
   }
 });
 </script>
