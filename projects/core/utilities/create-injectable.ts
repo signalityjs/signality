@@ -2,12 +2,12 @@ import { inject, InjectionToken, InjectOptions, isDevMode, Provider } from '@ang
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
-interface InjectFn<Return> {
+export interface InjectFn<Return> {
   (options?: Omit<InjectOptions, 'optional'> & WithInjector): Return;
   (options?: InjectOptions & WithInjector): Return | null;
 }
 
-type ProvideFn<Arguments extends any[]> = (...args: Arguments) => Provider;
+export type ProvideFn<Arguments extends any[]> = (...args: Arguments) => Provider;
 
 export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
