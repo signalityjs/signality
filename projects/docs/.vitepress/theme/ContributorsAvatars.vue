@@ -46,10 +46,9 @@ onMounted(async () => {
         <line x1="12" y1="5" x2="12" y2="19" />
         <line x1="5" y1="12" x2="19" y2="12" />
       </svg>
-      <span class="custom-tooltip">I want to be marked as a <span style="font-weight: 500; color: #DEB3EB">contributor</span></span>
     </a>
     <a
-      v-for="(user, index) in contributors.slice(0, 2)"
+      v-for="(user, index) in contributors.slice(0, 3)"
       :key="user.id"
       :href="user.html_url"
       target="_blank"
@@ -58,7 +57,7 @@ onMounted(async () => {
     >
       <img :src="user.avatar_url + '&s=80'" :alt="user.login" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
     </a>
-    <div class="avatar" style="background-color: #27272A; z-index: 1;"></div>
+    <div class="avatar" style="background-color: #27272A; z-index: 0;"></div>
   </div>
 </template>
 
@@ -120,46 +119,5 @@ onMounted(async () => {
 
 a.first-avatar:hover {
   transform: scale(1.15);
-}
-
-.custom-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) scale(0.9);
-  background-color: #161618;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: 6px;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s ease;
-  z-index: 100;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.custom-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: #161618;
-}
-
-.first-avatar:hover .custom-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) scale(1);
-}
-
-@media (hover: none) {
-  .custom-tooltip {
-    display: none;
-  }
 }
 </style>
