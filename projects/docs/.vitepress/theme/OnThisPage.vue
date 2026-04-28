@@ -134,6 +134,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (inBrowser) {
     window.removeEventListener('scroll', onScroll);
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
   }
 });
 </script>
