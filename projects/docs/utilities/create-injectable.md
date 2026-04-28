@@ -121,44 +121,24 @@ export class ManualInjection {
 ## Type Definitions
 
 ```ts
-export type CreateInjectableRef<Params extends any[], InjectReturn> = Readonly<
+type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
-    provideFn: ProvideFn<Params>,
+    provideFn: ProvideFn<Arguments>,
     injectionToken: InjectionToken<InjectReturn>
   ]
 >;
 
 interface CreateInjectableFn {
-  <Factory extends Function>(description: string, factory: Factory): CreateInjectableRef<
-    ExtractParams<Factory>,
-    ExtractReturn<Factory>
-  >;
-
-  root: <Factory extends Function>(
+  <Arguments extends any[], Return>(
     description: string,
-    factory: Factory
-  ) => HasRequiredParam<ExtractParams<Factory>> extends true
-    ? never
-    : CreateInjectableRef<ExtractParams<Factory>, ExtractReturn<Factory>>;
+    factory: Factory<Arguments, Return>,
+  ): CreateInjectableRef<Arguments, Return>;
+
+  root: <Arguments extends any[], Return>(
+    description: string,
+    factory: (...args: OptionalArgs<Arguments>) => Return,
+  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
 }
 ```
 
-### Utility Types
-```ts
-export type ExtractParams<Factory> = Factory extends (...args: infer Params) => any
-  ? Params
-  : never;
-
-export type ExtractReturn<Factory> = Factory extends (...args: any[]) => infer Return
-  ? Return
-  : never;
-
-type HasRequiredParam<Params extends any[]> = Params extends []
-  ? false
-  : Params extends [infer First, ...infer Rest extends any[]]
-  ? undefined extends First
-    ? HasRequiredParam<Rest>
-    : true
-  : false;
-```

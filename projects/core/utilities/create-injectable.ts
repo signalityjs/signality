@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { inject, InjectionToken, InjectOptions, isDevMode, Provider } from '@angular/core';
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
@@ -8,31 +7,19 @@ export interface InjectFn<Return> {
   (options?: InjectOptions & WithInjector): Return | null;
 }
 
-export type ProvideFn<Params extends any[]> = (...args: Params) => Provider;
+export type ProvideFn<Arguments extends any[]> = (...args: Arguments) => Provider;
 
-export type CreateInjectableRef<Params extends any[], InjectReturn> = Readonly<
+export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
-    provideFn: ProvideFn<Params>,
+    provideFn: ProvideFn<Arguments>,
     injectionToken: InjectionToken<InjectReturn>
   ]
 >;
 
-export type ExtractParams<Factory> = Factory extends (...args: infer Params) => any
-  ? Params
-  : never;
+type Factory<Arguments extends any[], Return> = (...args: Arguments) => Return;
 
-export type ExtractReturn<Factory> = Factory extends (...args: any[]) => infer Return
-  ? Return
-  : never;
-
-type HasRequiredParam<Params extends any[]> = Params extends []
-  ? false
-  : Params extends [infer First, ...infer Rest extends any[]]
-  ? undefined extends First
-    ? HasRequiredParam<Rest>
-    : true
-  : false;
+type OptionalArgs<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
 
 export interface CreateInjectableFn {
   /**
@@ -61,10 +48,10 @@ export interface CreateInjectableFn {
    * }
    * ```
    */
-  <Factory extends Function>(description: string, factory: Factory): CreateInjectableRef<
-    ExtractParams<Factory>,
-    ExtractReturn<Factory>
-  >;
+  <Arguments extends any[], Return>(
+    description: string,
+    factory: Factory<Arguments, Return>
+  ): CreateInjectableRef<Arguments, Return>;
 
   /**
    * Creates an injectable that is provided at the application root by default (`providedIn: 'root'`).
@@ -74,7 +61,7 @@ export interface CreateInjectableFn {
    * at the component level, while remaining tree-shakable.
    *
    * @param description - A descriptive label for the InjectionToken.
-   * @param factory - A factory function. Parameters are optional during auto-instantiation.
+   * @param factory - A factory function. Arguments are optional during auto-instantiation.
    *
    * @example
    * ```typescript
@@ -102,42 +89,37 @@ export interface CreateInjectableFn {
    * export class MyComponent {}
    * ```
    */
-  root: <Factory extends Function>(
+  root: <Arguments extends any[], Return>(
     description: string,
-    factory: Factory
-  ) => HasRequiredParam<ExtractParams<Factory>> extends true
-    ? never
-    : CreateInjectableRef<ExtractParams<Factory>, ExtractReturn<Factory>>;
+    factory: (...args: OptionalArgs<Arguments>) => Return
+  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
 }
 
 export const createInjectable: CreateInjectableFn = (() => {
   const fn = createInjectableFn as CreateInjectableFn;
 
-  fn.root = (description, factory) => createInjectableFn(description, factory, true) as any;
+  fn.root = (description, factory) =>
+    createInjectableFn(description, factory as Factory<any[], any>, true) as any;
 
   return fn;
 })();
 
-function createInjectableFn<Factory extends Function>(
+function createInjectableFn<Arguments extends any[], Return>(
   description: string,
-  factory: Factory,
+  factory: Factory<Arguments, Return>,
   root = false
-): CreateInjectableRef<ExtractParams<Factory>, ExtractReturn<Factory>> {
-  const injectionToken = new InjectionToken<ExtractReturn<Factory>>(
+): CreateInjectableRef<Arguments, Return> {
+  const injectionToken = new InjectionToken<Return>(
     isDevMode() ? description : '',
-    root
-      ? { providedIn: 'root', factory: factory as unknown as () => ExtractReturn<Factory> }
-      : undefined
+    root ? { providedIn: 'root', factory } : undefined
   );
 
-  function provideFn(...args: ExtractParams<Factory>): Provider {
+  function provideFn(...args: Arguments): Provider {
     return { provide: injectionToken, useFactory: () => factory(...args) };
   }
 
-  function injectFn(
-    options?: Omit<InjectOptions, 'optional'> & WithInjector
-  ): ExtractReturn<Factory>;
-  function injectFn(options?: InjectOptions & WithInjector): ExtractReturn<Factory> | null {
+  function injectFn(options?: Omit<InjectOptions, 'optional'> & WithInjector): Return;
+  function injectFn(options?: InjectOptions & WithInjector): Return | null {
     const { injector, ...injectOptions } = options || {};
     const { runInContext } = setupContext(injector, injectFn);
     return runInContext(() => inject(injectionToken, injectOptions));
