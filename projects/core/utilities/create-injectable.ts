@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { inject, InjectionToken, InjectOptions, isDevMode, Provider } from '@angular/core';
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
@@ -17,9 +18,11 @@ export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonl
   ]
 >;
 
-type Factory<Arguments extends any[], Return> = (...args: Arguments) => Return;
-
-type OptionalArgs<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
+// TypeScript doesn't infer the types correctly when using the `(...args: any[]) => any` + `ReturnType` and `Parameters` utility types.
+// Also, `ReturnType` and `Parameters` don't work with `Function`.
+// Therefore we need to create our own versions of these utilities that work with the `Function` type.
+export type Parameters<Factory> = Factory extends (...args: infer Params) => any ? Params : never;
+export type ReturnType<Factory> = Factory extends (...args: any[]) => infer Return ? Return : never;
 
 export interface CreateInjectableFn {
   /**
@@ -48,10 +51,10 @@ export interface CreateInjectableFn {
    * }
    * ```
    */
-  <Arguments extends any[], Return>(
-    description: string,
-    factory: Factory<Arguments, Return>
-  ): CreateInjectableRef<Arguments, Return>;
+  <Factory extends Function>(description: string, factory: Factory): CreateInjectableRef<
+    Parameters<Factory>,
+    ReturnType<Factory>
+  >;
 
   /**
    * Creates an injectable that is provided at the application root by default (`providedIn: 'root'`).
@@ -89,37 +92,36 @@ export interface CreateInjectableFn {
    * export class MyComponent {}
    * ```
    */
-  root: <Arguments extends any[], Return>(
+  root: <Factory extends Function>(
     description: string,
-    factory: (...args: OptionalArgs<Arguments>) => Return
-  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
+    factory: Factory
+  ) => CreateInjectableRef<Parameters<Factory>, ReturnType<Factory>>;
 }
 
 export const createInjectable: CreateInjectableFn = (() => {
   const fn = createInjectableFn as CreateInjectableFn;
-
-  fn.root = (description, factory) =>
-    createInjectableFn(description, factory as Factory<any[], any>, true) as any;
-
+  fn.root = (description, factory) => createInjectableFn(description, factory, true) as any;
   return fn;
 })();
 
-function createInjectableFn<Arguments extends any[], Return>(
+function createInjectableFn<Factory extends Function>(
   description: string,
-  factory: Factory<Arguments, Return>,
+  factory: Factory,
   root = false
-): CreateInjectableRef<Arguments, Return> {
-  const injectionToken = new InjectionToken<Return>(
+): CreateInjectableRef<Parameters<Factory>, ReturnType<Factory>> {
+  const injectionToken = new InjectionToken<ReturnType<Factory>>(
     isDevMode() ? description : '',
-    root ? { providedIn: 'root', factory } : undefined
+    root
+      ? { providedIn: 'root', factory: factory as unknown as () => ReturnType<Factory> }
+      : undefined
   );
 
-  function provideFn(...args: Arguments): Provider {
+  function provideFn(...args: Parameters<Factory>): Provider {
     return { provide: injectionToken, useFactory: () => factory(...args) };
   }
 
-  function injectFn(options?: Omit<InjectOptions, 'optional'> & WithInjector): Return;
-  function injectFn(options?: InjectOptions & WithInjector): Return | null {
+  function injectFn(options?: Omit<InjectOptions, 'optional'> & WithInjector): ReturnType<Factory>;
+  function injectFn(options?: InjectOptions & WithInjector): ReturnType<Factory> | null {
     const { injector, ...injectOptions } = options || {};
     const { runInContext } = setupContext(injector, injectFn);
     return runInContext(() => inject(injectionToken, injectOptions));

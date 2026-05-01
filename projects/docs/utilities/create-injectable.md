@@ -121,6 +121,13 @@ export class ManualInjection {
 ## Type Definitions
 
 ```ts
+interface InjectFn<Return> {
+  (options?: Omit<InjectOptions, 'optional'> & WithInjector): Return;
+  (options?: InjectOptions & WithInjector): Return | null;
+}
+
+type ProvideFn<Arguments extends any[]> = (...args: Arguments) => Provider;
+
 type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
@@ -130,15 +137,15 @@ type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
 >;
 
 interface CreateInjectableFn {
-  <Arguments extends any[], Return>(
-    description: string,
-    factory: Factory<Arguments, Return>,
-  ): CreateInjectableRef<Arguments, Return>;
+  <Factory extends Function>(description: string, factory: Factory): CreateInjectableRef<
+    Parameters<Factory>,
+    ReturnType<Factory>
+  >;
 
-  root: <Arguments extends any[], Return>(
+  root: <Factory extends Function>(
     description: string,
-    factory: (...args: OptionalArgs<Arguments>) => Return,
-  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
+    factory: Factory
+  ) => CreateInjectableRef<Parameters<Factory>, ReturnType<Factory>>;
 }
 ```
 
