@@ -104,7 +104,7 @@ export class ScrollTracker {
   constructor() {
     if (this.window) {
       listener(this.window, 'scroll', () => {
-        this.scrollY.set(this.window.scrollY);
+        this.scrollY.set(this.window!.scrollY);
       });
     }
 
