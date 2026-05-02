@@ -66,7 +66,7 @@ export function elementFocus(
     const setFocus = (focused: boolean) => {
       const el = toElement(target);
       ngDevMode && assertElement(el, 'elementFocus');
-      const hasFocus = el!.matches(':focus') ?? false;
+      const hasFocus = el!.matches(':focus');
 
       if (focused && !hasFocus) {
         el!.focus({ preventScroll });
