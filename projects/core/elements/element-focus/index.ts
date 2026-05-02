@@ -1,5 +1,5 @@
 import { type CreateSignalOptions, signal, type WritableSignal } from '@angular/core';
-import { setupContext } from '@signality/core/internal';
+import { assertElement, setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
@@ -63,6 +63,18 @@ export function elementFocus(
 
     const focused = signal<boolean>(false, options);
 
+    const setFocus = (focused: boolean) => {
+      const el = toElement(target);
+      ngDevMode && assertElement(el, 'elementFocus');
+      const hasFocus = el!.matches(':focus') ?? false;
+
+      if (focused && !hasFocus) {
+        el!.focus({ preventScroll });
+      } else if (!focused && hasFocus) {
+        el!.blur();
+      }
+    };
+
     listener(target, 'focus', e => {
       focused.set(focusVisible ? (e.target as HTMLElement).matches(':focus-visible') : true);
     });
@@ -75,21 +87,6 @@ export function elementFocus(
       focused.set(false);
     });
 
-    return proxySignal(
-      focused,
-      {
-        set: value => {
-          const el = toElement(target);
-          const hasFocus = el?.matches(':focus') ?? false;
-
-          if (value && !hasFocus) {
-            el?.focus({ preventScroll });
-          } else if (!value && hasFocus) {
-            el?.blur();
-          }
-        },
-      },
-      { equal: options?.equal }
-    );
+    return proxySignal(focused, { set: setFocus }, { equal: options?.equal });
   });
 }
