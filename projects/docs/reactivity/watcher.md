@@ -156,23 +156,17 @@ export class Status {
 
 ```typescript
 interface CreateWatcherOptions extends Omit<CreateEffectOptions, 'allowSignalWrites'> {
-  /**
-   * If `true`, the watcher will automatically destroy itself after the first change.
-   * Defaults to `false`.
-   */
   readonly once?: boolean;
 }
 
 type WatcherRef = EffectRef;
 
-// Single source overload
 function watcher<V>(
   source: Signal<V>,
   fn: (curr: V, prev: V, onCleanup: EffectCleanupRegisterFn) => void,
   options?: CreateWatcherOptions
 ): WatcherRef;
 
-// Multiple sources overload
 function watcher<T extends readonly Signal<any>[]>(
   sources: T,
   fn: (curr: SignalValues<T>, prev: SignalValues<T>, onCleanup: EffectCleanupRegisterFn) => void,

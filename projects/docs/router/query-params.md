@@ -191,10 +191,8 @@ type QueryParamsWithSchemaOptions<T extends Record<string, any> = Record<string,
   readonly schema: QueryParamsValidator<T>;
 };
 
-// Without schema - returns Signal<T>
 function queryParams<T extends Record<string, any> = Record<string, any>>(options?: QueryParamsOptions<T>): Signal<T>;
 
-// With schema - returns QueryParamsRef<T>
 function queryParams<T extends Record<string, any> = Record<string, any>>(
   options: QueryParamsWithSchemaOptions<T>
 ): QueryParamsRef<T>;

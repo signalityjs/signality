@@ -94,7 +94,7 @@ export class StickyHeader {
 ### Back to top button
 
 ```angular-ts
-import { Component, computed } from '@angular/core';
+import { Component, DOCUMENT, inject, computed } from '@angular/core';
 import { scrollPosition } from '@signality/core';
 
 @Component({
@@ -107,11 +107,12 @@ import { scrollPosition } from '@signality/core';
   `,
 })
 export class BackToTop {
+  readonly window = inject(DOCUMENT).defaultView;
   readonly scrollPos = scrollPosition();
   readonly showButton = computed(() => this.scrollPos.y() > 500);
 
   scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.window?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 ```
@@ -119,7 +120,7 @@ export class BackToTop {
 ### Scroll progress bar
 
 ```angular-ts
-import { Component, computed } from '@angular/core';
+import { Component, DOCUMENT, inject, computed } from '@angular/core';
 import { scrollPosition } from '@signality/core';
 
 @Component({
@@ -130,12 +131,13 @@ import { scrollPosition } from '@signality/core';
   `,
 })
 export class ScrollProgress {
+  readonly window = inject(DOCUMENT).defaultView;
   readonly scrollPos = scrollPosition();
 
   readonly progress = computed(() => {
-    if (!window) return 0;
-    const docEl = document.documentElement;
-    const scrollHeight = docEl.scrollHeight - window.innerHeight;
+    if (!this.window) return 0;
+    const docEl = this.window.document.documentElement;
+    const scrollHeight = docEl.scrollHeight - this.window.innerHeight;
     if (scrollHeight <= 0) return 0;
     return (this.scrollPos.y() / scrollHeight) * 100;
   });
