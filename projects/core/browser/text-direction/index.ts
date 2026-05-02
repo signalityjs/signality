@@ -1,5 +1,5 @@
 import { afterNextRender, CreateSignalOptions, signal, WritableSignal } from '@angular/core';
-import { createToken, setupContext } from '@signality/core/internal';
+import { assertElement, createToken, setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { mutationObserver } from '@signality/core/observers/mutation-observer';
@@ -82,6 +82,7 @@ export function textDirection(options?: TextDirectionOptions): WritableSignal<Te
       dir,
       {
         set: value => {
+          ngDevMode && assertElement(toElement(target), 'textDirection');
           setDir(value);
           dir.set(value);
         },
