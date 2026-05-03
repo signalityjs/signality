@@ -100,13 +100,23 @@ describe(proxySignal.name, () => {
       expect(source()).toBe(5);
     });
 
-    it('update on proxy with only get handler uses transformed value', () => {
+    it('update on proxy with only get handler uses raw value', () => {
       const source = signal(5);
       const proxy = proxySignal(source, { get: s => s() * 2 });
 
       proxy.update(v => v + 1);
 
-      expect(source()).toBe(11);
+      expect(source()).toBe(6);
+    });
+
+    it('update on proxy with only get handler should not modify source when returning same value', () => {
+      const source = signal(10);
+      const proxy = proxySignal(source, { get: s => s() * 2 });
+
+      proxy.update(v => v);
+
+      expect(source()).toBe(10);
+      expect(proxy()).toBe(20);
     });
   });
 
