@@ -102,6 +102,13 @@ export class StagingComponent {
 }
 ```
 
+:::warning If your factory function defines parameters (used by `provideFn`), ensure they are *optional* or have *default values*.
+
+Since `createInjectable.root` automatically provides the dependency at the root, the factory is executed without arguments by default.
+
+Explicitly invoking `provideFn(args)` is only needed for localized overrides or testing.
+:::
+
 ### Using with custom Injector
 
 The `injectFn` supports passing an explicit `Injector` if you need to inject the value outside of the typical injection context.
