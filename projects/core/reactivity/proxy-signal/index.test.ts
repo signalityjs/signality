@@ -102,7 +102,7 @@ describe(proxySignal.name, () => {
 
     it('update on proxy with only get handler uses raw value', () => {
       const source = signal(5);
-      const proxy = proxySignal(source, { get: s => s() });
+      const proxy = proxySignal(source, { get: s => s() * 2 });
 
       proxy.update(v => v + 1);
 
