@@ -1,3 +1,13 @@
+## 0.3.1 (2026-05-09)
+
+### 🩹 Fixes
+
+- **core:** `createInjectable` export utility types to support declaration file generation ([#171](https://github.com/signalityjs/signality/pull/171))
+- **core:** `elementFocus` add assertion for null/undefined reactive target on signal set/update ([#177](https://github.com/signalityjs/signality/pull/177))
+- **core:** `textDirection` add assertion for null/undefined reactive target on signal set/update ([#179](https://github.com/signalityjs/signality/pull/179))
+- **core:** `fragment` correctly apply signal options (e.g. debugName) ([#181](https://github.com/signalityjs/signality/pull/181))
+- **core:** `proxySignal` prevent value corruption in update without set handler ([#183](https://github.com/signalityjs/signality/pull/183))
+
 ## 0.3.0 (2026-04-27)
 
 ### 🚀 Features
