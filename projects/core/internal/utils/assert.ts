@@ -10,7 +10,7 @@ export function assertElement(value: unknown, source: string): asserts value is 
         value === null
           ? 'null'
           : typeof value === 'object'
-          ? (value as any).constructor?.name
+          ? (value as any).constructor?.name ?? 'object'
           : typeof value
       }. ` +
         `If you are using viewChild/contentChild, make sure to specify "{ read: ElementRef }" to avoid implicit directive references.`
@@ -28,7 +28,7 @@ export function assertEventTarget(value: unknown, source: string): asserts value
         value === null
           ? 'null'
           : typeof value === 'object'
-          ? (value as any).constructor?.name
+          ? (value as any).constructor?.name ?? 'object'
           : typeof value
       }. ` +
         `If you are using viewChild/contentChild, specify "{ read: ElementRef }" to avoid implicit directive references.`
