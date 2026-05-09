@@ -1,4 +1,4 @@
-import { inject, InjectionToken, InjectOptions, isDevMode, Provider } from '@angular/core';
+import { inject, InjectionToken, type InjectOptions, type Provider } from '@angular/core';
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
@@ -16,10 +16,6 @@ export type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonl
     injectionToken: InjectionToken<InjectReturn>
   ]
 >;
-
-type Factory<Arguments extends any[], Return> = (...args: Arguments) => Return;
-
-type OptionalArgs<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
 
 export interface CreateInjectableFn {
   /**
@@ -110,7 +106,7 @@ function createInjectableFn<Arguments extends any[], Return>(
   root = false
 ): CreateInjectableRef<Arguments, Return> {
   const injectionToken = new InjectionToken<Return>(
-    isDevMode() ? description : '',
+    ngDevMode ? description : '',
     root ? { providedIn: 'root', factory } : undefined
   );
 
@@ -127,3 +123,7 @@ function createInjectableFn<Arguments extends any[], Return>(
 
   return [injectFn, provideFn, injectionToken];
 }
+
+type Factory<Arguments extends any[], Return> = (...args: Arguments) => Return;
+
+type OptionalArgs<Arguments extends any[]> = { [K in keyof Arguments]: Arguments[K] | undefined };
