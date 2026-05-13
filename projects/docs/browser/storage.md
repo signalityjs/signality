@@ -261,7 +261,6 @@ function storage<T>(
   options?: StorageOptions<T>,
 ): WritableSignal<T>;
 
-// Exported serializers
 const Serializers: {
   readonly string: Serializer<string>;
   readonly number: Serializer<number>;

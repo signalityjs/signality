@@ -109,16 +109,6 @@ function writableHooks(
     hooks['asReadonly'] = () => {
       return (readonlyFn ??= proxySignal(source.asReadonly(), { get }));
     };
-
-    if (!handler.set) {
-      // We must patch `update` so that proxy.update(v => v) equals proxy.set(proxy()),
-      // even though there's no `set` handler to reverse the transformed value.
-      hooks['update'] = (fn: (value: any) => any) => {
-        const currentValue = untracked(() => get(source));
-        source.set(fn(currentValue));
-      };
-      return hooks;
-    }
   }
 
   if (handler.set) {

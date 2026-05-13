@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-import { inject, InjectionToken, InjectOptions, isDevMode, Provider } from '@angular/core';
+import { inject, InjectionToken, type InjectOptions, type Provider } from '@angular/core';
 import { setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 
@@ -110,7 +110,7 @@ function createInjectableFn<Factory extends Function>(
   root = false
 ): CreateInjectableRef<Parameters<Factory>, ReturnType<Factory>> {
   const injectionToken = new InjectionToken<ReturnType<Factory>>(
-    isDevMode() ? description : '',
+    ngDevMode ? description : '',
     root
       ? { providedIn: 'root', factory: factory as unknown as () => ReturnType<Factory> }
       : undefined

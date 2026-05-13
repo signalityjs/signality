@@ -91,19 +91,22 @@ The `ThrottledOptions<T>` extends [`CreateSignalOptions<T>`](https://angular.dev
 ### Scroll position tracking
 
 ```angular-ts
-import { Component, signal, effect } from '@angular/core';
+import { Component, DOCUMENT, inject, signal, effect } from '@angular/core';
 import { throttled, listener } from '@signality/core';
 
 @Component({
   template: `<p>Scroll Y: {{ scrollY() }}px</p>`,
 })
 export class ScrollTracker {
+  readonly window = inject(DOCUMENT).defaultView;
   readonly scrollY = throttled(0, 50);
 
   constructor() {
-    listener(window, 'scroll', () => {
-      this.scrollY.set(window.scrollY);
-    });
+    if (this.window) {
+      listener(this.window, 'scroll', () => {
+        this.scrollY.set(this.window!.scrollY);
+      });
+    }
 
     effect(() => {
       // Updates at most every 50ms during scroll
@@ -116,7 +119,7 @@ export class ScrollTracker {
 ### Mouse position
 
 ```angular-ts
-import { Component, signal, computed } from '@angular/core';
+import { Component, DOCUMENT, inject, signal, computed } from '@angular/core';
 import { throttled, listener } from '@signality/core';
 
 @Component({
@@ -127,10 +130,11 @@ import { throttled, listener } from '@signality/core';
   `,
 })
 export class MouseTracker {
+  readonly document = inject(DOCUMENT);
   readonly position = throttled({ x: 0, y: 0 }, 16); // ~60fps
 
   constructor() {
-    listener(document, 'mousemove', (e: MouseEvent) => {
+    listener(this.document, 'mousemove', e => {
       this.position.set({ x: e.clientX, y: e.clientY });
     });
   }
@@ -146,14 +150,12 @@ Throttle timers are not started on the server — the initial value is returned 
 ```typescript
 type ThrottledOptions<T> = CreateSignalOptions<T> & WithInjector;
 
-// Overload 1: Computed from signal (readonly)
 function throttled<S extends Signal<any>>(
   source: S,
   timeMs: MaybeSignal<number>,
   options?: ThrottledOptions<SignalValue<S>>
 ): Signal<SignalValue<S>>;
 
-// Overload 2: Writable signal from value
 function throttled<V>(
   value: V,
   timeMs: MaybeSignal<number>,

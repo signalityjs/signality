@@ -245,7 +245,6 @@ export interface ListenerRef {
   readonly destroy: () => void;
 }
 
-// Window events
 function listener<E extends keyof WindowEventMap>(
   target: Window,
   event: MaybeSignal<E>,
@@ -253,7 +252,6 @@ function listener<E extends keyof WindowEventMap>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// Document events
 function listener<E extends keyof DocumentEventMap>(
   target: Document,
   event: MaybeSignal<E>,
@@ -261,7 +259,6 @@ function listener<E extends keyof DocumentEventMap>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// ShadowRoot events
 function listener<E extends keyof ShadowRootEventMap>(
   target: MaybeSignal<ShadowRoot>,
   event: MaybeSignal<E>,
@@ -269,7 +266,6 @@ function listener<E extends keyof ShadowRootEventMap>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// Element events
 function listener<T extends HTMLElement, E extends keyof HTMLElementEventMap>(
   target: MaybeElementSignal<T>,
   event: MaybeSignal<E>,
@@ -277,7 +273,6 @@ function listener<T extends HTMLElement, E extends keyof HTMLElementEventMap>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// SVGElement events
 function listener<T extends SVGElement, E extends keyof SVGElementEventMap>(
   target: MaybeElementSignal<T>,
   event: MaybeSignal<E>,
@@ -285,7 +280,6 @@ function listener<T extends SVGElement, E extends keyof SVGElementEventMap>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// MediaQueryList events
 function listener<E extends string>(
   target: MaybeSignal<MediaQueryList>,
   event: MaybeSignal<E>,
@@ -293,7 +287,6 @@ function listener<E extends string>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// Custom event target
 function listener<Names extends string>(
   target: MaybeSignal<InferEventTarget<Names>>,
   event: MaybeSignal<Names>,
@@ -301,7 +294,6 @@ function listener<Names extends string>(
   options?: ListenerOptions
 ): ListenerRef;
 
-// Generic events
 function listener<EventType = Event>(
   target: MaybeSignal<EventTarget> | MaybeElementSignal<Element>,
   event: MaybeSignal<string>,

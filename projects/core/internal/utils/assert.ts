@@ -7,7 +7,11 @@ export function assertElement(value: unknown, source: string): asserts value is 
   if (!isElement(value)) {
     throw new Error(
       `[${source}] Expected a DOM Element, ElementRef but received: ${
-        (value as object).constructor?.name ?? typeof value
+        value === null
+          ? 'null'
+          : typeof value === 'object'
+          ? (value as any).constructor?.name ?? 'object'
+          : typeof value
       }. ` +
         `If you are using viewChild/contentChild, make sure to specify "{ read: ElementRef }" to avoid implicit directive references.`
     );
@@ -21,7 +25,11 @@ export function assertEventTarget(value: unknown, source: string): asserts value
   if (!isEventTarget(value)) {
     throw new Error(
       `[${source}] Expected an EventTarget, ElementRef but received: ${
-        (value as object).constructor?.name ?? typeof value
+        value === null
+          ? 'null'
+          : typeof value === 'object'
+          ? (value as any).constructor?.name ?? 'object'
+          : typeof value
       }. ` +
         `If you are using viewChild/contentChild, specify "{ read: ElementRef }" to avoid implicit directive references.`
     );

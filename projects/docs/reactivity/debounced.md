@@ -144,14 +144,12 @@ Debounce timers are not started on the server — the initial value is returned 
 ```typescript
 type DebouncedOptions<T> = CreateSignalOptions<T> & WithInjector;
 
-// Overload 1: Computed from signal (readonly)
 function debounced<S extends Signal<any>>(
   source: S,
   timeMs: MaybeSignal<number>,
   options?: DebouncedOptions<SignalValue<S>>
 ): Signal<SignalValue<S>>;
 
-// Overload 2: Writable signal from value
 function debounced<V>(
   value: V,
   timeMs: MaybeSignal<number>,

@@ -38,9 +38,9 @@ export function fragment(options?: FragmentOptions): WritableSignal<string | nul
     const router = inject(Router);
     const { fragment: fragmentChanges, snapshot } = inject(ActivatedRoute);
 
-    const fragment = linkedSignal(
-      toSignal(fragmentChanges, { ...options, initialValue: snapshot.fragment })
-    );
+    const fragment = linkedSignal(toSignal(fragmentChanges, { initialValue: snapshot.fragment }), {
+      ...options,
+    });
 
     const set = async (value: string | null) => {
       const succeeded = await router.navigate([], {
