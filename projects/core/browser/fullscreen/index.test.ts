@@ -1,11 +1,12 @@
+import { vi, type MockInstance } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { fullscreen } from './index';
 
 describe(fullscreen.name, () => {
   let fullscreenElementValue: Element | null;
-  let requestFullscreenSpy: jest.SpyInstance;
-  let exitFullscreenSpy: jest.SpyInstance;
+  let requestFullscreenSpy: MockInstance;
+  let exitFullscreenSpy: MockInstance;
 
   beforeEach(() => {
     fullscreenElementValue = null;
@@ -22,21 +23,21 @@ describe(fullscreen.name, () => {
     });
 
     Object.defineProperty(Element.prototype, 'requestFullscreen', {
-      value: jest.fn().mockResolvedValue(undefined),
+      value: vi.fn().mockResolvedValue(undefined),
       writable: true,
       configurable: true,
     });
 
-    requestFullscreenSpy = jest
+    requestFullscreenSpy = vi
       .spyOn(Element.prototype, 'requestFullscreen')
       .mockResolvedValue(undefined);
 
-    exitFullscreenSpy = jest.fn().mockResolvedValue(undefined);
+    exitFullscreenSpy = vi.fn().mockResolvedValue(undefined);
     (document as any).exitFullscreen = exitFullscreenSpy;
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ fs.isActive() }}' })

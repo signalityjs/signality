@@ -1,14 +1,15 @@
+import { vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { debounced } from './index';
 
 describe(debounced.name, () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   describe('readonly signal from source', () => {
@@ -40,10 +41,10 @@ describe(debounced.name, () => {
       detectChanges();
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(299);
+      vi.advanceTimersByTime(299);
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(component.debouncedValue()).toBe('updated');
     });
 
@@ -51,15 +52,17 @@ describe(debounced.name, () => {
       const { component, detectChanges } = createComponent();
 
       component.source.set('first');
-      jest.advanceTimersByTime(100);
-      component.source.set('second');
-      jest.advanceTimersByTime(100);
-      component.source.set('third');
-      jest.advanceTimersByTime(299);
       detectChanges();
+      vi.advanceTimersByTime(100);
+      component.source.set('second');
+      detectChanges();
+      vi.advanceTimersByTime(100);
+      component.source.set('third');
+      detectChanges();
+      vi.advanceTimersByTime(299);
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(component.debouncedValue()).toBe('third');
     });
   });
@@ -92,10 +95,10 @@ describe(debounced.name, () => {
       detectChanges();
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(299);
+      vi.advanceTimersByTime(299);
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(component.debouncedValue()).toBe('updated');
     });
 
@@ -103,15 +106,15 @@ describe(debounced.name, () => {
       const { component, detectChanges } = createComponent();
 
       component.debouncedValue.update(v => v + '1');
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       component.debouncedValue.update(v => v + '2');
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       component.debouncedValue.update(v => v + '3');
-      jest.advanceTimersByTime(299);
+      vi.advanceTimersByTime(299);
       detectChanges();
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(component.debouncedValue()).toBe('initial3');
     });
   });
@@ -138,22 +141,22 @@ describe(debounced.name, () => {
 
       component.source.set('updated');
       detectChanges();
-      jest.advanceTimersByTime(299);
+      vi.advanceTimersByTime(299);
       expect(component.debouncedValue()).toBe('initial');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(component.debouncedValue()).toBe('updated');
 
       component.delay.set(500);
       component.source.set('new value');
       detectChanges();
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
       expect(component.debouncedValue()).not.toBe('new value');
 
-      jest.advanceTimersByTime(199);
+      vi.advanceTimersByTime(199);
       expect(component.debouncedValue()).not.toBe('new value');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       expect(component.debouncedValue()).toBe('new value');
     });
   });

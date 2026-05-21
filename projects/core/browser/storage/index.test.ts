@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { storage } from './index';
@@ -11,11 +12,11 @@ describe(storage.name, () => {
     mockSessionStorage = {};
 
     const createStorageMock = (store: Record<string, string>) => ({
-      getItem: jest.fn((key: string) => store[key] ?? null),
-      setItem: jest.fn((key: string, value: string) => (store[key] = value)),
-      removeItem: jest.fn((key: string) => delete store[key]),
-      clear: jest.fn(() => Object.keys(store).forEach(key => delete store[key])),
-      key: jest.fn((index: number) => Object.keys(store)[index] ?? null),
+      getItem: vi.fn((key: string) => store[key] ?? null),
+      setItem: vi.fn((key: string, value: string) => (store[key] = value)),
+      removeItem: vi.fn((key: string) => delete store[key]),
+      clear: vi.fn(() => Object.keys(store).forEach(key => delete store[key])),
+      key: vi.fn((index: number) => Object.keys(store)[index] ?? null),
       get length() {
         return Object.keys(store).length;
       },
@@ -33,7 +34,7 @@ describe(storage.name, () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('string values', () => {

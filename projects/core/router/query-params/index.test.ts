@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -53,7 +54,7 @@ describe(queryParams.name, () => {
   });
 
   describe('with schema', () => {
-    const mockSchema = { parse: jest.fn() };
+    const mockSchema = { parse: vi.fn() };
 
     beforeEach(() => {
       mockSchema.parse.mockClear();

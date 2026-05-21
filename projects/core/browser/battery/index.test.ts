@@ -1,3 +1,4 @@
+import { vi, type Mock } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { battery } from './index';
@@ -8,8 +9,8 @@ describe(battery.name, () => {
     chargingTime: number;
     dischargingTime: number;
     level: number;
-    addEventListener: jest.Mock;
-    removeEventListener: jest.Mock;
+    addEventListener: Mock;
+    removeEventListener: Mock;
   };
 
   beforeEach(() => {
@@ -18,11 +19,11 @@ describe(battery.name, () => {
       chargingTime: 0,
       dischargingTime: Infinity,
       level: 1,
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
 
-    (navigator as any).getBattery = jest.fn().mockResolvedValue(mockBattery);
+    (navigator as any).getBattery = vi.fn().mockResolvedValue(mockBattery);
   });
 
   @Component({ template: '{{ batteryStatus.charging() }}' })

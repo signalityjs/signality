@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { mediaQuery } from './index';
@@ -10,7 +11,7 @@ describe(mediaQuery.name, () => {
     listeners = new Map();
     mediaQueryState = new Map();
 
-    window.matchMedia = jest.fn((query: string) => {
+    window.matchMedia = vi.fn((query: string) => {
       if (!listeners.has(query)) {
         listeners.set(query, new Set());
       }
@@ -18,16 +19,16 @@ describe(mediaQuery.name, () => {
       return {
         matches: mediaQueryState.get(query) ?? false,
         media: query,
-        addEventListener: jest.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
+        addEventListener: vi.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
           if (event === 'change') listeners.get(query)!.add(handler);
         }),
-        removeEventListener: jest.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
+        removeEventListener: vi.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
           if (event === 'change') listeners.get(query)!.delete(handler);
         }),
-        dispatchEvent: jest.fn(),
+        dispatchEvent: vi.fn(),
         onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
       } as unknown as MediaQueryList;
     });
   });

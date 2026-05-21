@@ -1,14 +1,15 @@
+import { vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { throttled } from './index';
 
 describe(throttled.name, () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   describe('readonly signal from source', () => {
@@ -57,7 +58,7 @@ describe(throttled.name, () => {
       detectChanges();
       expect(component.throttledValue()).toBe('first');
 
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
       component.source.set('fourth');
       detectChanges();
       expect(component.throttledValue()).toBe('fourth');
@@ -70,12 +71,12 @@ describe(throttled.name, () => {
       detectChanges();
       expect(component.throttledValue()).toBe('first');
 
-      jest.advanceTimersByTime(299);
+      vi.advanceTimersByTime(299);
       component.source.set('second');
       detectChanges();
       expect(component.throttledValue()).toBe('first');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       component.source.set('third');
       detectChanges();
       expect(component.throttledValue()).toBe('third');
@@ -114,7 +115,7 @@ describe(throttled.name, () => {
       detectChanges();
       expect(component.throttledValue()).toBe('first');
 
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
       component.throttledValue.set('third');
       detectChanges();
       expect(component.throttledValue()).toBe('third');
@@ -135,7 +136,7 @@ describe(throttled.name, () => {
       detectChanges();
       expect(component.throttledValue()).toBe('initial1');
 
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
       component.throttledValue.update(v => v + '4');
       detectChanges();
       expect(component.throttledValue()).toBe('initial14');
@@ -170,7 +171,7 @@ describe(throttled.name, () => {
       detectChanges();
       expect(component.throttledValue()).toBe('first');
 
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
       component.delay.set(500);
       component.source.set('third');
       detectChanges();
@@ -180,12 +181,12 @@ describe(throttled.name, () => {
       detectChanges();
       expect(component.throttledValue()).toBe('third');
 
-      jest.advanceTimersByTime(499);
+      vi.advanceTimersByTime(499);
       component.source.set('fifth');
       detectChanges();
       expect(component.throttledValue()).toBe('third');
 
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
       component.source.set('sixth');
       detectChanges();
       expect(component.throttledValue()).toBe('sixth');

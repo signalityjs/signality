@@ -1,3 +1,4 @@
+import { vi, type Mock } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { devicePosture } from './index';
@@ -5,15 +6,15 @@ import { devicePosture } from './index';
 describe(devicePosture.name, () => {
   let mockDevicePosture: {
     type: 'continuous' | 'folded';
-    addEventListener: jest.Mock;
-    removeEventListener: jest.Mock;
+    addEventListener: Mock;
+    removeEventListener: Mock;
   };
 
   beforeEach(() => {
     mockDevicePosture = {
       type: 'continuous',
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
 
     (navigator as any).devicePosture = mockDevicePosture;

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { elementFocus } from './index';
@@ -172,7 +173,7 @@ describe(elementFocus.name, () => {
       const { component, focusableChildEl } = createComponent();
 
       focusableChildEl.focus();
-      const spy = jest.spyOn(focusableChildEl, 'focus');
+      const spy = vi.spyOn(focusableChildEl, 'focus');
 
       component.childFocused.set(true);
 
@@ -181,7 +182,7 @@ describe(elementFocus.name, () => {
 
     it('should not call blur() if not focused', () => {
       const { component, focusableChildEl } = createComponent();
-      const spy = jest.spyOn(focusableChildEl, 'blur');
+      const spy = vi.spyOn(focusableChildEl, 'blur');
 
       component.childFocused.set(false);
 
@@ -217,7 +218,7 @@ describe(elementFocus.name, () => {
 
     it('should call focus with preventScroll option', () => {
       const { component, focusableChildEl } = createComponent();
-      const spy = jest.spyOn(focusableChildEl, 'focus');
+      const spy = vi.spyOn(focusableChildEl, 'focus');
 
       component.childFocused.set(true);
 

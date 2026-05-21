@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component, ElementRef, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { dropzone } from './index';
@@ -314,7 +315,7 @@ describe(dropzone.name, () => {
 
   describe('with onReject callback', () => {
     it('should call onReject with files failing validator', () => {
-      const onReject = jest.fn();
+      const onReject = vi.fn();
 
       @Component({
         template: '<div #zone>Drop zone</div>',
@@ -340,7 +341,7 @@ describe(dropzone.name, () => {
     });
 
     it('should call onReject with files failing accept filter', () => {
-      const onReject = jest.fn();
+      const onReject = vi.fn();
 
       @Component({
         template: '<div #zone>Drop zone</div>',
@@ -366,7 +367,7 @@ describe(dropzone.name, () => {
     });
 
     it('should not call onReject when all files are accepted', () => {
-      const onReject = jest.fn();
+      const onReject = vi.fn();
 
       @Component({
         template: '<div #zone>Drop zone</div>',

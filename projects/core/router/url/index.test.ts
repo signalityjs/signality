@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
@@ -16,14 +17,11 @@ describe(url.name, () => {
       providers: [{ provide: Router, useValue: mockRouter }],
     });
 
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: { origin: 'http://localhost:4200' },
-    });
+    // jsdom's window.location.origin is set via environmentOptions.jsdom.url in vitest.config.ts.
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('relative URL', () => {

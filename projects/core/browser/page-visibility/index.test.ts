@@ -1,16 +1,17 @@
+import { vi, type MockInstance } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { pageVisibility } from './index';
 
 describe(pageVisibility.name, () => {
-  let visibilityStateSpy: jest.SpyInstance;
+  let visibilityStateSpy: MockInstance;
 
   beforeEach(() => {
-    visibilityStateSpy = jest.spyOn(document, 'visibilityState', 'get');
+    visibilityStateSpy = vi.spyOn(document, 'visibilityState', 'get');
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ visibility() }}' })

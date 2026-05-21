@@ -1,20 +1,21 @@
+import { vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { cva } from './index';
 
 const stabilize = () => {
-  jest.advanceTimersByTime(0);
+  vi.advanceTimersByTime(0);
   TestBed.tick();
 };
 
 describe(cva.name, () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   describe('standalone (without form binding)', () => {

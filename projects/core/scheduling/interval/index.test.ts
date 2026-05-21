@@ -1,14 +1,15 @@
+import { vi } from 'vitest';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { interval } from './index';
 
 describe(interval.name, () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   describe('core behavior', () => {
@@ -30,7 +31,7 @@ describe(interval.name, () => {
     it('should not fire callback before interval elapses', () => {
       const component = createComponent();
 
-      jest.advanceTimersByTime(999);
+      vi.advanceTimersByTime(999);
 
       expect(component.callCount).toBe(0);
     });
@@ -38,7 +39,7 @@ describe(interval.name, () => {
     it('should execute callback at specified interval', () => {
       const component = createComponent();
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
 
       expect(component.callCount).toBe(1);
     });
@@ -46,7 +47,7 @@ describe(interval.name, () => {
     it('should execute callback multiple times across intervals', () => {
       const component = createComponent();
 
-      jest.advanceTimersByTime(3000);
+      vi.advanceTimersByTime(3000);
 
       expect(component.callCount).toBe(3);
     });
@@ -71,12 +72,12 @@ describe(interval.name, () => {
     it('should prevent further callbacks after destroy()', () => {
       const component = createComponent();
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(1);
 
       component.ref.destroy();
 
-      jest.advanceTimersByTime(3000);
+      vi.advanceTimersByTime(3000);
 
       expect(component.callCount).toBe(1);
     });
@@ -87,7 +88,7 @@ describe(interval.name, () => {
       component.ref.destroy();
       component.ref.destroy();
 
-      jest.advanceTimersByTime(3000);
+      vi.advanceTimersByTime(3000);
 
       expect(component.callCount).toBe(0);
     });
@@ -124,10 +125,10 @@ describe(interval.name, () => {
 
       expect(component.callCount).toBe(1);
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(2);
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(3);
     });
   });
@@ -156,7 +157,7 @@ describe(interval.name, () => {
     it('should restart interval when signal changes', () => {
       const { component } = createComponent();
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(1);
 
       component.ms.set(500);
@@ -164,23 +165,23 @@ describe(interval.name, () => {
 
       component.callCount = 0;
 
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       expect(component.callCount).toBe(1);
 
-      jest.advanceTimersByTime(500);
+      vi.advanceTimersByTime(500);
       expect(component.callCount).toBe(2);
     });
 
     it('should stop firing when intervalMs changes to zero', () => {
       const { component } = createComponent();
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(1);
 
       component.ms.set(0);
       TestBed.tick();
 
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       expect(component.callCount).toBe(1);
     });
@@ -188,13 +189,13 @@ describe(interval.name, () => {
     it('should stop firing when intervalMs changes to negative', () => {
       const { component } = createComponent();
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(1);
 
       component.ms.set(-100);
       TestBed.tick();
 
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       expect(component.callCount).toBe(1);
     });
@@ -207,7 +208,7 @@ describe(interval.name, () => {
       component.ms.set(500);
       TestBed.tick();
 
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       expect(component.callCount).toBe(0);
     });
@@ -227,7 +228,7 @@ describe(interval.name, () => {
       fixture.detectChanges();
       const component = fixture.componentInstance;
 
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       expect(component.callCount).toBe(0);
     });
@@ -245,7 +246,7 @@ describe(interval.name, () => {
       fixture.detectChanges();
       const component = fixture.componentInstance;
 
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       expect(component.callCount).toBe(0);
     });
@@ -263,12 +264,12 @@ describe(interval.name, () => {
       fixture.detectChanges();
       const component = fixture.componentInstance;
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
       expect(component.callCount).toBe(1);
 
       fixture.destroy();
 
-      jest.advanceTimersByTime(3000);
+      vi.advanceTimersByTime(3000);
 
       expect(component.callCount).toBe(1);
     });
