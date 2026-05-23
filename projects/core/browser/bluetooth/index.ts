@@ -1,5 +1,11 @@
 import { type Signal, signal, untracked } from '@angular/core';
-import { constSignal, NOOP_ASYNC_FN, NOOP_FN, setupContext } from '@signality/core/internal';
+import {
+  constSignal,
+  NOOP_ASYNC_FN,
+  NOOP_FN,
+  setupContext,
+  unlessDestroyed,
+} from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, ListenerRef, setupSync } from '@signality/core/browser/listener';
 
@@ -159,7 +165,7 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
 
       try {
         const bt: Bluetooth = (navigator as any).bluetooth;
-        const btDevice = await bt.requestDevice(requestOptions);
+        const btDevice = await unlessDestroyed(bt.requestDevice(requestOptions), injector);
 
         device.set(btDevice);
 
@@ -167,9 +173,8 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
           listener(btDevice, 'gattserverdisconnected', disconnect, { injector })
         );
 
-        const gattServer = await btDevice.gatt?.connect();
-
-        if (gattServer) {
+        if (btDevice.gatt) {
+          const gattServer = await unlessDestroyed(btDevice.gatt.connect(), injector);
           server.set(gattServer);
           isConnected.set(true);
         }
