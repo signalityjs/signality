@@ -1,3 +1,11 @@
+## 0.3.2 (2026-05-23)
+
+### 🩹 Fixes
+
+- **core:** `battery` prevent error when host is destroyed during initialization ([#188](https://github.com/signalityjs/signality/pull/188))
+- **core:** `bluetooth` prevent error when host is destroyed during request ([#190](https://github.com/signalityjs/signality/pull/190))
+- **core:** `displayMedia` prevent stream leak when host is destroyed during start ([#192](https://github.com/signalityjs/signality/pull/192))
+
 ## 0.3.1 (2026-05-09)
 
 ### 🩹 Fixes
