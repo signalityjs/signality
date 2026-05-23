@@ -152,10 +152,9 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
 
         return mediaStream;
       } catch (err) {
-        if (destroyRef.destroyed) {
-          return null;
+        if (!destroyRef.destroyed) {
+          error.set(err as DOMException | TypeError);
         }
-        error.set(err as DOMException | TypeError);
         return null;
       }
     };
