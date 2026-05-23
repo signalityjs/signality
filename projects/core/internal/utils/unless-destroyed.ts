@@ -14,6 +14,14 @@ export async function unlessDestroyed<T>(
   injector: Injector = inject(INJECTOR)
 ): Promise<T> {
   const destroyRef = injector.get(DestroyRef);
-  const result = await promise;
-  return destroyRef.destroyed ? new Promise<T>(NOOP_FN) : result;
+  try {
+    const result = await promise;
+    return destroyRef.destroyed ? new Promise<T>(NOOP_FN) : result;
+  } catch (error) {
+    if (destroyRef.destroyed) {
+      return new Promise<T>(NOOP_FN);
+    } else {
+      throw error;
+    }
+  }
 }
