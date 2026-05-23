@@ -1,4 +1,4 @@
-import { computed, type Signal, signal, untracked } from '@angular/core';
+import { computed, DestroyRef, inject, type Signal, signal, untracked } from '@angular/core';
 import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
@@ -104,6 +104,8 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
   const { runInContext } = setupContext(options?.injector, displayMedia);
 
   return runInContext(({ isBrowser, injector, onCleanup }) => {
+    const destroyRef = inject(DestroyRef);
+
     const isSupported = constSignal(
       isBrowser &&
         'mediaDevices' in navigator &&
@@ -136,6 +138,11 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
 
         const mediaStream = await navigator.mediaDevices.getDisplayMedia(constraints);
 
+        if (destroyRef.destroyed) {
+          mediaStream.getTracks().forEach(track => track.stop());
+          return null;
+        }
+
         stream.set(mediaStream);
         error.set(null);
 
@@ -145,6 +152,9 @@ export function displayMedia(options?: DisplayMediaOptions): DisplayMediaRef {
 
         return mediaStream;
       } catch (err) {
+        if (destroyRef.destroyed) {
+          return null;
+        }
         error.set(err as DOMException | TypeError);
         return null;
       }
