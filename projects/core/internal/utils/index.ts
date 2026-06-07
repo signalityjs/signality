@@ -5,7 +5,7 @@ export * from './assert';
 export * from './context';
 export * from './create-token';
 export * from './is-plain-object';
+export * from './settle-in-context';
 export * from './const-signal';
 export * from './unref-element';
-export * from './unless-destroyed';
 export * from './wait-for-value';
