@@ -81,7 +81,7 @@ export function broadcastChannel<T>(
     };
 
     setupSync(() => {
-      listener(channel, 'message', (e: MessageEvent<T>) => data.set(e.data));
+      listener(channel, 'message', e => data.set(e.data));
       listener(channel, 'messageerror', error.set);
     });
 
