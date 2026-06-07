@@ -1,5 +1,5 @@
 import { type Signal, signal } from '@angular/core';
-import { constSignal, setupContext, unlessDestroyed } from '@signality/core/internal';
+import { constSignal, setupContext, settleInContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
@@ -95,7 +95,7 @@ export function battery(options?: BatteryOptions): BatteryRef {
       level.set(this.level);
     }
 
-    unlessDestroyed((navigator as NavigatorWithBattery).getBattery()).then(battery => {
+    settleInContext((navigator as NavigatorWithBattery).getBattery()).then(battery => {
       update.call(battery);
 
       setupSync(() => {

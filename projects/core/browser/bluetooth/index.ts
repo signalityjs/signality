@@ -3,8 +3,8 @@ import {
   constSignal,
   NOOP_ASYNC_FN,
   NOOP_FN,
+  settleInContext,
   setupContext,
-  unlessDestroyed,
 } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, ListenerRef, setupSync } from '@signality/core/browser/listener';
@@ -165,7 +165,7 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
 
       try {
         const bt: Bluetooth = (navigator as any).bluetooth;
-        const btDevice = await unlessDestroyed(bt.requestDevice(requestOptions), injector);
+        const btDevice = await settleInContext(bt.requestDevice(requestOptions), injector);
 
         device.set(btDevice);
 
@@ -174,7 +174,7 @@ export function bluetooth(options?: BluetoothOptions): BluetoothRef {
         );
 
         if (btDevice.gatt) {
-          const gattServer = await unlessDestroyed(btDevice.gatt.connect(), injector);
+          const gattServer = await settleInContext(btDevice.gatt.connect(), injector);
           server.set(gattServer);
           isConnected.set(true);
         }
