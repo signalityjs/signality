@@ -37,6 +37,13 @@ export interface ListenerFunction {
     options?: ListenerOptions
   ): ListenerRef;
 
+  <E extends keyof BroadcastChannelEventMap>(
+    target: MaybeSignal<BroadcastChannel>,
+    event: MaybeSignal<E>,
+    handler: (this: BroadcastChannel, e: BroadcastChannelEventMap[E]) => any,
+    options?: ListenerOptions
+  ): ListenerRef;
+
   <T extends HTMLElement, E extends keyof HTMLElementEventMap>(
     target: MaybeElementSignal<T>,
     event: MaybeSignal<E>,
