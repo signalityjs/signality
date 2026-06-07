@@ -1,6 +1,7 @@
 import { type CreateSignalOptions, type Signal, signal } from '@angular/core';
-import { constSignal, setupContext } from '@signality/core/internal';
+import { constSignal, settleInContext, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
+import { listener } from '@signality/core/browser/listener';
 
 export type PermissionStateOptions = CreateSignalOptions<PermissionState> & WithInjector;
 
@@ -29,34 +30,20 @@ export function permissionState(
 ): Signal<PermissionState> {
   const { runInContext } = setupContext(options?.injector, permissionState);
 
-  return runInContext(({ isServer, onCleanup }) => {
+  return runInContext(({ isServer, injector }) => {
     if (isServer) {
       return constSignal('prompt');
     }
 
     const state = signal<PermissionState>('prompt', options);
-    const controller = new AbortController();
 
-    navigator.permissions
-      .query({ name })
-      .then(status => {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        state.set(status.state);
-
-        status.addEventListener('change', () => state.set(status.state), {
-          signal: controller.signal,
-        });
-      })
+    settleInContext(navigator.permissions.query({ name }))
+      .then(status => listener(status, 'change', () => state.set(status.state), { injector }))
       .catch(() => {
         if (ngDevMode) {
           console.warn(`[permissionState] Failed to query permission state for ${name}`);
         }
       });
-
-    onCleanup(() => controller.abort());
 
     return state.asReadonly();
   });
