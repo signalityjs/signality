@@ -1,7 +1,7 @@
 import { type CreateSignalOptions, type Signal, signal } from '@angular/core';
 import { constSignal, settleInContext, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
-import { listener } from '@signality/core/browser/listener';
+import { listener, setupSync } from '@signality/core/browser/listener';
 
 export type PermissionStateOptions = CreateSignalOptions<PermissionState> & WithInjector;
 
@@ -38,7 +38,9 @@ export function permissionState(
     const state = signal<PermissionState>('prompt', options);
 
     settleInContext(navigator.permissions.query({ name }))
-      .then(status => listener(status, 'change', () => state.set(status.state), { injector }))
+      .then(status => {
+        setupSync(() => listener(status, 'change', () => state.set(status.state), { injector }));
+      })
       .catch(() => {
         if (ngDevMode) {
           console.warn(`[permissionState] Failed to query permission state for ${name}`);
