@@ -1,16 +1,17 @@
+import { vi, type MockInstance } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { browserLanguage } from './index';
 
 describe(browserLanguage.name, () => {
-  let languageSpy: jest.SpyInstance;
+  let languageSpy: MockInstance;
 
   beforeEach(() => {
-    languageSpy = jest.spyOn(navigator, 'language', 'get');
+    languageSpy = vi.spyOn(navigator, 'language', 'get');
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ language() }}' })

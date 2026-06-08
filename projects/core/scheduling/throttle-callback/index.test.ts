@@ -1,14 +1,15 @@
+import { vi } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { throttleCallback } from './index';
 
 describe(throttleCallback.name, () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   @Component({ template: '' })
@@ -54,11 +55,11 @@ describe(throttleCallback.name, () => {
     component.throttledFn('first');
     expect(component.callCount).toBe(1);
 
-    jest.advanceTimersByTime(299);
+    vi.advanceTimersByTime(299);
     component.throttledFn('second');
     expect(component.callCount).toBe(1);
 
-    jest.advanceTimersByTime(1);
+    vi.advanceTimersByTime(1);
     component.throttledFn('third');
     expect(component.callCount).toBe(2);
     expect(component.lastValue).toBe('third');
@@ -70,11 +71,11 @@ describe(throttleCallback.name, () => {
     component.throttledFn('first');
     expect(component.callCount).toBe(1);
 
-    jest.advanceTimersByTime(300);
+    vi.advanceTimersByTime(300);
     component.throttledFn('second');
     expect(component.callCount).toBe(2);
 
-    jest.advanceTimersByTime(300);
+    vi.advanceTimersByTime(300);
     component.throttledFn('third');
     expect(component.callCount).toBe(3);
 
@@ -141,7 +142,7 @@ describe(throttleCallback.name, () => {
       }
       expect(component.callCount).toBe(1);
 
-      jest.advanceTimersByTime(300);
+      vi.advanceTimersByTime(300);
 
       for (let i = 0; i < 5; i++) {
         component.throttledFn(`second-${i}`);

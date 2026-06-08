@@ -1,3 +1,4 @@
+import { vi, type Mock } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { screenOrientation } from './index';
@@ -6,15 +7,15 @@ describe(screenOrientation.name, () => {
   // we need mock because: https://github.com/jsdom/jsdom/issues/4007
   let mockScreenOrientation: {
     type: OrientationType;
-    addEventListener: jest.Mock;
-    removeEventListener: jest.Mock;
+    addEventListener: Mock;
+    removeEventListener: Mock;
   };
 
   beforeEach(() => {
     mockScreenOrientation = {
       type: 'portrait-primary' as OrientationType,
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
 
     Object.defineProperty(window.screen, 'orientation', {
@@ -25,7 +26,7 @@ describe(screenOrientation.name, () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ orientation() }}' })

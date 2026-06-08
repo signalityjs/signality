@@ -1,3 +1,4 @@
+import { vi, type Mock } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -7,14 +8,14 @@ import { title } from './index';
 
 describe(title.name, () => {
   let titleState: BehaviorSubject<string | undefined>;
-  let mockTitle: { getTitle: jest.Mock; setTitle: jest.Mock };
+  let mockTitle: { getTitle: Mock; setTitle: Mock };
 
   beforeEach(() => {
     titleState = new BehaviorSubject<string | undefined>(undefined);
 
     mockTitle = {
-      getTitle: jest.fn().mockReturnValue('Browser Title'),
-      setTitle: jest.fn(),
+      getTitle: vi.fn().mockReturnValue('Browser Title'),
+      setTitle: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -32,7 +33,7 @@ describe(title.name, () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ pageTitle() }}' })

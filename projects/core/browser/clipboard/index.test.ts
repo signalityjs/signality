@@ -1,26 +1,27 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { clipboard } from './index';
 
 describe(clipboard.name, () => {
   // we need mock because: https://github.com/jsdom/jsdom/issues/1568
   let mockClipboard: {
-    writeText: jest.Mock;
-    readText: jest.Mock;
+    writeText: Mock;
+    readText: Mock;
   };
 
   beforeEach(() => {
     mockClipboard = {
-      writeText: jest.fn(),
-      readText: jest.fn(),
+      writeText: vi.fn(),
+      readText: vi.fn(),
     };
 
     (navigator as any).clipboard = mockClipboard;
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   @Component({ template: '' })
@@ -52,7 +53,7 @@ describe(clipboard.name, () => {
     await component.cb.copy('Test');
     expect(component.cb.copied()).toBe(true);
 
-    jest.advanceTimersByTime(1500);
+    vi.advanceTimersByTime(1500);
     expect(component.cb.copied()).toBe(false);
   });
 
@@ -68,7 +69,7 @@ describe(clipboard.name, () => {
     expect(component.cb.text()).toBe('Second');
     expect(component.cb.copied()).toBe(true);
 
-    jest.advanceTimersByTime(1500);
+    vi.advanceTimersByTime(1500);
     expect(component.cb.copied()).toBe(false);
   });
 

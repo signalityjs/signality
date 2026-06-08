@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { effect, signal, type WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { proxySignal, type ProxySignalHandler } from '../proxy-signal';
@@ -53,7 +54,7 @@ describe(proxySignal.name, () => {
       const source = signal(1);
       const dep = signal(1);
       const proxy = proxySignal(source, { set: (v, s) => s.set(dep() + v) });
-      const effectSpy = jest.fn();
+      const effectSpy = vi.fn();
 
       TestBed.runInInjectionContext(() => {
         effect(() => {
@@ -74,7 +75,7 @@ describe(proxySignal.name, () => {
       const source = signal(1);
       const dep = signal(1);
       const proxy = proxySignal(source, { set: (v, s) => s.set(dep() + v) });
-      const effectSpy = jest.fn();
+      const effectSpy = vi.fn();
 
       TestBed.runInInjectionContext(() => {
         effect(() => {
@@ -224,7 +225,7 @@ describe(proxySignal.name, () => {
     it('re-computes effect when proxy value changes', () => {
       const source = signal(1);
       const proxy = proxySignal(source, { get: s => s() * 2 });
-      const effectSpy = jest.fn();
+      const effectSpy = vi.fn();
 
       TestBed.runInInjectionContext(() => {
         effect(() => {

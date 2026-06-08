@@ -1,15 +1,16 @@
+import { vi, type Mock } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { eyeDropper } from './index';
 
 describe(eyeDropper.name, () => {
   let mockEyeDropper: {
-    open: jest.Mock;
+    open: Mock;
   };
 
   beforeEach(() => {
-    mockEyeDropper = { open: jest.fn() };
-    (window as any).EyeDropper = jest.fn(() => mockEyeDropper);
+    mockEyeDropper = { open: vi.fn() };
+    (window as any).EyeDropper = vi.fn(() => mockEyeDropper);
   });
 
   @Component({ template: '{{ picker.sRGBHex() }}' })

@@ -1,24 +1,25 @@
+import { vi, type Mock, type MockInstance } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { textSelection } from './index';
 
 describe(textSelection.name, () => {
-  let getSelectionSpy: jest.SpyInstance;
+  let getSelectionSpy: MockInstance;
   let mockSelection: Selection;
 
   beforeEach(() => {
     mockSelection = {
-      toString: jest.fn(() => ''),
+      toString: vi.fn(() => ''),
       rangeCount: 0,
-      getRangeAt: jest.fn(),
-      removeAllRanges: jest.fn(),
+      getRangeAt: vi.fn(),
+      removeAllRanges: vi.fn(),
     } as unknown as Selection;
 
-    getSelectionSpy = jest.spyOn(window, 'getSelection').mockReturnValue(mockSelection);
+    getSelectionSpy = vi.spyOn(window, 'getSelection').mockReturnValue(mockSelection);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ selection.text() }}' })
@@ -33,9 +34,9 @@ describe(textSelection.name, () => {
   };
 
   const selectText = (text: string, ranges: Range[] = []) => {
-    (mockSelection.toString as jest.Mock).mockReturnValue(text);
+    (mockSelection.toString as Mock).mockReturnValue(text);
     (mockSelection as { rangeCount: number }).rangeCount = ranges.length;
-    (mockSelection.getRangeAt as jest.Mock).mockImplementation((i: number) => ranges[i]);
+    (mockSelection.getRangeAt as Mock).mockImplementation((i: number) => ranges[i]);
 
     document.dispatchEvent(new Event('selectionchange'));
   };

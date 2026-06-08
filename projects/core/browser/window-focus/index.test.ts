@@ -1,16 +1,17 @@
+import { vi, type MockInstance } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { windowFocus } from './index';
 
 describe(windowFocus.name, () => {
-  let hasFocusSpy: jest.SpyInstance;
+  let hasFocusSpy: MockInstance;
 
   beforeEach(() => {
-    hasFocusSpy = jest.spyOn(document, 'hasFocus');
+    hasFocusSpy = vi.spyOn(document, 'hasFocus');
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ isFocused() }}' })

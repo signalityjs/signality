@@ -1,3 +1,4 @@
+import { vi, type Mock } from 'vitest';
 import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { onClickOutside } from './index';
@@ -17,7 +18,7 @@ describe(onClickOutside.name, () => {
 
   describe('with reactive target (signal query)', () => {
     it('should call handler when clicking outside the target', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
 
       @Component({ template: '<div #box>Content</div>' })
       class TestComponent {
@@ -36,7 +37,7 @@ describe(onClickOutside.name, () => {
     });
 
     it('should NOT call handler when clicking inside the target', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
 
       @Component({ template: '<div #box>Content</div>' })
       class TestComponent {
@@ -56,7 +57,7 @@ describe(onClickOutside.name, () => {
     });
 
     it('should handle multiple outside clicks', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
 
       @Component({ template: '<div #box>Content</div>' })
       class TestComponent {
@@ -79,7 +80,7 @@ describe(onClickOutside.name, () => {
 
   describe('with non-reactive target', () => {
     it('should detect clicks outside host element', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
 
       @Component({ template: '<span>inside</span>' })
       class TestComponent {
@@ -99,7 +100,7 @@ describe(onClickOutside.name, () => {
 
   describe('ignore option', () => {
     it('should NOT call handler when clicking on ignored element', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
       const ignoredElement = document.createElement('button');
       ignoredElement.id = 'ignored';
       document.body.appendChild(ignoredElement);
@@ -126,7 +127,7 @@ describe(onClickOutside.name, () => {
 
   describe('destroy', () => {
     it('should stop listening after destroy', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
 
       @Component({ template: '<div #box>Content</div>' })
       class TestComponent {
@@ -148,8 +149,8 @@ describe(onClickOutside.name, () => {
 
   describe('iframe detection', () => {
     it('should call handler when focus moves to an iframe outside target', () => {
-      jest.useFakeTimers();
-      const handler = jest.fn();
+      vi.useFakeTimers();
+      const handler = vi.fn();
 
       const iframe = document.createElement('iframe');
       document.body.appendChild(iframe);
@@ -171,12 +172,12 @@ describe(onClickOutside.name, () => {
       });
 
       window.dispatchEvent(new FocusEvent('blur'));
-      jest.advanceTimersByTime(1);
+      vi.advanceTimersByTime(1);
 
       expect(handler).toHaveBeenCalledTimes(1);
 
       iframe.remove();
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
   });
 });

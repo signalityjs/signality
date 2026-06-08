@@ -1,16 +1,17 @@
+import { vi, type MockInstance } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { online } from './index';
 
 describe(online.name, () => {
-  let onlineSpy: jest.SpyInstance;
+  let onlineSpy: MockInstance;
 
   beforeEach(() => {
-    onlineSpy = jest.spyOn(navigator, 'onLine', 'get');
+    onlineSpy = vi.spyOn(navigator, 'onLine', 'get');
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   @Component({ template: '{{ isOnline() }}' })
