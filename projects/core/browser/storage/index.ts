@@ -78,6 +78,21 @@ export interface Serializer<T> {
 }
 
 /**
+ * Custom event dispatched to synchronize `storage` signals within the same
+ * document when the underlying storage is not a built-in `Storage` (e.g. a
+ * proxied localStorage), because a `StorageEvent` cannot be constructed with a
+ * non-built-in `storageArea`.
+ */
+const STORAGE_EVENT_NAME = 'signality-storage';
+
+interface StorageEventLike {
+  readonly key: string | null;
+  readonly oldValue: string | null;
+  readonly newValue: string | null;
+  readonly storageArea: Storage | null;
+}
+
+/**
  * Signal-based wrapper around the [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) (localStorage/sessionStorage).
  *
  * @param key - Storage key (can be a signal for dynamic keys)
@@ -158,15 +173,8 @@ export function storage<T>(
       oldValue: string | null,
       newValue: string | null
     ) => {
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          key,
-          oldValue,
-          newValue,
-          storageArea: targetStorage,
-          url: window.location.href,
-        })
-      );
+      const detail: StorageEventLike = { key, oldValue, newValue, storageArea: targetStorage };
+      window.dispatchEvent(new CustomEvent<StorageEventLike>(STORAGE_EVENT_NAME, { detail }));
     };
 
     const writeValue = (value: T): void => {
@@ -187,17 +195,28 @@ export function storage<T>(
 
     const source = signal<T>(readValue(toValue(key)), options);
 
+    const syncFromEvent = (event: StorageEventLike): void => {
+      const currKey = toValue(key);
+
+      if (event.key === currKey && event.storageArea === targetStorage) {
+        const newValue =
+          event.newValue === null ? initialValue : processValue(serializer.read(event.newValue));
+
+        source.set(newValue);
+      }
+    };
+
     setupSync(() => {
-      listener(window, 'storage', e => {
-        const currKey = toValue(key);
+      // cross-document (other tab) changes to a built-in Storage arrive as a
+      // native `'storage'` event fired by the browser.
+      if (targetStorage instanceof Storage) {
+        listener(window, 'storage', syncFromEvent);
+      }
 
-        if (e.key === currKey && e.storageArea === targetStorage) {
-          const newValue =
-            e.newValue === null ? initialValue : processValue(serializer.read(e.newValue));
-
-          source.set(newValue);
-        }
-      });
+      // same-document changes arrive as the CustomEvent dispatched on write.
+      listener<CustomEvent<StorageEventLike>>(window, STORAGE_EVENT_NAME, e =>
+        syncFromEvent(e.detail)
+      );
     });
 
     if (isSignal(key)) {
