@@ -174,12 +174,7 @@ export function storage<T>(
       newValue: string | null
     ) => {
       const detail: StorageEventLike = { key, oldValue, newValue, storageArea: targetStorage };
-
-      window.dispatchEvent(
-        targetStorage instanceof Storage
-          ? new StorageEvent('storage', { ...detail, url: window.location.href })
-          : new CustomEvent<StorageEventLike>(STORAGE_EVENT_NAME, { detail })
-      );
+      window.dispatchEvent(new CustomEvent<StorageEventLike>(STORAGE_EVENT_NAME, { detail }));
     };
 
     const writeValue = (value: T): void => {
@@ -212,13 +207,16 @@ export function storage<T>(
     };
 
     setupSync(() => {
+      // cross-document (other tab) changes to a built-in Storage arrive as a
+      // native `'storage'` event fired by the browser.
       if (targetStorage instanceof Storage) {
         listener(window, 'storage', syncFromEvent);
-      } else {
-        listener(window, STORAGE_EVENT_NAME, event =>
-          syncFromEvent((event as CustomEvent<StorageEventLike>).detail)
-        );
       }
+
+      // same-document changes arrive as the CustomEvent dispatched on write.
+      listener<CustomEvent<StorageEventLike>>(window, STORAGE_EVENT_NAME, e =>
+        syncFromEvent(e.detail)
+      );
     });
 
     if (isSignal(key)) {

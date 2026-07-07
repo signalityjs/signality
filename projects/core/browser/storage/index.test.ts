@@ -417,6 +417,34 @@ describe(storage.name, () => {
     });
   });
 
+  describe('same-document sync (built-in storage)', () => {
+    // Two signals bound to the same key in the same document stay in sync via the
+    // CustomEvent dispatched on write — the native `'storage'` event never fires
+    // in the writing document.
+    @Component({ template: '' })
+    class TestComponent {
+      readonly shared = storage('shared', 'initial');
+    }
+
+    const createComponent = () => {
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+      return fixture.componentInstance;
+    };
+
+    it('should sync sibling instances bound to the same key', () => {
+      const writer = createComponent();
+      const reader = createComponent();
+
+      expect(reader.shared()).toBe('initial');
+
+      writer.shared.set('updated');
+
+      expect(writer.shared()).toBe('updated');
+      expect(reader.shared()).toBe('updated');
+    });
+  });
+
   describe('custom serializer', () => {
     @Component({ template: '' })
     class TestComponent {
