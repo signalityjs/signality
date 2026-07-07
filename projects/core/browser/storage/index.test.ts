@@ -10,16 +10,23 @@ describe(storage.name, () => {
     mockLocalStorage = {};
     mockSessionStorage = {};
 
-    const createStorageMock = (store: Record<string, string>) => ({
-      getItem: jest.fn((key: string) => store[key] ?? null),
-      setItem: jest.fn((key: string, value: string) => (store[key] = value)),
-      removeItem: jest.fn((key: string) => delete store[key]),
-      clear: jest.fn(() => Object.keys(store).forEach(key => delete store[key])),
-      key: jest.fn((index: number) => Object.keys(store)[index] ?? null),
-      get length() {
-        return Object.keys(store).length;
-      },
-    });
+    const createStorageMock = (store: Record<string, string>) => {
+      const mock = {
+        getItem: jest.fn((key: string) => store[key] ?? null),
+        setItem: jest.fn((key: string, value: string) => (store[key] = value)),
+        removeItem: jest.fn((key: string) => delete store[key]),
+        clear: jest.fn(() => Object.keys(store).forEach(key => delete store[key])),
+        key: jest.fn((index: number) => Object.keys(store)[index] ?? null),
+        get length() {
+          return Object.keys(store).length;
+        },
+      };
+
+      // Make the mock a genuine `Storage` so `storage()` uses the native
+      // StorageEvent sync path (matches production localStorage/sessionStorage).
+      Object.setPrototypeOf(mock, Storage.prototype);
+      return mock;
+    };
 
     Object.defineProperty(window, 'localStorage', {
       writable: true,
@@ -348,6 +355,63 @@ describe(storage.name, () => {
       });
 
       window.dispatchEvent(storageEvent);
+
+      expect(component.shared()).toBe('updated');
+    });
+  });
+
+  describe('proxied storage (non-built-in)', () => {
+    // A plain object is NOT an `instanceof Storage`, mimicking a proxied or
+    // custom localStorage where a StorageEvent cannot be constructed. The outer
+    // beforeEach installs a genuine-Storage mock, so override it here.
+    beforeEach(() => {
+      Object.defineProperty(window, 'localStorage', {
+        configurable: true,
+        writable: true,
+        value: {
+          getItem: jest.fn((key: string) => mockLocalStorage[key] ?? null),
+          setItem: jest.fn((key: string, value: string) => (mockLocalStorage[key] = value)),
+          removeItem: jest.fn((key: string) => delete mockLocalStorage[key]),
+          clear: jest.fn(() =>
+            Object.keys(mockLocalStorage).forEach(key => delete mockLocalStorage[key])
+          ),
+          key: jest.fn((index: number) => Object.keys(mockLocalStorage)[index] ?? null),
+          get length() {
+            return Object.keys(mockLocalStorage).length;
+          },
+        },
+      });
+    });
+
+    @Component({ template: '' })
+    class TestComponent {
+      readonly shared = storage('shared', 'initial');
+    }
+
+    const createComponent = () => {
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+      return fixture.componentInstance;
+    };
+
+    it('should sync via CustomEvent when storage is not built-in', () => {
+      const component = createComponent();
+
+      expect(component.shared()).toBe('initial');
+
+      // The refactored code listens for a CustomEvent (not StorageEvent) when
+      // the storage is not an `instanceof Storage`.
+      // Event name must match STORAGE_EVENT_NAME in index.ts.
+      window.dispatchEvent(
+        new CustomEvent('signality-storage', {
+          detail: {
+            key: 'shared',
+            oldValue: 'initial',
+            newValue: 'updated',
+            storageArea: window.localStorage,
+          },
+        })
+      );
 
       expect(component.shared()).toBe('updated');
     });
