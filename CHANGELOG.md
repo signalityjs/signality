@@ -1,3 +1,13 @@
+## 0.3.3 (2026-07-07)
+
+### 🚀 Features
+
+- **core:** `listener` add BroadcastChannelEventMap overload ([#195](https://github.com/signalityjs/signality/pull/195))
+
+### 🩹 Fixes
+
+- **core:** `storage` use CustomEvent for same-document sync ([#198](https://github.com/signalityjs/signality/pull/198))
+
 ## 0.3.2 (2026-05-23)
 
 ### 🩹 Fixes
