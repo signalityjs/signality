@@ -45,7 +45,7 @@ The `key` parameter can be omitted — `onKey(handler, options?)` fires on every
 - **Predicate** — full control: `event => boolean`. Use it for "any of" (OR) matching, which arrays intentionally do not provide: `event => ['Escape', 'Enter'].includes(event.key)`.
 
 ::: tip Letter case
-One rule everywhere: **single-character keys match case-insensitively** — `'k'`, `['Meta', 'k']`, and `['Meta', 'K']` are equivalent, and CapsLock never breaks a hotkey. Multi-character key names (`'Enter'`, `'ArrowDown'`) are exact. Shifted symbols use the produced character: `['Control', 'Shift', '!']`. Need strict case matching? Use a predicate: `event => event.key === 'a'`.
+Single-character keys are compared **case-insensitively** in both string and array filters: `'k'`, `['Meta', 'k']`, and `['Meta', 'K']` are equivalent, so the state of <kbd>CapsLock</kbd> does not affect matching. Multi-character key names (`'Enter'`, `'ArrowDown'`) are compared exactly. Shifted symbols are matched by the produced character, e.g. `['Control', 'Shift', '!']`. For strict case-sensitive matching, use a predicate: `event => event.key === 'a'`.
 :::
 
 ## Options
