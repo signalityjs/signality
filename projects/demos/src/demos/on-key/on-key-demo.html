@@ -1,0 +1,27 @@
+<ng-demo-wrapper [demoPath]="'on-key/on-key-demo'" [code]="importCode">
+  <demo-card>
+    <!-- Key display zone -->
+    <div class="ok-zone" [class.ok-zone--active]="lastKey()" [class.ok-zone--palette]="paletteVisible()">
+      @if (paletteVisible()) {
+        Command palette!
+      } @else if (lastKey()) {
+        <kbd class="ok-key">{{ lastKey() === ' ' ? 'Space' : lastKey() }}</kbd>
+      } @else {
+        Press any key…
+      }
+    </div>
+
+    <!-- Divider -->
+    <div class="ok-divider"></div>
+
+    <!-- Footer -->
+    <div class="ok-footer">
+      <span class="ok-status">
+        Enter × {{ enterCount() }} · try ⌘⏎ / Ctrl+⏎
+      </span>
+      <button class="ok-btn" (click)="toggleDedupe()">
+        dedupe: {{ dedupe() ? 'on' : 'off' }}
+      </button>
+    </div>
+  </demo-card>
+</ng-demo-wrapper>
