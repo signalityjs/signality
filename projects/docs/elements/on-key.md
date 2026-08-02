@@ -44,6 +44,8 @@ The `key` parameter can be omitted — `onKey(handler, options?)` fires on every
 - **Signal** — a `Signal<string | string[]>` re-binds the listener whenever its value changes.
 - **Predicate** — full control: `event => boolean`. Use it for "any of" (OR) matching, which arrays intentionally do not provide: `event => ['Escape', 'Enter'].includes(event.key)`.
 
+Key names follow the canonical [`event.key` values](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values), and common aliases are resolved automatically (case-insensitively): `'Ctrl'` → `'Control'`; `'Cmd'`, `'Command'`, `'Win'` → `'Meta'`; `'Option'`, `'Opt'` → `'Alt'`; `'Esc'` → `'Escape'`; `'Del'` → `'Delete'`; `'Return'` → `'Enter'`; `'Space'` → `' '`.
+
 ::: tip Letter case
 Single-character keys are compared **case-insensitively** in both string and array filters: `'k'`, `['Meta', 'k']`, and `['Meta', 'K']` are equivalent, so the state of <kbd>CapsLock</kbd> does not affect matching. Multi-character key names (`'Enter'`, `'ArrowDown'`) are compared exactly. Shifted symbols are matched by the produced character, e.g. `['Control', 'Shift', '!']`. For strict case-sensitive matching, use a predicate: `event => event.key === 'a'`.
 :::

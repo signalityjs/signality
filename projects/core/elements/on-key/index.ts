@@ -61,7 +61,11 @@ export interface OnKeyRef {
  * @remarks
  * Single-character keys match case-insensitively — `'k'`, `['Meta', 'k']`, and
  * `['Meta', 'K']` all keep working with CapsLock on. Multi-character key names such as
- * `'Enter'` are exact. Use a {@link KeyPredicate} for strict case matching.
+ * `'Enter'` are exact and follow the canonical `event.key` values; common aliases are
+ * resolved automatically — `'Ctrl'` → `'Control'`, `'Cmd'`/`'Command'`/`'Win'` → `'Meta'`,
+ * `'Option'`/`'Opt'` → `'Alt'`, `'Esc'` → `'Escape'`, `'Del'` → `'Delete'`,
+ * `'Return'` → `'Enter'`, `'Space'` → `' '`. Use a {@link KeyPredicate} for strict
+ * case matching.
  *
  * @param key - Key filter: `event.key` string, key combination array, signal of either, or predicate
  * @param handler - Callback invoked with the matching keyboard event
@@ -182,6 +186,23 @@ function isModifierKey(key: string): key is ModifierKey {
   return key in MODIFIER_FLAGS;
 }
 
+const KEY_ALIASES: Record<string, string> = {
+  ctrl: 'Control',
+  cmd: 'Meta',
+  command: 'Meta',
+  win: 'Meta',
+  option: 'Alt',
+  opt: 'Alt',
+  esc: 'Escape',
+  del: 'Delete',
+  return: 'Enter',
+  space: ' ',
+};
+
+function resolveKey(key: string): string {
+  return KEY_ALIASES[key.toLowerCase()] ?? key;
+}
+
 // Single characters match case-insensitively so CapsLock cannot change the outcome;
 // multi-character key names ('Enter', 'ArrowDown') are canonical and stay exact.
 function normalizeKey(key: string): string {
@@ -199,7 +220,9 @@ function parseCombination(keys: readonly string[]): KeyCombination | null {
 
   let regularKey: string | undefined;
 
-  for (const key of keys) {
+  for (const rawKey of keys) {
+    const key = resolveKey(rawKey);
+
     if (isModifierKey(key)) {
       modifiers.add(key);
     } else if (regularKey === undefined) {
@@ -255,6 +278,6 @@ function createKeyPredicate(key: string | string[] | KeyPredicate | undefined): 
     return event => matchesCombination(combination, event);
   }
 
-  const normalizedKey = normalizeKey(key);
+  const normalizedKey = normalizeKey(resolveKey(key));
   return event => matchesKey(normalizedKey, event);
 }

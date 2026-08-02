@@ -199,6 +199,50 @@ describe(onKey.name, () => {
     });
   });
 
+  describe('key aliases', () => {
+    it('should resolve a modifier alias in a combination', () => {
+      const { handler } = setup(['Ctrl', 'k']);
+
+      dispatchKey({ key: 'k', ctrlKey: true });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should resolve Cmd and Win to Meta', () => {
+      const { handler: cmdHandler } = setup(['Cmd', 'k']);
+      const { handler: winHandler } = setup(['Win', 'k']);
+
+      dispatchKey({ key: 'k', metaKey: true });
+
+      expect(cmdHandler).toHaveBeenCalledTimes(1);
+      expect(winHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should resolve aliases case-insensitively', () => {
+      const { handler } = setup(['CTRL', 'k']);
+
+      dispatchKey({ key: 'k', ctrlKey: true });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should resolve an alias in a string filter', () => {
+      const { handler } = setup('Esc');
+
+      dispatchKey({ key: 'Escape' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should resolve Space to the literal space character', () => {
+      const { handler } = setup('Space');
+
+      dispatchKey({ key: ' ' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('invalid filter', () => {
     it('should throw in dev mode for two non-modifier keys', () => {
       expect(() => setup(['a', 'b'])).toThrow(/at most one non-modifier key/);
