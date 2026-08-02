@@ -208,6 +208,8 @@ describe(onKey.name, () => {
       const { handler } = setup([]);
 
       dispatchKey({ key: 'a' });
+      dispatchKey({ key: 'k', metaKey: true });
+      dispatchKey({ key: 'Shift', shiftKey: true });
 
       expect(handler).not.toHaveBeenCalled();
     });
@@ -289,6 +291,27 @@ describe(onKey.name, () => {
       const { handler } = setup(key);
 
       key.set(['Meta', 'k']);
+      TestBed.tick();
+      dispatchKey({ key: 'k', metaKey: true });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should act as a disabled hotkey while the filter signal is an empty array', () => {
+      const key = signal<string | string[]>([]);
+      const { handler } = setup(key);
+
+      dispatchKey({ key: 'k', metaKey: true });
+
+      expect(handler).not.toHaveBeenCalled();
+
+      key.set(['Meta', 'k']);
+      TestBed.tick();
+      dispatchKey({ key: 'k', metaKey: true });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+
+      key.set([]);
       TestBed.tick();
       dispatchKey({ key: 'k', metaKey: true });
 
