@@ -66,12 +66,10 @@ export interface OnKeyRef {
  * modifiers prevent a match. Use a {@link KeyPredicate} for custom or "any of" matching.
  *
  * @remarks
- * Single-character keys match case-insensitively — `'k'`, `['Meta', 'k']`, and
- * `['Meta', 'K']` all keep working with CapsLock on. Multi-character key names such as
- * `'Enter'` are exact and follow the canonical `event.key` values. Common aliases
- * (`'Ctrl'`, `'Cmd'`, `'Esc'`, `'Space'`, …) are resolved automatically, and the virtual
- * `'Mod'` modifier resolves to `'Meta'` on Apple platforms and `'Control'` elsewhere.
- * Use a {@link KeyPredicate} for strict case matching.
+ * Single-character keys are compared case-insensitively, so the state of CapsLock does
+ * not affect matching. Common aliases such as `'Ctrl'`, `'Esc'`, and `'Space'` are
+ * resolved to their canonical `event.key` values; the virtual `'Mod'` modifier resolves
+ * to `'Meta'` on Apple platforms and `'Control'` elsewhere.
  *
  * @param key - Key filter: `event.key` string, key combination array, signal of either, or predicate
  * @param handler - Callback invoked with the matching keyboard event
