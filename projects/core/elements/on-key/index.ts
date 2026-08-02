@@ -135,6 +135,10 @@ export function onKey(...args: unknown[]): OnKeyRef {
 
     const bind = (predicate: KeyPredicate): ListenerRef => {
       const handler = (e: KeyboardEvent) => {
+        if (e.isComposing) {
+          return;
+        }
+
         if (e.repeat && toValue(dedupe)) {
           return;
         }
