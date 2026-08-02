@@ -39,8 +39,8 @@ The `key` parameter can be omitted — `onKey(handler, options?)` fires on every
 
 ### Key filter semantics
 
-- **String** — matched against [`event.key`](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key). Modifier flags are ignored: the filter `'s'` also matches <kbd>Ctrl</kbd>+<kbd>S</kbd> or <kbd>Shift</kbd>+<kbd>S</kbd>.
-- **Array** — a key **combination** (all keys together): modifier keys (`'Meta'`, `'Control'`, `'Alt'`, `'Shift'`, or the virtual `'Mod'`) plus at most one regular key. The match is **exact** — an extra pressed modifier prevents it, so `['Meta', 'K']` does not match <kbd>Meta</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>. The order of keys in the array does not matter. An array of only modifiers (e.g. `['Control', 'Shift']`) fires on the keydown that completes the combination.
+- **String** — matched against [`event.key`](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key). Single-character keys are compared case-insensitively: `'k'` and `'K'` are equivalent, so <kbd>CapsLock</kbd> does not affect the match.
+- **Array** — a key **combination** (all keys together): modifier keys (`'Meta'`, `'Control'`, `'Alt'`, `'Shift'`, or the virtual `'Mod'`) plus at most one regular key. The match is **exact** — an extra pressed modifier prevents it, so `['Meta', 'K']` does not match <kbd>Meta</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>. The order of keys in the array does not matter. An array of only modifiers (e.g. `['Control', 'Shift']`) fires on the keydown that completes the combination. Unlike a bare string, a single-key array is still exact: `['s']` does not fire while a modifier is held, whereas the string `'s'` also matches <kbd>Ctrl</kbd>+<kbd>S</kbd>.
 - **Signal** — a `Signal<string | string[]>` re-binds the listener whenever its value changes.
 - **Predicate** — full control: `event => boolean`. Use it for "any of" (OR) matching, which arrays intentionally do not provide: `event => ['Escape', 'Enter'].includes(event.key)`.
 
@@ -60,10 +60,6 @@ Key names follow the canonical [`event.key` values](https://developer.mozilla.or
 | `'Space'`                     | `' '` (the literal space character)                                     |
 
 The virtual `'Mod'` modifier is the recommended way to declare cross-platform shortcuts: `['Mod', 'K']` fires on <kbd>⌘</kbd>+<kbd>K</kbd> on macOS and <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux.
-
-::: tip Letter case
-Single-character keys are compared **case-insensitively** in both string and array filters: `'k'`, `['Meta', 'k']`, and `['Meta', 'K']` are equivalent, so the state of <kbd>CapsLock</kbd> does not affect matching. Multi-character key names (`'Enter'`, `'ArrowDown'`) are compared exactly. Shifted symbols are matched by the produced character, e.g. `['Control', 'Shift', '!']`. For strict case-sensitive matching, use a predicate: `event => event.key === 'a'`.
-:::
 
 ## Options
 
