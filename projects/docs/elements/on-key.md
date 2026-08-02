@@ -15,7 +15,7 @@ import { Component } from '@angular/core';
 import { onKey } from '@signality/core';
 
 @Component({
-  template: `<p>Press ⌘K</p>`,
+  template: `<p>Press ⌘K / Ctrl+K</p>`,
 })
 export class HotkeyDemo {
   constructor() {
@@ -40,11 +40,26 @@ The `key` parameter can be omitted — `onKey(handler, options?)` fires on every
 ### Key filter semantics
 
 - **String** — matched against [`event.key`](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key). Modifier flags are ignored: the filter `'s'` also matches <kbd>Ctrl</kbd>+<kbd>S</kbd> or <kbd>Shift</kbd>+<kbd>S</kbd>.
-- **Array** — a key **combination** (all keys together): modifier keys (`'Meta'`, `'Control'`, `'Alt'`, `'Shift'`) plus at most one regular key. The match is **exact** — an extra pressed modifier prevents it, so `['Meta', 'K']` does not match <kbd>Meta</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>. The order of keys in the array does not matter. An array of only modifiers (e.g. `['Control', 'Shift']`) fires on the keydown that completes the combination.
+- **Array** — a key **combination** (all keys together): modifier keys (`'Meta'`, `'Control'`, `'Alt'`, `'Shift'`, or the virtual `'Mod'`) plus at most one regular key. The match is **exact** — an extra pressed modifier prevents it, so `['Meta', 'K']` does not match <kbd>Meta</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>. The order of keys in the array does not matter. An array of only modifiers (e.g. `['Control', 'Shift']`) fires on the keydown that completes the combination.
 - **Signal** — a `Signal<string | string[]>` re-binds the listener whenever its value changes.
 - **Predicate** — full control: `event => boolean`. Use it for "any of" (OR) matching, which arrays intentionally do not provide: `event => ['Escape', 'Enter'].includes(event.key)`.
 
-Key names follow the canonical [`event.key` values](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values), and common aliases are resolved automatically (case-insensitively): `'Ctrl'` → `'Control'`; `'Cmd'`, `'Command'`, `'Win'` → `'Meta'`; `'Option'`, `'Opt'` → `'Alt'`; `'Esc'` → `'Escape'`; `'Del'` → `'Delete'`; `'Return'` → `'Enter'`; `'Space'` → `' '`.
+### Key aliases
+
+Key names follow the canonical [`event.key` values](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values). Common aliases are accepted and resolved once when the filter is parsed (case-insensitively):
+
+| Alias                         | Resolved value                                                          |
+|-------------------------------|-------------------------------------------------------------------------|
+| `'Mod'`                       | `'Meta'` (<kbd>⌘</kbd>) on Apple platforms, `'Control'` everywhere else |
+| `'Ctrl'`                      | `'Control'`                                                             |
+| `'Cmd'`, `'Command'`, `'Win'` | `'Meta'`                                                                |
+| `'Option'`, `'Opt'`           | `'Alt'`                                                                 |
+| `'Esc'`                       | `'Escape'`                                                              |
+| `'Del'`                       | `'Delete'`                                                              |
+| `'Return'`                    | `'Enter'`                                                               |
+| `'Space'`                     | `' '` (the literal space character)                                     |
+
+The virtual `'Mod'` modifier is the recommended way to declare cross-platform shortcuts: `['Mod', 'K']` fires on <kbd>⌘</kbd>+<kbd>K</kbd> on macOS and <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux. The underlying platform check runs once and is cached for the lifetime of the application.
 
 ::: tip Letter case
 Single-character keys are compared **case-insensitively** in both string and array filters: `'k'`, `['Meta', 'k']`, and `['Meta', 'K']` are equivalent, so the state of <kbd>CapsLock</kbd> does not affect matching. Multi-character key names (`'Enter'`, `'ArrowDown'`) are compared exactly. Shifted symbols are matched by the produced character, e.g. `['Control', 'Shift', '!']`. For strict case-sensitive matching, use a predicate: `event => event.key === 'a'`.
@@ -54,20 +69,20 @@ Single-character keys are compared **case-insensitively** in both string and arr
 
 The `OnKeyOptions` extends `WithInjector`:
 
-| Option      | Type                                                                                                              | Default     | Description                                                 |
-|-------------|-------------------------------------------------------------------------------------------------------------------|-------------|-------------------------------------------------------------|
-| `target`    | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) `\| Window \| Document` | `window`    | Event target to listen on                                   |
-| `eventName` | `'keydown' \| 'keyup'`                                                                                              | `'keydown'` | Keyboard event to listen for                                |
-| `passive`   | `boolean`                                                                                                           | `false`     | Register the listener as passive                            |
+| Option      | Type                                                                                                                | Default     | Description                                                   |
+|-------------|---------------------------------------------------------------------------------------------------------------------|-------------|---------------------------------------------------------------|
+| `target`    | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) `\| Window \| Document` | `window`    | Event target to listen on                                     |
+| `eventName` | `'keydown' \| 'keyup'`                                                                                              | `'keydown'` | Keyboard event to listen for                                  |
+| `passive`   | `boolean`                                                                                                           | `false`     | Register the listener as passive                              |
 | `dedupe`    | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt)                                           | `false`     | Ignore repeated events while the key is held (`event.repeat`) |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                                                 | -           | Optional injector for DI context                            |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                                                 | -           | Optional injector for DI context                              |
 
 ## Return Value
 
 Returns an `OnKeyRef` with a `destroy` method to stop listening:
 
-| Property  | Type         | Description                          |
-|-----------|--------------|--------------------------------------|
+| Property  | Type         | Description                         |
+|-----------|--------------|-------------------------------------|
 | `destroy` | `() => void` | Stops listening for keyboard events |
 
 ## Examples

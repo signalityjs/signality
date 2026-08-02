@@ -1,5 +1,11 @@
-import { isSignal, type Signal } from '@angular/core';
-import { isDocument, isWindow, NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
+import { inject, isSignal, type Signal } from '@angular/core';
+import {
+  IS_APPLE,
+  isDocument,
+  isWindow,
+  NOOP_EFFECT_REF,
+  setupContext,
+} from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
 import { listener, type ListenerRef, setupSync } from '@signality/core/browser/listener';
@@ -13,8 +19,9 @@ export type KeyPredicate = (event: KeyboardEvent) => boolean;
 /**
  * Filter deciding which keyboard events invoke the handler:
  * - `string` — matched against `event.key`, modifier flags ignored
- * - `string[]` — a key combination: modifier keys (`'Meta'`, `'Control'`, `'Alt'`, `'Shift'`)
- *   plus at most one regular key, matched exactly against the event's modifier flags
+ * - `string[]` — a key combination: modifier keys (`'Meta'`, `'Control'`, `'Alt'`, `'Shift'`,
+ *   or the virtual `'Mod'`) plus at most one regular key, matched exactly against the
+ *   event's modifier flags
  * - `Signal<string | string[]>` — reactive filter; the listener is re-bound on every change
  * - `KeyPredicate` — custom matching logic
  */
@@ -61,11 +68,10 @@ export interface OnKeyRef {
  * @remarks
  * Single-character keys match case-insensitively — `'k'`, `['Meta', 'k']`, and
  * `['Meta', 'K']` all keep working with CapsLock on. Multi-character key names such as
- * `'Enter'` are exact and follow the canonical `event.key` values; common aliases are
- * resolved automatically — `'Ctrl'` → `'Control'`, `'Cmd'`/`'Command'`/`'Win'` → `'Meta'`,
- * `'Option'`/`'Opt'` → `'Alt'`, `'Esc'` → `'Escape'`, `'Del'` → `'Delete'`,
- * `'Return'` → `'Enter'`, `'Space'` → `' '`. Use a {@link KeyPredicate} for strict
- * case matching.
+ * `'Enter'` are exact and follow the canonical `event.key` values. Common aliases
+ * (`'Ctrl'`, `'Cmd'`, `'Esc'`, `'Space'`, …) are resolved automatically, and the virtual
+ * `'Mod'` modifier resolves to `'Meta'` on Apple platforms and `'Control'` elsewhere.
+ * Use a {@link KeyPredicate} for strict case matching.
  *
  * @param key - Key filter: `event.key` string, key combination array, signal of either, or predicate
  * @param handler - Callback invoked with the matching keyboard event
@@ -75,11 +81,11 @@ export interface OnKeyRef {
  * @example
  * ```typescript
  * @Component({
- *   template: `<p>Press ⌘K</p>`,
+ *   template: `<p>Press ⌘K / Ctrl+K</p>`,
  * })
  * export class HotkeyDemo {
  *   constructor() {
- *     onKey(['Meta', 'K'], event => {
+ *     onKey(['Mod', 'K'], event => {
  *       event.preventDefault();
  *       console.log('Command palette!');
  *     });
@@ -126,6 +132,7 @@ export function onKey(...args: unknown[]): OnKeyRef {
     const eventName = options?.eventName ?? 'keydown';
     const dedupe = options?.dedupe ?? false;
     const listenerFn = options?.passive ? listener.passive : listener;
+    const primaryModKey = inject(IS_APPLE) ? 'Meta' : 'Control';
     const isGlobalTarget = isWindow(target) || isDocument(target);
 
     const bind = (predicate: KeyPredicate): ListenerRef => {
@@ -144,17 +151,17 @@ export function onKey(...args: unknown[]): OnKeyRef {
     };
 
     if (!isSignal(key)) {
-      const keyListener = bind(createKeyPredicate(key));
+      const keyListener = bind(createKeyPredicate(key, primaryModKey));
       return { destroy: () => keyListener.destroy() };
     }
 
     const reactiveKey = key as Signal<string | string[]>;
 
-    let keyListener = bind(createKeyPredicate(toValue(reactiveKey)));
+    let keyListener = bind(createKeyPredicate(toValue(reactiveKey), primaryModKey));
 
     const keyWatcher = watcher(reactiveKey, key => {
       keyListener.destroy();
-      keyListener = bind(createKeyPredicate(key));
+      keyListener = bind(createKeyPredicate(key, primaryModKey));
     });
 
     return {
@@ -199,8 +206,14 @@ const KEY_ALIASES: Record<string, string> = {
   space: ' ',
 };
 
-function resolveKey(key: string): string {
-  return KEY_ALIASES[key.toLowerCase()] ?? key;
+function resolveKey(key: string, primaryModKey: string): string {
+  const alias = key.toLowerCase();
+
+  if (alias === 'mod') {
+    return primaryModKey;
+  }
+
+  return KEY_ALIASES[alias] ?? key;
 }
 
 // Single characters match case-insensitively so CapsLock cannot change the outcome;
@@ -215,13 +228,13 @@ function matchesKey(normalizedKey: string, event: KeyboardEvent): boolean {
     : event.key === normalizedKey;
 }
 
-function parseCombination(keys: readonly string[]): KeyCombination | null {
+function parseCombination(keys: readonly string[], primaryModKey: string): KeyCombination | null {
   const modifiers = new Set<ModifierKey>();
 
   let regularKey: string | undefined;
 
   for (const rawKey of keys) {
-    const key = resolveKey(rawKey);
+    const key = resolveKey(rawKey, primaryModKey);
 
     if (isModifierKey(key)) {
       modifiers.add(key);
@@ -264,7 +277,10 @@ function matchesCombination(combination: KeyCombination | null, event: KeyboardE
   return isModifierKey(event.key) && modifiers.has(event.key);
 }
 
-function createKeyPredicate(key: string | string[] | KeyPredicate | undefined): KeyPredicate {
+function createKeyPredicate(
+  key: string | string[] | KeyPredicate | undefined,
+  primaryModKey: string
+): KeyPredicate {
   if (key === undefined) {
     return () => true;
   }
@@ -274,10 +290,10 @@ function createKeyPredicate(key: string | string[] | KeyPredicate | undefined): 
   }
 
   if (Array.isArray(key)) {
-    const combination = parseCombination(key);
+    const combination = parseCombination(key, primaryModKey);
     return event => matchesCombination(combination, event);
   }
 
-  const normalizedKey = normalizeKey(resolveKey(key));
+  const normalizedKey = normalizeKey(resolveKey(key, primaryModKey));
   return event => matchesKey(normalizedKey, event);
 }

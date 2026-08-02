@@ -1,5 +1,6 @@
 import { Component, ElementRef, Injector, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { IS_APPLE } from '@signality/core/internal';
 import type { KeyFilter, OnKeyOptions } from './index';
 import { onKey } from './index';
 
@@ -240,6 +241,38 @@ describe(onKey.name, () => {
       dispatchKey({ key: ' ' });
 
       expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    describe('virtual Mod modifier', () => {
+      it('should resolve Mod to Meta on Apple platforms', () => {
+        TestBed.configureTestingModule({
+          providers: [{ provide: IS_APPLE, useValue: true }],
+        });
+        const { handler } = setup(['Mod', 'k']);
+
+        dispatchKey({ key: 'k', ctrlKey: true });
+
+        expect(handler).not.toHaveBeenCalled();
+
+        dispatchKey({ key: 'k', metaKey: true });
+
+        expect(handler).toHaveBeenCalledTimes(1);
+      });
+
+      it('should resolve Mod to Control on other platforms', () => {
+        TestBed.configureTestingModule({
+          providers: [{ provide: IS_APPLE, useValue: false }],
+        });
+        const { handler } = setup(['Mod', 'k']);
+
+        dispatchKey({ key: 'k', metaKey: true });
+
+        expect(handler).not.toHaveBeenCalled();
+
+        dispatchKey({ key: 'k', ctrlKey: true });
+
+        expect(handler).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
