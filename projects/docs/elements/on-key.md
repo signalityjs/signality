@@ -15,7 +15,7 @@ import { Component } from '@angular/core';
 import { onKey } from '@signality/core';
 
 @Component({
-  template: `<p>Press ⌘K / Ctrl+K</p>`,
+  template: `<p>Press ⌘K</p>`,
 })
 export class HotkeyDemo {
   constructor() {
@@ -190,10 +190,13 @@ interface OnKeyRef {
 function onKey(
   key: KeyFilter,
   handler: (event: KeyboardEvent) => void,
-  options?: OnKeyOptions
+  options?: OnKeyOptions,
 ): OnKeyRef;
 
-function onKey(handler: (event: KeyboardEvent) => void, options?: OnKeyOptions): OnKeyRef;
+function onKey(
+  handler: (event: KeyboardEvent) => void,
+  options?: OnKeyOptions,
+): OnKeyRef;
 ```
 
 ## Related

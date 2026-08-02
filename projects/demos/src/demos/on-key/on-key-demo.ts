@@ -22,18 +22,20 @@ export class OnKeyDemo {
   constructor() {
     onKey(event => this.lastKey.set(event.key));
 
-    onKey('Enter', () => this.enterCount.update(count => count + 1), { dedupe: this.dedupe });
+    onKey(
+      'Enter',
+      () => {
+        this.enterCount.update(count => count + 1);
+      },
+      { dedupe: this.dedupe }
+    );
 
-    const openPalette = (event: KeyboardEvent) => {
+    onKey(['Mod', 'Enter'], (event: KeyboardEvent) => {
       event.preventDefault();
       this.paletteVisible.set(true);
-
       clearTimeout(this.paletteTimer);
       this.paletteTimer = setTimeout(() => this.paletteVisible.set(false), 1500);
-    };
-
-    onKey(['Meta', 'Enter'], openPalette);
-    onKey(['Control', 'Enter'], openPalette);
+    });
   }
 
   toggleDedupe(): void {
