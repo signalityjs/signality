@@ -59,7 +59,7 @@ Key names follow the canonical [`event.key` values](https://developer.mozilla.or
 | `'Return'`                    | `'Enter'`                                                               |
 | `'Space'`                     | `' '` (the literal space character)                                     |
 
-The virtual `'Mod'` modifier is the recommended way to declare cross-platform shortcuts: `['Mod', 'K']` fires on <kbd>⌘</kbd>+<kbd>K</kbd> on macOS and <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux. The underlying platform check runs once and is cached for the lifetime of the application.
+The virtual `'Mod'` modifier is the recommended way to declare cross-platform shortcuts: `['Mod', 'K']` fires on <kbd>⌘</kbd>+<kbd>K</kbd> on macOS and <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux.
 
 ::: tip Letter case
 Single-character keys are compared **case-insensitively** in both string and array filters: `'k'`, `['Meta', 'k']`, and `['Meta', 'K']` are equivalent, so the state of <kbd>CapsLock</kbd> does not affect matching. Multi-character key names (`'Enter'`, `'ArrowDown'`) are compared exactly. Shifted symbols are matched by the produced character, e.g. `['Control', 'Shift', '!']`. For strict case-sensitive matching, use a predicate: `event => event.key === 'a'`.
@@ -115,7 +115,7 @@ import { onKey } from '@signality/core';
   template: `<button (click)="hotkey.set(['Meta', 'P'])">Rebind</button>`,
 })
 export class ReactiveDemo {
-  readonly hotkey = signal<string[]>(['Meta', 'K']);
+  readonly hotkey = signal(['Meta', 'K']);
 
   constructor() {
     // Changing the signal re-binds the listener automatically
