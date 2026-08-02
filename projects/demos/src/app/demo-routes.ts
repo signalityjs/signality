@@ -202,6 +202,11 @@ export const DEMO_ROUTES: Route[] = [
       import('../demos/on-click-outside/on-click-outside-demo').then(m => m.OnClickOutsideDemo),
   },
   {
+    path: 'on-key',
+    title: 'OnKey',
+    loadComponent: () => import('../demos/on-key/on-key-demo').then(m => m.OnKeyDemo),
+  },
+  {
     path: 'online',
     title: 'Online',
     loadComponent: () => import('../demos/online/online-demo').then(m => m.OnlineDemo),

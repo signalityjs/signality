@@ -6,6 +6,7 @@ export * from '@signality/core/elements/element-hover';
 export * from '@signality/core/elements/element-size';
 export * from '@signality/core/elements/element-visibility';
 export * from '@signality/core/elements/on-click-outside';
+export * from '@signality/core/elements/on-key';
 export * from '@signality/core/elements/on-long-press';
 export * from '@signality/core/elements/mouse-position';
 export * from '@signality/core/elements/pointer-swipe';

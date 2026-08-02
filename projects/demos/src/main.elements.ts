@@ -45,6 +45,7 @@ import { MediaQueryDemo } from './demos/media-query/media-query-demo';
 import { MousePositionDemo } from './demos/mouse-position/mouse-position-demo';
 import { NetworkDemo } from './demos/network/network-demo';
 import { OnClickOutsideDemo } from './demos/on-click-outside/on-click-outside-demo';
+import { OnKeyDemo } from './demos/on-key/on-key-demo';
 import { OnlineDemo } from './demos/online/online-demo';
 import { PageVisibilityDemo } from './demos/page-visibility/page-visibility-demo';
 import { PermissionStateDemo } from './demos/permission-state/permission-state-demo';
@@ -105,6 +106,7 @@ const DEMOS = [
   { component: NetworkDemo, name: 'signality-demo-network' },
   { component: ScreenOrientationDemo, name: 'signality-demo-screen-orientation' },
   { component: OnClickOutsideDemo, name: 'signality-demo-on-click-outside' },
+  { component: OnKeyDemo, name: 'signality-demo-on-key' },
   { component: OnlineDemo, name: 'signality-demo-online' },
   { component: PageVisibilityDemo, name: 'signality-demo-page-visibility' },
   { component: PermissionStateDemo, name: 'signality-demo-permission-state' },

@@ -221,6 +221,7 @@ export default defineConfig({
           { text: 'MousePosition', link: '/elements/mouse-position' },
           { text: 'OnClickOutside', link: '/elements/on-click-outside' },
           { text: 'OnDisconnect', link: '/elements/on-disconnect' },
+          { text: 'OnKey', link: '/elements/on-key' },
           { text: 'OnLongPress', link: '/elements/on-long-press' },
           { text: 'PointerSwipe', link: '/elements/pointer-swipe' },
           { text: 'ScrollPosition', link: '/elements/scroll-position' },

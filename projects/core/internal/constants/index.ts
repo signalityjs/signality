@@ -1,2 +1,2 @@
-export * from './mobile-regex';
+export * from './regexes';
 export * from './stubs';
