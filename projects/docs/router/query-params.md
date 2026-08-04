@@ -147,7 +147,8 @@ export class SearchResults {
 
 Validate query parameters at runtime using schema validators like [Zod](https://zod.dev). When a schema is provided, `queryParams` returns a `QueryParamsRef` object with validation status and error information.
 
-::: warning Reading value () in error state Reading the `value()` signal on a `QueryParamsRef` that is in an error state throws at runtime. It is recommended to guard `value()` reads with `isValid()`.
+::: warning Reading value() in error state
+Reading the `value()` signal on a `QueryParamsRef` that is in an error state throws at runtime. It is recommended to guard `value()` reads with `isValid()`.
 
 ```angular-ts
 if (params.isValid()) {
