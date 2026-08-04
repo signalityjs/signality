@@ -1,3 +1,10 @@
+## 0.4.0 (2026-08-04)
+
+### 🚀 Features
+
+- **core:** `onKey` add new utility for declarative keyboard event handling ([#201](https://github.com/signalityjs/signality/pull/201))
+- **core:** `queryParams` is now a WritableSignal ([#202](https://github.com/signalityjs/signality/pull/202))
+
 ## 0.3.3 (2026-07-07)
 
 ### 🚀 Features
