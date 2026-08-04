@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/router/
 
 # QueryParams
 
-Reactive wrapper around Angular Router's [query parameters](https://angular.dev/api/router/ActivatedRoute#queryParams). Optionally validate parameters at runtime using schema validators for type checking, type coercion, and error handling.
+Reactive wrapper around Angular Router's [query parameters](https://angular.dev/api/router/ActivatedRoute#queryParams). Access the query parameters as a writable signal that can be set to update the URL. Optionally validate parameters at runtime using schema validators for type checking, type coercion, and error handling.
 
 ## Usage
 
@@ -18,10 +18,15 @@ import { queryParams } from '@signality/core';
   template: `
     <p>Search: {{ queryParams().q }}</p>
     <p>Sort: {{ queryParams().sort }}</p>
+    <button (click)="sortByDate()">Sort by date</button>
   `,
 })
 export class SearchPage {
-  readonly queryParams = queryParams<{ q: string; sort: string }>(); // [!code highlight]
+  readonly queryParams = queryParams<{ q?: string; sort?: string }>(); // [!code highlight]
+
+  sortByDate() {
+    this.queryParams.update(val => ({ ...val, sort: 'date' })); // [!code highlight]
+  }
 }
 ```
 
@@ -41,10 +46,15 @@ const schema = z.object({
   template: `
     <p>Search: {{ params.value().q }}</p>
     <p>Page: {{ params.value().page }}</p>
+    <button (click)="nextPage()">Next page</button>
   `,
 })
 export class SearchPage {
   readonly params = queryParams({ schema }); // [!code highlight]
+
+  nextPage() {
+    this.params.value.update(val => ({ ...val, page: val.page + 1 })); // [!code highlight]
+  }
 }
 ```
 
@@ -58,12 +68,13 @@ export class SearchPage {
 
 The options object extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                                                                 | Default | Description                                                                                                                                                                        |
-|-------------|----------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))                                                                                 |
-| `debugName` | `string`                                                             | -       | Debug name for the signal (development only)                                                                                                                                       |
-| `schema`    | `QueryParamsValidator<T>`                                            | -       | **Optional.** Validator schema for runtime validation. When provided, returns `QueryParamsRef<T>` instead of `Signal<T>`. See [Schema validation](#schema-validation) for details. |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                  | -       | Optional injector for DI context                                                                                                                                                   |
+| Option       | Type                                                                 | Default | Description                                                                                                                                                                                |
+|--------------|----------------------------------------------------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `equal`      | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))                                                                                         |
+| `debugName`  | `string`                                                             | -       | Debug name for the signal (development only)                                                                                                                                               |
+| `schema`     | `QueryParamsValidator<T>`                                            | -       | **Optional.** Validator schema for runtime validation. When provided, returns `QueryParamsRef<T>` instead of `WritableSignal<T>`. See [Schema validation](#schema-validation) for details. |
+| `injector`   | [`Injector`](https://angular.dev/api/core/Injector)                  | -       | Optional injector for DI context                                                                                                                                                           |
+| `replaceUrl` | `boolean`                                                            | `false` | When `true`, updating the query parameters will replace the current state in history. ([see more](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState))                  |
 
 ## Return Value
 
@@ -71,17 +82,49 @@ The return type depends on whether a `schema` is provided:
 
 ### Without schema
 
-Returns `Signal<T>` containing the current query parameters, where `T` is an object with string keys and values of any type (defaults to `Record<string, any>`).
+Returns `WritableSignal<T>` containing the current query parameters, where `T` is an object with string keys and values of any type (defaults to `Record<string, any>`).
 
 ### With schema
 
 Returns `QueryParamsRef<T>` — an object with the following properties:
 
-| Property  | Type                      | Description                                                                                                                                                          |
-|-----------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `value`   | `Signal<T>`               | Signal containing validated and transformed query parameters. **Reading this signal throws an error if validation failed.** Use `isValid()` to check before reading. |
-| `isValid` | `Signal<boolean>`         | Signal indicating whether the current query parameters are valid according to the schema. `true` when valid, `false` when validation fails.                          |
-| `error`   | `Signal<unknown \| null>` | Signal containing the validation error object, or `null` if the parameters are valid.                                                                                |
+| Property  | Type                      | Description                                                                                                                                                                   |
+|-----------|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `value`   | `WritableSignal<T>`       | Writable signal containing validated and transformed query parameters. **Reading this signal throws an error if validation failed.** Use `isValid()` to check before reading. |
+| `isValid` | `Signal<boolean>`         | Signal indicating whether the current query parameters are valid according to the schema. `true` when valid, `false` when validation fails.                                   |
+| `error`   | `Signal<unknown \| null>` | Signal containing the validation error object, or `null` if the parameters are valid.                                                                                         |
+
+## Updating query params
+
+Writing to the signal navigates to the current route with the given query parameters:
+
+- The whole set of query parameters is **replaced**, so the signal value always matches the URL. Use `update()` to merge into the existing ones, and `set({})` to drop them all.
+- Parameters whose value is `null` or `undefined` are omitted from the URL.
+- The URL [fragment](/router/fragment) is preserved.
+- Writes are asynchronous: the signal is only updated once the navigation succeeds. When the navigation is cancelled (e.g. by a [guard](https://angular.dev/guide/routing/route-guards)), the signal keeps the current parameters.
+
+```angular-ts
+import { Component } from '@angular/core';
+import { queryParams } from '@signality/core';
+
+@Component({ /* ... */ })
+export class ProductsPage {
+  // Route: /products?category=shoes&sort=price&page=1
+  readonly params = queryParams<{ category?: string; sort?: string; page?: number }>();
+
+  filterBy(category: string) {
+    this.params.update(params => ({ ...params, category, page: 1 })); // ?category=hats&sort=price&page=1 // [!code highlight]
+  }
+
+  clearSort() {
+    this.params.update(({ sort, ...params }) => params); // ?category=shoes&page=1 // [!code highlight]
+  }
+
+  reset() {
+    this.params.set({}); // no query params left // [!code highlight]
+  }
+}
+```
 
 ## Examples
 
@@ -94,7 +137,7 @@ import { queryParams } from '@signality/core';
 @Component({ /* ... */ })
 export class SearchResults {
   readonly queryParams = queryParams<{ q?: string; page?: string }>();
-  
+
   readonly search = computed(() => this.queryParams().q ?? ''); // [!code highlight]
   readonly page = computed(() => Number(this.queryParams().page ?? '1')); // [!code highlight]
 }
@@ -180,18 +223,22 @@ interface QueryParamsValidator<T> {
 }
 
 interface QueryParamsRef<T> {
-  readonly value: Signal<T>;
+  readonly value: WritableSignal<T>;
   readonly isValid: Signal<boolean>;
   readonly error: Signal<unknown | null>;
 }
 
-type QueryParamsOptions<T extends Record<string, any> = Record<string, any>> = CreateSignalOptions<T> & WithInjector;
+type QueryParamsOptions<T extends Record<string, any> = Record<string, any>> = CreateSignalOptions<T> &
+  WithInjector &
+  Pick<NavigationExtras, 'replaceUrl'>;
 
 type QueryParamsWithSchemaOptions<T extends Record<string, any> = Record<string, any>> = QueryParamsOptions<T> & {
   readonly schema: QueryParamsValidator<T>;
 };
 
-function queryParams<T extends Record<string, any> = Record<string, any>>(options?: QueryParamsOptions<T>): Signal<T>;
+function queryParams<T extends Record<string, any> = Record<string, any>>(
+  options?: QueryParamsOptions<T>
+): WritableSignal<T>;
 
 function queryParams<T extends Record<string, any> = Record<string, any>>(
   options: QueryParamsWithSchemaOptions<T>
@@ -203,3 +250,4 @@ function queryParams<T extends Record<string, any> = Record<string, any>>(
 - [params](/router/params) — Access route parameters
 - [fragment](/router/fragment) — Access URL fragment
 - [url](/router/url) — Access current URL
+- [proxySignal](/reactivity/proxy-signal) — Intercept signal reads and writes
