@@ -88,11 +88,11 @@ Returns `WritableSignal<T>` containing the current query parameters, where `T` i
 
 Returns `QueryParamsRef<T>` — an object with the following properties:
 
-| Property  | Type                      | Description                                                                                                                                                                                              |
-|-----------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `value`   | `WritableSignal<T>`       | Writable signal containing validated and transformed query parameters. **Reading this signal throws an error if validation failed.** Use `isValid()` to check before reading. Writing is always allowed. |
-| `isValid` | `Signal<boolean>`         | Signal indicating whether the current query parameters are valid according to the schema. `true` when valid, `false` when validation fails.                                                              |
-| `error`   | `Signal<unknown \| null>` | Signal containing the validation error object, or `null` if the parameters are valid.                                                                                                                    |
+| Property  | Type                      | Description                                                                                                                                                                   |
+|-----------|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `value`   | `WritableSignal<T>`       | Writable signal containing validated and transformed query parameters. **Reading this signal throws an error if validation failed.** Use `isValid()` to check before reading. |
+| `isValid` | `Signal<boolean>`         | Signal indicating whether the current query parameters are valid according to the schema. `true` when valid, `false` when validation fails.                                   |
+| `error`   | `Signal<unknown \| null>` | Signal containing the validation error object, or `null` if the parameters are valid.                                                                                         |
 
 ## Updating query params
 
@@ -147,8 +147,7 @@ export class SearchResults {
 
 Validate query parameters at runtime using schema validators like [Zod](https://zod.dev). When a schema is provided, `queryParams` returns a `QueryParamsRef` object with validation status and error information.
 
-::: warning Reading value() in error state
-Reading the `value()` signal on a `QueryParamsRef` that is in an error state throws at runtime. It is recommended to guard `value()` reads with `isValid()`.
+::: warning Reading value () in error state Reading the `value()` signal on a `QueryParamsRef` that is in an error state throws at runtime. It is recommended to guard `value()` reads with `isValid()`.
 
 ```angular-ts
 if (params.isValid()) {
