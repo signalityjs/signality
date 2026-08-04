@@ -1,8 +1,6 @@
 export const NEW_ITEMS = [
   '/elements/on-key',
-  '/reactivity/proxy-signal',
-  '/router/fragment',
-  '/utilities/create-injectable',
+  '/router/query-params',
 ];
 
 export function isNew(link: string): boolean {
