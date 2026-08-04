@@ -26,7 +26,7 @@ export interface QueryParamsRef<T> {
    *
    * Reading throws an error if validation failed. Use `isValid()` to check before reading.
    * Writing navigates to the current route with the given query parameters, replacing the
-   * existing ones. Writing is allowed even while the current parameters are invalid.
+   * existing ones.
    */
   readonly value: WritableSignal<T>;
 
@@ -127,6 +127,10 @@ export function queryParams<T extends Params = Params>(
   return runInContext(() => {
     const router = inject(Router);
     const { queryParams: paramsChanges, snapshot } = inject(ActivatedRoute);
+
+    const equal = options?.equal;
+    const debugName = options?.debugName;
+    const replaceUrl = options?.replaceUrl;
     const hasSchema = options && 'schema' in options && options.schema !== undefined;
 
     const rawParams = toSignal<T, T>(paramsChanges as Observable<T>, {
@@ -138,7 +142,7 @@ export function queryParams<T extends Params = Params>(
         queryParams: params,
         queryParamsHandling: 'replace',
         preserveFragment: true,
-        replaceUrl: options?.replaceUrl,
+        replaceUrl,
       });
 
       if (succeeded) {
@@ -147,46 +151,47 @@ export function queryParams<T extends Params = Params>(
     };
 
     if (!hasSchema) {
-      const source = linkedSignal(rawParams, { ...options });
-      return proxySignal(source, { set }, { equal: options?.equal });
+      const source = linkedSignal(rawParams, { equal, debugName });
+      return proxySignal(source, { set }, { equal });
     }
 
     const schema = options.schema;
 
     const result = computed(() => {
+      const value = rawParams();
+
       try {
-        return { valid: true, value: schema.parse(rawParams()), error: null } as const;
+        return { valid: true, value: schema.parse(value), error: null } as const;
       } catch (error) {
-        return { valid: false, value: null, error } as const;
+        return { valid: false, value, error } as const;
       }
-    });
-
-    const { equal, debugName } = options;
-
-    // the parsed value is `null` while the params are invalid, which a custom `equal` isn't meant to handle
-    const parsedEqual = equal && ((a: T, b: T) => a != null && b != null && equal(a, b));
-
-    const parsedValue = linkedSignal(() => result().value as T, {
-      equal: parsedEqual,
-      debugName: debugName ? `${debugName}.value` : undefined,
     });
 
     const isValid = computed(() => result().valid);
     const error = computed(() => result().error);
-    const writableValue = proxySignal(parsedValue, { set }, { equal: parsedEqual });
 
-    const value = proxySignal(writableValue, {
+    const parsedValue = proxySignal(
+      linkedSignal(() => result().value, { equal, debugName }),
+      { set },
+      { equal }
+    );
+
+    const value = proxySignal(parsedValue, {
       get: parsed => {
-        const err = error();
+        const { valid, error } = result();
 
-        if (err !== null) {
-          throw err;
+        if (!valid) {
+          throw error;
         }
 
         return parsed();
       },
     });
 
-    return { value, isValid, error };
+    return {
+      value,
+      isValid,
+      error,
+    };
   });
 }

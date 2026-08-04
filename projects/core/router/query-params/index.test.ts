@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Params, provideRouter, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
 import { queryParams, QueryParamsValidator } from './index';
 
 describe(queryParams.name, () => {
@@ -15,28 +14,10 @@ describe(queryParams.name, () => {
   });
 
   describe('without schema', () => {
-    let queryParamsState: BehaviorSubject<Params>;
-
     @Component({ template: '{{ searchParams().q }} {{ searchParams().sort }}' })
     class TestComponent {
       readonly searchParams = queryParams<{ q?: string; sort?: string }>();
     }
-
-    beforeEach(() => {
-      queryParamsState = new BehaviorSubject<Params>({});
-
-      TestBed.configureTestingModule({
-        providers: [
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              queryParams: queryParamsState.asObservable(),
-              snapshot: { queryParams: queryParamsState.getValue() },
-            },
-          },
-        ],
-      });
-    });
 
     const createComponent = () => {
       const fixture = TestBed.createComponent(TestComponent);
@@ -44,19 +25,28 @@ describe(queryParams.name, () => {
       return fixture;
     };
 
-    it('should update when query params change', () => {
-      queryParamsState.next({ q: 'angular', sort: 'name' });
+    it('should read the initial query params from the snapshot', async () => {
+      const router = TestBed.inject(Router);
+      await router.navigate([], { queryParams: { q: 'angular', sort: 'name' } });
+
       const component = createComponent().componentInstance;
 
       expect(component.searchParams()).toEqual({ q: 'angular', sort: 'name' });
+    });
 
-      queryParamsState.next({ q: 'react', sort: 'date' });
+    it('should update when query params change', async () => {
+      const router = TestBed.inject(Router);
+      const component = createComponent().componentInstance;
+
+      expect(component.searchParams()).toEqual({});
+
+      await router.navigate([], { queryParams: { q: 'angular', sort: 'name' } });
+      expect(component.searchParams()).toEqual({ q: 'angular', sort: 'name' });
+
+      await router.navigate([], { queryParams: { q: 'react', sort: 'date' } });
       expect(component.searchParams()).toEqual({ q: 'react', sort: 'date' });
 
-      queryParamsState.next({ q: 'vue', sort: 'popularity' });
-      expect(component.searchParams()).toEqual({ q: 'vue', sort: 'popularity' });
-
-      queryParamsState.next({});
+      await router.navigate([], { queryParams: {} });
       expect(component.searchParams()).toEqual({});
     });
 
@@ -106,7 +96,7 @@ describe(queryParams.name, () => {
 
     it('should keep the current params when navigation fails', async () => {
       const router = TestBed.inject(Router);
-      queryParamsState.next({ q: 'angular', sort: 'name' });
+      await router.navigate([], { queryParams: { q: 'angular', sort: 'name' } });
       const fixture = createComponent();
       const component = fixture.componentInstance;
 
@@ -136,7 +126,6 @@ describe(queryParams.name, () => {
   });
 
   describe('with schema', () => {
-    let queryParamsState: BehaviorSubject<Params>;
     const mockSchema = { parse: jest.fn() };
 
     @Component({ template: '' })
@@ -145,20 +134,7 @@ describe(queryParams.name, () => {
     }
 
     beforeEach(() => {
-      mockSchema.parse.mockClear();
-      queryParamsState = new BehaviorSubject<Params>({});
-
-      TestBed.configureTestingModule({
-        providers: [
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              queryParams: queryParamsState.asObservable(),
-              snapshot: { queryParams: queryParamsState.getValue() },
-            },
-          },
-        ],
-      });
+      mockSchema.parse.mockReset();
     });
 
     const createComponent = () => {
@@ -188,21 +164,24 @@ describe(queryParams.name, () => {
       expect(() => component.params.value()).toThrow(error);
     });
 
-    it('should validate query params on change', () => {
+    it('should validate query params on change', async () => {
       mockSchema.parse.mockReturnValue({ q: 'angular', page: 1 });
+      const router = TestBed.inject(Router);
       const component = createComponent().componentInstance;
 
       expect(component.params.isValid()).toBe(true);
 
       mockSchema.parse.mockReturnValue({ q: 'react', page: 2 });
-      queryParamsState.next({ q: 'react', page: '2' });
+      await router.navigate([], { queryParams: { q: 'react', page: '2' } });
 
       expect(component.params.isValid()).toBe(true);
       expect(component.params.value()).toEqual({ q: 'react', page: 2 });
+      expect(mockSchema.parse).toHaveBeenLastCalledWith({ q: 'react', page: '2' });
     });
 
-    it('should handle validation errors on change', () => {
+    it('should handle validation errors on change', async () => {
       mockSchema.parse.mockReturnValue({ q: 'angular', page: 1 });
+      const router = TestBed.inject(Router);
       const component = createComponent().componentInstance;
 
       expect(component.params.isValid()).toBe(true);
@@ -211,27 +190,28 @@ describe(queryParams.name, () => {
       mockSchema.parse.mockImplementation(() => {
         throw error;
       });
-      queryParamsState.next({ q: 'react', page: 'invalid' });
+      await router.navigate([], { queryParams: { q: 'react', page: 'invalid' } });
 
       expect(component.params.isValid()).toBe(false);
       expect(component.params.error()).toBe(error);
       expect(() => component.params.value()).toThrow(error);
     });
 
-    it('should recover from validation error', () => {
+    it('should recover from validation error', async () => {
       mockSchema.parse.mockReturnValue({ q: 'angular', page: 1 });
+      const router = TestBed.inject(Router);
       const component = createComponent().componentInstance;
 
       const error = new Error('Invalid');
       mockSchema.parse.mockImplementation(() => {
         throw error;
       });
-      queryParamsState.next({ q: '', page: '-1' });
+      await router.navigate([], { queryParams: { q: '', page: '-1' } });
 
       expect(component.params.isValid()).toBe(false);
 
       mockSchema.parse.mockReturnValue({ q: 'vue', page: 3 });
-      queryParamsState.next({ q: 'vue', page: '3' });
+      await router.navigate([], { queryParams: { q: 'vue', page: '3' } });
 
       expect(component.params.isValid()).toBe(true);
       expect(component.params.error()).toBeNull();
@@ -244,6 +224,7 @@ describe(queryParams.name, () => {
       const fixture = createComponent();
       const component = fixture.componentInstance;
 
+      mockSchema.parse.mockReturnValue({ q: 'react', page: 2 });
       component.params.value.set({ q: 'react', page: 2 });
       await fixture.whenStable();
 
@@ -262,21 +243,18 @@ describe(queryParams.name, () => {
 
       expect(component.params.isValid()).toBe(false);
       expect(() => component.params.value()).toThrow(error);
+
+      mockSchema.parse.mockReturnValue({ page: 1 });
       expect(() => component.params.value.set({ page: 1 })).not.toThrow();
       await fixture.whenStable();
 
       expect(router.url).toBe('/?page=1');
-
-      // the router echoes the written params back through the `ActivatedRoute`
-      mockSchema.parse.mockReturnValue({ page: 1 });
-      queryParamsState.next({ page: '1' });
-
       expect(component.params.isValid()).toBe(true);
       expect(component.params.value()).toEqual({ page: 1 });
     });
   });
 
-  describe('with the router', () => {
+  describe('with a custom validator', () => {
     const pageSchema: QueryParamsValidator<{ page: number }> = {
       parse: data => {
         const page = Number((data as { page?: string }).page ?? '1');
