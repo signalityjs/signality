@@ -60,12 +60,9 @@ export function mediaQuery(
 
       matches.set(mediaQueryList.matches);
 
-      const changeListener = listener(
-        mediaQueryList,
-        'change',
-        (e: MediaQueryListEvent) => matches.set(e.matches),
-        { injector }
-      );
+      const changeListener = listener(mediaQueryList, 'change', e => matches.set(e.matches), {
+        injector,
+      });
 
       onCleanup(changeListener.destroy);
     });
