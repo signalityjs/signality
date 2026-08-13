@@ -133,7 +133,7 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
 
     setupSync(() => {
       listener(document, 'fullscreenchange', () => {
-        const el = toElement.untracked(target);
+        const el = toElement(target);
         isActive.set(document.fullscreenElement != null && document.fullscreenElement === el);
       });
     });
