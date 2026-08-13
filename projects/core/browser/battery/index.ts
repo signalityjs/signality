@@ -1,5 +1,5 @@
 import { type Signal, signal } from '@angular/core';
-import { constSignal, setupContext, settleInContext } from '@signality/core/internal';
+import { constSignal, settleInContext, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
@@ -100,7 +100,7 @@ export function battery(options?: BatteryOptions): BatteryRef {
 
       setupSync(() => {
         for (const event of BATTERY_EVENTS) {
-          listener.passive(battery, event, update, { injector });
+          listener(battery, event, update, { injector });
         }
       });
     });
