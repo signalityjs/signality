@@ -38,7 +38,7 @@ export function generateId(options?: GenerateIdOptions): string {
 }
 
 export const GENERATE_ID_FACTORY = new InjectionToken<(prefix?: string) => string>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'GENERATE_ID_FACTORY' : '',
+  ngDevMode ? 'GENERATE_ID_FACTORY' : '',
   {
     providedIn: 'platform',
     factory: () => {

@@ -116,8 +116,8 @@ export function gamepad(options?: WithInjector): GamepadRef {
     };
 
     setupSync(() => {
-      listener.passive(window, 'gamepadconnected', onGamepadConnected);
-      listener.passive(window, 'gamepaddisconnected', onGamepadDisconnected);
+      listener(window, 'gamepadconnected', onGamepadConnected);
+      listener(window, 'gamepaddisconnected', onGamepadDisconnected);
     });
 
     if (gamepads().some(gp => gp !== null)) {

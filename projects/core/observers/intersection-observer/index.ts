@@ -3,7 +3,7 @@ import {
   type CreateEffectOptions,
   type EffectCleanupRegisterFn,
 } from '@angular/core';
-import { assertElement, NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
+import { assertElement, isDocument, NOOP_EFFECT_REF, setupContext } from '@signality/core/internal';
 import { toElement, toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal } from '@signality/core/types';
 
@@ -94,7 +94,7 @@ export function intersectionObserver(
       }
 
       const root = options?.root
-        ? options.root instanceof Document
+        ? isDocument(options?.root)
           ? options.root
           : toElement(options.root)
         : null;
