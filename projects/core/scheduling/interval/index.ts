@@ -64,8 +64,7 @@ export function interval(
 
     const start = () => {
       clearInterval(intervalId);
-
-      const ms = toValue.untracked(intervalMs);
+      const ms = toValue(intervalMs);
       intervalId = ms > 0 ? setInterval(callback, ms) : undefined;
     };
 
