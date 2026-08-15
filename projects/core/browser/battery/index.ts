@@ -1,5 +1,5 @@
 import { type Signal, signal } from '@angular/core';
-import { constSignal, settleInContext, setupContext } from '@signality/core/internal';
+import { constSignal, createToken, settleInContext, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
@@ -114,6 +114,8 @@ export function battery(options?: BatteryOptions): BatteryRef {
     };
   });
 }
+
+export const BATTERY = /* @__PURE__ */ createToken(battery);
 
 interface NavigatorWithBattery extends Navigator {
   readonly getBattery: () => Promise<BatteryManager>;

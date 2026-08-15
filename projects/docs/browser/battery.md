@@ -28,6 +28,21 @@ export class BatteryDemo {
 }
 ```
 
+::: warning Use InjectionToken for Singleton
+
+For global state tracking like `battery`, consider using the provided `BATTERY` token instead of calling the function directly. This ensures a singleton instance shared across your entire application, reducing memory usage and event listener overhead:
+
+```typescript
+import { inject } from '@angular/core';
+import { BATTERY } from '@signality/core';
+
+const batteryStatus = battery(); // [!code --]
+const batteryStatus = inject(BATTERY); // [!code ++]
+```
+
+Learn more about [Token-based utilities](/guide/key-concepts#token-based-utilities).
+:::
+
 ## Return Value
 
 The `battery()` function returns a `BatteryRef` object with the following properties:
@@ -132,5 +147,7 @@ interface BatteryRef {
   readonly isSupported: Signal<boolean>;
 }
 
-function battery(options?: WithInjector): BatteryRef;
+function battery(options?: BatteryOptions): BatteryRef;
+
+const BATTERY: InjectionToken<BatteryRef>;
 ```
