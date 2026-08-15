@@ -1,5 +1,5 @@
 import { type Signal, signal } from '@angular/core';
-import { constSignal, setupContext } from '@signality/core/internal';
+import { constSignal, createToken, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
@@ -71,6 +71,8 @@ export function devicePosture(options?: WithInjector): DevicePostureRef {
     };
   });
 }
+
+export const DEVICE_POSTURE = /* @__PURE__ */ createToken(devicePosture);
 
 interface DevicePosture extends EventTarget {
   readonly type: DevicePostureType;

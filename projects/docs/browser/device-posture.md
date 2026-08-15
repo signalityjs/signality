@@ -24,6 +24,21 @@ export class PostureDemo {
 }
 ```
 
+::: warning Use InjectionToken for Singleton
+
+For global state tracking like `devicePosture`, consider using the provided `DEVICE_POSTURE` token instead of calling the function directly. This ensures a singleton instance shared across your entire application, reducing memory usage and event listener overhead:
+
+```typescript
+import { inject } from '@angular/core';
+import { DEVICE_POSTURE } from '@signality/core';
+
+const posture = devicePosture(); // [!code --]
+const posture = inject(DEVICE_POSTURE); // [!code ++]
+```
+
+Learn more about [Token-based utilities](/guide/key-concepts#token-based-utilities).
+:::
+
 ## Parameters
 
 | Parameter | Type           | Description                                            |
@@ -99,6 +114,8 @@ interface DevicePostureRef {
 }
 
 function devicePosture(options?: WithInjector): DevicePostureRef;
+
+const DEVICE_POSTURE: InjectionToken<DevicePostureRef>;
 ```
 
 ## Related
