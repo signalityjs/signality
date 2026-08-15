@@ -28,31 +28,46 @@ export class GamepadDemo {
 }
 ```
 
+::: warning Use InjectionToken for Singleton
+
+For global state tracking like `gamepad`, consider using the provided `GAMEPAD` token instead of calling the function directly. This ensures a singleton instance shared across your entire application, reducing memory usage and event listener overhead:
+
+```typescript
+import { inject } from '@angular/core';
+import { GAMEPAD } from '@signality/core';
+
+const gp = gamepad(); // [!code --]
+const gp = inject(GAMEPAD); // [!code ++]
+```
+
+Learn more about [Token-based utilities](/guide/key-concepts#token-based-utilities).
+:::
+
 ## Parameters
 
-| Parameter | Type              | Description                                            |
-|-----------|-------------------|--------------------------------------------------------|
-| `options` | `WithInjector`    | Optional configuration (see [Options](#options) below) |
+| Parameter | Type           | Description                                            |
+|-----------|----------------|--------------------------------------------------------|
+| `options` | `WithInjector` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
 The `WithInjector` interface provides:
 
-| Option     | Type       | Description                                    |
-|------------|------------|------------------------------------------------|
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context               |
+| Option     | Type                                                | Description                      |
+|------------|-----------------------------------------------------|----------------------------------|
+| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context |
 
 ## Return Value
 
 The `gamepad()` function returns a `GamepadRef` object:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `gamepads` | `Signal<(Gamepad \| null)[]>` | Array of connected gamepads |
-| `isSupported` | `Signal<boolean>` | Whether Gamepad API is supported |
-| `activeGamepad` | `Signal<Gamepad \| undefined>` | First connected gamepad (see [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad)) |
-| `axes` | `Signal<readonly number[]>` | Axes values of active gamepad |
-| `buttons` | `Signal<readonly GamepadButton[]>` | Button states of active gamepad |
+| Property        | Type                               | Description                                                                                       |
+|-----------------|------------------------------------|---------------------------------------------------------------------------------------------------|
+| `gamepads`      | `Signal<(Gamepad \| null)[]>`      | Array of connected gamepads                                                                       |
+| `isSupported`   | `Signal<boolean>`                  | Whether Gamepad API is supported                                                                  |
+| `activeGamepad` | `Signal<Gamepad \| undefined>`     | First connected gamepad (see [Gamepad](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad)) |
+| `axes`          | `Signal<readonly number[]>`        | Axes values of active gamepad                                                                     |
+| `buttons`       | `Signal<readonly GamepadButton[]>` | Button states of active gamepad                                                                   |
 
 ## Examples
 
@@ -188,4 +203,6 @@ interface GamepadRef {
 }
 
 function gamepad(options?: WithInjector): GamepadRef;
+
+const GAMEPAD: InjectionToken<GamepadRef>;
 ```

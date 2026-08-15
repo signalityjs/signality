@@ -1,5 +1,5 @@
 import { computed, signal, type Signal } from '@angular/core';
-import { constSignal, setupContext } from '@signality/core/internal';
+import { constSignal, createToken, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
@@ -139,3 +139,5 @@ export function gamepad(options?: WithInjector): GamepadRef {
     };
   });
 }
+
+export const GAMEPAD = /* @__PURE__ */ createToken(gamepad);
