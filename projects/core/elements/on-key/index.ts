@@ -8,7 +8,12 @@ import {
 } from '@signality/core/internal';
 import { toValue } from '@signality/core/utilities';
 import type { MaybeElementSignal, MaybeSignal, WithInjector } from '@signality/core/types';
-import { listener, type ListenerRef, setupSync } from '@signality/core/browser/listener';
+import {
+  listener,
+  type ListenerFunction,
+  type ListenerRef,
+  setupSync,
+} from '@signality/core/browser/listener';
 import { watcher } from '@signality/core/reactivity/watcher';
 
 /**
@@ -43,6 +48,7 @@ export interface OnKeyOptions extends WithInjector {
   /**
    * Register the listener as passive.
    * @default false
+   * @deprecated Use the `onKey.passive(...)` modifier instead. Will be removed in 1.0.
    */
   readonly passive?: boolean;
 
@@ -58,6 +64,42 @@ export interface OnKeyRef {
   readonly destroy: () => void;
 }
 
+export interface OnKeyFunction {
+  /**
+   * Listen for keyboard events matching a key filter.
+   *
+   * @param key - Key filter: `event.key` string, key combination array, signal of either, or predicate
+   * @param handler - Callback invoked with the matching keyboard event
+   * @param options - Optional configuration including target, event name, dedupe, and injector
+   * @returns An OnKeyRef with a destroy method to stop listening
+   */
+  (key: KeyFilter, handler: (event: KeyboardEvent) => void, options?: OnKeyOptions): OnKeyRef;
+
+  /**
+   * Listen for every keyboard event on the target.
+   *
+   * @param handler - Callback invoked with each keyboard event
+   * @param options - Optional configuration including target, event name, dedupe, and injector
+   * @returns An OnKeyRef with a destroy method to stop listening
+   */
+  (handler: (event: KeyboardEvent) => void, options?: OnKeyOptions): OnKeyRef;
+
+  /** Registers the underlying listener in the capture phase, equivalent to `{ capture: true }`. */
+  readonly capture: OnKeyFunction;
+
+  /** Registers the underlying listener as passive; incompatible with `prevent`. */
+  readonly passive: OnKeyFunction;
+
+  /** Destroys the listener after the first event that matches the filter. */
+  readonly once: OnKeyFunction;
+
+  /** Calls `event.stopPropagation()` on events that match the filter. */
+  readonly stop: OnKeyFunction;
+
+  /** Calls `event.preventDefault()` on events that match the filter. */
+  readonly prevent: OnKeyFunction;
+}
+
 /**
  * Listen for keyboard events matching a key filter.
  *
@@ -71,10 +113,10 @@ export interface OnKeyRef {
  * resolved to their canonical `event.key` values; the virtual `'Mod'` modifier resolves
  * to `'Meta'` on Apple platforms and `'Control'` elsewhere.
  *
- * @param key - Key filter: `event.key` string, key combination array, signal of either, or predicate
- * @param handler - Callback invoked with the matching keyboard event
- * @param options - Optional configuration including target, event name, passive, dedupe, and injector
- * @returns An OnKeyRef with a destroy method to stop listening
+ * Behavior can be configured through chainable modifiers: `onKey.prevent(...)`,
+ * `onKey.capture.stop(...)`, etc. The `prevent`, `stop`, and `once` modifiers apply
+ * only to events that match the key filter — other keystrokes pass through untouched
+ * and do not consume a `once` listener.
  *
  * @example
  * ```typescript
@@ -83,8 +125,7 @@ export interface OnKeyRef {
  * })
  * export class HotkeyDemo {
  *   constructor() {
- *     onKey(['Mod', 'K'], event => {
- *       event.preventDefault();
+ *     onKey.prevent(['Mod', 'K'], () => {
  *       console.log('Command palette!');
  *     });
  *   }
@@ -93,22 +134,9 @@ export interface OnKeyRef {
  *
  * @see [KeyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
  */
-export function onKey(
-  key: KeyFilter,
-  handler: (event: KeyboardEvent) => void,
-  options?: OnKeyOptions
-): OnKeyRef;
+export const onKey: OnKeyFunction = createModifier({});
 
-/**
- * Listen for every keyboard event on the target.
- *
- * @param handler - Callback invoked with each keyboard event
- * @param options - Optional configuration including target, event name, passive, dedupe, and injector
- * @returns An OnKeyRef with a destroy method to stop listening
- */
-export function onKey(handler: (event: KeyboardEvent) => void, options?: OnKeyOptions): OnKeyRef;
-
-export function onKey(...args: unknown[]): OnKeyRef {
+function onKeyImpl(applied: InternalOnKeyModifiers, ...args: unknown[]): OnKeyRef {
   let key: KeyFilter | undefined;
   let rawHandler: (event: KeyboardEvent) => void;
   let options: OnKeyOptions | undefined;
@@ -119,7 +147,7 @@ export function onKey(...args: unknown[]): OnKeyRef {
     [rawHandler, options] = args as [typeof rawHandler, OnKeyOptions?];
   }
 
-  const { runInContext } = setupContext(options?.injector, onKey);
+  const { runInContext } = setupContext(options?.injector, onKeyImpl);
 
   return runInContext(({ isServer, injector }) => {
     if (isServer) {
@@ -129,9 +157,20 @@ export function onKey(...args: unknown[]): OnKeyRef {
     const target = options?.target ?? window;
     const eventName = options?.eventName ?? 'keydown';
     const dedupe = options?.dedupe ?? false;
-    const listenerFn = options?.passive ? listener.passive : listener;
+    const { once, stop, prevent } = applied;
     const primaryModKey = inject(IS_APPLE) ? 'Meta' : 'Control';
     const isGlobalTarget = isWindow(target) || isDocument(target);
+
+    let listenerFn: ListenerFunction = listener;
+    if (applied.capture) {
+      listenerFn = listenerFn.capture;
+    }
+    // @TODO: remove `options?.passive` in 1.0
+    if (applied.passive || options?.passive) {
+      listenerFn = listenerFn.passive;
+    }
+
+    let ref: OnKeyRef;
 
     const bind = (predicate: KeyPredicate): ListenerRef => {
       const handler = (e: KeyboardEvent) => {
@@ -143,8 +182,22 @@ export function onKey(...args: unknown[]): OnKeyRef {
           return;
         }
 
-        if (predicate(e)) {
-          rawHandler(e);
+        if (!predicate(e)) {
+          return;
+        }
+
+        if (prevent) {
+          e.preventDefault();
+        }
+
+        if (stop) {
+          e.stopPropagation();
+        }
+
+        rawHandler(e);
+
+        if (once) {
+          ref.destroy();
         }
       };
 
@@ -154,7 +207,8 @@ export function onKey(...args: unknown[]): OnKeyRef {
 
     if (!isSignal(key)) {
       const keyListener = bind(createKeyPredicate(key, primaryModKey));
-      return { destroy: () => keyListener.destroy() };
+      ref = { destroy: () => keyListener.destroy() };
+      return ref;
     }
 
     const reactiveKey = key as Signal<string | string[]>;
@@ -166,13 +220,51 @@ export function onKey(...args: unknown[]): OnKeyRef {
       keyListener = bind(createKeyPredicate(key, primaryModKey));
     });
 
-    return {
+    ref = {
       destroy: () => {
         keyWatcher.destroy();
         keyListener.destroy();
       },
     };
+
+    return ref;
   });
+}
+
+const MODIFIERS = new Set<keyof InternalOnKeyModifiers>([
+  'capture',
+  'passive',
+  'once',
+  'stop',
+  'prevent',
+]);
+
+function createModifier(applied: InternalOnKeyModifiers): OnKeyFunction {
+  const modifierFn = ((...args: unknown[]) => {
+    return onKeyImpl(applied, ...args);
+  }) as OnKeyFunction;
+
+  return new Proxy(modifierFn, {
+    get(target, prop, receiver) {
+      if (typeof prop !== 'string' || !MODIFIERS.has(prop as any)) {
+        return target[prop as keyof typeof target];
+      }
+
+      if (applied[prop as keyof InternalOnKeyModifiers]) {
+        return receiver;
+      }
+
+      return createModifier({ ...applied, [prop]: true });
+    },
+  });
+}
+
+interface InternalOnKeyModifiers {
+  readonly capture?: boolean;
+  readonly passive?: boolean;
+  readonly once?: boolean;
+  readonly stop?: boolean;
+  readonly prevent?: boolean;
 }
 
 const MODIFIER_FLAGS = {

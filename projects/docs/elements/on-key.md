@@ -61,17 +61,44 @@ Key names follow the canonical [`event.key` values](https://developer.mozilla.or
 
 The virtual `'Mod'` modifier is the recommended way to declare cross-platform shortcuts: `['Mod', 'K']` fires on <kbd>⌘</kbd>+<kbd>K</kbd> on macOS and <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux.
 
+## Modifiers
+
+Behavior can be configured through chainable modifiers, mirroring [Listener](/browser/listener):
+
+```angular-ts
+onKey.prevent(['Mod', 'K'], openCommandPalette);
+onKey.capture.stop('Escape', closeTopmostLayer);
+onKey.once('Enter', submit);
+```
+
+Available modifiers:
+
+- `onKey.prevent(...)` - calls `event.preventDefault()` on matching events
+- `onKey.stop(...)` - calls `event.stopPropagation()` on matching events
+- `onKey.once(...)` - destroys the listener after the first matching event
+- `onKey.capture(...)` - registers the underlying listener in the capture phase
+- `onKey.passive(...)` - registers the underlying listener as passive (replaces the deprecated `passive` option)
+
+::: tip Filter-aware semantics Unlike `listener`, the `prevent`, `stop`, and `once` modifiers apply only to events that **match the key filter** (and pass the `dedupe` / composition checks). Other keystrokes pass through untouched and do not consume a `once` listener — so `onKey.prevent('Escape', handler)` never blocks unrelated typing.
+:::
+
+`passive` and `prevent` are mutually exclusive: a passive listener cannot cancel the default action, and the browser will ignore the `preventDefault()` call.
+
+There is no `self` modifier: keyboard events always target the focused element, so with the default `window` target `event.target === event.currentTarget` would never hold and the handler would silently never fire.
+
+Modifiers can be chained in any order: `onKey.capture.prevent.once(...)`.
+
 ## Options
 
 The `OnKeyOptions` extends `WithInjector`:
 
-| Option      | Type                                                                                                                | Default     | Description                                                   |
-|-------------|---------------------------------------------------------------------------------------------------------------------|-------------|---------------------------------------------------------------|
-| `target`    | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) `\| Window \| Document` | `window`    | Event target to listen on                                     |
-| `eventName` | `'keydown' \| 'keyup'`                                                                                              | `'keydown'` | Keyboard event to listen for                                  |
-| `passive`   | `boolean`                                                                                                           | `false`     | Register the listener as passive                              |
-| `dedupe`    | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt)                                           | `false`     | Ignore repeated events while the key is held (`event.repeat`) |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                                                 | -           | Optional injector for DI context                              |
+| Option      | Type                                                                                                                | Default     | Description                                                    |
+|-------------|---------------------------------------------------------------------------------------------------------------------|-------------|----------------------------------------------------------------|
+| `target`    | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) `\| Window \| Document` | `window`    | Event target to listen on                                      |
+| `eventName` | `'keydown' \| 'keyup'`                                                                                              | `'keydown'` | Keyboard event to listen for                                   |
+| `passive`   | `boolean`                                                                                                           | `false`     | **Deprecated** — use the `onKey.passive(...)` modifier instead |
+| `dedupe`    | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt)                                           | `false`     | Ignore repeated events while the key is held (`event.repeat`)  |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                                                 | -           | Optional injector for DI context                               |
 
 ## Return Value
 
@@ -175,6 +202,7 @@ type KeyFilter = MaybeSignal<string | string[]> | KeyPredicate;
 interface OnKeyOptions extends WithInjector {
   readonly target?: MaybeElementSignal<HTMLElement> | Window | Document;
   readonly eventName?: 'keydown' | 'keyup';
+  /** @deprecated Use the `onKey.passive(...)` modifier instead. */
   readonly passive?: boolean;
   readonly dedupe?: MaybeSignal<boolean>;
 }
@@ -183,16 +211,26 @@ interface OnKeyRef {
   readonly destroy: () => void;
 }
 
-function onKey(
-  key: KeyFilter,
-  handler: (event: KeyboardEvent) => void,
-  options?: OnKeyOptions,
-): OnKeyRef;
+interface OnKeyFunction {
+  (
+    key: KeyFilter,
+    handler: (event: KeyboardEvent) => void,
+    options?: OnKeyOptions,
+  ): OnKeyRef;
 
-function onKey(
-  handler: (event: KeyboardEvent) => void,
-  options?: OnKeyOptions,
-): OnKeyRef;
+  (
+    handler: (event: KeyboardEvent) => void,
+    options?: OnKeyOptions,
+  ): OnKeyRef;
+
+  readonly capture: OnKeyFunction;
+  readonly passive: OnKeyFunction;
+  readonly once: OnKeyFunction;
+  readonly stop: OnKeyFunction;
+  readonly prevent: OnKeyFunction;
+}
+
+const onKey: OnKeyFunction;
 ```
 
 ## Related
