@@ -15,12 +15,11 @@ import { Component } from '@angular/core';
 import { onKey } from '@signality/core';
 
 @Component({
-  template: `<p>Press ⌘K</p>`,
+  template: `<p>Press ⌘K / Ctrl+K</p>`,
 })
 export class HotkeyDemo {
   constructor() {
-    onKey(['Meta', 'K'], event => { // [!code highlight]
-      event.preventDefault();
+    onKey.prevent(['Mod', 'K'], () => { // [!code highlight]
       console.log('Command palette!');
     });
   }
@@ -63,7 +62,7 @@ The virtual `'Mod'` modifier is the recommended way to declare cross-platform sh
 
 ## Modifiers
 
-Behavior can be configured through chainable modifiers, mirroring [Listener](/browser/listener):
+Behavior can be configured through chainable modifiers (combined in any order):
 
 ```angular-ts
 onKey.prevent(['Mod', 'K'], openCommandPalette);
@@ -77,16 +76,7 @@ Available modifiers:
 - `onKey.stop(...)` - calls `event.stopPropagation()` on matching events
 - `onKey.once(...)` - destroys the listener after the first matching event
 - `onKey.capture(...)` - registers the underlying listener in the capture phase
-- `onKey.passive(...)` - registers the underlying listener as passive (replaces the deprecated `passive` option)
-
-::: tip Filter-aware semantics Unlike `listener`, the `prevent`, `stop`, and `once` modifiers apply only to events that **match the key filter** (and pass the `dedupe` / composition checks). Other keystrokes pass through untouched and do not consume a `once` listener — so `onKey.prevent('Escape', handler)` never blocks unrelated typing.
-:::
-
-`passive` and `prevent` are mutually exclusive: a passive listener cannot cancel the default action, and the browser will ignore the `preventDefault()` call.
-
-There is no `self` modifier: keyboard events always target the focused element, so with the default `window` target `event.target === event.currentTarget` would never hold and the handler would silently never fire.
-
-Modifiers can be chained in any order: `onKey.capture.prevent.once(...)`.
+- `onKey.passive(...)` - registers the underlying listener as passive (replaces the deprecated `passive` option; incompatible with `prevent`)
 
 ## Options
 
@@ -135,15 +125,14 @@ import { Component, signal } from '@angular/core';
 import { onKey } from '@signality/core';
 
 @Component({
-  template: `<button (click)="hotkey.set(['Meta', 'P'])">Rebind</button>`,
+  template: `<button (click)="hotkey.set(['Mod', 'P'])">Rebind</button>`,
 })
 export class ReactiveDemo {
-  readonly hotkey = signal(['Meta', 'K']);
+  readonly hotkey = signal(['Mod', 'K']);
 
   constructor() {
     // Changing the signal re-binds the listener automatically
-    onKey(this.hotkey, event => { // [!code highlight]
-      event.preventDefault();
+    onKey.prevent(this.hotkey, () => { // [!code highlight]
       console.log('Hotkey pressed!');
     });
   }
