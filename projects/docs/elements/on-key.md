@@ -15,12 +15,11 @@ import { Component } from '@angular/core';
 import { onKey } from '@signality/core';
 
 @Component({
-  template: `<p>Press ⌘K</p>`,
+  template: `<p>Press ⌘K / Ctrl+K</p>`,
 })
 export class HotkeyDemo {
   constructor() {
-    onKey(['Meta', 'K'], event => { // [!code highlight]
-      event.preventDefault();
+    onKey.prevent(['Mod', 'K'], () => { // [!code highlight]
       console.log('Command palette!');
     });
   }
@@ -61,17 +60,35 @@ Key names follow the canonical [`event.key` values](https://developer.mozilla.or
 
 The virtual `'Mod'` modifier is the recommended way to declare cross-platform shortcuts: `['Mod', 'K']` fires on <kbd>⌘</kbd>+<kbd>K</kbd> on macOS and <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux.
 
+## Modifiers
+
+Behavior can be configured through chainable modifiers (combined in any order):
+
+```angular-ts
+onKey.prevent(['Mod', 'K'], openCommandPalette);
+onKey.capture.stop('Escape', closeTopmostLayer);
+onKey.once('Enter', submit);
+```
+
+Available modifiers:
+
+- `onKey.prevent(...)` - calls `event.preventDefault()` on matching events
+- `onKey.stop(...)` - calls `event.stopPropagation()` on matching events
+- `onKey.once(...)` - destroys the listener after the first matching event
+- `onKey.capture(...)` - registers the underlying listener in the capture phase
+- `onKey.passive(...)` - registers the underlying listener as passive (replaces the deprecated `passive` option; incompatible with `prevent`)
+
 ## Options
 
 The `OnKeyOptions` extends `WithInjector`:
 
-| Option      | Type                                                                                                                | Default     | Description                                                   |
-|-------------|---------------------------------------------------------------------------------------------------------------------|-------------|---------------------------------------------------------------|
-| `target`    | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) `\| Window \| Document` | `window`    | Event target to listen on                                     |
-| `eventName` | `'keydown' \| 'keyup'`                                                                                              | `'keydown'` | Keyboard event to listen for                                  |
-| `passive`   | `boolean`                                                                                                           | `false`     | Register the listener as passive                              |
-| `dedupe`    | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt)                                           | `false`     | Ignore repeated events while the key is held (`event.repeat`) |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                                                 | -           | Optional injector for DI context                              |
+| Option      | Type                                                                                                                | Default     | Description                                                    |
+|-------------|---------------------------------------------------------------------------------------------------------------------|-------------|----------------------------------------------------------------|
+| `target`    | [`MaybeElementSignal<HTMLElement>`](/reference/utility-types#maybeelementsignal-lt-type-gt) `\| Window \| Document` | `window`    | Event target to listen on                                      |
+| `eventName` | `'keydown' \| 'keyup'`                                                                                              | `'keydown'` | Keyboard event to listen for                                   |
+| `passive`   | `boolean`                                                                                                           | `false`     | **Deprecated** — use the `onKey.passive(...)` modifier instead |
+| `dedupe`    | [`MaybeSignal<boolean>`](/reference/utility-types#maybesignal-lt-type-gt)                                           | `false`     | Ignore repeated events while the key is held (`event.repeat`)  |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                                                                 | -           | Optional injector for DI context                               |
 
 ## Return Value
 
@@ -108,15 +125,14 @@ import { Component, signal } from '@angular/core';
 import { onKey } from '@signality/core';
 
 @Component({
-  template: `<button (click)="hotkey.set(['Meta', 'P'])">Rebind</button>`,
+  template: `<button (click)="hotkey.set(['Mod', 'P'])">Rebind</button>`,
 })
 export class ReactiveDemo {
-  readonly hotkey = signal(['Meta', 'K']);
+  readonly hotkey = signal(['Mod', 'K']);
 
   constructor() {
     // Changing the signal re-binds the listener automatically
-    onKey(this.hotkey, event => { // [!code highlight]
-      event.preventDefault();
+    onKey.prevent(this.hotkey, () => { // [!code highlight]
       console.log('Hotkey pressed!');
     });
   }
@@ -175,6 +191,7 @@ type KeyFilter = MaybeSignal<string | string[]> | KeyPredicate;
 interface OnKeyOptions extends WithInjector {
   readonly target?: MaybeElementSignal<HTMLElement> | Window | Document;
   readonly eventName?: 'keydown' | 'keyup';
+  /** @deprecated Use the `onKey.passive(...)` modifier instead. */
   readonly passive?: boolean;
   readonly dedupe?: MaybeSignal<boolean>;
 }
@@ -183,16 +200,26 @@ interface OnKeyRef {
   readonly destroy: () => void;
 }
 
-function onKey(
-  key: KeyFilter,
-  handler: (event: KeyboardEvent) => void,
-  options?: OnKeyOptions,
-): OnKeyRef;
+interface OnKeyFunction {
+  (
+    key: KeyFilter,
+    handler: (event: KeyboardEvent) => void,
+    options?: OnKeyOptions,
+  ): OnKeyRef;
 
-function onKey(
-  handler: (event: KeyboardEvent) => void,
-  options?: OnKeyOptions,
-): OnKeyRef;
+  (
+    handler: (event: KeyboardEvent) => void,
+    options?: OnKeyOptions,
+  ): OnKeyRef;
+
+  readonly capture: OnKeyFunction;
+  readonly passive: OnKeyFunction;
+  readonly once: OnKeyFunction;
+  readonly stop: OnKeyFunction;
+  readonly prevent: OnKeyFunction;
+}
+
+const onKey: OnKeyFunction;
 ```
 
 ## Related

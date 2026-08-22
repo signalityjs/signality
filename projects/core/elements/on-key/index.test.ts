@@ -538,8 +538,8 @@ describe(onKey.name, () => {
     });
   });
 
-  describe('passive option', () => {
-    it('should register a passive listener', () => {
+  describe('passive option (deprecated)', () => {
+    it('should still register a passive listener', () => {
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
 
       setup('a', { passive: true });
@@ -551,6 +551,231 @@ describe(onKey.name, () => {
       );
 
       addEventListenerSpy.mockRestore();
+    });
+  });
+
+  describe('modifier: prevent', () => {
+    it('should prevent the default action of matching events', () => {
+      const handler = jest.fn();
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.prevent('a', handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      const event = new KeyboardEvent('keydown', { key: 'a', bubbles: true, cancelable: true });
+      window.dispatchEvent(event);
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('should not prevent non-matching events', () => {
+      const handler = jest.fn();
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.prevent('a', handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      const event = new KeyboardEvent('keydown', { key: 'b', bubbles: true, cancelable: true });
+      window.dispatchEvent(event);
+
+      expect(handler).not.toHaveBeenCalled();
+      expect(event.defaultPrevented).toBe(false);
+    });
+  });
+
+  describe('modifier: stop', () => {
+    it('should stop propagation of matching events only', () => {
+      const handler = jest.fn();
+
+      @Component({ template: '<div #parent><input #input /></div>' })
+      class TestComponent {
+        readonly input = viewChild<ElementRef>('input');
+        readonly ref = onKey.stop('a', handler, { target: this.input });
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      const parent = fixture.nativeElement.querySelector('div') as HTMLDivElement;
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      const parentHandler = jest.fn();
+      parent.addEventListener('keydown', parentHandler);
+
+      dispatchKey({ key: 'a' }, input);
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(parentHandler).not.toHaveBeenCalled();
+
+      dispatchKey({ key: 'b' }, input);
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(parentHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('modifier: once', () => {
+    function setupOnce(key: KeyFilter) {
+      const handler = jest.fn();
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.once(key, handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      return { handler };
+    }
+
+    it('should fire only on the first matching event', () => {
+      const { handler } = setupOnce('a');
+
+      dispatchKey({ key: 'a' });
+      dispatchKey({ key: 'a' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not be consumed by non-matching events', () => {
+      const { handler } = setupOnce('a');
+
+      dispatchKey({ key: 'b' });
+      dispatchKey({ key: 'c' });
+
+      expect(handler).not.toHaveBeenCalled();
+
+      dispatchKey({ key: 'a' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should stop re-binding a reactive filter after firing', () => {
+      const handler = jest.fn();
+      const key = signal('a');
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.once(key, handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      dispatchKey({ key: 'a' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+
+      key.set('b');
+      TestBed.tick();
+      dispatchKey({ key: 'b' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('modifier: capture', () => {
+    it('should register the listener in the capture phase', () => {
+      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const handler = jest.fn();
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.capture('a', handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith(
+        'keydown',
+        expect.any(Function),
+        expect.objectContaining({ capture: true })
+      );
+
+      addEventListenerSpy.mockRestore();
+    });
+  });
+
+  describe('modifier: passive', () => {
+    it('should register a passive listener', () => {
+      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const handler = jest.fn();
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.passive('a', handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith(
+        'keydown',
+        expect.any(Function),
+        expect.objectContaining({ passive: true })
+      );
+
+      addEventListenerSpy.mockRestore();
+    });
+  });
+
+  describe('chained modifiers', () => {
+    it('should combine prevent and stop on matching events', () => {
+      const handler = jest.fn();
+
+      @Component({ template: '<div #parent><input #input /></div>' })
+      class TestComponent {
+        readonly input = viewChild<ElementRef>('input');
+        readonly ref = onKey.prevent.stop('a', handler, { target: this.input });
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      const parent = fixture.nativeElement.querySelector('div') as HTMLDivElement;
+      const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+      const parentHandler = jest.fn();
+      parent.addEventListener('keydown', parentHandler);
+
+      const event = new KeyboardEvent('keydown', { key: 'a', bubbles: true, cancelable: true });
+      input.dispatchEvent(event);
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(event.defaultPrevented).toBe(true);
+      expect(parentHandler).not.toHaveBeenCalled();
+    });
+
+    it('should support the handler-only overload', () => {
+      const handler = jest.fn();
+
+      @Component({ template: '' })
+      class TestComponent {
+        readonly ref = onKey.once(handler);
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      dispatchKey({ key: 'a' });
+      dispatchKey({ key: 'b' });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return the same instance for a repeated modifier', () => {
+      const prevent = onKey.prevent;
+
+      expect(prevent.prevent).toBe(prevent);
     });
   });
 
