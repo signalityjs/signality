@@ -353,6 +353,47 @@ describe(listener.name, () => {
     });
   });
 
+  describe('repeated modifiers in a chain', () => {
+    @Component({ template: '<a #link href="#test">Link</a>' })
+    class HostComponent {
+      readonly link = viewChild<ElementRef<HTMLAnchorElement>>('link');
+      linkClicked = false;
+
+      constructor() {
+        listener.prevent.prevent.stop(this.link, 'click', () => (this.linkClicked = true));
+      }
+    }
+
+    function setup() {
+      const fixture = TestBed.createComponent(HostComponent);
+      fixture.detectChanges();
+
+      return {
+        component: fixture.componentInstance,
+        anchor: fixture.nativeElement.querySelector('a') as HTMLAnchorElement,
+      };
+    }
+
+    it('returns the same chainable function when a modifier is accessed twice', () => {
+      const prevent = listener.prevent;
+
+      expect(prevent.prevent).toBe(prevent);
+    });
+
+    it('keeps the chain callable after a repeated modifier', () => {
+      expect(() => setup()).not.toThrow();
+    });
+
+    it('applies the modifiers from a chain containing a repeated modifier', () => {
+      const { component, anchor } = setup();
+
+      const event = click(anchor);
+
+      expect(component.linkClicked).toBe(true);
+      expect(event.defaultPrevented).toBe(true);
+    });
+  });
+
   describe('reactive event name', () => {
     @Component({ template: '<button #btn>Button</button>' })
     class HostComponent {
