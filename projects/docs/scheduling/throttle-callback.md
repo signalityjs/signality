@@ -42,7 +42,7 @@ export class ScrollComponent {
 ## Options
 
 | Option     | Type                                                | Default | Description                                                                   |
-|------------|-----------------------------------------------------|---------|---------------------------------------------------------------------------------|
+|------------|-----------------------------------------------------|---------|-------------------------------------------------------------------------------|
 | `leading`  | `boolean`                                           | `true`  | Invoke the callback immediately on the call that opens an interval            |
 | `trailing` | `boolean`                                           | `true`  | Deliver the most recent call made during the interval once that interval ends |
 | `injector` | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                              |
@@ -51,12 +51,12 @@ export class ScrollComponent {
 
 `leading` and `trailing` select which edges of the interval invoke the callback. For a burst of `first`, `second`, `last` within one interval:
 
-| `leading` | `trailing` | Invoked with                                | Use case                                |
-|-----------|------------|---------------------------------------------|-----------------------------------------|
-| `true`    | `true`     | `first` immediately, then `last` at the end | **Default** — instant feedback, exact result |
-| `true`    | `false`    | `first` only                                | Rate-limiting a call with no payload     |
+| `leading` | `trailing` | Invoked with                                | Use case                                              |
+|-----------|------------|---------------------------------------------|-------------------------------------------------------|
+| `true`    | `true`     | `first` immediately, then `last` at the end | **Default** — instant feedback, exact result          |
+| `true`    | `false`    | `first` only                                | Rate-limiting a call with no payload                  |
 | `false`   | `true`     | `last` at the end                           | Periodic sampling without reacting to the first event |
-| `false`   | `false`    | never invoked                               | None — logs a warning in development     |
+| `false`   | `false`    | never invoked                               | None — logs a warning in development                  |
 
 Every invocation opens an interval of its own, so a call arriving just as an interval ends is deferred to the next one rather than running immediately.
 
