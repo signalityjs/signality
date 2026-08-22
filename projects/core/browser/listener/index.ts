@@ -218,13 +218,13 @@ function createModifier(applied: InternalListenerOptions): ListenerFunction {
   }) as ListenerFunction;
 
   return new Proxy(modifierFn, {
-    get(target, prop) {
+    get(target, prop, receiver) {
       if (typeof prop !== 'string' || !MODIFIERS.has(prop as any)) {
         return target[prop as keyof typeof target];
       }
 
       if (applied[prop as keyof InternalListenerOptions]) {
-        return target;
+        return receiver;
       }
 
       return createModifier({ ...applied, [prop]: true });
