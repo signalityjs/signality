@@ -58,9 +58,7 @@ describe(throttled.name, () => {
       expect(component.throttledValue()).toBe('first');
 
       jest.advanceTimersByTime(300);
-      component.source.set('fourth');
-      detectChanges();
-      expect(component.throttledValue()).toBe('fourth');
+      expect(component.throttledValue()).toBe('third');
     });
 
     it('should allow updates after throttle interval', () => {
@@ -76,9 +74,74 @@ describe(throttled.name, () => {
       expect(component.throttledValue()).toBe('first');
 
       jest.advanceTimersByTime(1);
+      expect(component.throttledValue()).toBe('second');
+
       component.source.set('third');
       detectChanges();
+      jest.advanceTimersByTime(300);
       expect(component.throttledValue()).toBe('third');
+    });
+
+    it('should settle on the source value once updates stop', () => {
+      const { component, detectChanges } = createComponent();
+
+      component.source.set('a');
+      detectChanges();
+      expect(component.throttledValue()).toBe('a');
+
+      component.source.set('final');
+      detectChanges();
+
+      jest.advanceTimersByTime(10_000);
+
+      expect(component.throttledValue()).toBe('final');
+    });
+
+    it('should keep dropping updates when trailing is disabled', () => {
+      @Component({ template: '{{ throttledValue() }}' })
+      class NoTrailingComponent {
+        readonly source = signal('initial');
+        readonly throttledValue = throttled(this.source, 300, { trailing: false });
+      }
+
+      const fixture = TestBed.createComponent(NoTrailingComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+
+      component.source.set('a');
+      fixture.detectChanges();
+      expect(component.throttledValue()).toBe('a');
+
+      component.source.set('final');
+      fixture.detectChanges();
+
+      jest.advanceTimersByTime(10_000);
+
+      expect(component.throttledValue()).toBe('a');
+    });
+
+    it('should defer the first update when leading is disabled', () => {
+      @Component({ template: '{{ throttledValue() }}' })
+      class NoLeadingComponent {
+        readonly source = signal('initial');
+        readonly throttledValue = throttled(this.source, 300, { leading: false });
+      }
+
+      const fixture = TestBed.createComponent(NoLeadingComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+
+      component.source.set('a');
+      fixture.detectChanges();
+      expect(component.throttledValue()).toBe('initial');
+
+      component.source.set('final');
+      fixture.detectChanges();
+      expect(component.throttledValue()).toBe('initial');
+
+      jest.advanceTimersByTime(300);
+
+      expect(component.throttledValue()).toBe('final');
     });
   });
 
@@ -115,9 +178,7 @@ describe(throttled.name, () => {
       expect(component.throttledValue()).toBe('first');
 
       jest.advanceTimersByTime(300);
-      component.throttledValue.set('third');
-      detectChanges();
-      expect(component.throttledValue()).toBe('third');
+      expect(component.throttledValue()).toBe('second');
     });
 
     it('should throttle update() calls', () => {
@@ -136,9 +197,7 @@ describe(throttled.name, () => {
       expect(component.throttledValue()).toBe('initial1');
 
       jest.advanceTimersByTime(300);
-      component.throttledValue.update(v => v + '4');
-      detectChanges();
-      expect(component.throttledValue()).toBe('initial14');
+      expect(component.throttledValue()).toBe('initial13');
     });
   });
 
@@ -171,7 +230,12 @@ describe(throttled.name, () => {
       expect(component.throttledValue()).toBe('first');
 
       jest.advanceTimersByTime(300);
+      expect(component.throttledValue()).toBe('second');
+
+      // drain the interval opened by the trailing update, so the next one uses the new delay
+      jest.advanceTimersByTime(300);
       component.delay.set(500);
+
       component.source.set('third');
       detectChanges();
       expect(component.throttledValue()).toBe('third');
@@ -181,14 +245,10 @@ describe(throttled.name, () => {
       expect(component.throttledValue()).toBe('third');
 
       jest.advanceTimersByTime(499);
-      component.source.set('fifth');
-      detectChanges();
       expect(component.throttledValue()).toBe('third');
 
       jest.advanceTimersByTime(1);
-      component.source.set('sixth');
-      detectChanges();
-      expect(component.throttledValue()).toBe('sixth');
+      expect(component.throttledValue()).toBe('fourth');
     });
   });
 });
