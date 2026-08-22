@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/schedul
 
 # ThrottleCallback
 
-Creates a throttled version of a callback function. The callback will be executed at most once per specified wait interval.
+Creates a throttled version of a callback function. The callback runs immediately on the first call, then at most once per specified wait interval.
 
 ::: info Stateless utility
 `throttleCallback` is a stateless utility that only limits callback execution frequency. For cases where you need to manage **state transitions**, consider using the [`throttled`](/reactivity/throttled) utility instead, which provides a reactive signal that tracks throttled state changes.
@@ -37,13 +37,28 @@ export class ScrollComponent {
 |------------|--------------------------------------------------------------------------|--------------------------------------------------------|
 | `callback` | `T extends (...args: any[]) => any`                                      | The function to throttle                               |
 | `wait`     | [`MaybeSignal<number>`](/reference/utility-types#maybesignal-lt-type-gt) | Throttle interval in milliseconds                      |
-| `options`  | `WithInjector`                                                           | Optional configuration (see [Options](#options) below) |
+| `options`  | `ThrottleCallbackOptions`                                                | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-| Option     | Type                                                | Default | Description                      |
-|------------|-----------------------------------------------------|---------|----------------------------------|
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context |
+| Option     | Type                                                | Default | Description                                                                   |
+|------------|-----------------------------------------------------|---------|---------------------------------------------------------------------------------|
+| `leading`  | `boolean`                                           | `true`  | Invoke the callback immediately on the call that opens an interval            |
+| `trailing` | `boolean`                                           | `true`  | Deliver the most recent call made during the interval once that interval ends |
+| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | -       | Optional injector for DI context                                              |
+
+### Interval edges
+
+`leading` and `trailing` select which edges of the interval invoke the callback. For a burst of `first`, `second`, `last` within one interval:
+
+| `leading` | `trailing` | Invoked with                                | Use case                                |
+|-----------|------------|---------------------------------------------|-----------------------------------------|
+| `true`    | `true`     | `first` immediately, then `last` at the end | **Default** — instant feedback, exact result |
+| `true`    | `false`    | `first` only                                | Rate-limiting a call with no payload     |
+| `false`   | `true`     | `last` at the end                           | Periodic sampling without reacting to the first event |
+| `false`   | `false`    | never invoked                               | None — logs a warning in development     |
+
+Every invocation opens an interval of its own, so a call arriving just as an interval ends is deferred to the next one rather than running immediately.
 
 ## Return Value
 
@@ -59,8 +74,13 @@ On the server, `throttleCallback` returns the original callback function unchang
 function throttleCallback<T extends (...args: any[]) => any>(
   callback: T,
   wait: MaybeSignal<number>,
-  options?: WithInjector
+  options?: ThrottleCallbackOptions
 ): T;
+
+interface ThrottleCallbackOptions extends WithInjector {
+  readonly leading?: boolean;
+  readonly trailing?: boolean;
+}
 ```
 
 ## Related
