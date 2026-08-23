@@ -33,18 +33,20 @@ export class SyncedInput {
 
 ## Parameters
 
-| Parameter | Type                      | Description                                            |
-|-----------|---------------------------|--------------------------------------------------------|
-| `name`    | `string`                  | Channel name (must match across tabs)                  |
-| `options` | `BroadcastChannelOptions` | Optional configuration (see [Options](#options) below) |
+| Parameter | Type                         | Description                                            |
+|-----------|------------------------------|--------------------------------------------------------|
+| `name`    | `string`                     | Channel name (must match across tabs)                  |
+| `options` | `BroadcastChannelOptions<T>` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-The `BroadcastChannelOptions` extends `WithInjector`:
+The `BroadcastChannelOptions<T>` extends [`CreateSignalOptions<T | null>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option     | Type                                                | Description                      |
-|------------|-----------------------------------------------------|----------------------------------|
-| `injector` | [`Injector`](https://angular.dev/api/core/Injector) | Optional injector for DI context |
+| Option      | Type                                                                         | Description                                                                                        |
+|-------------|------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| `equal`     | [`ValueEqualityFn<T \| null>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
+| `debugName` | `string`                                                                     | Debug name for the `data` signal (development only)                                                |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                          | Optional injector for DI context                                                                   |
 
 ## Return Value
 
@@ -132,7 +134,7 @@ On the server, signals initialize with safe defaults:
 ## Type Definitions
 
 ```typescript
-type BroadcastChannelOptions = WithInjector;
+type BroadcastChannelOptions<T> = CreateSignalOptions<T | null> & WithInjector;
 
 interface BroadcastChannelRef<T> {
   readonly data: Signal<T | null>;
@@ -144,6 +146,6 @@ interface BroadcastChannelRef<T> {
 
 function broadcastChannel<T>(
   name: string,
-  options?: BroadcastChannelOptions,
+  options?: BroadcastChannelOptions<T>,
 ): BroadcastChannelRef<T>;
 ```
