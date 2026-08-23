@@ -4,7 +4,7 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/reactiv
 
 # Throttled
 
-Creates a throttled signal that limits how often the value can update.
+Creates a throttled signal that limits how often the value can update. The signal updates immediately on the first change, then at most once per interval.
 
 <Demo name="throttled" />
 
@@ -75,11 +75,19 @@ export class ThrottledInput {
 
 The `ThrottledOptions<T>` extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                                                                 | Description                                                                                        |
-|-------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName` | `string`                                                             | Debug name for the signal (development only)                                                       |
-| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                  | Optional injector for DI context                                                                   |
+| Option      | Type                                                                 | Default | Description                                                                                        |
+|-------------|----------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------|
+| `leading`   | `boolean`                                                            | `true`  | Apply the update that opens an interval immediately                                                    |
+| `trailing`  | `boolean`                                                            | `true`  | Apply the most recent update once the interval ends, so the signal settles on the source's final value |
+| `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))     |
+| `debugName` | `string`                                                             | -       | Debug name for the signal (development only)                                                           |
+| `injector`  | [`Injector`](https://angular.dev/api/core/Injector)                  | -       | Optional injector for DI context                                                                       |
+
+### Interval edges
+
+With `trailing: false` the signal only ever shows the value that opened each interval, so it can stay permanently out of sync with its source once changes stop.
+
+See [Interval edges](/scheduling/throttle-callback#interval-edges) for the full behavior matrix. Disabling both edges means the signal never updates.
 
 ## Return Value
 
@@ -148,7 +156,10 @@ Throttle timers are not started on the server — the initial value is returned 
 ## Type Definitions
 
 ```typescript
-type ThrottledOptions<T> = CreateSignalOptions<T> & WithInjector;
+interface ThrottledOptions<T> extends CreateSignalOptions<T>, WithInjector {
+  readonly leading?: boolean;
+  readonly trailing?: boolean;
+}
 
 function throttled<S extends Signal<any>>(
   source: S,
