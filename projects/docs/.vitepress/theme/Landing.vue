@@ -687,9 +687,9 @@ const features = [
 /* Hero entrance. Kept in CSS rather than the v-reveal directive: the hero is
    the one band that is always on screen when the page paints, so it must not
    wait for hydration, and hiding painted content to animate it back in would
-   read as a flicker. Opacity and transform only, and skipped when less motion
-   is asked for. */
-@media (prefers-reduced-motion: no-preference) {
+   read as a flicker. Opacity and transform only, and skipped on phones and when
+   less motion is asked for, like the reveal itself. */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
   .l-hero-copy > *,
   .l-hero-code {
     animation: l-load-rise 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;

@@ -134,9 +134,10 @@ div[class*="language-"] .lang {
 /* --- Reveal on scroll ---
    Driven by the `v-reveal` directive (see reveal.ts): blocks still below the
    fold are marked `pending`, then flipped to `in` when they scroll into view.
-   Only opacity and transform take part, so a reveal stays off the layout path,
-   and the whole thing is a no-op when less motion is asked for. */
-@media (prefers-reduced-motion: no-preference) {
+   Only opacity and transform take part, so a reveal stays off the layout path.
+   Skipped on phones and when less motion is asked for; the directive tests the
+   same conditions, so nothing is armed there either. */
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
   /* The load pass, for blocks the directive leaves alone: everything already
      on screen when the page paints, and everything at all when JS is absent.
      `:not([data-reveal])` hands a block over to the scroll pass below the

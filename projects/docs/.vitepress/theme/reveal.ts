@@ -1,6 +1,7 @@
 import type { Directive } from 'vue';
 
 const ROOT_MARGIN = '0px 0px -8% 0px';
+const REVEAL_QUERY = '(min-width: 769px) and (prefers-reduced-motion: no-preference)';
 
 let observer: IntersectionObserver | null = null;
 
@@ -58,10 +59,7 @@ export const vReveal: Directive<HTMLElement, number | undefined> = {
       el.style.setProperty('--reveal-delay', `${binding.value}ms`);
     }
 
-    if (
-      !('IntersectionObserver' in window) ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
+    if (!('IntersectionObserver' in window) || !window.matchMedia(REVEAL_QUERY).matches) {
       return;
     }
 
