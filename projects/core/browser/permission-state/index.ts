@@ -39,7 +39,11 @@ export function permissionState(
 
     settleInContext(navigator.permissions.query({ name }))
       .then(status => {
-        setupSync(() => listener(status, 'change', () => state.set(status.state), { injector }));
+        state.set(status.state);
+
+        setupSync(() => {
+          listener(status, 'change', () => state.set(status.state), { injector });
+        });
       })
       .catch(() => {
         if (ngDevMode) {
