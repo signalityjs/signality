@@ -88,29 +88,49 @@ export function favicon(options?: FaviconOptions): FaviconRef {
     const appBaseHref = inject(APP_BASE_HREF, { optional: true });
     const baseUrl = options?.baseUrl ?? appBaseHref ?? '';
 
-    const getLinkElement = (): HTMLLinkElement => {
-      let link = document.querySelector<HTMLLinkElement>(
-        'link[rel*="icon"]:not([rel*="apple-touch-icon"])'
+    const getLinkElements = (): HTMLLinkElement[] => {
+      const links = Array.from(
+        document.querySelectorAll<HTMLLinkElement>(
+          'link[rel*="icon"]:not([rel*="apple-touch-icon"])'
+        )
       );
 
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
+      if (links.length) {
+        return links;
       }
 
-      return link;
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+
+      return [link];
     };
 
-    const { href = '' } = getLinkElement();
-    const current = signal(href);
-    const original = signal(href);
+    const initialHref = getLinkElements()[0]?.href ?? '';
+    const current = signal(initialHref);
+    const original = signal(initialHref);
+
+    // A page can declare several icon links and the browser picks one by size or type,
+    // so every match is updated. Each href is remembered on first change to keep
+    // `reset()` from collapsing a multi-resolution set into a single URL.
+    // The raw attribute is stored rather than `link.href`, which resolves to an
+    // absolute URL and would rewrite an authored relative path on reset.
+    const originalHrefs = new WeakMap<HTMLLinkElement, string | null>();
+
+    const apply = (url: string) => {
+      for (const link of getLinkElements()) {
+        if (!originalHrefs.has(link)) {
+          originalHrefs.set(link, link.getAttribute('href'));
+        }
+
+        link.href = url;
+      }
+
+      current.set(url);
+    };
 
     const set = (url: string) => {
-      const fullUrl = baseUrl + url;
-      const linkEl = getLinkElement();
-      linkEl.href = fullUrl;
-      current.set(fullUrl);
+      apply(baseUrl + url);
     };
 
     const setEmoji = (emoji: string) => {
@@ -119,24 +139,34 @@ export function favicon(options?: FaviconOptions): FaviconRef {
       canvas.height = 32;
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        return;
+      }
 
       ctx.font = '28px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(emoji, 16, 18);
 
-      const dataUrl = canvas.toDataURL('image/png');
-      const linkEl = getLinkElement();
-      linkEl.href = dataUrl;
-      current.set(dataUrl);
+      apply(canvas.toDataURL('image/png'));
     };
 
     const reset = () => {
-      const linkEl = getLinkElement();
-      const originalHref = untracked(original);
-      linkEl.href = originalHref;
-      current.set(originalHref);
+      for (const link of getLinkElements()) {
+        if (!originalHrefs.has(link)) {
+          continue;
+        }
+
+        const originalHref = originalHrefs.get(link);
+
+        if (originalHref === null) {
+          link.removeAttribute('href');
+        } else {
+          link.setAttribute('href', originalHref!);
+        }
+      }
+
+      current.set(untracked(original));
     };
 
     return {
