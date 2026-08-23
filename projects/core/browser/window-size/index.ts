@@ -1,11 +1,11 @@
-import { afterNextRender, type CreateSignalOptions, type Signal, signal } from '@angular/core';
+import { afterNextRender, type Signal, signal } from '@angular/core';
 import { constSignal, createToken, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener } from '@signality/core/browser/listener';
 import { watcher } from '@signality/core/reactivity/watcher';
 import { mediaQuery } from '@signality/core/browser/media-query';
 
-export interface WindowSizeOptions extends CreateSignalOptions<WindowSizeValue>, WithInjector {
+export interface WindowSizeOptions extends WithInjector {
   /**
    * Include scrollbar in dimensions calculation.
    *
@@ -26,19 +26,35 @@ export interface WindowSizeValue {
   readonly height: number;
 }
 
+export interface WindowSizeRef {
+  /**
+   * Viewport width. Excludes the scrollbar unless `includeScrollbar` is enabled.
+   */
+  readonly width: Signal<number>;
+
+  /**
+   * Viewport height. Excludes the scrollbar unless `includeScrollbar` is enabled.
+   */
+  readonly height: Signal<number>;
+}
+
 /**
  * Signal-based wrapper around the [Window API](https://developer.mozilla.org/en-US/docs/Web/API/Window) dimensions.
  *
+ * Width and height are separate signals, so consumers depending on one axis are
+ * not invalidated when only the other changes — e.g. a width-based breakpoint is
+ * unaffected by the mobile keyboard shrinking the viewport height.
+ *
  * @param options - Optional configuration including initialValue for SSR
- * @returns A signal containing the current window dimensions
+ * @returns A WindowSizeRef with width and height signals
  *
  * @example
  * ```typescript
  * @Component({
  *   template: `
  *     <div>
- *       Window: {{ size().width }} × {{ size().height }}px
- *       @if (size().width < 768) {
+ *       Window: {{ size.width() }} × {{ size.height() }}px
+ *       @if (size.width() < 768) {
  *         <p>Mobile view</p>
  *       }
  *     </div>
@@ -49,24 +65,26 @@ export interface WindowSizeValue {
  * }
  * ```
  */
-export function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue> {
+export function windowSize(options?: WindowSizeOptions): WindowSizeRef {
   const { runInContext } = setupContext(options?.injector, windowSize);
   const initialValue = options?.initialValue ?? DEFAULT_VALUE;
 
   return runInContext(({ isServer }) => {
     if (isServer) {
-      return constSignal(initialValue);
+      return {
+        width: constSignal(initialValue.width),
+        height: constSignal(initialValue.height),
+      };
     }
 
     const includeScrollbar = options?.includeScrollbar ?? false;
 
-    const size = signal<WindowSizeValue>(initialValue, options);
+    const width = signal(initialValue.width);
+    const height = signal(initialValue.height);
 
     const update = () => {
-      const width = includeScrollbar ? window.innerWidth : document.documentElement.clientWidth;
-      const height = includeScrollbar ? window.innerHeight : document.documentElement.clientHeight;
-
-      size.set({ width, height });
+      width.set(includeScrollbar ? window.innerWidth : document.documentElement.clientWidth);
+      height.set(includeScrollbar ? window.innerHeight : document.documentElement.clientHeight);
     };
 
     listener(window, 'resize', update);
@@ -75,7 +93,10 @@ export function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue>
 
     afterNextRender({ read: update });
 
-    return size.asReadonly();
+    return {
+      width: width.asReadonly(),
+      height: height.asReadonly(),
+    };
   });
 }
 
