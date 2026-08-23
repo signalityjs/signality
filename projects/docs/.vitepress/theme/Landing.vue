@@ -188,8 +188,8 @@ const features = [
         <h1 class="l-hero-title"><span class="l-hero-beat">Less code,</span><br />more reactivity</h1>
         <p class="l-hero-deck">
           Think
-          <span class="l-deck-ng"><span class="l-deck-chip"><svg
-            class="l-deck-ng-icon"
+          <span class="l-deck-brand"><span class="l-deck-chip"><svg
+            class="l-deck-icon l-deck-icon--vueuse"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -204,25 +204,25 @@ const features = [
               fill="#41B883"
             />
           </svg></span>VueUse,</span> for
-          <span class="l-deck-ng"><span class="l-deck-chip"><svg
-            class="l-deck-ng-icon"
+          <span class="l-deck-brand"><span class="l-deck-chip"><svg
+            class="l-deck-icon l-deck-icon--angular"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             aria-hidden="true"
           >
-            <g clip-path="url(#landing_deck_ng_clip)">
+            <g clip-path="url(#landing_deck_angular_clip)">
               <path
                 d="M15.5625 2.6625L15.0125 11.2375L9.7875 0L15.5625 2.6625ZM11.9375 13.75L8 16L4.0625 13.75L4.8625 11.8125H11.15L11.9375 13.75ZM8 4.2625L10.0625 9.2875H5.9375L8 4.2625ZM0.9875 11.2375L0.4375 2.6625L6.2125 0L0.9875 11.2375Z"
-                fill="url(#landing_deck_ng0)"
+                fill="url(#landing_deck_angular_a)"
               />
               <path
                 d="M15.5625 2.6625L15.0125 11.2375L9.7875 0L15.5625 2.6625ZM11.9375 13.75L8 16L4.0625 13.75L4.8625 11.8125H11.15L11.9375 13.75ZM8 4.2625L10.0625 9.2875H5.9375L8 4.2625ZM0.9875 11.2375L0.4375 2.6625L6.2125 0L0.9875 11.2375Z"
-                fill="url(#landing_deck_ng1)"
+                fill="url(#landing_deck_angular_b)"
               />
             </g>
             <defs>
-              <linearGradient id="landing_deck_ng0" x1="1.838" y1="10.4662" x2="13.8731" y2="4.747" gradientUnits="userSpaceOnUse">
+              <linearGradient id="landing_deck_angular_a" x1="1.838" y1="10.4662" x2="13.8731" y2="4.747" gradientUnits="userSpaceOnUse">
                 <stop stop-color="#E40035" />
                 <stop offset="0.24" stop-color="#F60A48" />
                 <stop offset="0.352" stop-color="#F20755" />
@@ -230,11 +230,11 @@ const features = [
                 <stop offset="0.745" stop-color="#9717E7" />
                 <stop offset="1" stop-color="#6C00F5" />
               </linearGradient>
-              <linearGradient id="landing_deck_ng1" x1="3.59162" y1="1.61612" x2="11.4677" y2="10.6006" gradientUnits="userSpaceOnUse">
+              <linearGradient id="landing_deck_angular_b" x1="3.59162" y1="1.61612" x2="11.4677" y2="10.6006" gradientUnits="userSpaceOnUse">
                 <stop stop-color="#FF31D9" />
                 <stop offset="1" stop-color="#FF5BE1" stop-opacity="0" />
               </linearGradient>
-              <clipPath id="landing_deck_ng_clip">
+              <clipPath id="landing_deck_angular_clip">
                 <rect width="16" height="16" fill="white" />
               </clipPath>
             </defs>
@@ -339,6 +339,17 @@ const features = [
 
     <!-- Credits + Install: one structured band, two cells -->
     <section class="l-section l-section--divided">
+      <!-- the opening hairline, broken in the middle by the logo bolt -->
+      <div class="l-divider" aria-hidden="true">
+        <span class="l-divider-line"></span>
+        <span class="l-divider-mark">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13.4 2 4 14.2h6.1L8.6 22 18 9.8h-6.1L13.4 2Z" />
+          </svg>
+        </span>
+        <span class="l-divider-line"></span>
+      </div>
+
       <div class="l-final">
         <div class="l-final-cell">
           <div class="l-credit-badge" aria-hidden="true">
@@ -459,14 +470,42 @@ const features = [
   margin-top: 4.5rem;
 }
 
-.l-section--divided::before {
-  content: '';
+/* The hairline itself: two segments with the logo bolt wedged between them */
+.l-divider {
   position: absolute;
   top: 0;
   left: 1.5rem;
   right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* each segment fades out at the page edge and firms up towards the bolt */
+.l-divider-line {
+  flex: 1;
   height: 1px;
-  background: #1f1f24;
+  background: linear-gradient(90deg, rgba(31, 31, 36, 0) 0%, #1f1f24 18%, #322d38 100%);
+}
+
+.l-divider-line:last-child {
+  background: linear-gradient(270deg, rgba(31, 31, 36, 0) 0%, #1f1f24 18%, #322d38 100%);
+}
+
+.l-divider-mark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* a flat bolt, one step lighter than the hairline it interrupts */
+.l-divider-mark svg {
+  width: 22px;
+  height: 22px;
+  color: #4b4553;
 }
 
 .l-section-title {
@@ -591,7 +630,7 @@ const features = [
   letter-spacing: -0.01em;
 }
 
-.l-deck-ng {
+.l-deck-brand {
   white-space: nowrap;
 }
 
@@ -608,11 +647,20 @@ const features = [
   vertical-align: -0.03em;
 }
 
-.l-deck-ng-icon {
+.l-deck-icon {
   display: block;
-  width: 0.8em;
-  height: 0.8em;
   filter: brightness(1.2) saturate(1.3);
+}
+
+/* Sized per logo so both marks read the same weight inside the chip */
+.l-deck-icon--vueuse {
+  width: calc(0.8em - 2px);
+  height: calc(0.8em - 2px);
+}
+
+.l-deck-icon--angular {
+  width: calc(0.8em - 1px);
+  height: calc(0.8em - 1px);
 }
 
 .l-hero-sub {
@@ -1091,6 +1139,15 @@ const features = [
   .l-section--divided {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
+  }
+
+  .l-divider {
+    gap: 1rem;
+  }
+
+  .l-divider-mark svg {
+    width: 18px;
+    height: 18px;
   }
 }
 
