@@ -145,6 +145,12 @@ function listenerImpl(applied: InternalListenerOptions, ...args: any[]): Listene
     const { stop, prevent, self, ...nativeOptions } = applied;
     const hasModifiers = stop || prevent || self;
 
+    if (ngDevMode && nativeOptions.passive && prevent) {
+      console.warn(
+        '[listener] `prevent` has no effect on a passive listener, because preventDefault() is ignored inside one. Remove `.passive` or `.prevent`.'
+      );
+    }
+
     const handler = hasModifiers
       ? function (this: any, event: Event) {
           if (self && event.target !== event.currentTarget) return;
