@@ -85,4 +85,65 @@ describe(favicon.name, () => {
       expect(component.fav.current()).toBe('/app/favicon.ico');
     });
   });
+
+  describe('with multiple icon links', () => {
+    let small: HTMLLinkElement;
+    let large: HTMLLinkElement;
+    let appleTouch: HTMLLinkElement;
+
+    beforeEach(() => {
+      // earlier tests leave links created by the utility behind, which would
+      // otherwise be matched first
+      document.head.querySelectorAll('link[rel*="icon"]').forEach(el => el.remove());
+
+      small = document.createElement('link');
+      small.rel = 'icon';
+      small.setAttribute('sizes', '16x16');
+      small.href = '/small.png';
+
+      large = document.createElement('link');
+      large.rel = 'icon';
+      large.setAttribute('sizes', '32x32');
+      large.href = '/large.png';
+
+      appleTouch = document.createElement('link');
+      appleTouch.rel = 'apple-touch-icon';
+      appleTouch.href = '/apple.png';
+
+      document.head.append(small, large, appleTouch);
+    });
+
+    afterEach(() => {
+      small.remove();
+      large.remove();
+      appleTouch.remove();
+    });
+
+    it('should update every icon link', () => {
+      const component = createComponent();
+
+      component.fav.set('/badge.png');
+
+      expect(small.getAttribute('href')).toBe('/badge.png');
+      expect(large.getAttribute('href')).toBe('/badge.png');
+    });
+
+    it('should leave apple-touch-icon untouched', () => {
+      const component = createComponent();
+
+      component.fav.set('/badge.png');
+
+      expect(appleTouch.getAttribute('href')).toBe('/apple.png');
+    });
+
+    it('should restore each link to its own original href', () => {
+      const component = createComponent();
+
+      component.fav.set('/badge.png');
+      component.fav.reset();
+
+      expect(small.getAttribute('href')).toBe('/small.png');
+      expect(large.getAttribute('href')).toBe('/large.png');
+    });
+  });
 });
