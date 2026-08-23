@@ -16,7 +16,7 @@ import { windowSize } from '@signality/core';
 
 @Component({
   template: `
-    <p>Window: {{ size().width }} × {{ size().height }}</p>
+    <p>Window: {{ size.width() }} × {{ size.height() }}</p>
   `,
 })
 export class WindowSizeDemo {
@@ -24,7 +24,8 @@ export class WindowSizeDemo {
 }
 ```
 
-::: warning Use InjectionToken for Singleton
+::: warning Use InjectionToken for Singleton 
+
 For global state tracking like `windowSize`, consider using the provided `WINDOW_SIZE` token instead of calling the function directly. This provides a singleton instance that can be shared across your entire application, reducing memory usage and event listener overhead:
 
 ```typescript
@@ -46,31 +47,22 @@ Learn more about [Token-based utilities](/guide/key-concepts#token-based-utiliti
 
 ## Options
 
-The `WindowSizeOptions` extends [`CreateSignalOptions<WindowSizeValue>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
+The `WindowSizeOptions` extends `WithInjector`:
 
-| Option             | Type                                                                               | Default                   | Description                                                                                        |
-|--------------------|------------------------------------------------------------------------------------|---------------------------|----------------------------------------------------------------------------------------------------|
-| `includeScrollbar` | `boolean`                                                                          | `false`                   | Include scrollbar in dimensions                                                                    |
-| `initialValue`     | `WindowSizeValue`                                                                  | `{ width: 0, height: 0 }` | Initial value for SSR and before the first measurement                                             |
-| `equal`            | [`ValueEqualityFn<WindowSizeValue>`](https://angular.dev/api/core/ValueEqualityFn) | -                         | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions)) |
-| `debugName`        | `string`                                                                           | -                         | Debug name for the signal (development only)                                                       |
-| `injector`         | [`Injector`](https://angular.dev/api/core/Injector)                                | -                         | Optional injector for DI context                                                                   |
+| Option             | Type                                                | Default                   | Description                                            |
+|--------------------|-----------------------------------------------------|---------------------------|--------------------------------------------------------|
+| `includeScrollbar` | `boolean`                                           | `false`                   | Include scrollbar in dimensions                        |
+| `initialValue`     | `WindowSizeValue`                                   | `{ width: 0, height: 0 }` | Initial value for SSR and before the first measurement |
+| `injector`         | [`Injector`](https://angular.dev/api/core/Injector) | -                         | Optional injector for DI context                       |
 
 ## Return Value
 
-The `windowSize()` function returns a `Signal<WindowSizeValue>`:
+The `windowSize()` function returns a `WindowSizeRef`:
 
-```typescript
-interface WindowSizeValue {
-  readonly width: number;
-  readonly height: number;
-}
-```
-
-| Property | Description                                                                                                                      |
-|----------|----------------------------------------------------------------------------------------------------------------------------------|
-| `width`  | Viewport width — excludes scrollbar by default; includes scrollbar when `includeScrollbar: true`  |
-| `height` | Viewport height — excludes scrollbar by default; includes scrollbar when `includeScrollbar: true` |
+| Property | Type             | Description                                                                                       |
+|----------|------------------|---------------------------------------------------------------------------------------------------|
+| `width`  | `Signal<number>` | Viewport width — excludes scrollbar by default; includes scrollbar when `includeScrollbar: true`  |
+| `height` | `Signal<number>` | Viewport height — excludes scrollbar by default; includes scrollbar when `includeScrollbar: true` |
 
 ## Examples
 
@@ -90,7 +82,7 @@ import { windowSize } from '@signality/core';
 export class OrientationAware {
   readonly size = windowSize();
 
-  readonly isPortrait = computed(() => this.size().height > this.size().width);
+  readonly isPortrait = computed(() => this.size.height() > this.size.width());
 
   readonly orientation = computed(() => {
     return this.isPortrait() ? 'portrait' : 'landscape'; // [!code highlight]
@@ -115,10 +107,9 @@ export class FullscreenCanvas {
   constructor() {
     effect(() => {
       const canvasEl = this.canvas().nativeElement;
-      const { width, height } = this.size();
 
-      canvasEl.width = width;
-      canvasEl.height = height;
+      canvasEl.width = this.size.width();
+      canvasEl.height = this.size.height();
 
       this.redraw();
     });
@@ -132,7 +123,7 @@ export class FullscreenCanvas {
 
 ## SSR Compatibility
 
-On the server, the signal initializes with `initialValue` (defaults to `{ width: 0, height: 0 }`).
+On the server, both signals initialize from `initialValue` (defaults to `{ width: 0, height: 0 }`).
 
 ## Type Definitions
 
@@ -142,14 +133,19 @@ interface WindowSizeValue {
   readonly height: number;
 }
 
-interface WindowSizeOptions extends CreateSignalOptions<WindowSizeValue>, WithInjector {
+interface WindowSizeOptions extends WithInjector {
   readonly includeScrollbar?: boolean;
   readonly initialValue?: WindowSizeValue;
 }
 
-function windowSize(options?: WindowSizeOptions): Signal<WindowSizeValue>;
+interface WindowSizeRef {
+  readonly width: Signal<number>;
+  readonly height: Signal<number>;
+}
 
-const WINDOW_SIZE: InjectionToken<Signal<WindowSizeValue>>;
+function windowSize(options?: WindowSizeOptions): WindowSizeRef;
+
+const WINDOW_SIZE: InjectionToken<WindowSizeRef>;
 ```
 
 ## Related
