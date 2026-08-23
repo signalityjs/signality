@@ -105,7 +105,10 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
 
     const target = options?.target ?? document.documentElement;
 
-    const isActive = signal(false);
+    const isTargetFullscreen = () =>
+      document.fullscreenElement != null && document.fullscreenElement === toElement(target);
+
+    const isActive = signal(isTargetFullscreen());
 
     const enter = async (): Promise<void> => {
       const el = toElement.untracked(target);
@@ -132,10 +135,7 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
     };
 
     setupSync(() => {
-      listener(document, 'fullscreenchange', () => {
-        const el = toElement(target);
-        isActive.set(document.fullscreenElement != null && document.fullscreenElement === el);
-      });
+      listener(document, 'fullscreenchange', () => isActive.set(isTargetFullscreen()));
     });
 
     return {
