@@ -69,13 +69,12 @@ export function battery(options?: BatteryOptions): BatteryRef {
   const { runInContext } = setupContext(options?.injector, battery);
 
   return runInContext(({ isBrowser, injector }) => {
-    const isSupported = constSignal(
-      isBrowser && 'getBattery' in navigator && typeof navigator.getBattery === 'function'
-    );
+    const apiSupported =
+      isBrowser && 'getBattery' in navigator && typeof navigator.getBattery === 'function';
 
-    if (!isSupported()) {
+    if (!apiSupported) {
       return {
-        isSupported,
+        isSupported: constSignal(false),
         charging: constSignal(false),
         chargingTime: constSignal(0),
         dischargingTime: constSignal(0),
@@ -83,6 +82,7 @@ export function battery(options?: BatteryOptions): BatteryRef {
       };
     }
 
+    const isSupported = signal(true);
     const charging = signal(false);
     const chargingTime = signal(0);
     const dischargingTime = signal(0);
@@ -95,18 +95,28 @@ export function battery(options?: BatteryOptions): BatteryRef {
       level.set(this.level);
     }
 
-    settleInContext((navigator as NavigatorWithBattery).getBattery()).then(battery => {
-      update.call(battery);
+    settleInContext((navigator as NavigatorWithBattery).getBattery())
+      .then(battery => {
+        update.call(battery);
 
-      setupSync(() => {
-        for (const event of BATTERY_EVENTS) {
-          listener(battery, event, update, { injector });
+        setupSync(() => {
+          for (const event of BATTERY_EVENTS) {
+            listener(battery, event, update, { injector });
+          }
+        });
+      })
+      .catch(() => {
+        if (ngDevMode) {
+          console.warn(
+            '[battery] Failed to read the battery status. The Battery Status API may be blocked by a permissions policy.'
+          );
         }
+
+        isSupported.set(false);
       });
-    });
 
     return {
-      isSupported,
+      isSupported: isSupported.asReadonly(),
       charging: charging.asReadonly(),
       chargingTime: chargingTime.asReadonly(),
       dischargingTime: dischargingTime.asReadonly(),
