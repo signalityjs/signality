@@ -1,7 +1,4 @@
 <template>
-  <!-- Landing top navigation (desktop; MobileHeader covers small screens).
-       Layout.vue renders this outside the main element so the banner
-       landmark stays top-level. -->
   <header class="l-nav">
     <div class="l-nav-inner">
       <a href="/" class="l-nav-logo" aria-label="Signality home">
@@ -77,7 +74,6 @@
 </template>
 
 <style scoped>
-/* --- Navigation --- */
 .l-nav {
   position: sticky;
   top: 0;
@@ -140,6 +136,7 @@
   align-items: center;
 }
 
+/* MobileHeader takes over below this width */
 @media (max-width: 768px) {
   .l-nav {
     display: none;

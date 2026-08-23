@@ -1,6 +1,4 @@
 <template>
-  <!-- Layout.vue renders this outside the main element so the contentinfo
-       landmark stays top-level. -->
   <footer class="l-footer">
     <p class="l-footer-license">Released under the MIT License.</p>
     <nav class="l-footer-links" aria-label="Footer links">
