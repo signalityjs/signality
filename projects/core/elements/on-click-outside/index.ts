@@ -63,9 +63,14 @@ export function onClickOutside(
 
     function isOutside(event: Event): boolean {
       const el = toElement(target);
+
+      if (!el) {
+        return false;
+      }
+
       const path = event.composedPath();
 
-      if (el && path.includes(el)) {
+      if (path.includes(el)) {
         return false;
       }
 
@@ -104,15 +109,13 @@ export function onClickOutside(
     const blurListener = setupSync(() =>
       listener(window, 'blur', (e: FocusEvent) => {
         setTimeout(() => {
-          const active = document.activeElement;
-
-          if (active?.tagName !== 'IFRAME') {
+          const activeEl = document.activeElement;
+          if (activeEl?.tagName !== 'IFRAME') {
             return;
           }
 
           const el = toElement(target);
-
-          if (el?.contains(active)) {
+          if (!el || el.contains(activeEl)) {
             return;
           }
 
