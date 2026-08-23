@@ -1062,6 +1062,11 @@ const features = [
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* stacked cells sit as tight as the feature cells */
+  .l-final-cell {
+    padding: 1.5rem;
+  }
+
   .l-final-cta {
     margin-top: 1.5rem;
   }
