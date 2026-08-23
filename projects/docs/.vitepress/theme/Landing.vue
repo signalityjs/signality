@@ -54,7 +54,7 @@ const heroCode = [
   `  <span class="tk-c">// every one is a signal, cleanup is automatic</span>`,
   `  <span class="tk-k">readonly</span> size = <span class="tk-f">windowSize</span>();`,
   `  <span class="tk-k">readonly</span> mobile = <span class="tk-f">mediaQuery</span>(<span class="tk-s">'(width &lt;= 768px)'</span>);`,
-  `  <span class="tk-k">readonly</span> draft = <span class="tk-f">storage</span>(<span class="tk-s">'draft'</span>, <span class="tk-s">''</span>);`,
+  `  <span class="tk-k">readonly</span> draft = <span class="tk-f">storage</span>(<span class="tk-s">'draft'</span>, {});`,
   `}`,
 ].join('\n');
 
@@ -260,7 +260,11 @@ const features = [
           </span>
           <span class="l-console-item">size<span class="l-console-value">{{ liveSize }}</span></span>
           <span class="l-console-item">mobile<span class="l-console-value">{{ liveMobile }}</span></span>
-          <span class="l-console-hint">resize the window</span>
+          <span class="l-console-hint">
+            <span class="l-console-prompt" aria-hidden="true">&gt;</span>
+            resize the window
+            <i class="l-console-caret" aria-hidden="true"></i>
+          </span>
         </div>
       </figure>
     </section>
@@ -788,9 +792,42 @@ const features = [
   font-weight: 500;
 }
 
+/* the hint reads as a prompt still waiting for input, in the panel's code font */
 .l-console-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
   margin-left: auto;
   color: #8b8794;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.l-console-prompt {
+  color: #deb3eb;
+}
+
+.l-console-caret {
+  width: 6px;
+  height: 12px;
+  background: #deb3eb;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .l-console-caret {
+    animation: l-caret-blink 1.1s steps(1, end) infinite;
+  }
+}
+
+@keyframes l-caret-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 /* --- Compare --- */
