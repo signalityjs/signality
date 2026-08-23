@@ -4,6 +4,7 @@ import Demo from './Demo.vue';
 import ContributorsAvatars from './ContributorsAvatars.vue';
 import Landing from './Landing.vue';
 import UtilitiesIndex from './UtilitiesIndex.vue';
+import { vReveal } from './reveal';
 import './tailwind.css';
 import './website.css';
 
@@ -14,5 +15,6 @@ export default {
     app.component('ContributorsAvatars', ContributorsAvatars);
     app.component('Landing', Landing);
     app.component('UtilitiesIndex', UtilitiesIndex);
+    app.directive('reveal', vReveal);
   },
 } satisfies Theme;

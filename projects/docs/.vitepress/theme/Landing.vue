@@ -271,18 +271,18 @@ const features = [
 
     <!-- Before / after -->
     <section class="l-section">
-      <h2 class="l-section-title">Skip the boilerplate</h2>
-      <p class="l-section-sub">
+      <h2 class="l-section-title" v-reveal>Skip the boilerplate</h2>
+      <p class="l-section-sub" v-reveal="60">
         Signality wraps imperative platform APIs into signals: listeners attach lazily, tear down
         with the component, and stay inert during server rendering.
       </p>
 
       <div class="l-compare">
-        <figure class="l-code-panel">
+        <figure class="l-code-panel" v-reveal>
           <figcaption class="l-code-caption">By hand</figcaption>
           <pre class="l-code"><code v-html="byHandCode"></code></pre>
         </figure>
-        <figure class="l-code-panel l-code-panel--accent">
+        <figure class="l-code-panel l-code-panel--accent" v-reveal="80">
           <figcaption class="l-code-caption">With Signality</figcaption>
           <pre class="l-code"><code v-html="withSignalityCode"></code></pre>
         </figure>
@@ -291,8 +291,8 @@ const features = [
 
     <!-- Categories -->
     <section class="l-section">
-      <h2 class="l-section-title">What's inside</h2>
-      <p class="l-section-sub">
+      <h2 class="l-section-title" v-reveal>What's inside</h2>
+      <p class="l-section-sub" v-reveal="60">
         {{ data.total }} utilities across {{ data.categories.length }} categories, every one
         documented with a usage example.
       </p>
@@ -303,6 +303,7 @@ const features = [
           :key="card.slug"
           :href="`/catalog#${card.slug}`"
           class="l-category-card"
+          v-reveal
         >
           <span class="l-category-head">
             <span class="l-category-id">
@@ -325,15 +326,15 @@ const features = [
         </a>
       </div>
 
-      <div class="l-categories-more">
+      <div class="l-categories-more" v-reveal>
         <a href="/catalog" class="l-inline-link">Browse the full index</a>
       </div>
     </section>
 
     <!-- Guarantees -->
     <section class="l-section">
-      <h2 class="l-section-title">How they work</h2>
-      <div class="l-features">
+      <h2 class="l-section-title" v-reveal>How they work</h2>
+      <div class="l-features" v-reveal>
         <div v-for="feature in features" :key="feature.title" class="l-feature">
           <h3 class="l-feature-title">{{ feature.title }}</h3>
           <p class="l-feature-body">{{ feature.body }}</p>
@@ -354,7 +355,7 @@ const features = [
         <span class="l-divider-line"></span>
       </div>
 
-      <div class="l-final">
+      <div class="l-final" v-reveal>
         <div class="l-final-cell">
           <div class="l-credit-badge" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 1000 1000">
@@ -681,6 +682,58 @@ const features = [
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 2.5rem;
+}
+
+/* Hero entrance. Kept in CSS rather than the v-reveal directive: the hero is
+   the one band that is always on screen when the page paints, so it must not
+   wait for hydration, and hiding painted content to animate it back in would
+   read as a flicker. Opacity and transform only, and skipped when less motion
+   is asked for. */
+@media (prefers-reduced-motion: no-preference) {
+  .l-hero-copy > *,
+  .l-hero-code {
+    animation: l-load-rise 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+  }
+
+  /* title, deck, sub, CTA row, with the code panel riding along with the deck */
+  .l-hero-copy > *:nth-child(2),
+  .l-hero-code {
+    animation-delay: 0.06s;
+  }
+
+  .l-hero-copy > *:nth-child(3) {
+    animation-delay: 0.12s;
+  }
+
+  .l-hero-copy > *:nth-child(4) {
+    animation-delay: 0.18s;
+  }
+}
+
+@keyframes l-load-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+/* The section under the hero is often on screen at load as well. When it is,
+   the reveal's load pass brings it in on these beats, closing the hero's
+   cascade; when it is not, it waits to be scrolled to like every other block. */
+.l-hero + .l-section > .l-section-title {
+  --reveal-load-delay: 0.26s;
+}
+
+.l-hero + .l-section > .l-section-sub {
+  --reveal-load-delay: 0.32s;
+}
+
+.l-hero + .l-section .l-compare > *:first-child {
+  --reveal-load-delay: 0.38s;
+}
+
+.l-hero + .l-section .l-compare > *:last-child {
+  --reveal-load-delay: 0.44s;
 }
 
 /* --- Code panels --- */

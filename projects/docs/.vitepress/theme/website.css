@@ -130,3 +130,52 @@ div[class*="language-"] .lang {
     border-top-right-radius: 0.5rem;
   }
 }
+
+/* --- Reveal on scroll ---
+   Driven by the `v-reveal` directive (see reveal.ts): blocks still below the
+   fold are marked `pending`, then flipped to `in` when they scroll into view.
+   Only opacity and transform take part, so a reveal stays off the layout path,
+   and the whole thing is a no-op when less motion is asked for. */
+@media (prefers-reduced-motion: no-preference) {
+  /* The load pass, for blocks the directive leaves alone: everything already
+     on screen when the page paints, and everything at all when JS is absent.
+     `:not([data-reveal])` hands a block over to the scroll pass below the
+     moment the directive arms it. */
+  [data-reveal-load]:not([data-reveal]) {
+    animation: l-reveal-rise 0.5s cubic-bezier(0.22, 0.61, 0.36, 1)
+      var(--reveal-load-delay, 0.2s) backwards;
+  }
+
+  [data-reveal='pending'] {
+    opacity: 0;
+    transform: translateY(var(--reveal-shift, 1.25rem));
+  }
+
+  /* An animation rather than a transition: it sits above normal declarations
+     in the cascade, so a block that carries its own `transition` (hover state,
+     say) still reveals. `backwards` holds the block back through the stagger
+     delay and then hands opacity and transform straight back to the CSS. */
+  [data-reveal='in'] {
+    animation: l-reveal-rise 0.5s cubic-bezier(0.22, 0.61, 0.36, 1)
+      var(--reveal-delay, 0s) backwards;
+  }
+
+  /* Keyboard focus can outrun the scroll position, so a block that takes focus
+     shows itself immediately rather than leaving the focus ring invisible. */
+  [data-reveal='pending']:focus-within {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes l-reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-shift, 1.25rem));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
