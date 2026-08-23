@@ -64,7 +64,17 @@ export function fps(options?: FpsOptions): FpsRef {
     }
 
     const immediate = options?.immediate ?? true;
-    const sampleSize = options?.sampleSize ?? 60;
+    const requestedSampleSize = options?.sampleSize ?? 60;
+
+    // A window smaller than one frame empties the buffer on every frame, which turns
+    // the average into 0 / 0.
+    const sampleSize = Math.max(1, requestedSampleSize);
+
+    if (ngDevMode && requestedSampleSize < 1) {
+      console.warn(
+        `[fps] \`sampleSize\` must be at least 1, received ${requestedSampleSize}. Falling back to 1.`
+      );
+    }
 
     const fpsValue = signal(0);
     const isRunning = signal(false);
