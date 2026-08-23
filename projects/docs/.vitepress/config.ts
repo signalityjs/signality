@@ -11,7 +11,7 @@ export default defineConfig({
   lang: 'en-US',
   title: 'Signality',
   description:
-    'Comprehensive library of signal-first utilities for Angular. SSR-ready, type-safe, and designed for seamless reactive composition and DI-interop.',
+    'Signal-first utilities for Angular. 75+ SSR-ready, type-safe composables for browser APIs, DOM elements, and reactive state. Think VueUse, for Angular Signals.',
 
   // Base path (configurable via VITEPRESS_BASE env var)
   base,
@@ -21,6 +21,10 @@ export default defineConfig({
 
   // Last updated timestamp
   lastUpdated: true,
+
+  // The theme only ships a dark palette; let VitePress pin it before first
+  // paint instead of correcting the class list from a client-side observer.
+  appearance: 'force-dark',
 
   // Sitemap for SEO
   sitemap: {
@@ -40,7 +44,7 @@ export default defineConfig({
       {
         name: 'description',
         content:
-          'Comprehensive library of signal-first utilities for Angular. SSR-ready, type-safe, and designed for seamless reactive composition and DI-interop.',
+          'Signal-first utilities for Angular. 75+ SSR-ready, type-safe composables for browser APIs, DOM elements, and reactive state. Think VueUse, for Angular Signals.',
       },
     ],
     [
@@ -63,7 +67,7 @@ export default defineConfig({
       {
         property: 'og:description',
         content:
-          'Comprehensive library of signal-first utilities for Angular. SSR-ready, type-safe, and designed for seamless reactive composition and DI-interop.',
+          'Signal-first utilities for Angular. 75+ SSR-ready, type-safe composables for browser APIs, DOM elements, and reactive state. Think VueUse, for Angular Signals.',
       },
     ],
     ['meta', { property: 'og:image', content: 'https://signality.dev/og-image.png' }],
@@ -82,7 +86,7 @@ export default defineConfig({
       {
         property: 'twitter:description',
         content:
-          'Comprehensive library of signal-first utilities for Angular. SSR-ready, type-safe, and designed for seamless reactive composition and DI-interop.',
+          'Signal-first utilities for Angular. 75+ SSR-ready, type-safe composables for browser APIs, DOM elements, and reactive state. Think VueUse, for Angular Signals.',
       },
     ],
     ['meta', { property: 'twitter:image', content: 'https://signality.dev/og-image.png' }],
@@ -97,21 +101,16 @@ export default defineConfig({
     ['meta', { name: 'theme-color', content: '#0f0f11' }],
     ['meta', { name: 'msapplication-TileColor', content: '#0f0f11' }],
 
-    // Fonts
+    // Fonts. Inter is already self-hosted and bundled by VitePress
+    // (assets/inter-roman-latin.*.woff2, preloaded on every page), so only
+    // Poppins is fetched here — and only in the weights the theme uses.
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     [
       'link',
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
-      },
-    ],
-    [
-      'link',
-      {
-        rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap',
       },
     ],
 
@@ -139,7 +138,8 @@ export default defineConfig({
     },
 
     nav: [
-      { text: 'Guide', link: '/' },
+      { text: 'Guide', link: '/guide/getting-started' },
+      { text: 'All Utilities', link: '/catalog' },
       {
         text: 'Links',
         items: [
@@ -154,7 +154,8 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
-          { text: 'Getting Started', link: '/' },
+          { text: 'Getting Started', link: '/guide/getting-started' },
+          { text: 'All Utilities', link: '/catalog' },
           { text: 'Key Concepts', link: '/guide/key-concepts' },
           { text: 'AI Development', link: '/guide/ai-development' },
         ],

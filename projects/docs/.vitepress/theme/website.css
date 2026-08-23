@@ -9,7 +9,7 @@ html {
 
 body {
   color: #EEE;
-  font-family: Inter, sans-serif;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   background: #0F0F11;
 }
 

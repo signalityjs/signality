@@ -78,7 +78,7 @@ onMounted(async () => {
   font-weight: 600;
   font-size: 14px;
   color: #DFDFD6;
-  border: 2.5px solid #1A1A1C;
+  border: 2.5px solid var(--avatar-ring, #1A1A1C);
   margin-left: -12px;
   position: relative;
   overflow: hidden;
