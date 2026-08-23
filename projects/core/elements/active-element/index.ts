@@ -6,6 +6,7 @@ import {
   getEventTarget,
   getShadowRoot,
   setupContext,
+  type Timer,
 } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, type ListenerRef, setupSync } from '@signality/core/browser/listener';
@@ -38,7 +39,7 @@ export type ActiveElementOptions = CreateSignalOptions<Element | null> & WithInj
 export function activeElement(options?: ActiveElementOptions): Signal<Element | null> {
   const { runInContext } = setupContext(options?.injector, activeElement);
 
-  return runInContext(({ isServer, injector }) => {
+  return runInContext(({ isServer, injector, onCleanup }) => {
     if (isServer) {
       return constSignal(null);
     }
@@ -47,12 +48,15 @@ export function activeElement(options?: ActiveElementOptions): Signal<Element | 
 
     let shadowFocusinListener: ListenerRef | null;
     let shadowFocusoutListener: ListenerRef | null;
+    let focusoutTimeout: Timer;
 
     const updateActiveElement = () => {
       activeEl.set(getActiveElement(document));
     };
 
     const cleanupShadowListeners = () => {
+      clearTimeout(focusoutTimeout);
+      focusoutTimeout = undefined;
       shadowFocusinListener?.destroy();
       shadowFocusinListener = null;
       shadowFocusoutListener?.destroy();
@@ -78,7 +82,7 @@ export function activeElement(options?: ActiveElementOptions): Signal<Element | 
         shadowRoot,
         'focusout',
         () => {
-          setTimeout(() => {
+          focusoutTimeout = setTimeout(() => {
             updateActiveElement();
             setupShadowListeners(activeEl());
           });
@@ -104,6 +108,8 @@ export function activeElement(options?: ActiveElementOptions): Signal<Element | 
       cleanupShadowListeners();
       updateActiveElement();
     });
+
+    onCleanup(cleanupShadowListeners);
 
     return activeEl.asReadonly();
   });
