@@ -12,7 +12,28 @@ import { throttleCallback } from '@signality/core/scheduling/throttle-callback';
 import { watcher } from '@signality/core/reactivity/watcher';
 import { proxySignal } from '@signality/core/reactivity/proxy-signal';
 
-export type ThrottledOptions<T> = CreateSignalOptions<T> & WithInjector;
+export interface ThrottledOptions<T> extends CreateSignalOptions<T>, WithInjector {
+  /**
+   * Apply the update that opens an interval immediately.
+   *
+   * When `false`, that update is deferred to the end of the interval, so the signal samples
+   * its source periodically instead of reacting to the first change.
+   *
+   * @default true
+   */
+  readonly leading?: boolean;
+
+  /**
+   * Apply the most recent update once the interval ends, so the signal always settles on the
+   * source's final value instead of the value that opened the interval.
+   *
+   * When `false`, updates made during the interval are dropped and the signal can stay
+   * permanently out of sync with its source.
+   *
+   * @default true
+   */
+  readonly trailing?: boolean;
+}
 
 /**
  * Creates a throttled readonly signal from a source signal.
@@ -20,7 +41,7 @@ export type ThrottledOptions<T> = CreateSignalOptions<T> & WithInjector;
  *
  * @param source - Source signal to throttle
  * @param timeMs - Throttle interval in milliseconds
- * @param options - Optional configuration including signal options and injector
+ * @param options - Optional configuration including leading, trailing, signal options and injector
  * @returns A readonly signal that updates at most once per throttle interval
  *
  * @example
@@ -51,7 +72,7 @@ export function throttled<S extends Signal<any>>(
  *
  * @param value - Initial value
  * @param timeMs - Throttle interval in milliseconds
- * @param options - Optional configuration including signal options and injector
+ * @param options - Optional configuration including leading, trailing, signal options and injector
  * @returns A writable signal where updates are throttled
  *
  * @example
@@ -84,7 +105,10 @@ export function throttled(
   return runInContext(() => {
     const initialValue = toValue(valueOrSignal);
     const output = signal(initialValue, options);
-    const set = throttleCallback(output.set, timeMs);
+    const set = throttleCallback(output.set, timeMs, {
+      leading: options?.leading,
+      trailing: options?.trailing,
+    });
 
     if (isSignal(valueOrSignal)) {
       watcher(valueOrSignal, set);

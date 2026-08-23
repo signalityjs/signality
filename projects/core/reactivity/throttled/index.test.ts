@@ -96,6 +96,53 @@ describe(throttled.name, () => {
 
       expect(component.throttledValue()).toBe('final');
     });
+
+    it('should keep dropping updates when trailing is disabled', () => {
+      @Component({ template: '{{ throttledValue() }}' })
+      class NoTrailingComponent {
+        readonly source = signal('initial');
+        readonly throttledValue = throttled(this.source, 300, { trailing: false });
+      }
+
+      const fixture = TestBed.createComponent(NoTrailingComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+
+      component.source.set('a');
+      fixture.detectChanges();
+      expect(component.throttledValue()).toBe('a');
+
+      component.source.set('final');
+      fixture.detectChanges();
+
+      jest.advanceTimersByTime(10_000);
+
+      expect(component.throttledValue()).toBe('a');
+    });
+
+    it('should defer the first update when leading is disabled', () => {
+      @Component({ template: '{{ throttledValue() }}' })
+      class NoLeadingComponent {
+        readonly source = signal('initial');
+        readonly throttledValue = throttled(this.source, 300, { leading: false });
+      }
+
+      const fixture = TestBed.createComponent(NoLeadingComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+
+      component.source.set('a');
+      fixture.detectChanges();
+      expect(component.throttledValue()).toBe('initial');
+
+      component.source.set('final');
+      fixture.detectChanges();
+      expect(component.throttledValue()).toBe('initial');
+
+      jest.advanceTimersByTime(300);
+
+      expect(component.throttledValue()).toBe('final');
+    });
   });
 
   describe('writable signal from value', () => {
