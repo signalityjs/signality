@@ -24,7 +24,10 @@ const isLink = computed(() => !!props.item.link);
 const isActive = (link: string | undefined) => {
   if (!link) return false;
   const normalized = link.replace(/^\//, '').replace(/\.md$/, '').replace(/\/$/, '');
-  const currentPath = page.value.relativePath.replace(/\.md$/, '').replace(/index$/, '');
+  const currentPath = page.value.relativePath
+    .replace(/\.md$/, '')
+    .replace(/index$/, '')
+    .replace(/\/$/, '');
   return currentPath === normalized || currentPath === normalized + '/index';
 };
 
@@ -131,6 +134,25 @@ onMounted(async () => {
             <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
             <path d="M8 8h6"/>
             <path d="M8 12h6"/>
+          </svg>
+          <!-- All Utilities icon - Grid -->
+          <svg
+            v-if="item.text === 'All Utilities'"
+            class="sidebar-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="7" height="7" x="3" y="3" rx="1"/>
+            <rect width="7" height="7" x="14" y="3" rx="1"/>
+            <rect width="7" height="7" x="14" y="14" rx="1"/>
+            <rect width="7" height="7" x="3" y="14" rx="1"/>
           </svg>
           <!-- Key Concepts icon -->
           <svg

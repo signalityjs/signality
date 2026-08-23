@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useRoute, useData } from 'vitepress';
 import Sidebar from './Sidebar.vue';
 import OnThisPage from './OnThisPage.vue';
@@ -7,20 +7,24 @@ import PageNav from './PageNav.vue';
 import PageMeta from './PageMeta.vue';
 import DocHeader from './DocHeader.vue';
 import MobileHeader from './MobileHeader.vue';
+import LandingHeader from './LandingHeader.vue';
+import LandingFooter from './LandingFooter.vue';
 
 const route = useRoute();
 const { frontmatter } = useData();
 const sidebarOpen = ref(false);
 
+// Check if we're on the landing page
+const isLanding = computed(() => frontmatter.value.layout === 'landing');
+
 const pagesWithoutOnThisPage = ['/changelog'];
 
 const showOnThisPage = computed(() => {
-  if (isLanding.value) return false;
+  if (isLanding.value) {
+    return false;
+  }
   return !pagesWithoutOnThisPage.some(path => route.path.includes(path));
 });
-
-// Check if we're on the landing page
-const isLanding = computed(() => frontmatter.value.layout === 'landing');
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value;
@@ -29,37 +33,6 @@ const toggleSidebar = () => {
 const closeSidebar = () => {
   sidebarOpen.value = false;
 };
-
-onMounted(() => {
-  // Force dark theme on html element
-  document.documentElement.classList.add('dark');
-  document.documentElement.setAttribute('data-theme', 'dark');
-  document.documentElement.style.colorScheme = 'dark';
-
-  // Remove light theme class if present
-  document.documentElement.classList.remove('light');
-
-  // Force dark theme on body
-  document.body.classList.add('dark');
-  document.body.style.colorScheme = 'dark';
-
-  // Watch for any theme changes and force dark
-  const observer = new MutationObserver(() => {
-    if (!document.documentElement.classList.contains('dark')) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.setAttribute('data-theme', 'dark');
-      document.documentElement.style.colorScheme = 'dark';
-    }
-    if (document.documentElement.classList.contains('light')) {
-      document.documentElement.classList.remove('light');
-    }
-  });
-
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class', 'data-theme'],
-  });
-});
 
 // Close sidebar on route change
 watch(
@@ -71,6 +44,11 @@ watch(
 </script>
 
 <template>
+  <!-- The landing's banner and contentinfo landmarks sit outside
+       .layout-container: nested inside <main> they would not be exposed as
+       landmarks at all. -->
+  <LandingHeader v-if="isLanding" />
+
   <div class="layout-container">
     <!-- Mobile Header -->
     <MobileHeader :sidebar-open="sidebarOpen" @toggle="toggleSidebar" />
@@ -79,13 +57,17 @@ watch(
     <div v-if="sidebarOpen" @click="closeSidebar" class="sidebar-overlay"></div>
 
     <!-- Sidebar Component -->
-    <Sidebar :class="{ 'sidebar-open': sidebarOpen }" @navigate="closeSidebar" />
+    <Sidebar
+      :class="{ 'sidebar-open': sidebarOpen, 'sidebar-landing-hidden': isLanding }"
+      @navigate="closeSidebar"
+    />
 
     <!-- Main Content Area -->
     <main class="main-content" :class="{ 'landing-content': isLanding }">
       <!-- Landing Page -->
       <template v-if="isLanding">
         <div class="landing-wrapper">
+          <Content />
         </div>
       </template>
 
@@ -103,6 +85,8 @@ watch(
     <!-- Table of Contents (Right) -->
     <OnThisPage v-if="showOnThisPage" />
   </div>
+
+  <LandingFooter v-if="isLanding" />
 </template>
 
 <style>
@@ -139,6 +123,17 @@ watch(
 
 .main-content.landing-content {
   padding-top: 0;
+  /* `overflow-x: hidden` would make this a scroll container and break the
+     landing's sticky header; the landing has no horizontal overflow anyway */
+  overflow-x: visible;
+}
+
+/* Hide the docs sidebar on the landing page (desktop only; on mobile it
+   stays reachable through the burger menu in the mobile header) */
+@media (min-width: 769px) {
+  .sidebar-landing-hidden {
+    display: none;
+  }
 }
 
 .content-wrapper {
