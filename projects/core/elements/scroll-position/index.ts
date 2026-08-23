@@ -1,4 +1,4 @@
-import { type Signal, signal } from '@angular/core';
+import { afterNextRender, type Signal, signal } from '@angular/core';
 import { constSignal, isWindow, setupContext, type Timer } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
@@ -174,7 +174,7 @@ export function scrollPosition(options?: ScrollPositionOptions): ScrollPositionR
       };
     };
 
-    const update = () => {
+    const measure = () => {
       const { scrollX, scrollY } = getScrollPosition();
       const { scrollWidth, scrollHeight, clientWidth, clientHeight } = getScrollSize();
 
@@ -202,6 +202,10 @@ export function scrollPosition(options?: ScrollPositionOptions): ScrollPositionR
         left: scrollX <= leftOffset,
         right: scrollX + clientWidth >= scrollWidth - rightOffset,
       });
+    };
+
+    const update = () => {
+      measure();
 
       isScrolling.set(true);
 
@@ -232,7 +236,13 @@ export function scrollPosition(options?: ScrollPositionOptions): ScrollPositionR
       }
     });
 
-    update();
+    afterNextRender({
+      earlyRead: () => {
+        if (targetIsWindow || toElement(target)) {
+          measure();
+        }
+      },
+    });
 
     return {
       x: x.asReadonly(),
