@@ -75,8 +75,8 @@ export class ThrottledInput {
 
 The `ThrottledOptions<T>` extends [`CreateSignalOptions<T>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
-| Option      | Type                                                                 | Default | Description                                                                                        |
-|-------------|----------------------------------------------------------------------|---------|------------------------------------------------------------------------------------------------------|
+| Option      | Type                                                                 | Default | Description                                                                                            |
+|-------------|----------------------------------------------------------------------|---------|--------------------------------------------------------------------------------------------------------|
 | `leading`   | `boolean`                                                            | `true`  | Apply the update that opens an interval immediately                                                    |
 | `trailing`  | `boolean`                                                            | `true`  | Apply the most recent update once the interval ends, so the signal settles on the source's final value |
 | `equal`     | [`ValueEqualityFn<T>`](https://angular.dev/api/core/ValueEqualityFn) | -       | Custom equality function ([see more](https://angular.dev/guide/signals#signal-equality-functions))     |
@@ -87,7 +87,7 @@ The `ThrottledOptions<T>` extends [`CreateSignalOptions<T>`](https://angular.dev
 
 With `trailing: false` the signal only ever shows the value that opened each interval, so it can stay permanently out of sync with its source once changes stop.
 
-See [Interval edges](/scheduling/throttle-callback#interval-edges) for the full behavior matrix. Disabling both edges means the signal never updates.
+See [Interval edges](/scheduling/throttle-callback#interval-edges) for the full behavior matrix.
 
 ## Return Value
 
