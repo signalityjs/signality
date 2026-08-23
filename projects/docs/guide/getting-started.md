@@ -1,7 +1,9 @@
 # Getting started
 
 <div class="info-banner">
-  <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Signality v0.4 is here! 🎉</div>
+  <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Signality v0.5 is here! 🎉</div>
+  The last minor before <code>1.0</code> — the API is close to frozen.
+
   We welcome <a href="https://github.com/signalityjs/signality/blob/main/CONTRIBUTING.md" target="_blank">contributions</a> of all kinds - whether it's fixing bugs, adding features, improving documentation, or suggesting ideas.
 
   <div style="display: flex; flex-direction: column; gap: 8px">
