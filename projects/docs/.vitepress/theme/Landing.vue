@@ -251,7 +251,7 @@ const features = [
       </div>
 
       <figure class="l-code-panel l-hero-code">
-        <figcaption class="l-code-caption">app.component.ts</figcaption>
+        <figcaption class="l-code-caption">app.ts</figcaption>
         <pre class="l-code"><code v-html="heroCode"></code></pre>
         <div class="l-code-console">
           <span class="l-console-live">
