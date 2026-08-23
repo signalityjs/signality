@@ -95,11 +95,15 @@ export function resizeObserver(
       });
     };
 
-    const destroy = () => observer?.disconnect();
+    const effectRef = afterRenderEffect({ read: setupObserver }, options);
+
+    const destroy = () => {
+      effectRef.destroy();
+      observer?.disconnect();
+      observer = null;
+    };
 
     onCleanup(destroy);
-
-    afterRenderEffect({ read: setupObserver }, options);
 
     return { destroy };
   });
