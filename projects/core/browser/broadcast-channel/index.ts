@@ -1,9 +1,9 @@
-import { type Signal, signal } from '@angular/core';
+import { type CreateSignalOptions, type Signal, signal } from '@angular/core';
 import { constSignal, NOOP_FN, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
 
-export type BroadcastChannelOptions = WithInjector;
+export type BroadcastChannelOptions<T> = CreateSignalOptions<T | null> & WithInjector;
 
 export interface BroadcastChannelRef<T> {
   /** Last received data */
@@ -50,7 +50,7 @@ export interface BroadcastChannelRef<T> {
  */
 export function broadcastChannel<T>(
   name: string,
-  options?: BroadcastChannelOptions
+  options?: BroadcastChannelOptions<T>
 ): BroadcastChannelRef<T> {
   const { runInContext } = setupContext(options?.injector, broadcastChannel);
 
@@ -65,7 +65,7 @@ export function broadcastChannel<T>(
       };
     }
 
-    const data = signal<T | null>(null);
+    const data = signal<T | null>(null, options);
     const error = signal<MessageEvent | null>(null);
     const isClosed = signal(false);
 
