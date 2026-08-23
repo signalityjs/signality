@@ -109,4 +109,32 @@ describe(fullscreen.name, () => {
     document.dispatchEvent(new Event('fullscreenchange'));
     expect(component.fs.isActive()).toBe(false);
   });
+
+  describe('initial state', () => {
+    it('should report a target that is already fullscreen at creation', () => {
+      fullscreenElementValue = document.documentElement;
+
+      const component = createComponent();
+
+      expect(component.fs.isActive()).toBe(true);
+    });
+
+    it('should not report active when a different element is fullscreen', () => {
+      fullscreenElementValue = document.createElement('div');
+
+      const component = createComponent();
+
+      expect(component.fs.isActive()).toBe(false);
+    });
+
+    it('should exit on toggle when created while already fullscreen', async () => {
+      fullscreenElementValue = document.documentElement;
+
+      const component = createComponent();
+      await component.fs.toggle();
+
+      expect(exitFullscreenSpy).toHaveBeenCalled();
+      expect(requestFullscreenSpy).not.toHaveBeenCalled();
+    });
+  });
 });
