@@ -1,3 +1,33 @@
+## 0.5.0 (2026-08-23)
+
+### 🚀 Features
+
+- **core:** `battery` add injection token for singleton usage ([#206](https://github.com/signalityjs/signality/pull/206))
+- **core:** `devicePosture` add injection token for singleton usage ([#208](https://github.com/signalityjs/signality/pull/208))
+- **core:** `gamepad` add injection token for singleton usage ([#210](https://github.com/signalityjs/signality/pull/210))
+- **core:** `onKey` now supports chainable modifiers ([#213](https://github.com/signalityjs/signality/pull/213))
+- **core:** `throttleCallback` add `leading` and `trailing` options ([#217](https://github.com/signalityjs/signality/pull/217))
+- **core:** `throttled` add `leading` and `trailing` options ([#219](https://github.com/signalityjs/signality/pull/219))
+- **core:** `broadcastChannel` now supports signal options for the `data` signal ([#225](https://github.com/signalityjs/signality/pull/225))
+- ⚠️  **core:** `windowSize` expose `width` and `height` as separate signals ([#243](https://github.com/signalityjs/signality/pull/243))
+
+### 🩹 Fixes
+
+- **core:** `listener` preserve modifier chain when a modifier is repeated ([#215](https://github.com/signalityjs/signality/pull/215))
+- **core:** `permissionState` correctly sync initial state from the resolved query ([#221](https://github.com/signalityjs/signality/pull/221))
+- **core:** `resizeObserver` prevent observation from resuming after `destroy()` ([#223](https://github.com/signalityjs/signality/pull/223))
+- **core:** `fullscreen` correctly sync initial state from the DOM ([#227](https://github.com/signalityjs/signality/pull/227))
+- **core:** `onClickOutside` ignore clicks while the target is absent ([#230](https://github.com/signalityjs/signality/pull/230))
+- **core:** `activeElement` cancel the deferred shadow focusout sync on destroy ([#232](https://github.com/signalityjs/signality/pull/232))
+- **core:** `battery` handle a rejected `getBattery()` query ([#234](https://github.com/signalityjs/signality/pull/234))
+- **core:** `scrollPosition` measure after the target is rendered ([#236](https://github.com/signalityjs/signality/pull/236))
+- **core:** `favicon` include every icon link in favicon updates ([#238](https://github.com/signalityjs/signality/pull/238))
+- **core:** `fps` clamp `sampleSize` to at least one frame ([#240](https://github.com/signalityjs/signality/pull/240))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  **core:** `windowSize` expose `width` and `height` as separate signals ([#243](https://github.com/signalityjs/signality/pull/243))
+
 ## 0.4.0 (2026-08-04)
 
 ### 🚀 Features
