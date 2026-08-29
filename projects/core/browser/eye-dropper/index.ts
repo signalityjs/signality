@@ -99,8 +99,6 @@ export function eyeDropper(options?: EyeDropperOptions): EyeDropperRef {
         if ((error as Error).name !== 'AbortError') {
           throw error;
         }
-      } finally {
-        abortController = null;
       }
     };
 
