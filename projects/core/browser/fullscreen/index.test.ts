@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, signal, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { fullscreen } from './index';
 
@@ -135,6 +135,57 @@ describe(fullscreen.name, () => {
 
       expect(exitFullscreenSpy).toHaveBeenCalled();
       expect(requestFullscreenSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('deferred target', () => {
+    @Component({ template: '<div #box></div>{{ fs.isActive() }}' })
+    class RequiredTargetComponent {
+      readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
+      readonly fs = fullscreen({ target: this.box });
+    }
+
+    it('should not read a required query target during class field initialization', () => {
+      // The eager read only happened when something was already fullscreen at creation time,
+      // because `document.fullscreenElement != null` short-circuited the comparison.
+      fullscreenElementValue = document.documentElement;
+
+      expect(() => TestBed.createComponent(RequiredTargetComponent)).not.toThrow();
+    });
+
+    it('should resolve a required query target once the view is created', () => {
+      fullscreenElementValue = document.documentElement;
+
+      const fixture = TestBed.createComponent(RequiredTargetComponent);
+      fixture.detectChanges();
+
+      const component = fixture.componentInstance;
+
+      fullscreenElementValue = component.box().nativeElement;
+      document.dispatchEvent(new Event('fullscreenchange'));
+
+      expect(component.fs.isActive()).toBe(true);
+    });
+
+    it('should recompute isActive when the target changes', () => {
+      @Component({ template: '{{ fs.isActive() }}' })
+      class SwappingTargetComponent {
+        readonly target = signal<Element>(document.createElement('div'));
+        readonly fs = fullscreen({ target: this.target });
+      }
+
+      const fixture = TestBed.createComponent(SwappingTargetComponent);
+      fixture.detectChanges();
+
+      const component = fixture.componentInstance;
+      const other = document.createElement('section');
+
+      fullscreenElementValue = other;
+      document.dispatchEvent(new Event('fullscreenchange'));
+      expect(component.fs.isActive()).toBe(false);
+
+      component.target.set(other);
+      expect(component.fs.isActive()).toBe(true);
     });
   });
 });
