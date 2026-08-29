@@ -1,4 +1,4 @@
-import { signal, type Signal, untracked } from '@angular/core';
+import { computed, signal, type Signal, untracked } from '@angular/core';
 import { assertElement, constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
@@ -105,10 +105,12 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
 
     const target = options?.target ?? document.documentElement;
 
-    const isTargetFullscreen = () =>
-      document.fullscreenElement != null && document.fullscreenElement === toElement(target);
+    const fullscreenElement = signal<Element | null>(document.fullscreenElement);
 
-    const isActive = signal(isTargetFullscreen());
+    const isActive = computed(() => {
+      const current = fullscreenElement();
+      return current != null && current === toElement(target);
+    });
 
     const enter = async (): Promise<void> => {
       const el = toElement.untracked(target);
@@ -135,12 +137,14 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
     };
 
     setupSync(() => {
-      listener(document, 'fullscreenchange', () => isActive.set(isTargetFullscreen()));
+      listener(document, 'fullscreenchange', () =>
+        fullscreenElement.set(document.fullscreenElement)
+      );
     });
 
     return {
       isSupported,
-      isActive: isActive.asReadonly(),
+      isActive,
       enter,
       exit,
       toggle,
