@@ -237,7 +237,7 @@ export function scrollPosition(options?: ScrollPositionOptions): ScrollPositionR
     });
 
     afterNextRender({
-      earlyRead: () => {
+      read: () => {
         if (targetIsWindow || toElement(target)) {
           measure();
         }
