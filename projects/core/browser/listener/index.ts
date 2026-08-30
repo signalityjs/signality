@@ -58,17 +58,17 @@ export interface ListenerFunction {
     options?: ListenerOptions
   ): ListenerRef;
 
+  <E extends keyof MediaQueryListEventMap>(
+    target: MaybeSignal<MediaQueryList>,
+    event: MaybeSignal<E>,
+    handler: (this: MediaQueryList, e: MediaQueryListEventMap[E]) => any,
+    options?: ListenerOptions
+  ): ListenerRef;
+
   <Names extends string>(
     target: MaybeSignal<InferEventTarget<Names>>,
     event: MaybeSignal<Names>,
     handler: (e: Event) => void,
-    options?: ListenerOptions
-  ): ListenerRef;
-
-  <E extends string>(
-    target: MaybeSignal<MediaQueryList>,
-    event: MaybeSignal<E>,
-    handler: (this: MediaQueryList, e: MediaQueryListEvent) => any,
     options?: ListenerOptions
   ): ListenerRef;
 
