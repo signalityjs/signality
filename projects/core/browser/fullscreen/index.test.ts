@@ -304,4 +304,109 @@ describe(fullscreen.name, () => {
       expect(component.fs.isActive()).toBe(true);
     });
   });
+
+  describe('concurrent transitions', () => {
+    // Replaces the instant mock with a controllable one: the test decides when the browser
+    // finishes the transition (resolves the native promise and fires `fullscreenchange`).
+    let finishRequest: () => void;
+
+    beforeEach(() => {
+      requestFullscreenSpy.mockImplementation(
+        () =>
+          new Promise<void>(resolve => {
+            finishRequest = () => {
+              fullscreenElementValue = document.documentElement;
+              document.dispatchEvent(new Event('fullscreenchange'));
+              resolve();
+            };
+          })
+      );
+    });
+
+    it('should not issue a second native request while enter is pending', async () => {
+      const component = createComponent();
+
+      const first = component.fs.enter();
+      const second = component.fs.enter();
+
+      finishRequest();
+      await Promise.all([first, second]);
+
+      expect(requestFullscreenSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should make exit join a pending enter instead of racing it', async () => {
+      const component = createComponent();
+
+      const entering = component.fs.enter();
+      const exiting = component.fs.exit();
+
+      finishRequest();
+      await Promise.all([entering, exiting]);
+
+      expect(exitFullscreenSpy).not.toHaveBeenCalled();
+      expect(component.fs.isActive()).toBe(true);
+    });
+
+    it('should enter exactly once on a double toggle', async () => {
+      const component = createComponent();
+
+      const first = component.fs.toggle();
+      const second = component.fs.toggle();
+
+      finishRequest();
+      await Promise.all([first, second]);
+
+      expect(requestFullscreenSpy).toHaveBeenCalledTimes(1);
+      expect(exitFullscreenSpy).not.toHaveBeenCalled();
+      expect(component.fs.isActive()).toBe(true);
+    });
+
+    it('should allow a new transition once the pending one settles', async () => {
+      const component = createComponent();
+
+      const entering = component.fs.enter();
+      finishRequest();
+      await entering;
+
+      await component.fs.exit();
+
+      expect(exitFullscreenSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should release the pending transition when the native request rejects', async () => {
+      const component = createComponent();
+
+      requestFullscreenSpy.mockRejectedValueOnce(new TypeError('Permissions check failed'));
+
+      await expect(component.fs.enter()).rejects.toThrow('Permissions check failed');
+
+      const retry = component.fs.enter();
+      finishRequest();
+      await retry;
+
+      expect(requestFullscreenSpy).toHaveBeenCalledTimes(2);
+      expect(component.fs.isActive()).toBe(true);
+    });
+
+    it('should propagate the pending rejection to every joined caller', async () => {
+      const component = createComponent();
+
+      let rejectRequest: (error: Error) => void;
+      requestFullscreenSpy.mockImplementationOnce(
+        () =>
+          new Promise<void>((_, reject) => {
+            rejectRequest = reject;
+          })
+      );
+
+      const first = component.fs.enter();
+      const second = component.fs.enter();
+
+      rejectRequest!(new TypeError('Permissions check failed'));
+
+      await expect(first).rejects.toThrow('Permissions check failed');
+      await expect(second).rejects.toThrow('Permissions check failed');
+    });
+  });
 });
