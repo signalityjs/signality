@@ -16,7 +16,7 @@ This feature is available only in [secure contexts](https://developer.mozilla.or
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { webShare, title, url } from '@signality/core';
+import { webShare, pageTitle, url } from '@signality/core';
 
 @Component({
   template: `
@@ -27,7 +27,7 @@ import { webShare, title, url } from '@signality/core';
 })
 export class WebShareDemo {
   readonly webShare = webShare(); // [!code highlight]
-  readonly title = title();
+  readonly title = pageTitle();
   readonly url = url({ absolute: true });
   
   async shareContent() {
@@ -118,7 +118,7 @@ export class ImageShare {
 
 ```angular-ts
 import { Component, computed } from '@angular/core';
-import { webShare, title, url } from '@signality/core';
+import { webShare, pageTitle, url } from '@signality/core';
 
 @Component({
   selector: 'social-share',
@@ -136,7 +136,7 @@ import { webShare, title, url } from '@signality/core';
 })
 export class SocialShare {
   readonly webShare = webShare();
-  readonly title = title();
+  readonly title = pageTitle();
   readonly url = url({ absolute: true });
 
   async nativeShare() {

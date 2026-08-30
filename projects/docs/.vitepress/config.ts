@@ -262,7 +262,7 @@ export default defineConfig({
           { text: 'QueryParams', link: '/router/query-params' },
           { text: 'RouteData', link: '/router/route-data' },
           { text: 'RouterListener', link: '/router/router-listener' },
-          { text: 'Title', link: '/router/title' },
+          { text: 'PageTitle', link: '/router/page-title' },
           { text: 'Url', link: '/router/url' },
         ],
       },

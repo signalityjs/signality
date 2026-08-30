@@ -1,12 +1,8 @@
 ---
-source: https://github.com/signalityjs/signality/blob/main/projects/core/router/title/index.ts
+source: https://github.com/signalityjs/signality/blob/main/projects/core/router/page-title/index.ts
 ---
 
-# Title
-
-::: warning Deprecated
-`title()` is deprecated and will be removed in 1.0. Use [`pageTitle()`](/router/page-title) instead.
-:::
+# PageTitle
 
 Reactive wrapper around Angular Router's [route title](https://angular.dev/api/router/ActivatedRoute#title). Access the resolved route title as a writable signal that can be set to update the page title.
 
@@ -14,15 +10,15 @@ Reactive wrapper around Angular Router's [route title](https://angular.dev/api/r
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { title } from '@signality/core';
+import { pageTitle } from '@signality/core';
 
 @Component({
   template: `
-    <h1>{{ pageTitle() ?? 'Default Title' }}</h1>
+    <h1>{{ title() ?? 'Default Title' }}</h1>
   `,
 })
 export class ProductPage {
-  readonly pageTitle = title(); // [!code highlight]
+  readonly title = pageTitle(); // [!code highlight]
 }
 ```
 
@@ -30,11 +26,11 @@ export class ProductPage {
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `options` | `TitleOptions` | Optional configuration (see [Options](#options) below) |
+| `options` | `PageTitleOptions` | Optional configuration (see [Options](#options) below) |
 
 ## Options
 
-The `TitleOptions` extends [`CreateSignalOptions<string>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
+The `PageTitleOptions` extends [`CreateSignalOptions<string>`](https://angular.dev/api/core/CreateSignalOptions) and `WithInjector`:
 
 | Option     | Type      | Default | Description                                    |
 |------------|-----------|---------|------------------------------------------------|
@@ -52,18 +48,18 @@ Returns a `WritableSignal<string>` containing the current route title. The signa
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { title } from '@signality/core';
+import { pageTitle } from '@signality/core';
 
 @Component({
   template: `
     <header>
-      <h1>{{ pageTitle() ?? 'My App' }}</h1>
+      <h1>{{ title() ?? 'My App' }}</h1>
     </header>
     <router-outlet />
   `,
 })
 export class App {
-  readonly pageTitle = title(); // [!code highlight]
+  readonly title = pageTitle(); // [!code highlight]
 }
 ```
 
@@ -71,7 +67,7 @@ export class App {
 
 ```angular-ts
 import { Component } from '@angular/core';
-import { title } from '@signality/core';
+import { pageTitle } from '@signality/core';
 
 // Route configuration:
 // {
@@ -82,11 +78,11 @@ import { title } from '@signality/core';
 
 @Component({
   template: `
-    <h1>{{ pageTitle() }}</h1>
+    <h1>{{ title() }}</h1>
   `,
 })
 export class ProductPage {
-  readonly pageTitle = title(); // Will be "Product 123" for /product/123
+  readonly title = pageTitle(); // Will be "Product 123" for /product/123
 }
 ```
 
@@ -94,18 +90,18 @@ export class ProductPage {
 
 ```angular-ts
 import { Component, effect, inject } from '@angular/core';
-import { title } from '@signality/core';
+import { pageTitle } from '@signality/core';
 import { MessagesStore } from './messages';
 
 @Component({ /* ... */ })
 export class MessagesPage {
-  readonly pageTitle = title();
+  readonly title = pageTitle();
   readonly messages = inject(MessagesStore);
 
   constructor() {
     effect(() => {
       const count = this.messages.unreadCount();
-      this.pageTitle.set(count > 0 ? `(${count}) Messages` : 'Messages'); // [!code highlight]
+      this.title.set(count > 0 ? `(${count}) Messages` : 'Messages'); // [!code highlight]
     });
   }
 }
@@ -118,9 +114,9 @@ On the server, the signal initializes with the title from the [snapshot](https:/
 ## Type Definitions
 
 ```typescript
-type TitleOptions = CreateSignalOptions<string> & WithInjector;
+type PageTitleOptions = CreateSignalOptions<string> & WithInjector;
 
-function title(options?: TitleOptions): WritableSignal<string>;
+function pageTitle(options?: PageTitleOptions): WritableSignal<string>;
 ```
 
 ## Related
