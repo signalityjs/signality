@@ -1,4 +1,4 @@
-import { Component, ElementRef, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewEncapsulation, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { fullscreen } from './index';
 
@@ -185,6 +185,122 @@ describe(fullscreen.name, () => {
       expect(component.fs.isActive()).toBe(false);
 
       component.target.set(other);
+      expect(component.fs.isActive()).toBe(true);
+    });
+  });
+
+  describe('shadow dom', () => {
+    // `document.fullscreenElement` is retargeted against the document tree: when the fullscreen
+    // element lives in a shadow tree, the document reports its host instead.
+    // See https://fullscreen.spec.whatwg.org/#dom-documentorshadowroot-fullscreenelement
+    const mockShadowFullscreenElement = (root: ShadowRoot, element: Element | null) => {
+      Object.defineProperty(root, 'fullscreenElement', {
+        get: () => element,
+        configurable: true,
+      });
+    };
+
+    @Component({
+      template: '<div #box></div>{{ fs.isActive() }}',
+      encapsulation: ViewEncapsulation.ShadowDom,
+    })
+    class ShadowComponent {
+      readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
+      readonly fs = fullscreen({ target: this.box });
+    }
+
+    const createShadowComponent = () => {
+      const fixture = TestBed.createComponent(ShadowComponent);
+      fixture.detectChanges();
+
+      const component = fixture.componentInstance;
+
+      return {
+        component,
+        host: fixture.nativeElement as Element,
+        box: component.box().nativeElement,
+      };
+    };
+
+    it('should report a target inside a shadow root as active', () => {
+      const { component, host, box } = createShadowComponent();
+
+      fullscreenElementValue = host;
+      mockShadowFullscreenElement(host.shadowRoot!, box);
+      document.dispatchEvent(new Event('fullscreenchange'));
+
+      expect(component.fs.isActive()).toBe(true);
+    });
+
+    it('should exit a target inside a shadow root', async () => {
+      const { component, host, box } = createShadowComponent();
+
+      fullscreenElementValue = host;
+      mockShadowFullscreenElement(host.shadowRoot!, box);
+      document.dispatchEvent(new Event('fullscreenchange'));
+
+      await component.fs.exit();
+
+      expect(exitFullscreenSpy).toHaveBeenCalled();
+    });
+
+    it('should not enter again when the target inside a shadow root is already fullscreen', async () => {
+      const { component, host, box } = createShadowComponent();
+
+      fullscreenElementValue = host;
+      mockShadowFullscreenElement(host.shadowRoot!, box);
+      document.dispatchEvent(new Event('fullscreenchange'));
+
+      await component.fs.enter();
+
+      expect(requestFullscreenSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not report the host as active when a nested element is fullscreen', () => {
+      @Component({
+        template: '<div #box></div>{{ fs.isActive() }}',
+        encapsulation: ViewEncapsulation.ShadowDom,
+      })
+      class HostTargetComponent {
+        readonly box = viewChild.required<ElementRef<HTMLElement>>('box');
+        readonly host = inject(ElementRef<HTMLElement>);
+        readonly fs = fullscreen({ target: this.host });
+      }
+
+      const fixture = TestBed.createComponent(HostTargetComponent);
+      fixture.detectChanges();
+
+      const component = fixture.componentInstance;
+      const host = fixture.nativeElement as Element;
+
+      fullscreenElementValue = host;
+      mockShadowFullscreenElement(host.shadowRoot!, component.box().nativeElement);
+      document.dispatchEvent(new Event('fullscreenchange'));
+
+      expect(component.fs.isActive()).toBe(false);
+    });
+
+    it('should report a shadow host that is fullscreen itself as active', () => {
+      @Component({
+        template: '<div #box></div>{{ fs.isActive() }}',
+        encapsulation: ViewEncapsulation.ShadowDom,
+      })
+      class HostTargetComponent {
+        readonly host = inject(ElementRef<HTMLElement>);
+        readonly fs = fullscreen({ target: this.host });
+      }
+
+      const fixture = TestBed.createComponent(HostTargetComponent);
+      fixture.detectChanges();
+
+      const component = fixture.componentInstance;
+      const host = fixture.nativeElement as Element;
+
+      // The host went fullscreen itself, so its shadow root reports no fullscreen element.
+      fullscreenElementValue = host;
+      mockShadowFullscreenElement(host.shadowRoot!, null);
+      document.dispatchEvent(new Event('fullscreenchange'));
+
       expect(component.fs.isActive()).toBe(true);
     });
   });

@@ -1,5 +1,11 @@
 import { computed, signal, type Signal, untracked } from '@angular/core';
-import { assertElement, constSignal, NOOP_ASYNC_FN, setupContext } from '@signality/core/internal';
+import {
+  assertElement,
+  constSignal,
+  getFullscreenElement,
+  NOOP_ASYNC_FN,
+  setupContext,
+} from '@signality/core/internal';
 import { toElement } from '@signality/core/utilities';
 import type { MaybeElementSignal, WithInjector } from '@signality/core/types';
 import { listener, setupSync } from '@signality/core/browser/listener';
@@ -105,7 +111,7 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
 
     const target = options?.target ?? document.documentElement;
 
-    const fullscreenElement = signal<Element | null>(document.fullscreenElement);
+    const fullscreenElement = signal<Element | null>(getFullscreenElement(document));
 
     const isActive = computed(() => {
       const current = fullscreenElement();
@@ -115,7 +121,7 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
     const enter = async (): Promise<void> => {
       const el = toElement.untracked(target);
       ngDevMode && assertElement(el, 'fullscreen');
-      if (document.fullscreenElement !== el) {
+      if (getFullscreenElement(document) !== el) {
         await el?.requestFullscreen();
       }
     };
@@ -123,7 +129,7 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
     const exit = async (): Promise<void> => {
       const el = toElement.untracked(target);
       ngDevMode && assertElement(el, 'fullscreen');
-      if (document.fullscreenElement === el) {
+      if (getFullscreenElement(document) === el) {
         await document.exitFullscreen();
       }
     };
@@ -138,7 +144,7 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
 
     setupSync(() => {
       listener(document, 'fullscreenchange', () =>
-        fullscreenElement.set(document.fullscreenElement)
+        fullscreenElement.set(getFullscreenElement(document))
       );
     });
 
