@@ -118,23 +118,45 @@ export function fullscreen(options?: FullscreenOptions): FullscreenRef {
       return current != null && current === toElement(target);
     });
 
+    let transition: Promise<void> | null = null;
+
+    const runTransition = (startFn: () => Promise<void>): Promise<void> => {
+      const result = startFn().finally(() => {
+        transition = null;
+      });
+      transition = result;
+      return result;
+    };
+
     const enter = async (): Promise<void> => {
+      if (transition) {
+        return transition;
+      }
+
       const el = toElement.untracked(target);
       ngDevMode && assertElement(el, 'fullscreen');
-      if (getFullscreenElement(document) !== el) {
-        await el?.requestFullscreen();
+      if (el && getFullscreenElement(document) !== el) {
+        await runTransition(() => el.requestFullscreen());
       }
     };
 
     const exit = async (): Promise<void> => {
+      if (transition) {
+        return transition;
+      }
+
       const el = toElement.untracked(target);
       ngDevMode && assertElement(el, 'fullscreen');
-      if (getFullscreenElement(document) === el) {
-        await document.exitFullscreen();
+      if (el && getFullscreenElement(document) === el) {
+        await runTransition(() => document.exitFullscreen());
       }
     };
 
     const toggle = async (): Promise<void> => {
+      if (transition) {
+        return transition;
+      }
+
       if (untracked(isActive)) {
         await exit();
       } else {
