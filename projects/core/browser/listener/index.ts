@@ -44,6 +44,13 @@ export interface ListenerFunction {
     options?: ListenerOptions
   ): ListenerRef;
 
+  <E extends keyof WebSocketEventMap>(
+    target: MaybeSignal<WebSocket>,
+    event: MaybeSignal<E>,
+    handler: (this: WebSocket, e: WebSocketEventMap[E]) => any,
+    options?: ListenerOptions
+  ): ListenerRef;
+
   <T extends HTMLElement, E extends keyof HTMLElementEventMap>(
     target: MaybeElementSignal<T>,
     event: MaybeSignal<E>,
