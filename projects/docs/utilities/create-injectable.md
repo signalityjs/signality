@@ -102,6 +102,13 @@ export class StagingComponent {
 }
 ```
 
+:::warning If your factory function defines parameters (used by `provideFn`), ensure they are *optional* or have *default values*.
+
+Since `createInjectable.root` automatically provides the dependency at the root, the factory is executed without arguments by default.
+
+Explicitly invoking `provideFn(args)` is only needed for localized overrides or testing.
+:::
+
 ### Using with custom Injector
 
 The `injectFn` supports passing an explicit `Injector` if you need to inject the value outside of the typical injection context.
@@ -121,6 +128,13 @@ export class ManualInjection {
 ## Type Definitions
 
 ```ts
+interface InjectFn<Return> {
+  (options?: Omit<InjectOptions, 'optional'> & WithInjector): Return;
+  (options?: InjectOptions & WithInjector): Return | null;
+}
+
+type ProvideFn<Arguments extends any[]> = (...args: Arguments) => Provider;
+
 type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
   [
     injectFn: InjectFn<InjectReturn>,
@@ -130,15 +144,15 @@ type CreateInjectableRef<Arguments extends any[], InjectReturn> = Readonly<
 >;
 
 interface CreateInjectableFn {
-  <Arguments extends any[], Return>(
-    description: string,
-    factory: Factory<Arguments, Return>,
-  ): CreateInjectableRef<Arguments, Return>;
+  <Factory extends Function>(description: string, factory: Factory): CreateInjectableRef<
+    Parameters<Factory>,
+    ReturnType<Factory>
+  >;
 
-  root: <Arguments extends any[], Return>(
+  root: <Factory extends Function>(
     description: string,
-    factory: (...args: OptionalArgs<Arguments>) => Return,
-  ) => CreateInjectableRef<OptionalArgs<Arguments>, Return>;
+    factory: Factory
+  ) => CreateInjectableRef<Parameters<Factory>, ReturnType<Factory>>;
 }
 ```
 
