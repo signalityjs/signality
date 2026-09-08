@@ -1,4 +1,4 @@
-import { type CreateSignalOptions, inject, signal, type Signal } from '@angular/core';
+import { type CreateSignalOptions, inject, REQUEST, signal, type Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { constSignal, setupContext } from '@signality/core/internal';
 import type { WithInjector } from '@signality/core/types';
@@ -7,6 +7,10 @@ import { routerListener } from '@signality/core/router/router-listener';
 export interface UrlOptions extends CreateSignalOptions<string>, WithInjector {
   /**
    * Include origin (protocol + host) for absolute URL.
+   *
+   * On the server the origin comes from the `REQUEST` token. While prerendering there is no
+   * request, so the origin is unknown and the signal falls back to a relative URL.
+   *
    * @default false
    */
   readonly absolute?: boolean;
@@ -41,7 +45,24 @@ export function url(options?: UrlOptions): Signal<string> {
     const router = inject(Router);
 
     if (isServer) {
-      return constSignal(router.url);
+      const relativeUrl = router.url;
+
+      if (!options?.absolute) {
+        return constSignal(relativeUrl);
+      }
+
+      const request = inject(REQUEST, { optional: true });
+      if (!request) {
+        if (ngDevMode) {
+          console.warn(
+            '[url] `absolute` is ignored while prerendering, because the deployment origin is unknown at build time. Falling back to a relative URL.'
+          );
+        }
+
+        return constSignal(relativeUrl);
+      }
+
+      return constSignal(new URL(request.url).origin + relativeUrl);
     }
 
     const getUrl = () => {

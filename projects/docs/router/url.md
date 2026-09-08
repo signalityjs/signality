@@ -91,6 +91,10 @@ export class ShareButtons {
 
 On the server, the signal initializes with the current URL from the router's [`url`](https://angular.dev/api/router/Router#url) property.
 
+With `absolute: true`, the origin is taken from the [`REQUEST`](https://angular.dev/api/core/REQUEST) token, so the rendered value matches the origin the visitor actually requested — including behind a reverse proxy that terminates TLS (`X-Forwarded-Host` and `X-Forwarded-Proto` are honoured).
+
+During **prerendering** there is no request, and therefore no origin: the deployment host is not knowable at build time. The signal falls back to a relative URL and logs a warning in development builds. Keep this in mind when using `absolute: true` for crawler-visible metadata such as `og:url` — a prerendered page will carry a relative value until it is hydrated.
+
 ## Type Definitions
 
 ```typescript
