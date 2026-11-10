@@ -30,7 +30,7 @@
           <div
             class="ed-swatch"
             [class.ed-swatch--picking]="isOpen()"
-            [style.background]="hasColor() ? ed.sRGBHex() : null"
+            [style.background]="hasColor() ? ed.value() : null"
             [style.box-shadow]="glowStyle()"
           >
             <svg
@@ -61,7 +61,7 @@
       <!-- Footer -->
       <div class="ed-footer">
         @if (hasColor()) {
-          <span class="ed-hex">{{ ed.sRGBHex() }}</span>
+          <span class="ed-hex">{{ ed.value() }}</span>
         } @else {
           <span class="ed-placeholder">
             {{ isOpen() ? 'Hover over any color…' : 'No color selected' }}
