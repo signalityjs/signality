@@ -1,6 +1,20 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { storage } from './index';
+import { getWebStorage, LOCAL_STORAGE, SESSION_STORAGE, storage, type StorageLike } from './index';
+
+const createMemoryStorage = (initial?: Record<string, string>): StorageLike => {
+  const store = new Map<string, string>(initial ? Object.entries(initial) : undefined);
+
+  return {
+    getItem: key => store.get(key) ?? null,
+    setItem: (key, value) => {
+      store.set(key, value);
+    },
+    removeItem: key => {
+      store.delete(key);
+    },
+  };
+};
 
 describe(storage.name, () => {
   let mockLocalStorage: Record<string, string>;
@@ -258,7 +272,7 @@ describe(storage.name, () => {
   describe('sessionStorage', () => {
     @Component({ template: '{{ token() }}' })
     class TestComponent {
-      readonly token = storage('token', '', { type: 'session' });
+      readonly token = storage('token', '', { storage: 'session' });
     }
 
     const createComponent = () => {
@@ -275,6 +289,38 @@ describe(storage.name, () => {
       expect(component.token()).toBe('abc123');
       expect(mockSessionStorage['token']).toBe('abc123');
       expect(mockLocalStorage['token']).toBeUndefined();
+    });
+  });
+
+  describe('deprecated type option', () => {
+    it('should still select sessionStorage', () => {
+      @Component({ template: '' })
+      class TestComponent {
+        readonly token = storage('token', '', { type: 'session' });
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      fixture.componentInstance.token.set('abc123');
+
+      expect(mockSessionStorage['token']).toBe('abc123');
+      expect(mockLocalStorage['token']).toBeUndefined();
+    });
+
+    it('should be ignored when the storage option is provided', () => {
+      @Component({ template: '' })
+      class TestComponent {
+        readonly token = storage('token', '', { type: 'session', storage: 'local' });
+      }
+
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      fixture.componentInstance.token.set('abc123');
+
+      expect(mockLocalStorage['token']).toBe('abc123');
+      expect(mockSessionStorage['token']).toBeUndefined();
     });
   });
 
@@ -469,6 +515,185 @@ describe(storage.name, () => {
 
       expect(component.custom()).toBe(42);
       expect(mockLocalStorage['custom']).toBe('custom-42');
+    });
+  });
+
+  describe('custom storage via options.storage', () => {
+    let customStorage: StorageLike;
+
+    beforeEach(() => {
+      customStorage = createMemoryStorage();
+    });
+
+    @Component({ template: '' })
+    class TestComponent {
+      readonly value = storage('inline', 'initial', { storage: customStorage });
+    }
+
+    const createComponent = () => {
+      const fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+      return fixture.componentInstance;
+    };
+
+    it('should use the provided storage and not touch Web Storage', () => {
+      const component = createComponent();
+
+      component.value.set('custom');
+
+      expect(component.value()).toBe('custom');
+      expect(customStorage.getItem('inline')).toBe('custom');
+      expect(window.localStorage.setItem).not.toHaveBeenCalled();
+      expect(window.localStorage.getItem).not.toHaveBeenCalled();
+    });
+
+    it('should take precedence over the DI token', () => {
+      const diStorage = createMemoryStorage();
+      TestBed.configureTestingModule({
+        providers: [{ provide: LOCAL_STORAGE, useValue: diStorage }],
+      });
+      const component = createComponent();
+
+      component.value.set('custom');
+
+      expect(customStorage.getItem('inline')).toBe('custom');
+      expect(diStorage.getItem('inline')).toBeNull();
+    });
+
+    it('should behave like a plain signal when storage is null', () => {
+      @Component({ template: '' })
+      class DisabledComponent {
+        readonly value = storage('disabled', 'initial', { storage: null });
+      }
+
+      const fixture = TestBed.createComponent(DisabledComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+
+      component.value.set('next');
+
+      expect(component.value()).toBe('next');
+      expect(window.localStorage.setItem).not.toHaveBeenCalled();
+    });
+
+    it('should sync instances sharing the same storage', () => {
+      const writer = createComponent();
+      const reader = createComponent();
+
+      writer.value.set('changed');
+
+      expect(reader.value()).toBe('changed');
+    });
+
+    it('should isolate instances with distinct storage instances', () => {
+      const otherStorage = createMemoryStorage();
+
+      @Component({ template: '' })
+      class OtherComponent {
+        readonly value = storage('inline', 'initial', { storage: otherStorage });
+      }
+
+      const writer = createComponent();
+      const fixture = TestBed.createComponent(OtherComponent);
+      fixture.detectChanges();
+      const reader = fixture.componentInstance;
+
+      writer.value.set('changed');
+
+      expect(reader.value()).toBe('initial');
+      expect(otherStorage.getItem('inline')).toBe('initial');
+    });
+  });
+
+  describe('custom storage via DI tokens', () => {
+    @Component({ template: '' })
+    class LocalComponent {
+      readonly username = storage('username', 'guest');
+    }
+
+    @Component({ template: '' })
+    class SessionComponent {
+      readonly token = storage('token', '', { storage: 'session' });
+    }
+
+    const createComponent = <T>(componentType: new () => T) => {
+      const fixture = TestBed.createComponent(componentType);
+      fixture.detectChanges();
+      return fixture.componentInstance;
+    };
+
+    it('should resolve the storage from LOCAL_STORAGE', () => {
+      const customStorage = createMemoryStorage({ username: 'stored' });
+      TestBed.configureTestingModule({
+        providers: [{ provide: LOCAL_STORAGE, useValue: customStorage }],
+      });
+      const component = createComponent(LocalComponent);
+
+      expect(component.username()).toBe('stored');
+
+      component.username.set('alice');
+
+      expect(customStorage.getItem('username')).toBe('alice');
+      expect(window.localStorage.setItem).not.toHaveBeenCalled();
+      expect(window.localStorage.getItem).not.toHaveBeenCalled();
+    });
+
+    it('should resolve the storage from SESSION_STORAGE for storage "session"', () => {
+      const customStorage = createMemoryStorage();
+      TestBed.configureTestingModule({
+        providers: [{ provide: SESSION_STORAGE, useValue: customStorage }],
+      });
+      const component = createComponent(SessionComponent);
+
+      component.token.set('abc123');
+
+      expect(customStorage.getItem('token')).toBe('abc123');
+      expect(window.sessionStorage.setItem).not.toHaveBeenCalled();
+      expect(mockLocalStorage['token']).toBeUndefined();
+    });
+
+    it('should sync sibling instances through the shared DI storage', () => {
+      TestBed.configureTestingModule({
+        providers: [{ provide: LOCAL_STORAGE, useValue: createMemoryStorage() }],
+      });
+      const writer = createComponent(LocalComponent);
+      const reader = createComponent(LocalComponent);
+
+      writer.username.set('alice');
+
+      expect(reader.username()).toBe('alice');
+    });
+  });
+
+  describe(getWebStorage.name, () => {
+    it('should return the built-in storage when available', () => {
+      expect(getWebStorage('local')).toBe(window.localStorage);
+      expect(getWebStorage('session')).toBe(window.sessionStorage);
+    });
+
+    it('should return null when the probe throws', () => {
+      (window.localStorage.setItem as jest.Mock).mockImplementation(() => {
+        throw new Error('denied');
+      });
+
+      expect(getWebStorage('local')).toBeNull();
+    });
+
+    it('should return the storage when quota is exceeded but storage is non-empty', () => {
+      mockLocalStorage['existing'] = 'value';
+      (window.localStorage.setItem as jest.Mock).mockImplementation(() => {
+        throw new DOMException('quota', 'QuotaExceededError');
+      });
+
+      expect(getWebStorage('local')).toBe(window.localStorage);
+    });
+
+    it('should return null when quota is exceeded and storage is empty', () => {
+      (window.localStorage.setItem as jest.Mock).mockImplementation(() => {
+        throw new DOMException('quota', 'QuotaExceededError');
+      });
+
+      expect(getWebStorage('local')).toBeNull();
     });
   });
 });
