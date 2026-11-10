@@ -3,7 +3,7 @@ export const NEW_ITEMS = [
   '/browser/broadcast-channel',
   '/browser/device-posture',
   '/browser/favicon',
-  '/browser/fps',
+  '/browser/fps-monitor',
   '/browser/fullscreen',
   '/browser/gamepad',
   '/browser/listener',

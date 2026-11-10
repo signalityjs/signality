@@ -183,7 +183,7 @@ export default defineConfig({
           { text: 'EyeDropper', link: '/browser/eye-dropper' },
           { text: 'FileDialog', link: '/browser/file-dialog' },
           { text: 'Favicon', link: '/browser/favicon' },
-          { text: 'Fps', link: '/browser/fps' },
+          { text: 'FpsMonitor', link: '/browser/fps-monitor' },
           { text: 'Fullscreen', link: '/browser/fullscreen' },
           { text: 'Gamepad', link: '/browser/gamepad' },
           { text: 'Geolocation', link: '/browser/geolocation' },

@@ -2,13 +2,13 @@
   <demo-card>
     <!-- FPS display -->
     <div class="fps-display">
-      <span class="fps-value">{{ fpsMonitor.fps() }}</span>
+      <span class="fps-value">{{ monitor.value() }}</span>
       <span class="fps-unit">FPS</span>
     </div>
 
     <!-- Progress bar -->
     <demo-progress
-      [value]="fpsMonitor.fps()"
+      [value]="monitor.value()"
       [max]="60"
       [color]="fpsColor()"
       [showValue]="false"
@@ -18,12 +18,12 @@
     <div class="fps-divider"></div>
 
     <div class="fps-footer">
-      <span class="fps-status" [class.fps-status--running]="fpsMonitor.isRunning()">
-        <span class="fps-dot" [class.fps-dot--running]="fpsMonitor.isRunning()"></span>
-        {{ fpsMonitor.isRunning() ? 'Running' : 'Stopped' }}
+      <span class="fps-status" [class.fps-status--running]="monitor.isRunning()">
+        <span class="fps-dot" [class.fps-dot--running]="monitor.isRunning()"></span>
+        {{ monitor.isRunning() ? 'Running' : 'Stopped' }}
       </span>
       <button class="fps-btn" (click)="toggle()">
-        {{ fpsMonitor.isRunning() ? 'Stop' : 'Start' }}
+        {{ monitor.isRunning() ? 'Stop' : 'Start' }}
       </button>
     </div>
   </demo-card>
