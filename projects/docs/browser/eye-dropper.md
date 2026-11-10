@@ -28,7 +28,7 @@ import { eyeDropper } from '@signality/core';
 })
 export class ColorPicker {
   readonly eyeDropper = eyeDropper(); // [!code highlight]
-  readonly color = this.eyeDropper.sRGBHex;
+  readonly color = this.eyeDropper.value;
 
   async pickColor() {
     await this.eyeDropper.open();
@@ -56,7 +56,8 @@ The `eyeDropper()` function returns an `EyeDropperRef`:
 | Property      | Type                  | Description                                |
 |---------------|-----------------------|--------------------------------------------|
 | `isSupported` | `Signal<boolean>`     | Whether EyeDropper API is supported        |
-| `sRGBHex`     | `Signal<string>`      | Current selected color in sRGB hex format  |
+| `value`       | `Signal<string>`      | Current selected color in sRGB hex format  |
+| `sRGBHex`     | `Signal<string>`      | **Deprecated** — use `value` instead       |
 | `open`        | `() => Promise<void>` | Open the eyedropper tool to select a color |
 | `close`       | `() => void`          | Cancel the active eyedropper operation     |
 
@@ -75,9 +76,9 @@ import { eyeDropper } from '@signality/core';
         Pick Color
       </button>
 
-      @if (eyeDropper.sRGBHex()) {
-        <div [style.background-color]="eyeDropper.sRGBHex()">
-          {{ eyeDropper.sRGBHex() }}
+      @if (eyeDropper.value()) {
+        <div [style.background-color]="eyeDropper.value()">
+          {{ eyeDropper.value() }}
         </div>
       }
     </div>
@@ -111,7 +112,7 @@ For detailed browser support information, see [Can I use: EyeDropper API](https:
 On the server, signals initialize with safe defaults:
 
 - `isSupported` → `false`
-- `sRGBHex` → `''`
+- `value` → `''`
 - `open` → no-op function
 - `close` → no-op function
 
@@ -124,6 +125,8 @@ interface EyeDropperOptions extends WithInjector {
 
 interface EyeDropperRef {
   readonly isSupported: Signal<boolean>;
+  readonly value: Signal<string>;
+  /** @deprecated Use `value` instead. */
   readonly sRGBHex: Signal<string>;
   readonly open: () => Promise<void>;
   readonly close: () => void;

@@ -15,15 +15,15 @@ export class EyeDropperDemo {
   readonly ed = eyeDropper();
   readonly isOpen = signal(false);
 
-  readonly hasColor = computed(() => !!this.ed.sRGBHex());
+  readonly hasColor = computed(() => !!this.ed.value());
 
   readonly ringBorder = computed(() => {
-    const hex = this.ed.sRGBHex();
+    const hex = this.ed.value();
     return hex ? hex + '55' : 'rgba(255, 255, 255, 0.08)';
   });
 
   readonly glowStyle = computed(() => {
-    const hex = this.ed.sRGBHex();
+    const hex = this.ed.value();
     if (!hex) return null;
     return `0 0 18px ${hex}50, 0 0 6px ${hex}30`;
   });

@@ -23,6 +23,13 @@ export interface EyeDropperRef {
    *
    * @see [EyeDropper: open() return value on MDN](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper/open#return_value)
    */
+  readonly value: Signal<string>;
+
+  /**
+   * The most recently selected color in sRGB hex format (e.g. `#ff0000`).
+   *
+   * @deprecated Use `value` instead. Will be removed in 1.0.
+   */
   readonly sRGBHex: Signal<string>;
 
   /**
@@ -44,7 +51,7 @@ export interface EyeDropperRef {
  * Signal-based wrapper around the [EyeDropper API](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper_API).
  *
  * @param options - Optional configuration
- * @returns An {@link EyeDropperRef} with `isSupported`, `sRGBHex` signals and `open`/`close` methods
+ * @returns An {@link EyeDropperRef} with `isSupported`, `value` signals and `open`/`close` methods
  *
  * @example
  * ```typescript
@@ -52,8 +59,8 @@ export interface EyeDropperRef {
  *   template: `
  *     @if (eyeDropper.isSupported()) {
  *       <button (click)="pickColor()">Pick Color</button>
- *       <div [style.background-color]="eyeDropper.sRGBHex()">
- *         Selected: {{ eyeDropper.sRGBHex() }}
+ *       <div [style.background-color]="eyeDropper.value()">
+ *         Selected: {{ eyeDropper.value() }}
  *       </div>
  *     }
  *   `
@@ -74,15 +81,18 @@ export function eyeDropper(options?: EyeDropperOptions): EyeDropperRef {
     const isSupported = constSignal(isBrowser && 'EyeDropper' in window);
 
     if (!isSupported()) {
+      const value = constSignal('');
+
       return {
         isSupported,
-        sRGBHex: constSignal(''),
+        value,
+        sRGBHex: value,
         open: NOOP_ASYNC_FN,
         close: NOOP_FN,
       };
     }
 
-    const sRGBHex = signal(options?.initialValue ?? '');
+    const value = signal(options?.initialValue ?? '');
 
     let abortController: AbortController | null = null;
 
@@ -94,7 +104,7 @@ export function eyeDropper(options?: EyeDropperOptions): EyeDropperRef {
 
       try {
         const result = await eyeDropper.open({ signal: abortController.signal });
-        sRGBHex.set(result.sRGBHex);
+        value.set(result.sRGBHex);
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
           throw error;
@@ -109,9 +119,12 @@ export function eyeDropper(options?: EyeDropperOptions): EyeDropperRef {
 
     onCleanup(close);
 
+    const readonlyValue = value.asReadonly();
+
     return {
       isSupported,
-      sRGBHex: sRGBHex.asReadonly(),
+      value: readonlyValue,
+      sRGBHex: readonlyValue,
       open,
       close,
     };

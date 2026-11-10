@@ -12,7 +12,7 @@ describe(eyeDropper.name, () => {
     (window as any).EyeDropper = jest.fn(() => mockEyeDropper);
   });
 
-  @Component({ template: '{{ picker.sRGBHex() }}' })
+  @Component({ template: '{{ picker.value() }}' })
   class TestComponent {
     readonly picker = eyeDropper();
   }
@@ -23,19 +23,19 @@ describe(eyeDropper.name, () => {
     return fixture.componentInstance;
   };
 
-  it('should return initial sRGBHex value', () => {
+  it('should return initial value', () => {
     const component = createComponent();
 
-    expect(component.picker.sRGBHex()).toBe('');
+    expect(component.picker.value()).toBe('');
   });
 
-  it('should update sRGBHex when open is called', async () => {
+  it('should update value when open is called', async () => {
     const component = createComponent();
     mockEyeDropper.open.mockResolvedValue({ sRGBHex: '#ff0000' });
 
     await component.picker.open();
 
-    expect(component.picker.sRGBHex()).toBe('#ff0000');
+    expect(component.picker.value()).toBe('#ff0000');
   });
 
   it('should handle multiple color selections', async () => {
@@ -43,14 +43,34 @@ describe(eyeDropper.name, () => {
 
     mockEyeDropper.open.mockResolvedValue({ sRGBHex: '#ff0000' });
     await component.picker.open();
-    expect(component.picker.sRGBHex()).toBe('#ff0000');
+    expect(component.picker.value()).toBe('#ff0000');
 
     mockEyeDropper.open.mockResolvedValue({ sRGBHex: '#00ff00' });
     await component.picker.open();
-    expect(component.picker.sRGBHex()).toBe('#00ff00');
+    expect(component.picker.value()).toBe('#00ff00');
 
     mockEyeDropper.open.mockResolvedValue({ sRGBHex: '#0000ff' });
     await component.picker.open();
-    expect(component.picker.sRGBHex()).toBe('#0000ff');
+    expect(component.picker.value()).toBe('#0000ff');
+  });
+
+  it('should keep the deprecated sRGBHex as an alias of value', async () => {
+    const component = createComponent();
+    mockEyeDropper.open.mockResolvedValue({ sRGBHex: '#ff0000' });
+
+    await component.picker.open();
+
+    expect(component.picker.sRGBHex).toBe(component.picker.value);
+    expect(component.picker.sRGBHex()).toBe('#ff0000');
+  });
+
+  it('should keep the deprecated sRGBHex as an alias of value when unsupported', () => {
+    delete (window as any).EyeDropper;
+
+    const component = createComponent();
+
+    expect(component.picker.isSupported()).toBe(false);
+    expect(component.picker.value()).toBe('');
+    expect(component.picker.sRGBHex).toBe(component.picker.value);
   });
 });
