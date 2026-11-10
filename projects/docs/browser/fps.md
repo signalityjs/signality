@@ -4,6 +4,10 @@ source: https://github.com/signalityjs/signality/blob/main/projects/core/browser
 
 # Fps
 
+::: warning Deprecated
+`fps()` is deprecated and will be removed in 1.0. Use [`fpsMonitor()`](/browser/fps-monitor) instead.
+:::
+
 Reactive FPS (Frames Per Second) monitor using [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). Track rendering performance with Angular signals.
 
 <Demo name="fps" />

@@ -11,6 +11,7 @@ export * from '@signality/core/browser/eye-dropper';
 export * from '@signality/core/browser/file-dialog';
 export * from '@signality/core/browser/favicon';
 export * from '@signality/core/browser/fps';
+export * from '@signality/core/browser/fps-monitor';
 export * from '@signality/core/browser/fullscreen';
 export * from '@signality/core/browser/gamepad';
 export * from '@signality/core/browser/geolocation';

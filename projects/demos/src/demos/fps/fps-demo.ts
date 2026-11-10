@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { fps } from '@signality/core';
+import { fpsMonitor } from '@signality/core';
 import { DemoCard, DemoProgress, Wrapper } from '../../common';
 
 @Component({
@@ -10,22 +10,22 @@ import { DemoCard, DemoProgress, Wrapper } from '../../common';
   styleUrl: './fps-demo.scss',
 })
 export class FpsDemo {
-  readonly importCode = `import { fps } from '@signality/core'`;
+  readonly importCode = `import { fpsMonitor } from '@signality/core'`;
 
-  readonly fpsMonitor = fps();
+  readonly monitor = fpsMonitor();
 
   readonly fpsColor = computed(() => {
-    const v = this.fpsMonitor.fps();
+    const v = this.monitor.value();
     if (v >= 50) return '#22c55e';
     if (v >= 30) return '#f59e0b';
     return '#ef4444';
   });
 
   toggle(): void {
-    if (this.fpsMonitor.isRunning()) {
-      this.fpsMonitor.stop();
+    if (this.monitor.isRunning()) {
+      this.monitor.stop();
     } else {
-      this.fpsMonitor.start();
+      this.monitor.start();
     }
   }
 }
